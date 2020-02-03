@@ -97,6 +97,7 @@
 			this.Controls.Add(this.toolStrip1);
 			this.Name = "MainForm";
 			this.Text = "User\'s actions repeater";
+			this.Load += new System.EventHandler(this.MainForm_Load);
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();
 			this.contextMenuStrip1.ResumeLayout(false);
