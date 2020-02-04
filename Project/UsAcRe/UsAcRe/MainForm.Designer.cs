@@ -31,6 +31,7 @@
 			this.miClearLog = new System.Windows.Forms.ToolStripMenuItem();
 			this.miCopyLog = new System.Windows.Forms.ToolStripMenuItem();
 			this.txtLog = new System.Windows.Forms.RichTextBox();
+			this.timer1 = new System.Windows.Forms.Timer(this.components);
 			this.toolStrip1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
 			this.SuspendLayout();
@@ -88,6 +89,10 @@
 			this.txtLog.TabIndex = 5;
 			this.txtLog.Text = "";
 			// 
+			// timer1
+			// 
+			this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -114,6 +119,7 @@
 		private System.Windows.Forms.ToolStripMenuItem miClearLog;
 		private System.Windows.Forms.ToolStripMenuItem miCopyLog;
 		private System.Windows.Forms.RichTextBox txtLog;
+		private System.Windows.Forms.Timer timer1;
 	}
 }
 
