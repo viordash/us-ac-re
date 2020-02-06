@@ -100,6 +100,7 @@
 			this.ClientSize = new System.Drawing.Size(429, 276);
 			this.Controls.Add(this.txtLog);
 			this.Controls.Add(this.toolStrip1);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "MainForm";
 			this.Text = "User\'s actions repeater";
 			this.Load += new System.EventHandler(this.MainForm_Load);
