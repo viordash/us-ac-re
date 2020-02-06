@@ -31,7 +31,6 @@
 			this.miClearLog = new System.Windows.Forms.ToolStripMenuItem();
 			this.miCopyLog = new System.Windows.Forms.ToolStripMenuItem();
 			this.txtLog = new System.Windows.Forms.RichTextBox();
-			this.timer1 = new System.Windows.Forms.Timer(this.components);
 			this.toolStrip1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
 			this.SuspendLayout();
@@ -48,6 +47,7 @@
 			// 
 			// btnStart
 			// 
+			this.btnStart.CheckOnClick = true;
 			this.btnStart.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.btnStart.Image = ((System.Drawing.Image)(resources.GetObject("btnStart.Image")));
 			this.btnStart.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -89,10 +89,6 @@
 			this.txtLog.TabIndex = 5;
 			this.txtLog.Text = "";
 			// 
-			// timer1
-			// 
-			this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -103,6 +99,7 @@
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "MainForm";
 			this.Text = "User\'s actions repeater";
+			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);
 			this.Load += new System.EventHandler(this.MainForm_Load);
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();
@@ -120,7 +117,6 @@
 		private System.Windows.Forms.ToolStripMenuItem miClearLog;
 		private System.Windows.Forms.ToolStripMenuItem miCopyLog;
 		private System.Windows.Forms.RichTextBox txtLog;
-		private System.Windows.Forms.Timer timer1;
 	}
 }
 

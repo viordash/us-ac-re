@@ -80,6 +80,14 @@ namespace UsAcRe.WindowsSystem {
 				this.x = x;
 				this.y = y;
 			}
+
+			public bool WitBoundaries(int otherX, int otherY, int toleranceX, int toleranceY) {
+				return Math.Abs(x - otherX) <= toleranceX && Math.Abs(y - otherY) <= toleranceX;
+			}
+
+			public bool WitBoundaries(POINT other, int tolerance) {
+				return Math.Abs(x - other.x) <= tolerance && Math.Abs(y - other.y) <= tolerance;
+			}
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -232,10 +240,6 @@ namespace UsAcRe.WindowsSystem {
 		[DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
 		internal static extern bool SetWindowPos(IntPtr hWnd, IntPtr hwndAfter, int x, int y, int width, int height, int flags);
 
-		internal struct SIZE {
-			public int cx;
-			public int cy;
-		}
 		internal const int SRCCOPY = 13369376;
 		internal const int SM_CXSCREEN = 0;
 		internal const int SM_CYSCREEN = 1;
