@@ -3,7 +3,7 @@ using System.Drawing;
 
 namespace UsAcRe.Highlighter {
 	public class ScreenBoundingRectangle : IDisposable {
-		const int width = 3;
+		const int width = 2;
 		private bool visible;
 		private Color color;
 		private Rectangle location;

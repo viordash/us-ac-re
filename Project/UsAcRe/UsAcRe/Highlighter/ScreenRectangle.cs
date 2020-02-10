@@ -11,7 +11,7 @@ namespace UsAcRe.Highlighter {
 		private Color color;
 		private Rectangle location;
 
-		private Form form;
+		Form form;
 
 		public ScreenRectangle() {
 			form = new Form();

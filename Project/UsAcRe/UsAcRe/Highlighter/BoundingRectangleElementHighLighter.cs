@@ -8,20 +8,29 @@ namespace UsAcRe.Highlighter {
 			return new BoundingRectangleElementHighLighter(elementFromPoint);
 		}
 
-		protected ScreenBoundingRectangle rectangle = new ScreenBoundingRectangle();
+		ScreenBoundingRectangle innerRectangle = new ScreenBoundingRectangle();
+		ScreenBoundingRectangle outerRectangle = new ScreenBoundingRectangle();
 
 		public BoundingRectangleElementHighLighter(ElementFromPoint elementFromPoint) : base(elementFromPoint) {
-			rectangle.Color = Color.Red;
-			rectangle.Opacity = 0.8;
+			innerRectangle.Color = Color.Red;
+			outerRectangle.Color = Color.Yellow;
+			innerRectangle.Opacity = 0.6;
+			outerRectangle.Opacity = 0.6;
 		}
 
 		protected override Rectangle Location {
-			get { return rectangle.Location; }
-			set { rectangle.Location = value; }
+			set {
+				innerRectangle.Location = value;
+				var outerRect = value;
+				outerRect.Inflate(new Size(innerRectangle.LineWidth, innerRectangle.LineWidth));
+				outerRectangle.Location = outerRect;
+
+			}
 		}
 
 		protected override void SetVisibility(bool show) {
-			rectangle.Visible = show;
+			innerRectangle.Visible = show;
+			outerRectangle.Visible = show;
 		}
 
 		protected override void SetToolTip(string toolTipMessage) {
@@ -29,7 +38,8 @@ namespace UsAcRe.Highlighter {
 		}
 
 		protected override void OnDispose() {
-			rectangle.Dispose();
+			innerRectangle.Dispose();
+			outerRectangle.Dispose();
 		}
 	}
 }

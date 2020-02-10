@@ -52,7 +52,7 @@ namespace UsAcRe.Highlighter {
 			}
 		}
 
-		abstract protected Rectangle Location { get; set; }
+		abstract protected Rectangle Location { set; }
 		abstract protected void SetVisibility(bool show);
 		abstract protected void SetToolTip(string toolTipMessage);
 		abstract protected void OnDispose();
