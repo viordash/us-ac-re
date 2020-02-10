@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Automation;
 using UsAcRe.Helpers;
@@ -10,7 +11,19 @@ namespace UsAcRe.UIAutomationElement {
 		NLog.Logger logger = NLog.LogManager.GetLogger("UsAcRe.Trace");
 
 		AutomationElement Element;
-		public Point ElementCoord { get; set; }
+		public Point ElementCoord { get; }
+		public System.Windows.Rect BoundingRectangle {
+			get {
+				try {
+					if(Element != null) {
+						return (System.Windows.Rect)Element.GetCurrentPropertyValue(AutomationElement.BoundingRectangleProperty, true);
+					}
+				} catch(Exception ex) {
+					logger.Error(ex);
+				}
+				return System.Windows.Rect.Empty;
+			}
+		}
 
 		public ElementFromPoint(Point elementCoord) {
 			ElementCoord = elementCoord;

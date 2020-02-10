@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
 using NLog.Windows.Forms;
+using UsAcRe.Highlighter;
 using UsAcRe.UIAutomationElement;
 using UsAcRe.WindowsSystem;
 
@@ -10,6 +11,8 @@ namespace UsAcRe {
 	public partial class MainForm : Form {
 		NLog.Logger logger;
 		bool stopSearchElement;
+		ElementHighlighter elementHighlighter = null;
+
 		public MainForm() {
 			InitializeComponent();
 			RichTextBoxTarget.ReInitializeAllTextboxes(this);
@@ -23,6 +26,9 @@ namespace UsAcRe {
 
 		private void MainForm_FormClosed(object sender, FormClosedEventArgs e) {
 			stopSearchElement = true;
+			if(elementHighlighter != null) {
+				elementHighlighter.StopHighlighting();
+			}
 		}
 
 		private void btnStart_Click(object sender, EventArgs e) {
@@ -47,13 +53,24 @@ namespace UsAcRe {
 						lastMouseMoved = DateTime.Now;
 						prevPoint = pt;
 						moved = true;
+						if(elementHighlighter != null) {
+							var highlighter = elementHighlighter;
+							BeginInvoke((MethodInvoker)delegate () {
+								highlighter.StopHighlighting();
+							});
+						}
 					} else if(moved && (DateTime.Now - lastMouseMoved).TotalMilliseconds >= 500) {
 						var elementFromPoint = new ElementFromPoint(new Point(pt.x, pt.y));
+
+						BeginInvoke((MethodInvoker)delegate () {
+							elementHighlighter = BoundingRectangleElementHighLighter.CreateInstance(elementFromPoint);
+							elementHighlighter.StartHighlighting();
+						});
+
 						logger.Info(elementFromPoint);
 						moved = false;
 					}
 				}
-
 			}).Start();
 		}
 	}

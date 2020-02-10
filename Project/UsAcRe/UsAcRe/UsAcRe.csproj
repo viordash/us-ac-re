@@ -66,6 +66,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\NamingHelpers.cs" />
+    <Compile Include="Highlighter\BoundingRectangleElementHighLighter.cs" />
+    <Compile Include="Highlighter\ElementHighlighter.cs" />
+    <Compile Include="Highlighter\ScreenBoundingRectangle.cs" />
+    <Compile Include="Highlighter\ScreenRectangle.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -108,5 +112,6 @@
   <ItemGroup>
     <Content Include="clock.ico" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
