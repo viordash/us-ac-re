@@ -81,11 +81,11 @@ namespace UsAcRe.WindowsSystem {
 				this.y = y;
 			}
 
-			public bool WitBoundaries(int otherX, int otherY, int toleranceX, int toleranceY) {
+			public bool WithBoundaries(int otherX, int otherY, int toleranceX, int toleranceY) {
 				return Math.Abs(x - otherX) <= toleranceX && Math.Abs(y - otherY) <= toleranceX;
 			}
 
-			public bool WitBoundaries(POINT other, int tolerance) {
+			public bool WithBoundaries(POINT other, int tolerance) {
 				return Math.Abs(x - other.x) <= tolerance && Math.Abs(y - other.y) <= tolerance;
 			}
 		}
