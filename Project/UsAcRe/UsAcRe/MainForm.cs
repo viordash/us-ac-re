@@ -26,9 +26,7 @@ namespace UsAcRe {
 
 		private void MainForm_FormClosed(object sender, FormClosedEventArgs e) {
 			stopSearchElement = true;
-			if(elementHighlighter != null) {
-				elementHighlighter.StopHighlighting();
-			}
+			CloseHighlighter();
 		}
 
 		private void btnStart_Click(object sender, EventArgs e) {
@@ -53,16 +51,13 @@ namespace UsAcRe {
 						lastMouseMoved = DateTime.Now;
 						prevPoint = pt;
 						moved = true;
-						if(elementHighlighter != null) {
-							var highlighter = elementHighlighter;
-							BeginInvoke((MethodInvoker)delegate () {
-								highlighter.StopHighlighting();
-							});
-						}
+						CloseHighlighter();
 					} else if(moved && (DateTime.Now - lastMouseMoved).TotalMilliseconds >= 500) {
 						var elementFromPoint = new ElementFromPoint(new Point(pt.x, pt.y));
 
 						BeginInvoke((MethodInvoker)delegate () {
+							CloseHighlighter();
+
 							elementHighlighter = BoundingRectangleElementHighLighter.CreateInstance(elementFromPoint);
 							elementHighlighter.StartHighlighting();
 						});
@@ -72,6 +67,16 @@ namespace UsAcRe {
 					}
 				}
 			}).Start();
+		}
+
+		void CloseHighlighter() {
+			if(elementHighlighter != null) {
+				var highlighter = elementHighlighter;
+				BeginInvoke((MethodInvoker)delegate () {
+					highlighter.StopHighlighting();
+				});
+				elementHighlighter = null;
+			}
 		}
 	}
 }
