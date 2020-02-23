@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Automation;
@@ -9,43 +10,6 @@ using UsAcRe.WindowsSystem;
 namespace UsAcRe.UIAutomationElement {
 	public class ElementFromPoint {
 		NLog.Logger logger = NLog.LogManager.GetLogger("UsAcRe.Trace");
-
-		AutomationElement Element;
-		public Point ElementCoord { get; }
-		public System.Windows.Rect BoundingRectangle {
-			get {
-				try {
-					if(Element != null) {
-						return (System.Windows.Rect)Element.GetCurrentPropertyValue(AutomationElement.BoundingRectangleProperty, true);
-					}
-				} catch(Exception ex) {
-					logger.Error(ex);
-				}
-				return System.Windows.Rect.Empty;
-			}
-		}
-
-		public ElementFromPoint(Point elementCoord) {
-			ElementCoord = elementCoord;
-			DetermineElementUnderPoint();
-		}
-
-		public override string ToString() {
-			if(Element != null) {
-				return string.Format($"{nameof(ElementFromPoint)} ({ElementCoord.X}, {ElementCoord.Y}). Name: {NamingHelpers.Escape(Element.Current.Name, 50)}, " +
-					$"{Element.Current.ControlType.ProgrammaticName}, {Element.Current.BoundingRectangle}");
-			} else {
-				return string.Format($"{nameof(ElementFromPoint)} ({ElementCoord.X}, {ElementCoord.Y}). No element");
-			}
-		}
-
-		void DetermineElementUnderPoint() {
-			Element = GetElementFromPoint();
-			if(Element != null) {
-				logger.Trace("             DetermineElementUnderPoint 1: {0}; {1}; {2}", NamingHelpers.Escape(Element.Current.AutomationId, 300),
-					Element.Current.ControlType.ProgrammaticName, Element.Current.BoundingRectangle);
-			}
-		}
 
 		#region inner classes
 		class MatchedElement {
@@ -66,7 +30,45 @@ namespace UsAcRe.UIAutomationElement {
 		}
 		#endregion
 
-		//--------------------------
+		AutomationElement Element;
+		public Point ElementCoord;
+		public int Iterations;
+		public System.Windows.Rect BoundingRectangle {
+			get {
+				try {
+					if(Element != null) {
+						return Element.Current.BoundingRectangle;
+					}
+				} catch(Exception ex) {
+					logger.Error(ex);
+				}
+				return System.Windows.Rect.Empty;
+			}
+		}
+
+		public ElementFromPoint(Point elementCoord) {
+			Iterations = 0;
+			ElementCoord = elementCoord;
+			DetermineElementUnderPoint();
+		}
+
+		public override string ToString() {
+			if(Element != null) {
+				return string.Format($"{Iterations}| {nameof(ElementFromPoint)} ({ElementCoord.X}, {ElementCoord.Y}). Name: {NamingHelpers.Escape(Element.Current.Name, 50)}, " +
+					$"{Element.Current.ControlType.ProgrammaticName}, {Element.Current.BoundingRectangle}");
+			} else {
+				return string.Format($"{nameof(ElementFromPoint)} ({ElementCoord.X}, {ElementCoord.Y}). No element");
+			}
+		}
+
+		void DetermineElementUnderPoint() {
+			Element = GetElementFromPoint();
+			if(Element != null) {
+				logger.Trace("             DetermineElementUnderPoint 1: {0}; {1}; {2}", NamingHelpers.Escape(Element.Current.AutomationId, 300),
+					Element.Current.ControlType.ProgrammaticName, Element.Current.BoundingRectangle);
+			}
+		}
+
 		AutomationElement GetFirstSiblingElement(AutomationElement elementUnderPoint) {
 			var parentEl = TreeWalker.RawViewWalker.GetParent(elementUnderPoint);
 			bool parentIsDesktop = AutomationElement.RootElement == parentEl;
@@ -79,15 +81,53 @@ namespace UsAcRe.UIAutomationElement {
 			return elementUnderPoint;
 		}
 
-		List<MatchedElement> ObtainSiblingsUnderPoint(AutomationElement startElement) {
+		AutomationElement GetFirstChild(AutomationElement parentElement) {
+			try {
+				return TreeWalker.RawViewWalker.GetFirstChild(parentElement);
+			} catch(NullReferenceException) {
+			}
+			return null;
+		}
 
+		bool ChildIsUnderPoint(AutomationElement parentElement) {
+			AutomationElement childElement = GetFirstChild(parentElement);
+			if(childElement == null) {
+				return false;
+			}
+
+			try {
+				var iterElement = childElement;
+				do {
+					var boundingRectangle = iterElement.Current.BoundingRectangle;
+					if(boundingRectangle.Contains(ElementCoord.X, ElementCoord.Y)) {
+						return true;
+					}
+					Iterations++;
+				} while((iterElement = TreeWalker.ControlViewWalker.GetNextSibling(iterElement)) != null);
+			} catch(NullReferenceException) {
+
+			}
+			return false;
+		}
+
+		List<MatchedElement> ObtainSiblingsUnderPoint(AutomationElement startElement, AutomationElement parentElement, int parentZOrder) {
 			var matchedElements = new List<MatchedElement>();
 			try {
 				var iterElement = startElement;
 				do {
+					var zOrder = GetZOrder(iterElement);
 					var boundingRectangle = iterElement.Current.BoundingRectangle;
 					if(!boundingRectangle.Contains(ElementCoord.X, ElementCoord.Y)) {
-						continue;
+						bool preventOfInfinityLoop = RawCompareElement(parentElement, parentZOrder, iterElement, zOrder);
+						if(preventOfInfinityLoop) {
+							continue;
+						}
+						if(!ChildIsUnderPoint(iterElement)) {
+							continue;
+						} else {
+							Debug.WriteLine("ChildIsUnderPoint 1: {0}; {1}; {2}", NamingHelpers.Escape(Element.Current.AutomationId, 300),
+																Element.Current.ControlType.ProgrammaticName, Element.Current.BoundingRectangle);
+						}
 					}
 					if(matchedElements.Any(x => Automation.Compare(x.Element, iterElement))) {
 						continue;
@@ -95,7 +135,7 @@ namespace UsAcRe.UIAutomationElement {
 
 					matchedElements.Add(new MatchedElement() {
 						Element = iterElement,
-						ZOrder = GetZOrder(iterElement),
+						ZOrder = zOrder,
 						BoundingRectangle = boundingRectangle
 					});
 				} while((iterElement = TreeWalker.ControlViewWalker.GetNextSibling(iterElement)) != null);
@@ -105,32 +145,28 @@ namespace UsAcRe.UIAutomationElement {
 			return matchedElements;
 		}
 
-		bool RawCompareElement(AutomationElement parentElement, int parentZOrder, MatchedElement matchedElement) {
-			if(parentElement.Current.BoundingRectangle == matchedElement.Element.Current.BoundingRectangle
-				&& parentElement.Current.ControlType == matchedElement.Element.Current.ControlType
-				&& parentElement.Current.Name == matchedElement.Element.Current.Name
-				&& parentElement.Current.AutomationId == matchedElement.Element.Current.AutomationId
-				&& parentZOrder == matchedElement.ZOrder) {
+		bool RawCompareElement(AutomationElement parentElement, int parentZOrder, AutomationElement element, int zOrder) {
+			if(parentElement.Current.BoundingRectangle == element.Current.BoundingRectangle
+				&& parentElement.Current.ControlType == element.Current.ControlType
+				&& parentElement.Current.Name == element.Current.Name
+				&& parentElement.Current.AutomationId == element.Current.AutomationId
+				&& parentZOrder == zOrder) {
 				return true;
 			}
 			return false;
 		}
 
 		List<MatchedElement> ObtainChildsUnderPoint(AutomationElement parentElement) {
-			AutomationElement childElement;
-			try {
-				childElement = TreeWalker.RawViewWalker.GetFirstChild(parentElement);
-			} catch(NullReferenceException) {
-				childElement = null;
-			}
+			AutomationElement childElement = GetFirstChild(parentElement);
 			if(childElement == null) {
 				return null;
 			}
 			var parentElementZOrder = GetZOrder(parentElement);
-			var matchedElements = ObtainSiblingsUnderPoint(childElement);
+			var matchedElements = ObtainSiblingsUnderPoint(childElement, parentElement, parentElementZOrder);
 			var childElements = new List<MatchedElement>();
 			foreach(var child in matchedElements) {
-				if(RawCompareElement(parentElement, parentElementZOrder, child)) {
+				bool preventOfInfinityLoop = RawCompareElement(parentElement, parentElementZOrder, child.Element, child.ZOrder);
+				if(preventOfInfinityLoop) {
 					continue;
 				}
 				var elements = ObtainChildsUnderPoint(child.Element);
@@ -157,7 +193,7 @@ namespace UsAcRe.UIAutomationElement {
 				return null;
 			}
 
-			var siblingsUnderPoint = ObtainSiblingsUnderPoint(element);
+			var siblingsUnderPoint = ObtainSiblingsUnderPoint(element, null, -1);
 			var matchedElements = new List<MatchedElement>(siblingsUnderPoint);
 			foreach(var item in siblingsUnderPoint) {
 				var elements = ObtainChildsUnderPoint(item.Element);
@@ -167,6 +203,7 @@ namespace UsAcRe.UIAutomationElement {
 			}
 
 			element = matchedElements
+				.Where(x => x.BoundingRectangle.Contains(ElementCoord.X, ElementCoord.Y))
 				.OrderByDescending(x => x.ZOrder)
 				.ThenBy(x => x.BoundingRectangle, new BoundingRectangleComp())
 				.Select(x => x.Element)
