@@ -167,7 +167,7 @@ namespace UsAcRe.UIAutomationElement {
 			}
 
 			element = matchedElements
-				.OrderBy(x => x.ZOrder)
+				.OrderByDescending(x => x.ZOrder)
 				.ThenBy(x => x.BoundingRectangle, new BoundingRectangleComp())
 				.Select(x => x.Element)
 				.FirstOrDefault();
@@ -184,7 +184,8 @@ namespace UsAcRe.UIAutomationElement {
 			}
 			var hWnd = new IntPtr(element.Current.NativeWindowHandle);
 			if(hWnd == IntPtr.Zero) {
-				return -1;
+				var parentEl = TreeWalker.RawViewWalker.GetParent(element);
+				return GetZOrder(parentEl);
 			}
 
 			var lowestHwnd = WinAPI.GetWindow(hWnd, WinAPI.GW_HWNDLAST);
@@ -199,7 +200,6 @@ namespace UsAcRe.UIAutomationElement {
 				hwndTmp = WinAPI.GetWindow(hwndTmp, WinAPI.GW_HWNDPREV);
 				z++;
 			}
-
 			return -1;
 		}
 	}
