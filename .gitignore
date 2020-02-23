@@ -9,3 +9,4 @@ packages/*
 xunit-*.xml
 *.suo
 **/packages/
+Garbage/
