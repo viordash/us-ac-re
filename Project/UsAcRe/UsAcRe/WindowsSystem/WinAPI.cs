@@ -51,6 +51,15 @@ namespace UsAcRe.WindowsSystem {
 		public const int CWP_SKIPINVISIBLE = 0x0001;
 		public const int CWP_SKIPTRANSPARENT = 0x0004;
 
+
+		public const int GW_CHILD = 5;
+		public const int GW_ENABLEDPOPUP = 6;
+		public const int GW_HWNDFIRST = 0;
+		public const int GW_HWNDLAST = 1;
+		public const int GW_HWNDNEXT = 2;
+		public const int GW_HWNDPREV = 3;
+		public const int GW_OWNER = 4;
+
 		public static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -297,6 +306,12 @@ namespace UsAcRe.WindowsSystem {
 
 		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
 		public static extern int GetWindowThreadProcessId(IntPtr handle, out uint processId);
+
+		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		public static extern IntPtr GetTopWindow(IntPtr hwnd);
+
+		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		public static extern IntPtr GetWindow(IntPtr hwnd, uint uCmd);
 
 	}
 }
