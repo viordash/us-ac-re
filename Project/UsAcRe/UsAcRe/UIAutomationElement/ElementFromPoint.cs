@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows.Automation;
 using UsAcRe.Helpers;
 using UsAcRe.WindowsSystem;
@@ -14,13 +16,16 @@ namespace UsAcRe.UIAutomationElement {
 		#region inner classes
 		class MatchedElement {
 			public AutomationElement Element;
-			public int ZOrder;
+			//public int ZOrder;
 			public System.Windows.Rect BoundingRectangle;
+		}
 
-			public override string ToString() {
-				return string.Format("{0}; Z:{1}; Elem:{2} {3}", nameof(MatchedElement), ZOrder, NamingHelpers.Escape(Element.Current.AutomationId, 300),
-					Element.Current.ControlType.ProgrammaticName);
-			}
+		class ElementsUderPoint {
+			public IntPtr Handle;
+			public System.Windows.Rect BoundingRectangle;
+			public string ClassName;
+			public string WindowName;
+			public int ZOrder;
 		}
 
 		class BoundingRectangleComp : IComparer<System.Windows.Rect> {
@@ -45,6 +50,8 @@ namespace UsAcRe.UIAutomationElement {
 				return System.Windows.Rect.Empty;
 			}
 		}
+
+		List<MatchedElement> treeElements = new List<MatchedElement>();
 
 		public ElementFromPoint(Point elementCoord) {
 			Iterations = 0;
@@ -82,11 +89,11 @@ namespace UsAcRe.UIAutomationElement {
 		}
 
 		AutomationElement GetFirstChild(AutomationElement parentElement) {
-			try {
-				return TreeWalker.RawViewWalker.GetFirstChild(parentElement);
-			} catch(NullReferenceException) {
-			}
-			return null;
+			//try {
+			return TreeWalker.RawViewWalker.GetFirstChild(parentElement);
+			//} catch(NullReferenceException) {
+			//}
+			//return null;
 		}
 
 		bool ChildIsUnderPoint(AutomationElement parentElement) {
@@ -135,7 +142,7 @@ namespace UsAcRe.UIAutomationElement {
 
 					matchedElements.Add(new MatchedElement() {
 						Element = iterElement,
-						ZOrder = zOrder,
+						//ZOrder = zOrder,
 						BoundingRectangle = boundingRectangle
 					});
 				} while((iterElement = TreeWalker.ControlViewWalker.GetNextSibling(iterElement)) != null);
@@ -165,10 +172,10 @@ namespace UsAcRe.UIAutomationElement {
 			var matchedElements = ObtainSiblingsUnderPoint(childElement, parentElement, parentElementZOrder);
 			var childElements = new List<MatchedElement>();
 			foreach(var child in matchedElements) {
-				bool preventOfInfinityLoop = RawCompareElement(parentElement, parentElementZOrder, child.Element, child.ZOrder);
-				if(preventOfInfinityLoop) {
-					continue;
-				}
+				//bool preventOfInfinityLoop = RawCompareElement(parentElement, parentElementZOrder, child.Element, child.ZOrder);
+				//if(preventOfInfinityLoop) {
+				//	continue;
+				//}
 				var elements = ObtainChildsUnderPoint(child.Element);
 				if(elements != null) {
 					childElements.AddRange(elements);
@@ -181,38 +188,100 @@ namespace UsAcRe.UIAutomationElement {
 			return matchedElements;
 		}
 
+		bool RawCompareElement(AutomationElement parentElement, AutomationElement element) {
+			if(parentElement.Current.BoundingRectangle == element.Current.BoundingRectangle
+				&& parentElement.Current.ControlType == element.Current.ControlType
+				&& parentElement.Current.Name == element.Current.Name
+				&& parentElement.Current.AutomationId == element.Current.AutomationId) {
+				return true;
+			}
+			return false;
+		}
+
+		void ObtainChildElements(AutomationElement startElement) {
+			try {
+				var iterElement = startElement;
+				do {
+					if(treeElements.Any(x => RawCompareElement(x.Element, iterElement))) {
+						continue;
+					}
+
+					//if(elements.Any(x => Automation.Compare(x.Element, iterElement))) {
+					//	continue;
+					//}
+
+					if(!iterElement.Current.BoundingRectangle.IsEmpty) {
+						treeElements.Add(new MatchedElement() {
+							Element = iterElement,
+							BoundingRectangle = iterElement.Current.BoundingRectangle
+						});
+					}
+
+					AutomationElement childElement = GetFirstChild(iterElement);
+					if(childElement != null) {
+						ObtainChildElements(childElement);
+					}
+					Iterations++;
+					Debug.WriteLine("Iterations: {0}", Iterations);
+				} while((iterElement = TreeWalker.ControlViewWalker.GetNextSibling(iterElement)) != null);
+			} catch(Exception) {
+			}
+		}
+
 		AutomationElement GetElementFromPoint() {
+			Debug.WriteLine("");
+			Debug.WriteLine("------------------------");
+			Debug.WriteLine("ElementCoord: {0}", ElementCoord);
+			Debug.WriteLine("");
 			var hwnd = WinAPI.WindowFromPoint(new WinAPI.POINT(ElementCoord.X, ElementCoord.Y));
-			if(hwnd == null) {
-				return null;
-			}
-			var elementUnderPoint = AutomationElement.FromHandle(hwnd);
-
-			var element = GetFirstSiblingElement(elementUnderPoint);
-			if(element == null) {
+			if(hwnd == IntPtr.Zero) {
 				return null;
 			}
 
-			var siblingsUnderPoint = ObtainSiblingsUnderPoint(element, null, -1);
-			var matchedElements = new List<MatchedElement>(siblingsUnderPoint);
-			foreach(var item in siblingsUnderPoint) {
-				var elements = ObtainChildsUnderPoint(item.Element);
-				if(elements != null) {
-					matchedElements.AddRange(elements);
-				}
+			//	var elementUnderPoint1 = AutomationElement.FromHandle(hwnd);
+
+			var rootWindowHwnd = GetRootWindow(hwnd);
+			if(rootWindowHwnd == IntPtr.Zero) {
+				return null;
 			}
 
-			element = matchedElements
-				.Where(x => x.BoundingRectangle.Contains(ElementCoord.X, ElementCoord.Y))
-				.OrderByDescending(x => x.ZOrder)
+			var childs = GetAllChildHandles(rootWindowHwnd);
+
+			var elementHandle = childs
+				.OrderByDescending(x => GetZOrder(x.Handle))
 				.ThenBy(x => x.BoundingRectangle, new BoundingRectangleComp())
-				.Select(x => x.Element)
+				.Select(x => x.Handle)
 				.FirstOrDefault();
-			if(element != null) {
-				return element;
-			} else {
-				return elementUnderPoint;
+
+			if(elementHandle == IntPtr.Zero) {
+				elementHandle = rootWindowHwnd;
 			}
+			var elementUnderPoint = AutomationElement.FromHandle(elementHandle);
+			Debug.WriteLine("{0:X8} elementUnderPoint: {1}; {2}; {3}", elementHandle.ToInt32(), NamingHelpers.Escape(elementUnderPoint.Current.AutomationId, 300),
+									elementUnderPoint.Current.ControlType.ProgrammaticName, elementUnderPoint.Current.BoundingRectangle);
+			return elementUnderPoint;
+
+			//var element = GetFirstSiblingElement(elementUnderPoint);
+			//if(element == null) {
+			//	return null;
+			//}
+
+			//ObtainChildElements(element);
+
+			//var elementsUnderPoint = treeElements
+			//	.Where(x => x.BoundingRectangle.Contains(ElementCoord.X, ElementCoord.Y))
+			//	.ToList();
+
+			//element = elementsUnderPoint
+			//	.OrderByDescending(x => GetZOrder(x.Element))
+			//	.ThenBy(x => x.BoundingRectangle, new BoundingRectangleComp())
+			//	.Select(x => x.Element)
+			//	.FirstOrDefault();
+			//if(element != null) {
+			//	return element;
+			//} else {
+			//	return elementUnderPoint;
+			//}
 		}
 
 		int GetZOrder(AutomationElement element) {
@@ -224,13 +293,17 @@ namespace UsAcRe.UIAutomationElement {
 				var parentEl = TreeWalker.RawViewWalker.GetParent(element);
 				return GetZOrder(parentEl);
 			}
+			return GetZOrder(hWnd);
+		}
 
+		int GetZOrder(IntPtr hWnd) {
 			var lowestHwnd = WinAPI.GetWindow(hWnd, WinAPI.GW_HWNDLAST);
 
 			var z = 0;
 			var hwndTmp = lowestHwnd;
 			while(hwndTmp != IntPtr.Zero) {
 				if(hWnd == hwndTmp) {
+					//Debug.WriteLine("{0:X8} z:{1}", hWnd.ToInt32(), z);
 					return z;
 				}
 
@@ -238,6 +311,70 @@ namespace UsAcRe.UIAutomationElement {
 				z++;
 			}
 			return -1;
+		}
+
+
+		IntPtr GetRootWindow(IntPtr selectedWindow) {
+			var rootHwnd = WinAPI.GetAncestor(selectedWindow, WinAPI.GA_ROOT);
+			return rootHwnd;
+		}
+
+		List<ElementsUderPoint> GetAllChildHandles(IntPtr rootWindow) {
+			var childHandles = new List<ElementsUderPoint>();
+
+			var gcChildhandlesList = GCHandle.Alloc(childHandles);
+			var pointerChildHandlesList = GCHandle.ToIntPtr(gcChildhandlesList);
+
+			try {
+				WinAPI.EnumChildWindows(rootWindow, new WinAPI.EnumWindowProc(EnumWindow), pointerChildHandlesList);
+			} finally {
+				gcChildhandlesList.Free();
+			}
+			return childHandles;
+		}
+
+		private bool EnumWindow(IntPtr hWnd, IntPtr lParam) {
+			GCHandle gcChildhandlesList = GCHandle.FromIntPtr(lParam);
+
+			if(gcChildhandlesList == null || gcChildhandlesList.Target == null) {
+				return false;
+			}
+
+			var info = new WinAPI.WINDOWINFO();
+			info.cbSize = (uint)Marshal.SizeOf(info);
+			WinAPI.GetWindowInfo(hWnd, ref info);
+
+			var className = GetWindowClass(hWnd);
+			var windowName = GetWindowText(hWnd);
+			var zOrder = GetZOrder(hWnd);
+			Debug.WriteLine("{0:X8} '{1}' '{2}' {3} z:{4}", hWnd.ToInt32(), windowName, className, info.rcWindow, zOrder);
+
+			if(info.rcWindow.Contains(ElementCoord.X, ElementCoord.Y)) {
+				var childHandles = gcChildhandlesList.Target as List<ElementsUderPoint>;
+				childHandles.Add(new ElementsUderPoint() {
+					Handle = hWnd,
+					BoundingRectangle = new System.Windows.Rect(info.rcWindow.left, info.rcWindow.top,
+							info.rcWindow.right - info.rcWindow.left, info.rcWindow.bottom - info.rcWindow.top),
+					ClassName = className,
+					WindowName = windowName,
+					ZOrder = GetZOrder(hWnd)
+				});
+			}
+			return true;
+		}
+
+		string GetWindowText(IntPtr hWnd) {
+			int len = WinAPI.GetWindowTextLength(hWnd) + 1;
+			var sb = new StringBuilder(len);
+			len = WinAPI.GetWindowText(hWnd, sb, len);
+			return sb.ToString(0, len);
+		}
+
+		string GetWindowClass(IntPtr hWnd) {
+			int len = 260;
+			var sb = new StringBuilder(len);
+			len = WinAPI.GetClassName(hWnd, sb, len);
+			return sb.ToString(0, len);
 		}
 	}
 }

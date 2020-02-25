@@ -60,6 +60,10 @@ namespace UsAcRe.WindowsSystem {
 		public const int GW_HWNDPREV = 3;
 		public const int GW_OWNER = 4;
 
+		public const int GA_PARENT = 1;
+		public const int GA_ROOT = 2;
+		public const int GA_ROOTOWNER = 3;
+
 		public static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -147,6 +151,37 @@ namespace UsAcRe.WindowsSystem {
 			public uint top;
 			public uint right;
 			public uint bottom;
+
+			public bool Contains(int x, int y) {
+				var width = right - left;
+				var height = bottom - top;
+				return ((x >= left) && (x - width <= left) &&
+						(y >= top) && (y - height <= top));
+			}
+
+			public override string ToString() {
+				var width = right - left;
+				var height = bottom - top;
+				return string.Format("x:{0}, y:{1}, width:{2}, height:{3}", left, top, width, height);
+			}
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		public struct WINDOWINFO {
+			public uint cbSize;
+			public RECT rcWindow;
+			public RECT rcClient;
+			public uint dwStyle;
+			public uint dwExStyle;
+			public uint dwWindowStatus;
+			public uint cxWindowBorders;
+			public uint cyWindowBorders;
+			public ushort atomWindowType;
+			public ushort wCreatorVersion;
+
+			public WINDOWINFO(Boolean? filler) : this() {  // Allows automatic initialization of "cbSize" with "new WINDOWINFO(null/true/false)".
+				cbSize = (UInt32)(Marshal.SizeOf(typeof(WINDOWINFO)));
+			}
 		}
 
 		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
@@ -193,6 +228,9 @@ namespace UsAcRe.WindowsSystem {
 
 		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
 		public static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
+
+		[DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+		public static extern int GetWindowTextLength(IntPtr hWnd);
 
 		[DllImport("Kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
 		public static extern UInt32 GetTickCount();
@@ -312,6 +350,18 @@ namespace UsAcRe.WindowsSystem {
 
 		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
 		public static extern IntPtr GetWindow(IntPtr hwnd, uint uCmd);
+
+		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		public static extern IntPtr GetAncestor(IntPtr hwnd, uint gaFlags);
+
+		public delegate bool EnumWindowProc(IntPtr hwnd, IntPtr lParam);
+		[DllImport("user32", CharSet = CharSet.Auto, SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool EnumChildWindows(IntPtr window, EnumWindowProc callback, IntPtr lParam);
+
+		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool GetWindowInfo(IntPtr hwnd, ref WINDOWINFO pwi);
 
 	}
 }
