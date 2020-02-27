@@ -85,7 +85,7 @@
 			this.txtLog.Location = new System.Drawing.Point(0, 25);
 			this.txtLog.Name = "txtLog";
 			this.txtLog.ReadOnly = true;
-			this.txtLog.Size = new System.Drawing.Size(429, 251);
+			this.txtLog.Size = new System.Drawing.Size(429, 75);
 			this.txtLog.TabIndex = 5;
 			this.txtLog.Text = "";
 			// 
@@ -93,7 +93,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(429, 276);
+			this.ClientSize = new System.Drawing.Size(429, 100);
 			this.Controls.Add(this.txtLog);
 			this.Controls.Add(this.toolStrip1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));

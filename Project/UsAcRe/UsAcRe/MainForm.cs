@@ -47,7 +47,7 @@ namespace UsAcRe {
 				WinAPI.POINT pt;
 				WinAPI.POINT prevPoint = new WinAPI.POINT();
 				while(WinAPI.GetCursorPos(out pt) && !stopSearchElement) {
-					if(!pt.WithBoundaries(prevPoint, 20)) {
+					if(!pt.WithBoundaries(prevPoint, 10)) {
 						lastMouseMoved = DateTime.Now;
 						prevPoint = pt;
 						moved = true;
