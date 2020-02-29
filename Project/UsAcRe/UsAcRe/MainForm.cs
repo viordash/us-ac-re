@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
 using NLog.Windows.Forms;
@@ -53,16 +52,16 @@ namespace UsAcRe {
 						moved = true;
 						CloseHighlighter();
 					} else if(moved && (DateTime.Now - lastMouseMoved).TotalMilliseconds >= 500) {
-						var elementFromPoint = new ElementFromPoint(new Point(pt.x, pt.y));
+						try {
+							var elementFromPoint = new ElementFromPoint(pt);
+							BeginInvoke((MethodInvoker)delegate () {
+								CloseHighlighter();
+								elementHighlighter = BoundingRectangleElementHighLighter.CreateInstance(elementFromPoint);
+								elementHighlighter.StartHighlighting();
+							});
 
-						BeginInvoke((MethodInvoker)delegate () {
-							CloseHighlighter();
-
-							elementHighlighter = BoundingRectangleElementHighLighter.CreateInstance(elementFromPoint);
-							elementHighlighter.StartHighlighting();
-						});
-
-						logger.Info(elementFromPoint);
+							logger.Info(elementFromPoint);
+						} catch { }
 						moved = false;
 					}
 				}

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Automation;
 using UsAcRe.Helpers;
@@ -21,7 +20,7 @@ namespace UsAcRe.UIAutomationElement {
 
 		CacheRequest CacheRequest;
 		AutomationElement Element;
-		public Point ElementCoord;
+		public WinAPI.POINT ElementCoord;
 		public int Iterations;
 		public System.Windows.Rect BoundingRectangle {
 			get {
@@ -36,7 +35,7 @@ namespace UsAcRe.UIAutomationElement {
 			}
 		}
 
-		public ElementFromPoint(Point elementCoord) {
+		public ElementFromPoint(WinAPI.POINT elementCoord) {
 			Iterations = 0;
 			ElementCoord = elementCoord;
 			DetermineElementUnderPoint();
@@ -44,19 +43,17 @@ namespace UsAcRe.UIAutomationElement {
 
 		public override string ToString() {
 			if(Element != null) {
-				return string.Format($"{Iterations}| {nameof(ElementFromPoint)} ({ElementCoord.X}, {ElementCoord.Y}). Name: {NamingHelpers.Escape(Element.Current.Name, 50)}, " +
+				return string.Format($"{Iterations}| {nameof(ElementFromPoint)} ({ElementCoord.x}, {ElementCoord.y}). Name: {NamingHelpers.Escape(Element.Current.Name, 50)}, " +
 					$"{Element.Current.ControlType.ProgrammaticName}, {Element.Current.BoundingRectangle}");
 			} else {
-				return string.Format($"{nameof(ElementFromPoint)} ({ElementCoord.X}, {ElementCoord.Y}). No element");
+				return string.Format($"{nameof(ElementFromPoint)} ({ElementCoord.x}, {ElementCoord.y}). No element");
 			}
 		}
 
 		void DetermineElementUnderPoint() {
 			Element = GetElementFromPoint();
-			if(Element != null) {
-				logger.Trace("             DetermineElementUnderPoint 1: {0}; {1}; {2}", NamingHelpers.Escape(Element.Current.AutomationId, 300),
-					Element.Current.ControlType.ProgrammaticName, Element.Current.BoundingRectangle);
-			}
+			logger.Trace("             DetermineElementUnderPoint 1: {0}; {1}; {2}", NamingHelpers.Escape(Element.Current.AutomationId, 300),
+				Element.Current.ControlType.ProgrammaticName, Element.Current.BoundingRectangle);
 		}
 
 
@@ -65,7 +62,7 @@ namespace UsAcRe.UIAutomationElement {
 			Debug.WriteLine("------------------------");
 			Debug.WriteLine("ElementCoord: {0}", ElementCoord);
 			Debug.WriteLine("");
-			var hwnd = WinAPI.WindowFromPoint(new WinAPI.POINT(ElementCoord.X, ElementCoord.Y));
+			var hwnd = WinAPI.WindowFromPoint(new WinAPI.POINT(ElementCoord.x, ElementCoord.y));
 			if(hwnd == IntPtr.Zero) {
 				return null;
 			}
@@ -100,23 +97,28 @@ namespace UsAcRe.UIAutomationElement {
 						return element;
 					}
 				}
-			} catch { }
+			} catch(Exception ex) {
+				if(ex is OperationCanceledException) {
+					throw;
+				}
+			}
 			return rootElement;
 		}
 
 		void RetreiveChildrenUnderPoint(AutomationElement elementUnderPoint, Condition condition, List<AutomationElement> elements) {
+			BreakOperationsIfCoordChanged();
 			var childElements = elementUnderPoint.FindAll(TreeScope.Children, condition);
 			var elementsUnderPoint = childElements.OfType<AutomationElement>()
-				.Where(x => x.Cached.BoundingRectangle.Contains(ElementCoord.X, ElementCoord.Y))
+				.Where(x => x.Cached.BoundingRectangle.Contains(ElementCoord.x, ElementCoord.y))
 				.ToList();
 
 			var outsideOfPoint = childElements.OfType<AutomationElement>()
-				.Where(x => !x.Cached.BoundingRectangle.Contains(ElementCoord.X, ElementCoord.Y));
+				.Where(x => !x.Cached.BoundingRectangle.Contains(ElementCoord.x, ElementCoord.y));
 
 			foreach(var item in outsideOfPoint) {
 				var suspectedElements = item.FindAll(TreeScope.Children, condition);
 				var suspectedElementsUnderPoint = suspectedElements.OfType<AutomationElement>()
-					.Where(x => x.Cached.BoundingRectangle.Contains(ElementCoord.X, ElementCoord.Y))
+					.Where(x => x.Cached.BoundingRectangle.Contains(ElementCoord.x, ElementCoord.y))
 					.Except(elementsUnderPoint)
 					.ToList();
 				if(suspectedElementsUnderPoint.Count > 0) {
@@ -154,12 +156,14 @@ namespace UsAcRe.UIAutomationElement {
 			}
 			int i = 0;
 			do {
+				BreakOperationsIfCoordChanged();
 				var element = elementsUnderPoint[i];
 				var parents = GetChainOfParents(rootElement, element);
 				var parentsInList = elementsUnderPoint
 					.Where(x => parents.Any(p => Automation.Compare(p, x)))
 					.ToList();
 				foreach(var parent in parentsInList) {
+					BreakOperationsIfCoordChanged();
 					elementsUnderPoint.Remove(parent);
 				}
 			} while(++i < elementsUnderPoint.Count);
@@ -186,17 +190,22 @@ namespace UsAcRe.UIAutomationElement {
 					//Debug.WriteLine("{0:X8} z:{1}", hWnd.ToInt32(), z);
 					return z;
 				}
-
 				hwndTmp = WinAPI.GetWindow(hwndTmp, WinAPI.GW_HWNDPREV);
 				z++;
 			}
 			return -1;
 		}
 
-
 		IntPtr GetRootWindow(IntPtr selectedWindow) {
 			var rootHwnd = WinAPI.GetAncestor(selectedWindow, WinAPI.GA_ROOT);
 			return rootHwnd;
+		}
+
+		void BreakOperationsIfCoordChanged() {
+			WinAPI.POINT pt;
+			if(WinAPI.GetCursorPos(out pt) && !pt.WithBoundaries(ElementCoord, 10)) {
+				throw new OperationCanceledException();
+			}
 		}
 	}
 }
