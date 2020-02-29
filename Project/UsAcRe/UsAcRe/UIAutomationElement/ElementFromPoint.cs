@@ -76,44 +76,46 @@ namespace UsAcRe.UIAutomationElement {
 
 			var rootElement = AutomationElement.FromHandle(rootWindowHwnd);
 
-			CacheRequest = new CacheRequest();
-			CacheRequest.Add(AutomationElement.NameProperty);
-			CacheRequest.Add(AutomationElement.BoundingRectangleProperty);
+			try {
+				CacheRequest = new CacheRequest();
+				CacheRequest.Add(AutomationElement.BoundingRectangleProperty);
+				CacheRequest.Add(AutomationElement.NativeWindowHandleProperty);
 
-			using(CacheRequest.Activate()) {
-				var rect = new System.Windows.Rect(0, 0, 0, 0);
-				var condBoundingRectangle = new PropertyCondition(AutomationElement.BoundingRectangleProperty, rect);
-				var condOffscreen = new PropertyCondition(AutomationElement.IsOffscreenProperty, false);
-				var cond = new AndCondition(new NotCondition(condBoundingRectangle), condOffscreen);
-				var elements = rootElement.FindAll(TreeScope.Descendants, cond);
+				using(CacheRequest.Activate()) {
+					var rect = new System.Windows.Rect(0, 0, 0, 0);
+					var condBoundingRectangle = new PropertyCondition(AutomationElement.BoundingRectangleProperty, rect);
+					var condOffscreen = new PropertyCondition(AutomationElement.IsOffscreenProperty, false);
+					var cond = new AndCondition(new NotCondition(condBoundingRectangle), condOffscreen);
+					var elements = rootElement.FindAll(TreeScope.Descendants, cond);
 
-				Debug.WriteLine("elements: {0}", elements.Count);
+					Debug.WriteLine("elements: {0}", elements.Count);
 
-				var elementsUnderPoint = elements.OfType<AutomationElement>()
-					.Where(x => x.Current.BoundingRectangle.Contains(ElementCoord.X, ElementCoord.Y))
-					.ToList();
+					var elementsUnderPoint = elements.OfType<AutomationElement>()
+						.Where(x => x.Cached.BoundingRectangle.Contains(ElementCoord.X, ElementCoord.Y))
+						.ToList();
 
-				Debug.WriteLine("elementsUnderPoint: {0}", elementsUnderPoint.Count());
+					Debug.WriteLine("elementsUnderPoint: {0}", elementsUnderPoint.Count());
 
-				RemoveParents(rootElement, elementsUnderPoint);
+					RemoveParents(rootElement, elementsUnderPoint);
 
-				var element = elementsUnderPoint
-					.OrderByDescending(x => GetZOrder(x))
-					.ThenBy(x => x.Current.BoundingRectangle, new BoundingRectangleComp())
-					.FirstOrDefault();
+					var element = elementsUnderPoint
+						.OrderByDescending(x => GetZOrder(x))
+						.ThenBy(x => x.Cached.BoundingRectangle, new BoundingRectangleComp())
+						.FirstOrDefault();
 
-				if(element != null) {
-					return element;
-				} else {
-					return rootElement;
+					if(element != null) {
+						return element;
+					}
+
 				}
-			}
+			} catch { }
+			return rootElement;
 		}
 
 		IEnumerable<AutomationElement> GetChainOfParents(AutomationElement rootElement, AutomationElement element) {
 			var list = new List<AutomationElement>();
 			do {
-				element = TreeWalker.RawViewWalker.GetParent(element);
+				element = TreeWalker.RawViewWalker.GetParent(element, CacheRequest);
 				list.Add(element);
 			} while(element != null && !Automation.Compare(rootElement, element));
 
@@ -141,7 +143,7 @@ namespace UsAcRe.UIAutomationElement {
 			if(element == null) {
 				return -1;
 			}
-			var hWnd = new IntPtr(element.Current.NativeWindowHandle);
+			var hWnd = new IntPtr(element.Cached.NativeWindowHandle);
 			if(hWnd == IntPtr.Zero) {
 				var parentEl = TreeWalker.RawViewWalker.GetParent(element, CacheRequest);
 				return GetZOrder(parentEl);
