@@ -90,7 +90,7 @@ namespace UsAcRe.UIAutomationElement {
 					RetreiveChildrenUnderPoint(rootElement, cond, elementsUnderPoint);
 					RemoveParents(rootElement, elementsUnderPoint);
 					var element = elementsUnderPoint
-						.OrderByDescending(x => GetZOrder(x))
+						.OrderByDescending(x => GetZOrder(rootElement, x))
 						.ThenBy(x => x.Cached.BoundingRectangle, new BoundingRectangleComp())
 						.FirstOrDefault();
 
@@ -176,31 +176,16 @@ namespace UsAcRe.UIAutomationElement {
 			} while(++i < elementsUnderPoint.Count);
 		}
 
-		int GetZOrder(AutomationElement element) {
+		int GetZOrder(AutomationElement rootElement, AutomationElement element) {
 			if(element == null) {
 				return -1;
 			}
-			var hWnd = new IntPtr(element.Cached.NativeWindowHandle);
-			if(hWnd == IntPtr.Zero) {
-				var parentEl = TreeWalker.RawViewWalker.GetParent(element, CacheRequest);
-				return GetZOrder(parentEl);
-			}
-			return GetZOrder(hWnd);
-		}
-
-		int GetZOrder(IntPtr hWnd) {
-			var lowestHwnd = WinAPI.GetWindow(hWnd, WinAPI.GW_HWNDLAST);
 			var z = 0;
-			var hwndTmp = lowestHwnd;
-			while(hwndTmp != IntPtr.Zero) {
-				if(hWnd == hwndTmp) {
-					//Debug.WriteLine("{0:X8} z:{1}", hWnd.ToInt32(), z);
-					return z;
-				}
-				hwndTmp = WinAPI.GetWindow(hwndTmp, WinAPI.GW_HWNDPREV);
+			while(element != rootElement) {
+				element = TreeWalker.RawViewWalker.GetParent(element, CacheRequest);
 				z++;
 			}
-			return -1;
+			return z;
 		}
 
 		IntPtr GetRootWindow(IntPtr selectedWindow) {
