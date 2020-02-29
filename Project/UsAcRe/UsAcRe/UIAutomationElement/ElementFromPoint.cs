@@ -59,6 +59,7 @@ namespace UsAcRe.UIAutomationElement {
 			}
 		}
 
+
 		AutomationElement GetElementFromPoint() {
 			Debug.WriteLine("");
 			Debug.WriteLine("------------------------");
@@ -86,18 +87,10 @@ namespace UsAcRe.UIAutomationElement {
 					var condBoundingRectangle = new PropertyCondition(AutomationElement.BoundingRectangleProperty, rect);
 					var condOffscreen = new PropertyCondition(AutomationElement.IsOffscreenProperty, false);
 					var cond = new AndCondition(new NotCondition(condBoundingRectangle), condOffscreen);
-					var elements = rootElement.FindAll(TreeScope.Descendants, cond);
 
-					Debug.WriteLine("elements: {0}", elements.Count);
-
-					var elementsUnderPoint = elements.OfType<AutomationElement>()
-						.Where(x => x.Cached.BoundingRectangle.Contains(ElementCoord.X, ElementCoord.Y))
-						.ToList();
-
-					Debug.WriteLine("elementsUnderPoint: {0}", elementsUnderPoint.Count());
-
+					var elementsUnderPoint = new List<AutomationElement>();
+					RetreiveChildrenUnderPoint(rootElement, cond, elementsUnderPoint);
 					RemoveParents(rootElement, elementsUnderPoint);
-
 					var element = elementsUnderPoint
 						.OrderByDescending(x => GetZOrder(x))
 						.ThenBy(x => x.Cached.BoundingRectangle, new BoundingRectangleComp())
@@ -106,10 +99,43 @@ namespace UsAcRe.UIAutomationElement {
 					if(element != null) {
 						return element;
 					}
-
 				}
 			} catch { }
 			return rootElement;
+		}
+
+		void RetreiveChildrenUnderPoint(AutomationElement elementUnderPoint, Condition condition, List<AutomationElement> elements) {
+			var childElements = elementUnderPoint.FindAll(TreeScope.Children, condition);
+			var elementsUnderPoint = childElements.OfType<AutomationElement>()
+				.Where(x => x.Cached.BoundingRectangle.Contains(ElementCoord.X, ElementCoord.Y))
+				.ToList();
+
+			var outsideOfPoint = childElements.OfType<AutomationElement>()
+				.Where(x => !x.Cached.BoundingRectangle.Contains(ElementCoord.X, ElementCoord.Y));
+
+			foreach(var item in outsideOfPoint) {
+				var suspectedElements = item.FindAll(TreeScope.Children, condition);
+				var suspectedElementsUnderPoint = suspectedElements.OfType<AutomationElement>()
+					.Where(x => x.Cached.BoundingRectangle.Contains(ElementCoord.X, ElementCoord.Y))
+					.Except(elementsUnderPoint)
+					.ToList();
+				if(suspectedElementsUnderPoint.Count > 0) {
+					elementsUnderPoint.AddRange(suspectedElementsUnderPoint);
+					Debug.WriteLine("		suspected: {0} {1} '{2}', childs: {3}", NamingHelpers.Escape(item.Current.AutomationId, 300),
+						item.Current.ClassName, item.Current.ControlType.ProgrammaticName, suspectedElementsUnderPoint.Count());
+				}
+			}
+
+			Debug.WriteLine("elementsUnderPoint: {0} {1} '{2}' '{3}', childs: {4}", NamingHelpers.Escape(elementUnderPoint.Current.Name, 300),
+					NamingHelpers.Escape(elementUnderPoint.Current.AutomationId, 300), elementUnderPoint.Current.ClassName,
+					elementUnderPoint.Current.ControlType.ProgrammaticName, elementsUnderPoint.Count());
+
+			if(elementsUnderPoint.Count > 0) {
+				elements.AddRange(elementsUnderPoint);
+				foreach(var item in elementsUnderPoint) {
+					RetreiveChildrenUnderPoint(item, condition, elements);
+				}
+			}
 		}
 
 		IEnumerable<AutomationElement> GetChainOfParents(AutomationElement rootElement, AutomationElement element) {
