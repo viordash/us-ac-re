@@ -119,10 +119,12 @@ namespace UsAcRe.UIAutomationElement {
 			foreach(var item in outsideOfPoint) {
 				AutomationElementCollection suspectedElements;
 				var controlType = item.Cached.ControlType;
-				if(controlType != ControlType.Tree && controlType != ControlType.TreeItem) {
+				if(elementsUnderPoint.Count > 0
+					|| (controlType != ControlType.Tree && controlType != ControlType.TreeItem)) {
 					suspectedElements = item.FindAll(TreeScope.Children, condition);
 				} else {
 					suspectedElements = item.FindAll(TreeScope.Descendants, condition);
+					Debug.WriteLine("				TreeItem {0}", elementsUnderPoint.Count);
 				}
 				var suspectedElementsUnderPoint = suspectedElements.OfType<AutomationElement>()
 					.Where(x => x.Cached.BoundingRectangle.Contains(ElementCoord.x, ElementCoord.y))
