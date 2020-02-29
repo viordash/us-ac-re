@@ -78,6 +78,7 @@ namespace UsAcRe.UIAutomationElement {
 				CacheRequest = new CacheRequest();
 				CacheRequest.Add(AutomationElement.BoundingRectangleProperty);
 				CacheRequest.Add(AutomationElement.NativeWindowHandleProperty);
+				CacheRequest.Add(AutomationElement.ControlTypeProperty);
 
 				using(CacheRequest.Activate()) {
 					var rect = new System.Windows.Rect(0, 0, 0, 0);
@@ -116,7 +117,13 @@ namespace UsAcRe.UIAutomationElement {
 				.Where(x => !x.Cached.BoundingRectangle.Contains(ElementCoord.x, ElementCoord.y));
 
 			foreach(var item in outsideOfPoint) {
-				var suspectedElements = item.FindAll(TreeScope.Children, condition);
+				AutomationElementCollection suspectedElements;
+				var controlType = item.Cached.ControlType;
+				if(controlType != ControlType.Tree && controlType != ControlType.TreeItem) {
+					suspectedElements = item.FindAll(TreeScope.Children, condition);
+				} else {
+					suspectedElements = item.FindAll(TreeScope.Descendants, condition);
+				}
 				var suspectedElementsUnderPoint = suspectedElements.OfType<AutomationElement>()
 					.Where(x => x.Cached.BoundingRectangle.Contains(ElementCoord.x, ElementCoord.y))
 					.Except(elementsUnderPoint)
