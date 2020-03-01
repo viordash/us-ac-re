@@ -90,7 +90,8 @@ namespace UsAcRe.UIAutomationElement {
 					RetreiveChildrenUnderPoint(rootElement, cond, elementsUnderPoint);
 					RemoveParents(rootElement, elementsUnderPoint);
 					var element = elementsUnderPoint
-						.OrderByDescending(x => GetZOrder(rootElement, x))
+						.OrderByDescending(x => GetTreeOrder(rootElement, x))
+						.ThenByDescending(x => GetZOrder(x))
 						.ThenBy(x => x.Cached.BoundingRectangle, new BoundingRectangleComp())
 						.FirstOrDefault();
 
@@ -178,21 +179,70 @@ namespace UsAcRe.UIAutomationElement {
 			} while(++i < elementsUnderPoint.Count);
 		}
 
-		int GetZOrder(AutomationElement rootElement, AutomationElement element) {
+		int GetTreeOrder(AutomationElement rootElement, AutomationElement element) {
 			if(element == null) {
 				return -1;
 			}
+			var _element = element;
 			var z = 0;
-			while(element != rootElement) {
+			while(!CompareElements(rootElement, element)) {
+				var leftRuntimeId = element.GetRuntimeId();
 				element = TreeWalker.RawViewWalker.GetParent(element, CacheRequest);
 				z++;
 			}
+
+			Debug.WriteLine("GetTreeOrder: {0} {1} '{2}' '{3}', z: {4}", NamingHelpers.Escape(_element.Current.Name, 300),
+					NamingHelpers.Escape(_element.Current.AutomationId, 300), _element.Current.ClassName,
+					_element.Current.ControlType.ProgrammaticName, z);
 			return z;
+		}
+
+		int GetZOrder(AutomationElement element) {
+			if(element == null) {
+				return int.MaxValue;
+			}
+			var hWnd = new IntPtr(element.Cached.NativeWindowHandle);
+			if(hWnd == IntPtr.Zero) {
+				return int.MaxValue;
+			}
+			var lowestHwnd = WinAPI.GetWindow(hWnd, WinAPI.GW_HWNDLAST);
+			var hwndTmp = lowestHwnd;
+			int z = 0;
+			while(hwndTmp != IntPtr.Zero) {
+				if(hWnd == hwndTmp) {
+					Debug.WriteLine("GetZOrder: {0} {1} '{2}' '{3}', z: {4}", NamingHelpers.Escape(element.Current.Name, 300),
+							NamingHelpers.Escape(element.Current.AutomationId, 300), element.Current.ClassName,
+							element.Current.ControlType.ProgrammaticName, z);
+					return z;
+				}
+				hwndTmp = WinAPI.GetWindow(hwndTmp, WinAPI.GW_HWNDPREV);
+				z++;
+			}
+			return int.MaxValue;
 		}
 
 		IntPtr GetRootWindow(IntPtr selectedWindow) {
 			var rootHwnd = WinAPI.GetAncestor(selectedWindow, WinAPI.GA_ROOT);
 			return rootHwnd;
+		}
+
+		bool CompareElements(AutomationElement left, AutomationElement right) {
+			if(object.Equals(left, null)) {
+				return (object.Equals(right, null));
+			}
+			if(object.Equals(right, null)) {
+				return (object.Equals(left, null));
+			}
+
+			if(left.Current.BoundingRectangle == right.Current.BoundingRectangle
+				&& left.Current.ControlType == right.Current.ControlType
+				&& left.Current.Name == right.Current.Name
+				&& left.Current.AutomationId == right.Current.AutomationId) {
+				var leftRuntimeId = left.GetRuntimeId();
+				var rightRuntimeId = right.GetRuntimeId();
+				return leftRuntimeId.Length != rightRuntimeId.Length || leftRuntimeId.SequenceEqual(rightRuntimeId);
+			}
+			return false;
 		}
 
 		void BreakOperationsIfCoordChanged() {
