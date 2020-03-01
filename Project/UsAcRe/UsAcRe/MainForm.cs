@@ -53,7 +53,7 @@ namespace UsAcRe {
 						CloseHighlighter();
 					} else if(moved && (DateTime.Now - lastMouseMoved).TotalMilliseconds >= 500) {
 						try {
-							var elementFromPoint = new ElementFromPoint(pt);
+							var elementFromPoint = new ElementFromPoint(pt, false);
 							BeginInvoke((MethodInvoker)delegate () {
 								CloseHighlighter();
 								elementHighlighter = BoundingRectangleElementHighLighter.CreateInstance(elementFromPoint);

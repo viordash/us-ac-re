@@ -21,7 +21,8 @@ namespace UsAcRe.UIAutomationElement {
 		CacheRequest CacheRequest;
 		AutomationElement Element;
 		public WinAPI.POINT ElementCoord;
-		public int Iterations;
+		bool detailedSearch;
+
 		public System.Windows.Rect BoundingRectangle {
 			get {
 				try {
@@ -35,15 +36,15 @@ namespace UsAcRe.UIAutomationElement {
 			}
 		}
 
-		public ElementFromPoint(WinAPI.POINT elementCoord) {
-			Iterations = 0;
+		public ElementFromPoint(WinAPI.POINT elementCoord, bool detailedSearch) {
 			ElementCoord = elementCoord;
+			this.detailedSearch = detailedSearch;
 			DetermineElementUnderPoint();
 		}
 
 		public override string ToString() {
 			if(Element != null) {
-				return string.Format($"{Iterations}| {nameof(ElementFromPoint)} ({ElementCoord.x}, {ElementCoord.y}). Name: {NamingHelpers.Escape(Element.Current.Name, 50)}, " +
+				return string.Format($"{nameof(ElementFromPoint)} ({ElementCoord.x}, {ElementCoord.y}). Name: {NamingHelpers.Escape(Element.Current.Name, 50)}, " +
 					$"{Element.Current.ControlType.ProgrammaticName}, {Element.Current.BoundingRectangle}");
 			} else {
 				return string.Format($"{nameof(ElementFromPoint)} ({ElementCoord.x}, {ElementCoord.y}). No element");
@@ -62,7 +63,15 @@ namespace UsAcRe.UIAutomationElement {
 			Debug.WriteLine("------------------------");
 			Debug.WriteLine("ElementCoord: {0}", ElementCoord);
 			Debug.WriteLine("");
-			var hwnd = WinAPI.WindowFromPoint(new WinAPI.POINT(ElementCoord.x, ElementCoord.y));
+
+			if(!detailedSearch) {
+				try {
+					var elementWithPoint = AutomationElement.FromPoint(new System.Windows.Point(ElementCoord.x, ElementCoord.y));
+					return elementWithPoint;
+				} catch { }
+			}
+
+			var hwnd = WinAPI.WindowFromPoint(ElementCoord);
 			if(hwnd == IntPtr.Zero) {
 				return null;
 			}
