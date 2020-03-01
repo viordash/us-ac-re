@@ -31,6 +31,8 @@
 			this.miClearLog = new System.Windows.Forms.ToolStripMenuItem();
 			this.miCopyLog = new System.Windows.Forms.ToolStripMenuItem();
 			this.txtLog = new System.Windows.Forms.RichTextBox();
+			this.chDetailedSearching = new System.Windows.Forms.ToolStripButton();
+			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStrip1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
 			this.SuspendLayout();
@@ -38,7 +40,9 @@
 			// toolStrip1
 			// 
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.btnStart});
+            this.btnStart,
+            this.toolStripSeparator1,
+            this.chDetailedSearching});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip1.Name = "toolStrip1";
 			this.toolStrip1.Size = new System.Drawing.Size(429, 25);
@@ -89,6 +93,21 @@
 			this.txtLog.TabIndex = 5;
 			this.txtLog.Text = "";
 			// 
+			// chDetailedSearching
+			// 
+			this.chDetailedSearching.CheckOnClick = true;
+			this.chDetailedSearching.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.chDetailedSearching.Image = ((System.Drawing.Image)(resources.GetObject("chDetailedSearching.Image")));
+			this.chDetailedSearching.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.chDetailedSearching.Name = "chDetailedSearching";
+			this.chDetailedSearching.Size = new System.Drawing.Size(106, 22);
+			this.chDetailedSearching.Text = "DetailedSearching";
+			// 
+			// toolStripSeparator1
+			// 
+			this.toolStripSeparator1.Name = "toolStripSeparator1";
+			this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -117,6 +136,8 @@
 		private System.Windows.Forms.ToolStripMenuItem miClearLog;
 		private System.Windows.Forms.ToolStripMenuItem miCopyLog;
 		private System.Windows.Forms.RichTextBox txtLog;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private System.Windows.Forms.ToolStripButton chDetailedSearching;
 	}
 }
 
