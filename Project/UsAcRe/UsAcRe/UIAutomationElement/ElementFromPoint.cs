@@ -72,7 +72,7 @@ namespace UsAcRe.UIAutomationElement {
 				return null;
 			}
 
-			var rootElement = AutomationElement.FromHandle(rootWindowHwnd);
+			var _rootElement = AutomationElement.FromHandle(rootWindowHwnd);
 
 			try {
 				CacheRequest = new CacheRequest();
@@ -87,6 +87,8 @@ namespace UsAcRe.UIAutomationElement {
 					var cond = new AndCondition(new NotCondition(condBoundingRectangle), condOffscreen);
 
 					var elementsUnderPoint = new List<AutomationElement>();
+					var rootElement = TreeWalker.RawViewWalker.Normalize(_rootElement, CacheRequest);
+
 					RetreiveChildrenUnderPoint(rootElement, cond, elementsUnderPoint);
 					RemoveParents(rootElement, elementsUnderPoint);
 					var element = elementsUnderPoint
@@ -104,12 +106,12 @@ namespace UsAcRe.UIAutomationElement {
 					throw;
 				}
 			}
-			return rootElement;
+			return _rootElement;
 		}
 
 		void RetreiveChildrenUnderPoint(AutomationElement elementUnderPoint, Condition condition, List<AutomationElement> elements) {
 			BreakOperationsIfCoordChanged();
-			var childElements = elementUnderPoint.FindAll(TreeScope.Children, condition);
+			var childElements = GetChildren(elementUnderPoint, condition);
 			var elementsUnderPoint = childElements.OfType<AutomationElement>()
 				.Where(x => x.Cached.BoundingRectangle.Contains(ElementCoord.x, ElementCoord.y))
 				.ToList();
@@ -118,15 +120,8 @@ namespace UsAcRe.UIAutomationElement {
 				.Where(x => !x.Cached.BoundingRectangle.Contains(ElementCoord.x, ElementCoord.y));
 
 			foreach(var item in outsideOfPoint) {
-				AutomationElementCollection suspectedElements;
-				var controlType = item.Cached.ControlType;
-				if(elementsUnderPoint.Count > 0
-					|| (controlType != ControlType.Tree && controlType != ControlType.TreeItem)) {
-					suspectedElements = item.FindAll(TreeScope.Children, condition);
-				} else {
-					suspectedElements = item.FindAll(TreeScope.Descendants, condition);
-					Debug.WriteLine("				TreeItem {0}", elementsUnderPoint.Count);
-				}
+				var suspectedElements = GetChildren(item, condition);
+
 				var suspectedElementsUnderPoint = suspectedElements.OfType<AutomationElement>()
 					.Where(x => x.Cached.BoundingRectangle.Contains(ElementCoord.x, ElementCoord.y))
 					.Except(elementsUnderPoint)
@@ -147,6 +142,15 @@ namespace UsAcRe.UIAutomationElement {
 				foreach(var item in elementsUnderPoint) {
 					RetreiveChildrenUnderPoint(item, condition, elements);
 				}
+			}
+		}
+
+		AutomationElementCollection GetChildren(AutomationElement element, Condition condition) {
+			var controlType = element.Cached.ControlType;
+			if(controlType == ControlType.Tree || controlType == ControlType.TreeItem) {
+				return element.FindAll(TreeScope.Descendants, condition);
+			} else {
+				return element.FindAll(TreeScope.Children, condition);
 			}
 		}
 
@@ -185,15 +189,15 @@ namespace UsAcRe.UIAutomationElement {
 			}
 			var _element = element;
 			var z = 0;
-			while(!CompareElements(rootElement, element)) {
+			while(!CompareElements(rootElement, _element)) {
 				var leftRuntimeId = element.GetRuntimeId();
-				element = TreeWalker.RawViewWalker.GetParent(element, CacheRequest);
+				_element = TreeWalker.RawViewWalker.GetParent(_element, CacheRequest);
 				z++;
 			}
 
-			Debug.WriteLine("GetTreeOrder: {0} {1} '{2}' '{3}', z: {4}", NamingHelpers.Escape(_element.Current.Name, 300),
-					NamingHelpers.Escape(_element.Current.AutomationId, 300), _element.Current.ClassName,
-					_element.Current.ControlType.ProgrammaticName, z);
+			Debug.WriteLine("GetTreeOrder: {0} {1} '{2}' '{3}', z: {4}", NamingHelpers.Escape(element.Current.Name, 300),
+					NamingHelpers.Escape(element.Current.AutomationId, 300), element.Current.ClassName,
+					element.Current.ControlType.ProgrammaticName, z);
 			return z;
 		}
 
