@@ -4,6 +4,9 @@ using System.Text;
 namespace UsAcRe.Helpers {
 	public class NamingHelpers {
 		public static string Escape(string name, int maxLen) {
+			if(string.IsNullOrEmpty(name)) {
+				return null;
+			}
 			var sb = new StringBuilder(name, 0, Math.Min(name.Length, maxLen), 0);
 			for(int i = 0; i < sb.Length; i++) {
 				var ch = sb[i];
