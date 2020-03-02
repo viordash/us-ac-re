@@ -10,7 +10,7 @@ namespace UsAcRe.Services {
 		AutomationElement FromPoint(System.Windows.Point pt);
 		AutomationElement FromHandle(IntPtr hwnd);
 		AutomationElementCollection FindAll(AutomationElement element, TreeScope scope, Condition condition);
-		AutomationElement GetParent(AutomationElement element, CacheRequest cacheRequest);
+		AutomationElement GetParent(AutomationElement element);
 
 		bool Compare(AutomationElement left, AutomationElement right);
 		string BuildFriendlyInfo(AutomationElement element);
@@ -36,8 +36,8 @@ namespace UsAcRe.Services {
 			return element.FindAll(scope, condition);
 		}
 
-		public AutomationElement GetParent(AutomationElement element, CacheRequest cacheRequest) {
-			return TreeWalker.RawViewWalker.GetParent(element, cacheRequest);
+		public AutomationElement GetParent(AutomationElement element) {
+			return TreeWalker.RawViewWalker.GetParent(element);
 		}
 
 		public string BuildFriendlyInfo(AutomationElement element) {
