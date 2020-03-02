@@ -17,6 +17,8 @@ namespace UsAcRe {
 				(sender, args) => HandleUnhandledException(args.Exception);
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
+
+			Bootstrapper.Initialize();
 			Application.Run(new MainForm());
 		}
 

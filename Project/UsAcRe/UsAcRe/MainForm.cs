@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Threading;
 using System.Windows.Forms;
+using CommonServiceLocator;
 using NLog.Windows.Forms;
 using UsAcRe.Highlighter;
+using UsAcRe.Services;
 using UsAcRe.UIAutomationElement;
 using UsAcRe.WindowsSystem;
 
@@ -11,6 +13,9 @@ namespace UsAcRe {
 		NLog.Logger logger;
 		bool stopSearchElement;
 		ElementHighlighter elementHighlighter = null;
+
+		IAutomationElementService AutomationElementService { get { return ServiceLocator.Current.GetInstance<IAutomationElementService>(); } }
+		IWinApiService WinApiService { get { return ServiceLocator.Current.GetInstance<IWinApiService>(); } }
 
 		public MainForm() {
 			InitializeComponent();
@@ -43,9 +48,9 @@ namespace UsAcRe {
 			new Thread(delegate () {
 				var lastMouseMoved = DateTime.Now;
 				bool moved = false;
-				WinAPI.POINT pt;
-				WinAPI.POINT prevPoint = new WinAPI.POINT();
-				while(WinAPI.GetCursorPos(out pt) && !stopSearchElement) {
+				var prevPoint = new WinAPI.POINT();
+				while(!stopSearchElement) {
+					var pt = WinApiService.GetMousePosition();
 					if(!pt.WithBoundaries(prevPoint, 10)) {
 						lastMouseMoved = DateTime.Now;
 						prevPoint = pt;
@@ -53,7 +58,7 @@ namespace UsAcRe {
 						CloseHighlighter();
 					} else if(moved && (DateTime.Now - lastMouseMoved).TotalMilliseconds >= 500) {
 						try {
-							var elementFromPoint = new ElementFromPoint(pt, chDetailedSearching.Checked);
+							var elementFromPoint = new ElementFromPoint(AutomationElementService, WinApiService, pt, chDetailedSearching.Checked);
 							BeginInvoke((MethodInvoker)delegate () {
 								CloseHighlighter();
 								elementHighlighter = BoundingRectangleElementHighLighter.CreateInstance(elementFromPoint);

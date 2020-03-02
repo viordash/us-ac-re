@@ -105,6 +105,8 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\AutomationElementService.cs" />
+    <Compile Include="Services\WinApiService.cs" />
     <Compile Include="WindowsSystem\VirtualKeyCodes.cs" />
     <Compile Include="WindowsSystem\WinAPI.cs" />
     <Compile Include="WindowsSystem\WindowsMessages.cs" />
