@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows.Automation;
 using NGuard;
-using UsAcRe.Helpers;
 using UsAcRe.Services;
 using UsAcRe.WindowsSystem;
 
@@ -25,13 +24,13 @@ namespace UsAcRe.UIAutomationElement {
 		readonly WinAPI.POINT elementCoord;
 		readonly bool detailedSearch;
 
-		AutomationElement specificElement;
+		UiElement specificElement;
 
 		public System.Windows.Rect BoundingRectangle {
 			get {
 				try {
 					if(specificElement != null) {
-						return specificElement.Current.BoundingRectangle;
+						return specificElement.BoundingRectangle;
 					}
 				} catch(Exception ex) {
 					logger.Error(ex);
@@ -57,8 +56,7 @@ namespace UsAcRe.UIAutomationElement {
 
 		public override string ToString() {
 			if(specificElement != null) {
-				return string.Format($"{nameof(ElementFromPoint)} ({elementCoord.x}, {elementCoord.y}). Name: {NamingHelpers.Escape(specificElement.Current.Name, 50)}, " +
-					$"{specificElement.Current.ControlType.ProgrammaticName}, {specificElement.Current.BoundingRectangle}");
+				return string.Format($"{nameof(ElementFromPoint)} ({elementCoord.x}, {elementCoord.y}). {specificElement}");
 			} else {
 				return string.Format($"{nameof(ElementFromPoint)} ({elementCoord.x}, {elementCoord.y}). No element");
 			}
@@ -66,11 +64,12 @@ namespace UsAcRe.UIAutomationElement {
 
 		void DetermineElementUnderPoint() {
 			specificElement = GetElementFromPoint();
-			logger.Trace("             DetermineElementUnderPoint 1: {0}; {1}", automationElementService.BuildFriendlyInfo(specificElement), specificElement.Current.BoundingRectangle);
+			logger.Trace("             DetermineElementUnderPoint 1: {0}; {1}", specificElement, specificElement.BoundingRectangle);
 		}
 
 
-		AutomationElement GetElementFromPoint() {
+
+		UiElement GetElementFromPoint() {
 			Debug.WriteLine("");
 			Debug.WriteLine("------------------------");
 			Debug.WriteLine("ElementCoord: {0}", elementCoord);
@@ -83,12 +82,7 @@ namespace UsAcRe.UIAutomationElement {
 				} catch { }
 			}
 
-			var hwnd = winApiService.GetWindow(elementCoord);
-			if(hwnd == IntPtr.Zero) {
-				return null;
-			}
-
-			var rootWindowHwnd = GetRootWindow(hwnd);
+			var rootWindowHwnd = winApiService.GetRootWindowForElementUnderPoint(elementCoord);
 			if(rootWindowHwnd == IntPtr.Zero) {
 				return null;
 			}
@@ -100,14 +94,14 @@ namespace UsAcRe.UIAutomationElement {
 			var cond = new AndCondition(new NotCondition(condBoundingRectangle), condOffscreen);
 
 			try {
-				var elementsUnderPoint = new List<AutomationElement>();
+				var elementsUnderPoint = new List<UiElement>();
 
 				RetreiveChildrenUnderPoint(rootElement, cond, elementsUnderPoint);
 				RemoveParents(rootElement, elementsUnderPoint);
 				var element = elementsUnderPoint
 					.OrderByDescending(x => GetTreeOrder(rootElement, x))
 					.ThenByDescending(x => GetZOrder(x))
-					.ThenBy(x => x.Current.BoundingRectangle, new BoundingRectangleComp())
+					.ThenBy(x => x.BoundingRectangle, new BoundingRectangleComp())
 					.FirstOrDefault();
 
 				if(element != null) {
@@ -122,30 +116,30 @@ namespace UsAcRe.UIAutomationElement {
 			return rootElement;
 		}
 
-		void RetreiveChildrenUnderPoint(AutomationElement elementUnderPoint, Condition condition, List<AutomationElement> elements) {
+		void RetreiveChildrenUnderPoint(UiElement elementUnderPoint, Condition condition, List<UiElement> elements) {
 			BreakOperationsIfCoordChanged();
 			var childElements = GetChildren(elementUnderPoint, condition);
-			var elementsUnderPoint = childElements.OfType<AutomationElement>()
-				.Where(x => x.Current.BoundingRectangle.Contains(elementCoord.x, elementCoord.y))
+			var elementsUnderPoint = childElements
+				.Where(x => x.BoundingRectangle.Contains(elementCoord.x, elementCoord.y))
 				.ToList();
 
-			var outsideOfPoint = childElements.OfType<AutomationElement>()
-				.Where(x => !x.Current.BoundingRectangle.Contains(elementCoord.x, elementCoord.y));
+			var outsideOfPoint = childElements
+				.Where(x => !x.BoundingRectangle.Contains(elementCoord.x, elementCoord.y));
 
 			foreach(var item in outsideOfPoint) {
 				var suspectedElements = GetChildren(item, condition);
 
-				var suspectedElementsUnderPoint = suspectedElements.OfType<AutomationElement>()
-					.Where(x => x.Current.BoundingRectangle.Contains(elementCoord.x, elementCoord.y))
+				var suspectedElementsUnderPoint = suspectedElements
+					.Where(x => x.BoundingRectangle.Contains(elementCoord.x, elementCoord.y))
 					.Except(elementsUnderPoint)
 					.ToList();
 				if(suspectedElementsUnderPoint.Count > 0) {
 					elementsUnderPoint.AddRange(suspectedElementsUnderPoint);
-					Debug.WriteLine("		suspected: {0}, childs: {1}", automationElementService.BuildFriendlyInfo(item), suspectedElementsUnderPoint.Count());
+					Debug.WriteLine("		suspected: {0}, childs: {1}", item, suspectedElementsUnderPoint.Count());
 				}
 			}
 
-			Debug.WriteLine("elementsUnderPoint: {0}, childs: {1}", automationElementService.BuildFriendlyInfo(elementUnderPoint), elementsUnderPoint.Count());
+			Debug.WriteLine("elementsUnderPoint: {0}, childs: {1}", elementUnderPoint, elementsUnderPoint.Count());
 
 			if(elementsUnderPoint.Count > 0) {
 				elements.AddRange(elementsUnderPoint);
@@ -155,8 +149,8 @@ namespace UsAcRe.UIAutomationElement {
 			}
 		}
 
-		AutomationElementCollection GetChildren(AutomationElement element, Condition condition) {
-			var controlType = element.Current.ControlType;
+		List<UiElement> GetChildren(UiElement element, Condition condition) {
+			var controlType = ControlType.LookupById(element.ControlTypeId);
 			if(controlType == ControlType.Tree || controlType == ControlType.TreeItem) {
 				return automationElementService.FindAll(element, TreeScope.Descendants, condition);
 			} else {
@@ -164,8 +158,8 @@ namespace UsAcRe.UIAutomationElement {
 			}
 		}
 
-		IEnumerable<AutomationElement> GetChainOfParents(AutomationElement rootElement, AutomationElement element) {
-			var list = new List<AutomationElement>();
+		IEnumerable<UiElement> GetChainOfParents(UiElement rootElement, UiElement element) {
+			var list = new List<UiElement>();
 			do {
 				element = automationElementService.GetParent(element);
 				list.Add(element);
@@ -174,7 +168,7 @@ namespace UsAcRe.UIAutomationElement {
 			return list;
 		}
 
-		void RemoveParents(AutomationElement rootElement, IList<AutomationElement> elementsUnderPoint) {
+		void RemoveParents(UiElement rootElement, IList<UiElement> elementsUnderPoint) {
 			if(elementsUnderPoint == null || elementsUnderPoint.Count == 0) {
 				return;
 			}
@@ -184,7 +178,7 @@ namespace UsAcRe.UIAutomationElement {
 				var element = elementsUnderPoint[i];
 				var parents = GetChainOfParents(rootElement, element);
 				var parentsInList = elementsUnderPoint
-					.Where(x => parents.Any(p => Automation.Compare(p, x)))
+					.Where(x => parents.Any(p => automationElementService.Compare(p, x)))
 					.ToList();
 				foreach(var parent in parentsInList) {
 					BreakOperationsIfCoordChanged();
@@ -193,7 +187,7 @@ namespace UsAcRe.UIAutomationElement {
 			} while(++i < elementsUnderPoint.Count);
 		}
 
-		int GetTreeOrder(AutomationElement rootElement, AutomationElement element) {
+		int GetTreeOrder(UiElement rootElement, UiElement element) {
 			if(element == null) {
 				return -1;
 			}
@@ -204,15 +198,15 @@ namespace UsAcRe.UIAutomationElement {
 				z++;
 			}
 
-			Debug.WriteLine("GetTreeOrder: {0}, z: {1}", automationElementService.BuildFriendlyInfo(element), z);
+			Debug.WriteLine("GetTreeOrder: {0}, z: {1}", element, z);
 			return z;
 		}
 
-		int GetZOrder(AutomationElement element) {
+		int GetZOrder(UiElement element) {
 			if(element == null) {
 				return int.MaxValue;
 			}
-			var hWnd = new IntPtr(element.Current.NativeWindowHandle);
+			var hWnd = automationElementService.GetNativeWindowHandle(element);
 			if(hWnd == IntPtr.Zero) {
 				return int.MaxValue;
 			}
@@ -221,18 +215,13 @@ namespace UsAcRe.UIAutomationElement {
 			int z = 0;
 			while(hwndTmp != IntPtr.Zero) {
 				if(hWnd == hwndTmp) {
-					Debug.WriteLine("GetZOrder: {0}, z: {1}", automationElementService.BuildFriendlyInfo(element), z);
+					Debug.WriteLine("GetZOrder: {0}, z: {1}", element, z);
 					return z;
 				}
 				hwndTmp = winApiService.GetWindow(hwndTmp, WinAPI.GW_HWNDPREV);
 				z++;
 			}
 			return int.MaxValue;
-		}
-
-		IntPtr GetRootWindow(IntPtr selectedWindow) {
-			var rootHwnd = winApiService.GetAncestor(selectedWindow, WinAPI.GA_ROOT);
-			return rootHwnd;
 		}
 
 		void BreakOperationsIfCoordChanged() {

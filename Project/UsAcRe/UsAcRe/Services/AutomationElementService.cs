@@ -1,18 +1,21 @@
 ﻿using System;
 using System.Linq;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Automation;
 using NGuard;
 using UsAcRe.Helpers;
+using UsAcRe.UIAutomationElement;
 
 namespace UsAcRe.Services {
 	public interface IAutomationElementService {
-		AutomationElement FromPoint(System.Windows.Point pt);
-		AutomationElement FromHandle(IntPtr hwnd);
-		AutomationElementCollection FindAll(AutomationElement element, TreeScope scope, Condition condition);
-		AutomationElement GetParent(AutomationElement element);
+		UiElement FromPoint(System.Windows.Point pt);
+		UiElement FromHandle(IntPtr hwnd);
+		List<UiElement> FindAll(UiElement element, TreeScope scope, Condition condition);
+		UiElement GetParent(UiElement element);
+		IntPtr GetNativeWindowHandle(UiElement element);
 
-		bool Compare(AutomationElement left, AutomationElement right);
+		bool Compare(UiElement left, UiElement right);
 		string BuildFriendlyInfo(AutomationElement element);
 	}
 
@@ -24,20 +27,36 @@ namespace UsAcRe.Services {
 			this.winApiService = winApiService;
 		}
 
-		public AutomationElement FromHandle(IntPtr hwnd) {
-			return AutomationElement.FromHandle(hwnd);
+		public UiElement FromPoint(Point pt) {
+			return ToUiElement(AutomationElement.FromPoint(pt));
 		}
 
-		public AutomationElement FromPoint(Point pt) {
-			return AutomationElement.FromPoint(pt);
+		public UiElement FromHandle(IntPtr hwnd) {
+			return ToUiElement(AutomationElement.FromHandle(hwnd));
 		}
 
-		public AutomationElementCollection FindAll(AutomationElement element, TreeScope scope, Condition condition) {
-			return element.FindAll(scope, condition);
+		public List<UiElement> FindAll(UiElement element, TreeScope scope, Condition condition) {
+			if(!TryGetAutomationElement(element, out AutomationElement automationElement)) {
+				return null;
+			}
+			return automationElement.FindAll(scope, condition)
+				.OfType<AutomationElement>()
+				.Select(x => ToUiElement(x))
+				.ToList();
 		}
 
-		public AutomationElement GetParent(AutomationElement element) {
-			return TreeWalker.RawViewWalker.GetParent(element);
+		public UiElement GetParent(UiElement element) {
+			if(!TryGetAutomationElement(element, out AutomationElement automationElement)) {
+				return null;
+			}
+			return ToUiElement(TreeWalker.RawViewWalker.GetParent(automationElement));
+		}
+
+		public IntPtr GetNativeWindowHandle(UiElement element) {
+			if(!TryGetAutomationElement(element, out AutomationElement automationElement)) {
+				return IntPtr.Zero;
+			}
+			return new IntPtr(automationElement.Current.NativeWindowHandle);
 		}
 
 		public string BuildFriendlyInfo(AutomationElement element) {
@@ -45,23 +64,68 @@ namespace UsAcRe.Services {
 				element.Current.ClassName, element.Current.ControlType.ProgrammaticName);
 		}
 
-		public bool Compare(AutomationElement left, AutomationElement right) {
+		public bool Compare(UiElement left, UiElement right) {
 			if(object.Equals(left, null)) {
 				return (object.Equals(right, null));
 			}
 			if(object.Equals(right, null)) {
-				return (object.Equals(left, null));
+				return false;
 			}
 
-			if(left.Current.BoundingRectangle == right.Current.BoundingRectangle
-				&& left.Current.ControlType == right.Current.ControlType
-				&& left.Current.Name == right.Current.Name
-				&& left.Current.AutomationId == right.Current.AutomationId) {
-				var leftRuntimeId = left.GetRuntimeId();
-				var rightRuntimeId = right.GetRuntimeId();
+			if(left.BoundingRectangle != right.BoundingRectangle
+				|| left.ControlTypeId != right.ControlTypeId
+				&& left.Name != right.Name
+				&& left.Value != right.Value) {
+				return false;
+			}
+
+			bool leftAutomationElementEmpty = !TryGetAutomationElement(left, out AutomationElement leftAutomationElement);
+			bool rightAutomationElementEmpty = !TryGetAutomationElement(right, out AutomationElement rightAutomationElement);
+			if(leftAutomationElementEmpty) {
+				return rightAutomationElementEmpty;
+			}
+			if(rightAutomationElementEmpty) {
+				return false;
+			}
+
+			if(leftAutomationElement.Current.AutomationId == rightAutomationElement.Current.AutomationId) {
+				var leftRuntimeId = leftAutomationElement.GetRuntimeId();
+				var rightRuntimeId = rightAutomationElement.GetRuntimeId();
 				return leftRuntimeId.Length != rightRuntimeId.Length || leftRuntimeId.SequenceEqual(rightRuntimeId);
 			}
 			return false;
+		}
+
+		UiElement ToUiElement(AutomationElement element) {
+			try {
+				return new UiElement() {
+					Value = GetValue(element),
+					Name = NamingHelpers.Escape(element.Current.Name, 300),
+					ControlTypeId = element.Current.ControlType.Id,
+					BoundingRectangle = element.Current.BoundingRectangle,
+					AutomationElementObj = element
+				};
+			} catch {
+				return null;
+			}
+		}
+
+		string GetValue(AutomationElement element) {
+			if(!element.Current.IsPassword && element.TryGetCurrentPattern(ValuePattern.Pattern, out object patternObj)) {
+				var valuePattern = (ValuePattern)patternObj;
+				var s = valuePattern.Current.Value;
+				return s.Substring(0, Math.Min(s.Length, 300));
+			} /*else if(element.TryGetCurrentPattern(TextPattern.Pattern, out patternObj)) {
+                var textPattern = (TextPattern)patternObj;
+                return textPattern.DocumentRange.GetText(-1).TrimEnd('\r'); // often there is an extra '\r' hanging off the end.
+            }*/ else {
+				return null;
+			}
+		}
+
+		bool TryGetAutomationElement(UiElement uiElement, out AutomationElement automationElement) {
+			automationElement = uiElement.AutomationElementObj as AutomationElement;
+			return automationElement != null;
 		}
 	}
 }
