@@ -17,6 +17,7 @@ namespace UsAcRe.Services {
 
 		bool Compare(UiElement left, UiElement right);
 		string BuildFriendlyInfo(AutomationElement element);
+		void RetrieveElementValue(UiElement element);
 	}
 
 	public class AutomationElementService : IAutomationElementService {
@@ -104,7 +105,6 @@ namespace UsAcRe.Services {
 		UiElement ToUiElement(AutomationElement element) {
 			try {
 				return new UiElement() {
-					Value = GetValue(element),
 					Name = NamingHelpers.Escape(element.Current.Name, 300),
 					ControlTypeId = element.Current.ControlType.Id,
 					BoundingRectangle = element.Current.BoundingRectangle,
@@ -131,6 +131,12 @@ namespace UsAcRe.Services {
 		bool TryGetAutomationElement(UiElement uiElement, out AutomationElement automationElement) {
 			automationElement = uiElement.AutomationElementObj as AutomationElement;
 			return automationElement != null;
+		}
+
+		public void RetrieveElementValue(UiElement element) {
+			if(TryGetAutomationElement(element, out AutomationElement automationElement)) {
+				element.Value = GetValue(automationElement);
+			}
 		}
 	}
 }

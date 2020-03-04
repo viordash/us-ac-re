@@ -64,10 +64,9 @@ namespace UsAcRe.UIAutomationElement {
 
 		void DetermineElementUnderPoint() {
 			specificElement = GetElementFromPoint();
+			automationElementService.RetrieveElementValue(specificElement);
 			logger.Trace("             DetermineElementUnderPoint 1: {0}; {1}", specificElement, specificElement.BoundingRectangle);
 		}
-
-
 
 		UiElement GetElementFromPoint() {
 			Debug.WriteLine("");
