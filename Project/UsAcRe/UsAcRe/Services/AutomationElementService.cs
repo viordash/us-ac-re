@@ -11,7 +11,7 @@ namespace UsAcRe.Services {
 	public interface IAutomationElementService {
 		UiElement FromPoint(System.Windows.Point pt);
 		UiElement FromHandle(IntPtr hwnd);
-		List<UiElement> FindAll(UiElement element, TreeScope scope, Condition condition);
+		List<UiElement> FindAllValidElements(UiElement element, TreeScope scope);
 		UiElement GetParent(UiElement element);
 		IntPtr GetNativeWindowHandle(UiElement element);
 
@@ -35,11 +35,16 @@ namespace UsAcRe.Services {
 			return ToUiElement(AutomationElement.FromHandle(hwnd));
 		}
 
-		public List<UiElement> FindAll(UiElement element, TreeScope scope, Condition condition) {
+		public List<UiElement> FindAllValidElements(UiElement element, TreeScope scope) {
 			if(!TryGetAutomationElement(element, out AutomationElement automationElement)) {
 				return null;
 			}
-			return automationElement.FindAll(scope, condition)
+
+			var rect = new System.Windows.Rect(0, 0, 0, 0);
+			var condBoundingRectangle = new PropertyCondition(AutomationElement.BoundingRectangleProperty, rect);
+			var condOffscreen = new PropertyCondition(AutomationElement.IsOffscreenProperty, false);
+			var cond = new AndCondition(new NotCondition(condBoundingRectangle), condOffscreen);
+			return automationElement.FindAll(scope, cond)
 				.OfType<AutomationElement>()
 				.Select(x => ToUiElement(x))
 				.ToList();

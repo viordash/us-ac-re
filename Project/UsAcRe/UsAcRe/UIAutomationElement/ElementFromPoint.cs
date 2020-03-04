@@ -88,15 +88,11 @@ namespace UsAcRe.UIAutomationElement {
 			}
 
 			var rootElement = automationElementService.FromHandle(rootWindowHwnd);
-			var rect = new System.Windows.Rect(0, 0, 0, 0);
-			var condBoundingRectangle = new PropertyCondition(AutomationElement.BoundingRectangleProperty, rect);
-			var condOffscreen = new PropertyCondition(AutomationElement.IsOffscreenProperty, false);
-			var cond = new AndCondition(new NotCondition(condBoundingRectangle), condOffscreen);
 
 			try {
 				var elementsUnderPoint = new List<UiElement>();
 
-				RetreiveChildrenUnderPoint(rootElement, cond, elementsUnderPoint);
+				RetreiveChildrenUnderPoint(rootElement, elementsUnderPoint);
 				RemoveParents(rootElement, elementsUnderPoint);
 				var element = elementsUnderPoint
 					.OrderByDescending(x => GetTreeOrder(rootElement, x))
@@ -116,9 +112,9 @@ namespace UsAcRe.UIAutomationElement {
 			return rootElement;
 		}
 
-		void RetreiveChildrenUnderPoint(UiElement elementUnderPoint, Condition condition, List<UiElement> elements) {
+		void RetreiveChildrenUnderPoint(UiElement elementUnderPoint, List<UiElement> elements) {
 			BreakOperationsIfCoordChanged();
-			var childElements = GetChildren(elementUnderPoint, condition);
+			var childElements = GetChildren(elementUnderPoint);
 			var elementsUnderPoint = childElements
 				.Where(x => x.BoundingRectangle.Contains(elementCoord.x, elementCoord.y))
 				.ToList();
@@ -127,7 +123,7 @@ namespace UsAcRe.UIAutomationElement {
 				.Where(x => !x.BoundingRectangle.Contains(elementCoord.x, elementCoord.y));
 
 			foreach(var item in outsideOfPoint) {
-				var suspectedElements = GetChildren(item, condition);
+				var suspectedElements = GetChildren(item);
 
 				var suspectedElementsUnderPoint = suspectedElements
 					.Where(x => x.BoundingRectangle.Contains(elementCoord.x, elementCoord.y))
@@ -144,17 +140,17 @@ namespace UsAcRe.UIAutomationElement {
 			if(elementsUnderPoint.Count > 0) {
 				elements.AddRange(elementsUnderPoint);
 				foreach(var item in elementsUnderPoint) {
-					RetreiveChildrenUnderPoint(item, condition, elements);
+					RetreiveChildrenUnderPoint(item, elements);
 				}
 			}
 		}
 
-		List<UiElement> GetChildren(UiElement element, Condition condition) {
+		List<UiElement> GetChildren(UiElement element) {
 			var controlType = ControlType.LookupById(element.ControlTypeId);
 			if(controlType == ControlType.Tree || controlType == ControlType.TreeItem) {
-				return automationElementService.FindAll(element, TreeScope.Descendants, condition);
+				return automationElementService.FindAllValidElements(element, TreeScope.Descendants);
 			} else {
-				return automationElementService.FindAll(element, TreeScope.Children, condition);
+				return automationElementService.FindAllValidElements(element, TreeScope.Children);
 			}
 		}
 
