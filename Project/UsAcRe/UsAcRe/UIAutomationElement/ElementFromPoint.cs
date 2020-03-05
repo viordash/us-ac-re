@@ -86,18 +86,15 @@ namespace UsAcRe.UIAutomationElement {
 
 				var sortedElements = tree
 					.Where(x => x.Value != null)
-					.OrderByDescending(x => x.Value.Count)
-					.ThenByDescending(x => GetZOrder(x.Key))
+					.OrderByDescending(x => GetZOrder(x.Key))
+					.ThenByDescending(x => x.Value.Count)
 					.ThenBy(x => x.Key.BoundingRectangle, new BoundingRectangleComp())
-					.Select(x => x.Key);
+					.FirstOrDefault();
 
-				//RemoveParents(rootElement, elementsUnderPoint);
-
-				//var sortedElements = elementsUnderPoint
-				//	.OrderByDescending(x => GetTreeOrder(rootElement, x))
-				//	.ThenByDescending(x => GetZOrder(x))
-				//	.ThenBy(x => x.BoundingRectangle, new BoundingRectangleComp());
-				treeOfSpecificElement.InsertRange(0, sortedElements);
+				if(sortedElements.Key != null) {
+					treeOfSpecificElement.InsertRange(0, sortedElements.Value);
+					treeOfSpecificElement.Insert(0, sortedElements.Key);
+				}
 			} catch(Exception ex) {
 				if(ex is OperationCanceledException) {
 					throw;
@@ -183,35 +180,6 @@ namespace UsAcRe.UIAutomationElement {
 			foreach(var key in keysToBeDeleted) {
 				tree.Remove(key);
 			}
-		}
-
-		IEnumerable<UiElement> GetChainOfParents(UiElement rootElement, UiElement element) {
-			var list = new List<UiElement>();
-			do {
-				element = automationElementService.GetParent(element);
-				list.Add(element);
-			} while(element != null && !automationElementService.Compare(rootElement, element));
-
-			return list;
-		}
-
-		void RemoveParents(UiElement rootElement, IList<UiElement> elementsUnderPoint) {
-			if(elementsUnderPoint == null || elementsUnderPoint.Count == 0) {
-				return;
-			}
-			int i = 0;
-			do {
-				BreakOperationsIfCoordChanged();
-				var element = elementsUnderPoint[i];
-				var parents = GetChainOfParents(rootElement, element);
-				var parentsInList = elementsUnderPoint
-					.Where(x => parents.Any(p => automationElementService.Compare(p, x)))
-					.ToList();
-				foreach(var parent in parentsInList) {
-					BreakOperationsIfCoordChanged();
-					elementsUnderPoint.Remove(parent);
-				}
-			} while(++i < elementsUnderPoint.Count);
 		}
 
 		int GetTreeOrder(UiElement rootElement, UiElement element) {
