@@ -6,6 +6,8 @@ using System.Windows.Automation;
 using NGuard;
 using UsAcRe.Helpers;
 using UsAcRe.UIAutomationElement;
+using System.Diagnostics;
+using System.IO;
 
 namespace UsAcRe.Services {
 	public interface IAutomationElementService {
@@ -18,6 +20,7 @@ namespace UsAcRe.Services {
 		bool Compare(UiElement left, UiElement right);
 		string BuildFriendlyInfo(AutomationElement element);
 		void RetrieveElementValue(UiElement element);
+		string GetProgramName(UiElement element);
 	}
 
 	public class AutomationElementService : IAutomationElementService {
@@ -129,7 +132,7 @@ namespace UsAcRe.Services {
 		}
 
 		bool TryGetAutomationElement(UiElement uiElement, out AutomationElement automationElement) {
-			automationElement = uiElement.AutomationElementObj as AutomationElement;
+			automationElement = uiElement?.AutomationElementObj as AutomationElement;
 			return automationElement != null;
 		}
 
@@ -137,6 +140,16 @@ namespace UsAcRe.Services {
 			if(TryGetAutomationElement(element, out AutomationElement automationElement)) {
 				element.Value = GetValue(automationElement);
 			}
+		}
+
+		public string GetProgramName(UiElement element) {
+			if(!TryGetAutomationElement(element, out AutomationElement automationElement)) {
+				throw new InvalidOperationException();
+			}
+
+			var proc = Process.GetProcessById(automationElement.Current.ProcessId);
+			var exePath = proc.MainModule.FileName.ToString();
+			return Path.GetFileName(exePath);
 		}
 	}
 }

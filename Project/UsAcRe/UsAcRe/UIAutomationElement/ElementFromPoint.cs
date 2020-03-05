@@ -22,93 +22,87 @@ namespace UsAcRe.UIAutomationElement {
 		readonly IAutomationElementService automationElementService;
 		readonly IWinApiService winApiService;
 		readonly WinAPI.POINT elementCoord;
-		readonly bool detailedSearch;
 
-		UiElement specificElement;
+		TreeOfSpecificUiElement treeOfSpecificElement = new TreeOfSpecificUiElement();
 
 		public System.Windows.Rect BoundingRectangle {
 			get {
-				try {
-					if(specificElement != null) {
-						return specificElement.BoundingRectangle;
-					}
-				} catch(Exception ex) {
-					logger.Error(ex);
-				}
-				return System.Windows.Rect.Empty;
+				return treeOfSpecificElement.BoundingRectangle;
 			}
 		}
 
 		public ElementFromPoint(
 			IAutomationElementService automationElementService,
 			IWinApiService winApiService,
-			WinAPI.POINT elementCoord,
-			bool detailedSearch) {
+			WinAPI.POINT elementCoord) {
 			Guard.Requires(automationElementService, nameof(automationElementService));
 			Guard.Requires(winApiService, nameof(winApiService));
 
 			this.automationElementService = automationElementService;
 			this.winApiService = winApiService;
 			this.elementCoord = elementCoord;
-			this.detailedSearch = detailedSearch;
 			DetermineElementUnderPoint();
 		}
 
 		public override string ToString() {
-			if(specificElement != null) {
-				return string.Format($"{nameof(ElementFromPoint)} ({elementCoord.x}, {elementCoord.y}). {specificElement}");
+			if(treeOfSpecificElement.Count > 0) {
+				return string.Format($"{nameof(ElementFromPoint)} ({elementCoord.x}, {elementCoord.y}). [{treeOfSpecificElement.Count}] {treeOfSpecificElement}");
 			} else {
 				return string.Format($"{nameof(ElementFromPoint)} ({elementCoord.x}, {elementCoord.y}). No element");
 			}
 		}
 
 		void DetermineElementUnderPoint() {
-			specificElement = GetElementFromPoint();
-			automationElementService.RetrieveElementValue(specificElement);
-			logger.Trace("             DetermineElementUnderPoint 1: {0}; {1}", specificElement, specificElement.BoundingRectangle);
+			BuildTreeOfSpecificElement();
+			if(treeOfSpecificElement.Count > 0) {
+				var specificElement = treeOfSpecificElement.FirstOrDefault();
+				automationElementService.RetrieveElementValue(treeOfSpecificElement.FirstOrDefault());
+				logger.Trace("             DetermineElementUnderPoint 1: {0}; {1}", specificElement, specificElement.BoundingRectangle);
+			}
 		}
 
-		UiElement GetElementFromPoint() {
+		void BuildTreeOfSpecificElement() {
 			Debug.WriteLine("");
 			Debug.WriteLine("------------------------");
 			Debug.WriteLine("ElementCoord: {0}", elementCoord);
 			Debug.WriteLine("");
 
-			if(!detailedSearch) {
-				try {
-					var elementWithPoint = automationElementService.FromPoint(new System.Windows.Point(elementCoord.x, elementCoord.y));
-					return elementWithPoint;
-				} catch { }
-			}
-
 			var rootWindowHwnd = winApiService.GetRootWindowForElementUnderPoint(elementCoord);
 			if(rootWindowHwnd == IntPtr.Zero) {
-				return null;
+				return;
 			}
 
 			var rootElement = automationElementService.FromHandle(rootWindowHwnd);
 
 			try {
+				treeOfSpecificElement.ProgramName = automationElementService.GetProgramName(rootElement);
+				treeOfSpecificElement.Add(rootElement);
 				var elementsUnderPoint = new List<UiElement>();
 
 				RetreiveChildrenUnderPoint(rootElement, elementsUnderPoint);
-				RemoveParents(rootElement, elementsUnderPoint);
-				var element = elementsUnderPoint
-					.OrderByDescending(x => GetTreeOrder(rootElement, x))
-					.ThenByDescending(x => GetZOrder(x))
-					.ThenBy(x => x.BoundingRectangle, new BoundingRectangleComp())
-					.FirstOrDefault();
 
-				if(element != null) {
-					return element;
-				}
+				var tree = BuildElementsTree(rootElement, elementsUnderPoint);
+				RemoveParents(tree);
 
+				var sortedElements = tree
+					.Where(x => x.Value != null)
+					.OrderByDescending(x => x.Value.Count)
+					.ThenByDescending(x => GetZOrder(x.Key))
+					.ThenBy(x => x.Key.BoundingRectangle, new BoundingRectangleComp())
+					.Select(x => x.Key);
+
+				//RemoveParents(rootElement, elementsUnderPoint);
+
+				//var sortedElements = elementsUnderPoint
+				//	.OrderByDescending(x => GetTreeOrder(rootElement, x))
+				//	.ThenByDescending(x => GetZOrder(x))
+				//	.ThenBy(x => x.BoundingRectangle, new BoundingRectangleComp());
+				treeOfSpecificElement.InsertRange(0, sortedElements);
 			} catch(Exception ex) {
 				if(ex is OperationCanceledException) {
 					throw;
 				}
 			}
-			return rootElement;
 		}
 
 		void RetreiveChildrenUnderPoint(UiElement elementUnderPoint, List<UiElement> elements) {
@@ -150,6 +144,44 @@ namespace UsAcRe.UIAutomationElement {
 				return automationElementService.FindAllValidElements(element, TreeScope.Descendants);
 			} else {
 				return automationElementService.FindAllValidElements(element, TreeScope.Children);
+			}
+		}
+
+		Dictionary<UiElement, List<UiElement>> BuildElementsTree(UiElement rootElement, List<UiElement> elementsUnderPoint) {
+			var tree = new Dictionary<UiElement, List<UiElement>>();
+			foreach(var element in elementsUnderPoint) {
+				BreakOperationsIfCoordChanged();
+				var elementTree = GetAncestors(rootElement, element);
+				tree.Add(element, elementTree);
+			}
+			return tree;
+		}
+
+		List<UiElement> GetAncestors(UiElement rootElement, UiElement element) {
+			var list = new List<UiElement>();
+			do {
+				element = automationElementService.GetParent(element);
+				if(element != null && automationElementService.Compare(rootElement, element)) {
+					break;
+				}
+				list.Add(element);
+			} while(list.Count < 10000);
+
+			return list;
+		}
+
+		void RemoveParents(Dictionary<UiElement, List<UiElement>> tree) {
+			var keysToBeDeleted = new List<UiElement>();
+			foreach(var element in tree.Keys) {
+				foreach(var ancestors in tree.Values) {
+					var itemIsParent = ancestors.Any(x => automationElementService.Compare(element, x));
+					if(itemIsParent) {
+						keysToBeDeleted.Add(element);
+					}
+				}
+			}
+			foreach(var key in keysToBeDeleted) {
+				tree.Remove(key);
 			}
 		}
 
@@ -220,10 +252,10 @@ namespace UsAcRe.UIAutomationElement {
 		}
 
 		void BreakOperationsIfCoordChanged() {
-			var pt = winApiService.GetMousePosition();
-			if(!pt.WithBoundaries(elementCoord, 10)) {
-				throw new OperationCanceledException();
-			}
+			//var pt = winApiService.GetMousePosition();
+			//if(!pt.WithBoundaries(elementCoord, 10)) {
+			//	throw new OperationCanceledException();
+			//}
 		}
 	}
 }

@@ -107,6 +107,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AutomationElementService.cs" />
     <Compile Include="Services\WinApiService.cs" />
+    <Compile Include="UIAutomationElement\TreeOfSpecificElement.cs" />
     <Compile Include="WindowsSystem\VirtualKeyCodes.cs" />
     <Compile Include="WindowsSystem\WinAPI.cs" />
     <Compile Include="WindowsSystem\WindowsMessages.cs" />
