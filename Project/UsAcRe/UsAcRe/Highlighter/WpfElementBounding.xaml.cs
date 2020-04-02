@@ -15,8 +15,8 @@ namespace UsAcRe {
             this.boundingThickness = boundingThickness;
             outerBounding.BorderThickness = new Thickness(boundingThickness);
             innerBounding.BorderThickness = new Thickness(boundingThickness);
-            outerBounding.BorderBrush = new SolidColorBrush(Colors.Cyan);
-            innerBounding.BorderBrush = new SolidColorBrush(Colors.Blue);
+            outerBounding.BorderBrush = new SolidColorBrush(Colors.Yellow);
+            innerBounding.BorderBrush = new SolidColorBrush(Colors.Red);
             this.Opacity = opacity;
         }
 
@@ -24,10 +24,10 @@ namespace UsAcRe {
             get { return location; }
             set {
                 location = value;
-                this.Left = location.Left - 2 * boundingThickness;
-                this.Width = location.Width + 4 * boundingThickness;
-                this.Top = location.Top - 2 * boundingThickness;
-                this.Height = location.Height + 4 * boundingThickness;
+                this.Left = location.Left - (2 * boundingThickness);
+                this.Width = location.Width + (4 * boundingThickness);
+                this.Top = location.Top - (2 * boundingThickness);
+                this.Height = location.Height + (4 * boundingThickness);
             }
         }
 
