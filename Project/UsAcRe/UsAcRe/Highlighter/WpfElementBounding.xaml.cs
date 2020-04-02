@@ -24,7 +24,6 @@ namespace UsAcRe {
             get { return location; }
             set {
                 location = value;
-                var asd = new Rectangle();
                 this.Left = location.Left - 2 * boundingThickness;
                 this.Width = location.Width + 4 * boundingThickness;
                 this.Top = location.Top - 2 * boundingThickness;
