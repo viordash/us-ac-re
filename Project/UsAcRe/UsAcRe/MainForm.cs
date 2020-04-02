@@ -61,7 +61,7 @@ namespace UsAcRe {
 							var elementFromPoint = new ElementFromPoint(AutomationElementService, WinApiService, pt);
 							BeginInvoke((MethodInvoker)delegate () {
 								CloseHighlighter();
-								elementHighlighter = BoundingRectangleElementHighLighter.CreateInstance(elementFromPoint);
+								elementHighlighter = new ElementHighlighter(elementFromPoint);
 								elementHighlighter.StartHighlighting();
 							});
 
