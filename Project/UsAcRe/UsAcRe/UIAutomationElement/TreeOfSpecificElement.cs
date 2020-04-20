@@ -24,6 +24,8 @@ namespace UsAcRe.UIAutomationElement {
 			foreach(var item in this) {
 				sb.AppendFormat($"{new string('\t', indent++)}{item}\r\n");
 			}
+
+			sb.AppendFormat($"{ProgramName}\r\n");
 			return sb.ToString();
 		}
 	}
