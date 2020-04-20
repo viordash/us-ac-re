@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.28307.960
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsAcRe", "UsAcRe\UsAcRe.csproj", "{3DFBCCAC-5B3A-46CB-95B5-1685B4AA03C3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsAcRe.Tests", "UsAcRe.Tests\UsAcRe.Tests.csproj", "{CDD5CBF2-18C6-4C15-8AB5-1F4AD4BC69BB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{3DFBCCAC-5B3A-46CB-95B5-1685B4AA03C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3DFBCCAC-5B3A-46CB-95B5-1685B4AA03C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3DFBCCAC-5B3A-46CB-95B5-1685B4AA03C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDD5CBF2-18C6-4C15-8AB5-1F4AD4BC69BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDD5CBF2-18C6-4C15-8AB5-1F4AD4BC69BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDD5CBF2-18C6-4C15-8AB5-1F4AD4BC69BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDD5CBF2-18C6-4C15-8AB5-1F4AD4BC69BB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
