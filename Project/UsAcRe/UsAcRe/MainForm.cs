@@ -58,7 +58,7 @@ namespace UsAcRe {
 						CloseHighlighter();
 					} else if(moved && (DateTime.Now - lastMouseMoved).TotalMilliseconds >= 500) {
 						try {
-							var elementFromPoint = new ElementFromPoint(AutomationElementService, WinApiService, pt);
+							var elementFromPoint = new ElementFromPoint(AutomationElementService, WinApiService, pt, false);
 							BeginInvoke((MethodInvoker)delegate () {
 								CloseHighlighter();
 								elementHighlighter = new ElementHighlighter(elementFromPoint);

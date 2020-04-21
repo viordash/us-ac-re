@@ -22,6 +22,7 @@ namespace UsAcRe.UIAutomationElement {
 		readonly IAutomationElementService automationElementService;
 		readonly IWinApiService winApiService;
 		readonly WinAPI.POINT elementCoord;
+		readonly bool detailedRetrieve;
 
 		TreeOfSpecificUiElement treeOfSpecificElement = new TreeOfSpecificUiElement();
 
@@ -34,13 +35,15 @@ namespace UsAcRe.UIAutomationElement {
 		public ElementFromPoint(
 			IAutomationElementService automationElementService,
 			IWinApiService winApiService,
-			WinAPI.POINT elementCoord) {
+			WinAPI.POINT elementCoord,
+			bool detailedRetrieve) {
 			Guard.Requires(automationElementService, nameof(automationElementService));
 			Guard.Requires(winApiService, nameof(winApiService));
 
 			this.automationElementService = automationElementService;
 			this.winApiService = winApiService;
 			this.elementCoord = elementCoord;
+			this.detailedRetrieve = detailedRetrieve;
 			DetermineElementUnderPoint();
 		}
 
@@ -70,6 +73,14 @@ namespace UsAcRe.UIAutomationElement {
 			var rootWindowHwnd = winApiService.GetRootWindowForElementUnderPoint(elementCoord);
 			if(rootWindowHwnd == IntPtr.Zero) {
 				return;
+			}
+
+			if(!detailedRetrieve) {
+				var element = automationElementService.FromPoint(new System.Windows.Point(elementCoord.x, elementCoord.y));
+				if(element != null) {
+					treeOfSpecificElement.Insert(0, element);
+					return;
+				}
 			}
 
 			var rootElement = automationElementService.FromHandle(rootWindowHwnd);

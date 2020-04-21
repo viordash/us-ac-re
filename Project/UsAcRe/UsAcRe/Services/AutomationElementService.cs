@@ -106,6 +106,9 @@ namespace UsAcRe.Services {
 		}
 
 		UiElement ToUiElement(AutomationElement element) {
+			if(element == null) {
+				return null;
+			}
 			try {
 				return new UiElement() {
 					Name = NamingHelpers.Escape(element.Current.Name, 300),

@@ -55,7 +55,7 @@ namespace UsAcRe.Tests.UIAutomationElement {
 					};
 				});
 
-			var testable = new ElementFromPoint(automationElementServiceMock.Object, winApiServiceMock.Object, new WinAPI.POINT(100, 200));
+			var testable = new ElementFromPoint(automationElementServiceMock.Object, winApiServiceMock.Object, new WinAPI.POINT(100, 200), true);
 
 
 			winApiServiceMock.VerifyAll();
