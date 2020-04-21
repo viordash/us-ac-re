@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using CommonServiceLocator;
 using NLog.Windows.Forms;
 using UsAcRe.Highlighter;
+using UsAcRe.Mouse;
 using UsAcRe.Services;
 using UsAcRe.UIAutomationElement;
 using UsAcRe.WindowsSystem;
@@ -37,9 +38,11 @@ namespace UsAcRe {
 			if(btnStart.Checked) {
 				logger.Warn("Start");
 				stopSearchElement = false;
-				SearchElement();
+				//SearchElement();
+				StartHooks();
 			} else {
 				stopSearchElement = true;
+				StopHooks();
 				logger.Warn("Stop");
 			}
 		}
@@ -81,6 +84,31 @@ namespace UsAcRe {
 				});
 				elementHighlighter = null;
 			}
+		}
+
+		void StartHooks() {
+			MouseHook.Start();
+			MouseHook.OnMouseEvent -= MouseEvent;
+			MouseHook.OnMouseEvent += MouseEvent;
+		}
+
+		void StopHooks() {
+			MouseHook.OnMouseEvent -= MouseEvent;
+			MouseHook.Stop();
+
+		}
+
+		void MouseEvent(object sender, Mouse.MouseEventArgs e) {
+			BeginInvoke((Action<Mouse.MouseEventArgs>)((args) => {
+				if(args.Event == null) {
+					return;
+				}
+				if(Bounds.Contains(args.Event.DownClickedPoint.X, args.Event.DownClickedPoint.Y)
+					|| (Bounds.Contains(args.Event.UpClickedPoint.X, args.Event.UpClickedPoint.Y))) {
+					return;
+				}
+				logger.Info($"MouseEvent: {args.Event.Type}, down:{args.Event.DownClickedPoint}, up:{args.Event.UpClickedPoint}");
+			}), e);
 		}
 	}
 }
