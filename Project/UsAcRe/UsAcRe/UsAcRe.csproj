@@ -97,6 +97,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="ClickBlocker\MouseClickBlocker.xaml.cs">
+      <DependentUpon>MouseClickBlocker.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Helpers\NamingHelpers.cs" />
     <Compile Include="Highlighter\ElementHighlighter.cs" />
     <Compile Include="MainForm.cs">
@@ -154,6 +157,10 @@
     <Content Include="clock.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="ClickBlocker\MouseClickBlocker.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Highlighter\WpfElementBounding.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

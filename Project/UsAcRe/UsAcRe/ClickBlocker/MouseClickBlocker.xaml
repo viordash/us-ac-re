@@ -1,0 +1,56 @@
+﻿<Window x:Class="UsAcRe.ClickBlocker.MouseClickBlocker"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:local="clr-namespace:UsAcRe.ClickBlocker"
+        mc:Ignorable="d" 
+        d:DesignHeight="450" d:DesignWidth="800"
+        WindowStyle="None"
+        AllowsTransparency="True" Background="{x:Null}"
+        Topmost="True"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterScreen"
+        Opacity="0.75"
+        
+        MouseDown="Window_MouseDown"
+        Name="ClickBlockerWindow">
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="Loaded">
+            <EventTrigger.Actions>
+                <BeginStoryboard>
+                    <Storyboard Timeline.DesiredFrameRate="60" TargetName="ClickBlockerWindow" TargetProperty="Opacity">
+                        <DoubleAnimation From="0.25" To="0.75" AutoReverse="True" Duration="0:0:1.5" RepeatBehavior="Forever"
+                        DecelerationRatio="0.3"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger.Actions>
+        </EventTrigger>
+    </Window.Triggers>
+    <Grid Name="MainGrid">
+        <Viewbox Name="MainViewbox" Width="24" Height="24">
+            <Viewbox.RenderTransform>
+                <RotateTransform x:Name="Rotation" CenterX="32" CenterY="32" Angle="0" />
+            </Viewbox.RenderTransform>
+            <Viewbox.Triggers>
+            </Viewbox.Triggers>
+            <Canvas Width="64" Height="64" ClipToBounds="True">
+                <Path x:Name="WhiteCircle" Fill="#FFFFFF" Stroke="Transparent">
+                    <Path.Data>
+                        <GeometryGroup FillRule="Nonzero">
+                            <EllipseGeometry Center ="32,32" RadiusX="29" RadiusY="29"/>
+                        </GeometryGroup>
+                    </Path.Data>
+                </Path>
+                <Path x:Name="RedFigures" Fill="{x:Null}" Stroke="#EF1010" StrokeThickness="5">
+                    <Path.Data>
+                        <GeometryGroup FillRule="Nonzero">
+                            <LineGeometry StartPoint="11.4939033456,52.5060966544" EndPoint="52.5060966544, 11.4939033456"/>
+                            <EllipseGeometry Center="32,32" RadiusX="29" RadiusY="29"/>
+                        </GeometryGroup>
+                    </Path.Data>
+                </Path>
+            </Canvas>
+        </Viewbox>
+    </Grid>
+</Window>
