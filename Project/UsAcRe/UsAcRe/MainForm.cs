@@ -45,35 +45,6 @@ namespace UsAcRe {
 			}
 		}
 
-		//void SearchElement() {
-		//	new Thread(delegate () {
-		//		var lastMouseMoved = DateTime.Now;
-		//		bool moved = false;
-		//		var prevPoint = new WinAPI.POINT();
-		//		while(!stopSearchElement) {
-		//			var pt = WinApiService.GetMousePosition();
-		//			if(!pt.WithBoundaries(prevPoint, 10)) {
-		//				lastMouseMoved = DateTime.Now;
-		//				prevPoint = pt;
-		//				moved = true;
-		//				CloseHighlighter();
-		//			} else if(moved && (DateTime.Now - lastMouseMoved).TotalMilliseconds >= 500) {
-		//				try {
-		//					var elementFromPoint = new ElementFromPoint(AutomationElementService, WinApiService, pt, false);
-		//					BeginInvoke((MethodInvoker)delegate () {
-		//						CloseHighlighter();
-		//						elementHighlighter = new ElementHighlighter(elementFromPoint);
-		//						elementHighlighter.StartHighlighting();
-		//					});
-
-		//					logger.Info(elementFromPoint);
-		//				} catch { }
-		//				moved = false;
-		//			}
-		//		}
-		//	}).Start();
-		//}
-
 		void StartHooks() {
 			MouseHook.Start();
 			MouseHook.OnMouseEvent -= MouseEventHook;
