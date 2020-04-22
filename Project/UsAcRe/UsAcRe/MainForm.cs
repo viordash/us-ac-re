@@ -27,7 +27,6 @@ namespace UsAcRe {
 			MouseClickBlocker mouseClickBlocker = new MouseClickBlocker(30);
 			mouseClickBlocker.Show();
 			mouseClickBlocker.Size = 30;
-			mouseClickBlocker.Rotate(10);
 			//----------------------------------------------
 		}
 

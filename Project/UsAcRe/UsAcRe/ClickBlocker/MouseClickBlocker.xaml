@@ -15,18 +15,7 @@
         
         MouseDown="Window_MouseDown"
         Name="ClickBlockerWindow">
-    <Window.Triggers>
-        <EventTrigger RoutedEvent="Loaded">
-            <EventTrigger.Actions>
-                <BeginStoryboard>
-                    <Storyboard Timeline.DesiredFrameRate="60" TargetName="ClickBlockerWindow" TargetProperty="Opacity">
-                        <DoubleAnimation From="0.25" To="0.75" AutoReverse="True" Duration="0:0:1.5" RepeatBehavior="Forever"
-                        DecelerationRatio="0.3"/>
-                    </Storyboard>
-                </BeginStoryboard>
-            </EventTrigger.Actions>
-        </EventTrigger>
-    </Window.Triggers>
+
     <Grid Name="MainGrid">
         <Viewbox Name="MainViewbox" Width="24" Height="24">
             <Viewbox.RenderTransform>
