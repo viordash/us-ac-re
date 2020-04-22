@@ -8,6 +8,7 @@ using UsAcRe.Mouse;
 using UsAcRe.Services;
 using UsAcRe.UIAutomationElement;
 using UsAcRe.WindowsSystem;
+using UsAcRe.ClickBlocker;
 
 namespace UsAcRe {
 	public partial class MainForm : Form {
@@ -21,6 +22,13 @@ namespace UsAcRe {
 		public MainForm() {
 			InitializeComponent();
 			RichTextBoxTarget.ReInitializeAllTextboxes(this);
+
+			//----------------------------------------------
+			MouseClickBlocker mouseClickBlocker = new MouseClickBlocker(30);
+			mouseClickBlocker.Show();
+			mouseClickBlocker.Size = 30;
+			mouseClickBlocker.Rotate(10);
+			//----------------------------------------------
 		}
 
 		private void MainForm_Load(object sender, EventArgs e) {
