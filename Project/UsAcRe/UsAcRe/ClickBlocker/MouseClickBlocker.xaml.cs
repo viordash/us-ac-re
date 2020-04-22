@@ -1,23 +1,30 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Media.Animation;
+using UsAcRe.WindowsSystem;
 
 namespace UsAcRe.ClickBlocker {
 	public partial class MouseClickBlocker : Window {
 
-		public MouseClickBlocker(double Size) {
+		public MouseClickBlocker() {
 			InitializeComponent();
-			Width = Height = MainViewbox.Width = MainViewbox.Height = Size;
-			Rotation.CenterX = Rotation.CenterY = Size / 2.0;
+			Topmost = true;
+			ShowInTaskbar = false;
+			Size = 30;
 			Animate();
 		}
 
 		public double Size {
-			get { return Width; }
 			set {
 				Width = Height = MainViewbox.Width = MainViewbox.Height = value;
 				Rotation.CenterX = Rotation.CenterY = value / 2.0;
 			}
+		}
+
+		public void Show(WinAPI.POINT position) {
+			Show();
+			Left = position.x - (Width / 2);
+			Top = position.y - (Height / 2);
 		}
 
 		public void Animate() {

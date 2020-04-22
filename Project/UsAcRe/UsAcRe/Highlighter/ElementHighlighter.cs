@@ -1,24 +1,29 @@
 ﻿using System;
-using System.Drawing;
 using System.Windows;
+using System.Windows.Media;
 using UsAcRe.UIAutomationElement;
 
 namespace UsAcRe.Highlighter {
 	public class ElementHighlighter : IDisposable {
 		NLog.Logger logger = NLog.LogManager.GetLogger("UsAcRe.Trace");
 
-		readonly ElementFromPoint elementFromPoint;
+		readonly Rect boundingRectangle;
+		readonly string toolTip;
 		bool isHighlighting;
 		bool isDisposed;
 
-        WpfElementBounding wpfElementBounding;
+		WpfElementBounding wpfElementBounding;
 
-		public ElementHighlighter(ElementFromPoint elementFromPoint) {
-			this.elementFromPoint = elementFromPoint;
+		public ElementHighlighter(ElementFromPoint elementFromPoint) : this(elementFromPoint.BoundingRectangle, elementFromPoint.ToString()) {
+			wpfElementBounding = new WpfElementBounding(1, 0.6, Colors.Yellow, Colors.Red);
+		}
 
-            //creating wpf element bounding with thickness and opacity
-            wpfElementBounding = new WpfElementBounding(1, 0.6);
-        }
+		public ElementHighlighter(Rect boundingRectangle, string toolTip) {
+			this.boundingRectangle = boundingRectangle;
+			this.toolTip = toolTip;
+			wpfElementBounding = new WpfElementBounding(4, 0.6, Colors.Red, Colors.DarkRed);
+
+		}
 
 		public void StartHighlighting() {
 			if(isDisposed) {
@@ -26,18 +31,18 @@ namespace UsAcRe.Highlighter {
 			}
 
 			if(!isHighlighting) {
-                var rectangle = elementFromPoint.BoundingRectangle;
+				var rectangle = boundingRectangle;
 				if(rectangle == Rect.Empty) {
-                    wpfElementBounding.SetVisibility(false);
+					wpfElementBounding.SetVisibility(false);
 					return;
 				}
-                wpfElementBounding.Location = new Rect((int)rectangle.Left, (int)rectangle.Top, (int)rectangle.Width, (int)rectangle.Height);
-                wpfElementBounding.SetToolTip(elementFromPoint.ToString());
-                wpfElementBounding.SetVisibility(true);
-                
-                isHighlighting = true;
-                wpfElementBounding.Show();
-            }
+				wpfElementBounding.Location = new Rect((int)rectangle.Left, (int)rectangle.Top, (int)rectangle.Width, (int)rectangle.Height);
+				wpfElementBounding.SetToolTip(toolTip);
+				wpfElementBounding.SetVisibility(true);
+
+				isHighlighting = true;
+				wpfElementBounding.Show();
+			}
 		}
 
 		public void StopHighlighting() {
@@ -46,15 +51,15 @@ namespace UsAcRe.Highlighter {
 			}
 
 			if(isHighlighting) {
-                wpfElementBounding.SetVisibility(false);
+				wpfElementBounding.SetVisibility(false);
 				isHighlighting = false;
 			}
 		}
 
 		public void Dispose() {
 			if(!isDisposed) {
-                StopHighlighting();
-                wpfElementBounding.OnDispose();
+				StopHighlighting();
+				wpfElementBounding.OnDispose();
 				isDisposed = true;
 			}
 		}

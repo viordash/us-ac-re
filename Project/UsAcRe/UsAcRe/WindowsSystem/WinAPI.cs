@@ -101,6 +101,18 @@ namespace UsAcRe.WindowsSystem {
 			public bool WithBoundaries(POINT other, int tolerance) {
 				return Math.Abs(x - other.x) <= tolerance && Math.Abs(y - other.y) <= tolerance;
 			}
+
+			public bool WithBoundaries(int otherX, int otherY, int tolerance) {
+				return Math.Abs(x - otherX) <= tolerance && Math.Abs(y - otherY) <= tolerance;
+			}
+
+			public static POINT Empty {
+				get { return new POINT(0, 0); }
+			}
+
+			public override string ToString() {
+				return $"x={x},y={y}";
+			}
 		}
 
 		[StructLayout(LayoutKind.Sequential)]

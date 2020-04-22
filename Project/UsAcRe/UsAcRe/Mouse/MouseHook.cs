@@ -16,9 +16,9 @@ namespace UsAcRe.Mouse {
 	}
 	public delegate void MouseMoveHandler(object sender, MouseMoveArgs args);
 	public class MouseMoveArgs : EventArgs {
-		public Point Coord { get; set; }
+		public WinAPI.POINT Coord { get; set; }
 		public bool Stopped { get; set; }
-		public MouseMoveArgs(Point coord, bool stopped) {
+		public MouseMoveArgs(WinAPI.POINT coord, bool stopped) {
 			Coord = coord;
 			Stopped = stopped;
 		}
@@ -36,7 +36,7 @@ namespace UsAcRe.Mouse {
 		private static TimerCallback timerCallbackDelayedStoringMouseAction = new TimerCallback(DelayedStoringMouseAction);
 		private static Timer timerStoringMouseAction = null;
 		private static MouseEvent prevMouseEvent = null;
-		private static Point prevMouseCoord = Point.Empty;
+		private static WinAPI.POINT prevMouseCoord = WinAPI.POINT.Empty;
 		private static bool moving = false;
 		private static Timer timerStopMouseMoveDetection = null;
 
@@ -142,15 +142,15 @@ namespace UsAcRe.Mouse {
 			}
 			timerStopMouseMoveDetection = new Timer((state) => {
 				moving = false;
-				OnMouseMove(null, new MouseMoveArgs(new Point(x, y), !moving));
+				OnMouseMove(null, new MouseMoveArgs(new WinAPI.POINT(x, y), !moving));
 			}, null, 400, Timeout.Infinite);
 
 			if(!moving) {
 				moving = true;
 			}
 
-			prevMouseCoord.X = x;
-			prevMouseCoord.Y = y;
+			prevMouseCoord.x = x;
+			prevMouseCoord.y = y;
 
 			if(OnMouseMove != null) {
 				OnMouseMove(null, new MouseMoveArgs(prevMouseCoord, !moving));

@@ -24,6 +24,12 @@ namespace UsAcRe.UIAutomationElement {
 		readonly WinAPI.POINT elementCoord;
 		readonly bool detailedRetrieve;
 
+		bool breakOperations;
+		public void BreakOperations() {
+			breakOperations = true;
+		}
+
+
 		TreeOfSpecificUiElement treeOfSpecificElement = new TreeOfSpecificUiElement();
 
 		public System.Windows.Rect BoundingRectangle {
@@ -231,10 +237,9 @@ namespace UsAcRe.UIAutomationElement {
 		}
 
 		void BreakOperationsIfCoordChanged() {
-			//var pt = winApiService.GetMousePosition();
-			//if(!pt.WithBoundaries(elementCoord, 10)) {
-			//	throw new OperationCanceledException();
-			//}
+			if(breakOperations) {
+				throw new OperationCanceledException();
+			}
 		}
 	}
 }

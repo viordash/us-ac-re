@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Threading;
 using System.Windows.Forms;
 using CommonServiceLocator;
 using NLog.Windows.Forms;
@@ -13,8 +12,9 @@ using UsAcRe.WindowsSystem;
 namespace UsAcRe {
 	public partial class MainForm : Form {
 		NLog.Logger logger;
-		bool stopSearchElement;
 		ElementHighlighter elementHighlighter = null;
+		ElementFromPoint elementFromPoint = null;
+		ElementHighlighter mouseClickBlocker = null;
 
 		IAutomationElementService AutomationElementService { get { return ServiceLocator.Current.GetInstance<IAutomationElementService>(); } }
 		IWinApiService WinApiService { get { return ServiceLocator.Current.GetInstance<IWinApiService>(); } }
@@ -22,12 +22,6 @@ namespace UsAcRe {
 		public MainForm() {
 			InitializeComponent();
 			RichTextBoxTarget.ReInitializeAllTextboxes(this);
-
-			////----------------------------------------------
-			//MouseClickBlocker mouseClickBlocker = new MouseClickBlocker(30);
-			//mouseClickBlocker.Show();
-			//mouseClickBlocker.Size = 30;
-			////----------------------------------------------
 		}
 
 		private void MainForm_Load(object sender, EventArgs e) {
@@ -37,61 +31,48 @@ namespace UsAcRe {
 		}
 
 		private void MainForm_FormClosed(object sender, FormClosedEventArgs e) {
-			stopSearchElement = true;
+			CloseMouseClickBlocker();
 			CloseHighlighter();
 		}
 
 		private void btnStart_Click(object sender, EventArgs e) {
 			if(btnStart.Checked) {
 				logger.Warn("Start");
-				stopSearchElement = false;
-				//SearchElement();
 				StartHooks();
 			} else {
-				stopSearchElement = true;
 				StopHooks();
 				logger.Warn("Stop");
 			}
 		}
 
-		void SearchElement() {
-			new Thread(delegate () {
-				var lastMouseMoved = DateTime.Now;
-				bool moved = false;
-				var prevPoint = new WinAPI.POINT();
-				while(!stopSearchElement) {
-					var pt = WinApiService.GetMousePosition();
-					if(!pt.WithBoundaries(prevPoint, 10)) {
-						lastMouseMoved = DateTime.Now;
-						prevPoint = pt;
-						moved = true;
-						CloseHighlighter();
-					} else if(moved && (DateTime.Now - lastMouseMoved).TotalMilliseconds >= 500) {
-						try {
-							var elementFromPoint = new ElementFromPoint(AutomationElementService, WinApiService, pt, false);
-							BeginInvoke((MethodInvoker)delegate () {
-								CloseHighlighter();
-								elementHighlighter = new ElementHighlighter(elementFromPoint);
-								elementHighlighter.StartHighlighting();
-							});
+		//void SearchElement() {
+		//	new Thread(delegate () {
+		//		var lastMouseMoved = DateTime.Now;
+		//		bool moved = false;
+		//		var prevPoint = new WinAPI.POINT();
+		//		while(!stopSearchElement) {
+		//			var pt = WinApiService.GetMousePosition();
+		//			if(!pt.WithBoundaries(prevPoint, 10)) {
+		//				lastMouseMoved = DateTime.Now;
+		//				prevPoint = pt;
+		//				moved = true;
+		//				CloseHighlighter();
+		//			} else if(moved && (DateTime.Now - lastMouseMoved).TotalMilliseconds >= 500) {
+		//				try {
+		//					var elementFromPoint = new ElementFromPoint(AutomationElementService, WinApiService, pt, false);
+		//					BeginInvoke((MethodInvoker)delegate () {
+		//						CloseHighlighter();
+		//						elementHighlighter = new ElementHighlighter(elementFromPoint);
+		//						elementHighlighter.StartHighlighting();
+		//					});
 
-							logger.Info(elementFromPoint);
-						} catch { }
-						moved = false;
-					}
-				}
-			}).Start();
-		}
-
-		void CloseHighlighter() {
-			if(elementHighlighter != null) {
-				var highlighter = elementHighlighter;
-				BeginInvoke((MethodInvoker)delegate () {
-					highlighter.StopHighlighting();
-				});
-				elementHighlighter = null;
-			}
-		}
+		//					logger.Info(elementFromPoint);
+		//				} catch { }
+		//				moved = false;
+		//			}
+		//		}
+		//	}).Start();
+		//}
 
 		void StartHooks() {
 			MouseHook.Start();
@@ -121,9 +102,53 @@ namespace UsAcRe {
 			}), e);
 		}
 
+
+		void ShowHighlighter() {
+			CloseHighlighter();
+			elementHighlighter = new ElementHighlighter(elementFromPoint);
+			elementHighlighter.StartHighlighting();
+		}
+
+		void CloseHighlighter() {
+			if(elementHighlighter != null) {
+				var highlighter = elementHighlighter;
+				highlighter.StopHighlighting();
+				elementHighlighter = null;
+			}
+		}
+
+		void ShowMouseClickBlocker(WinAPI.POINT coord) {
+			CloseMouseClickBlocker();
+			mouseClickBlocker = new ElementHighlighter(new System.Windows.Rect(coord.x - 3, coord.y - 3, 6, 6), string.Empty);// MouseClickBlocker();
+																															  //mouseClickBlocker.Show(coord);
+			mouseClickBlocker.StartHighlighting();
+			Debug.WriteLine($"ShowMouseClickBlocker :   coord:{coord}");
+		}
+
+		void CloseMouseClickBlocker() {
+			if(mouseClickBlocker != null) {
+				mouseClickBlocker.StopHighlighting();//				mouseClickBlocker.Hide();
+				mouseClickBlocker = null;
+			}
+		}
+
 		void MouseMoveHook(object sender, Mouse.MouseMoveArgs e) {
 			BeginInvoke((Action<Mouse.MouseMoveArgs>)((args) => {
-				Debug.WriteLine($"MouseMoveHook :     moving:{args.Stopped};  coord:{args.Coord}");
+				if(elementFromPoint != null) {
+					elementFromPoint.BreakOperations();
+					elementFromPoint = null;
+				}
+
+				if(args.Stopped) {
+					ShowMouseClickBlocker(args.Coord);
+					elementFromPoint = new ElementFromPoint(AutomationElementService, WinApiService, args.Coord, true);
+					CloseMouseClickBlocker();
+					ShowHighlighter();
+				} else {
+					CloseMouseClickBlocker();
+					CloseHighlighter();
+				}
+
 			}), e);
 		}
 	}
