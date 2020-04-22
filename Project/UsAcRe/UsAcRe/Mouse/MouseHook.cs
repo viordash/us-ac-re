@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Threading;
+using UsAcRe.Extensions;
 using UsAcRe.WindowsSystem;
 
 namespace UsAcRe.Mouse {
@@ -13,10 +14,20 @@ namespace UsAcRe.Mouse {
 			Event = mouseEvent;
 		}
 	}
+	public delegate void MouseMoveHandler(object sender, MouseMoveArgs args);
+	public class MouseMoveArgs : EventArgs {
+		public Point Coord { get; set; }
+		public bool Stopped { get; set; }
+		public MouseMoveArgs(Point coord, bool stopped) {
+			Coord = coord;
+			Stopped = stopped;
+		}
+	}
 
 	public static class MouseHook {
 		static NLog.Logger logger = NLog.LogManager.GetLogger("UsAcRe.Trace");
 		public static event MouseEventHandler OnMouseEvent = delegate { };
+		public static event MouseMoveHandler OnMouseMove = delegate { };
 		private static WinAPI.LowLevelMouseProc _proc = HookCallback;
 		private static IntPtr _hookID = IntPtr.Zero;
 		private static int doubleClickTime = WinAPI.GetDoubleClickTime();
@@ -25,6 +36,9 @@ namespace UsAcRe.Mouse {
 		private static TimerCallback timerCallbackDelayedStoringMouseAction = new TimerCallback(DelayedStoringMouseAction);
 		private static Timer timerStoringMouseAction = null;
 		private static MouseEvent prevMouseEvent = null;
+		private static Point prevMouseCoord = Point.Empty;
+		private static bool moving = false;
+		private static Timer timerStopMouseMoveDetection = null;
 
 		public static void Start() {
 			_hookID = SetHook(_proc);
@@ -64,7 +78,7 @@ namespace UsAcRe.Mouse {
 						|| mouseEvent.Type == MouseActionType.MiddleDrag));
 		}
 
-		static void OnMouse(MouseButtonType button, bool isDown, int x, int y, int messageTimeStamp) {
+		static void MouseEventHook(MouseButtonType button, bool isDown, int x, int y, int messageTimeStamp) {
 			if(isDown) {
 				logger.Info("IsDown 0:              {1}; {0}; {2}", button, DateTime.Now.Ticks, prevMouseEvent == null ? "null" : "");
 				if(prevMouseEvent != null) {
@@ -118,6 +132,30 @@ namespace UsAcRe.Mouse {
 			}
 			onClickMessageTimeStamp = messageTimeStamp;
 		}
+		static void MouseMoveHook(int x, int y, int messageTimeStamp) {
+			if(!moving && prevMouseCoord.WithBoundaries(x, y, 10)) {
+				return;
+			}
+			if(timerStopMouseMoveDetection != null) {
+				timerStopMouseMoveDetection.Dispose();
+				timerStopMouseMoveDetection = null;
+			}
+			timerStopMouseMoveDetection = new Timer((state) => {
+				moving = false;
+				OnMouseMove(null, new MouseMoveArgs(new Point(x, y), !moving));
+			}, null, 400, Timeout.Infinite);
+
+			if(!moving) {
+				moving = true;
+			}
+
+			prevMouseCoord.X = x;
+			prevMouseCoord.Y = y;
+
+			if(OnMouseMove != null) {
+				OnMouseMove(null, new MouseMoveArgs(prevMouseCoord, !moving));
+			}
+		}
 
 		static void DelayedStoringMouseAction(object state) {
 			if(OnMouseEvent != null) {
@@ -130,22 +168,25 @@ namespace UsAcRe.Mouse {
 				WinAPI.MSLLHOOKSTRUCT hookStruct = (WinAPI.MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(WinAPI.MSLLHOOKSTRUCT));
 				switch((uint)wParam) {
 					case WindowsMessages.WM_LBUTTONDOWN:
-						OnMouse(MouseButtonType.Left, true, hookStruct.pt.x, hookStruct.pt.y, (int)hookStruct.time);
+						MouseEventHook(MouseButtonType.Left, true, hookStruct.pt.x, hookStruct.pt.y, (int)hookStruct.time);
 						break;
 					case WindowsMessages.WM_LBUTTONUP:
-						OnMouse(MouseButtonType.Left, false, hookStruct.pt.x, hookStruct.pt.y, (int)hookStruct.time);
+						MouseEventHook(MouseButtonType.Left, false, hookStruct.pt.x, hookStruct.pt.y, (int)hookStruct.time);
 						break;
 					case WindowsMessages.WM_RBUTTONDOWN:
-						OnMouse(MouseButtonType.Right, true, hookStruct.pt.x, hookStruct.pt.y, (int)hookStruct.time);
+						MouseEventHook(MouseButtonType.Right, true, hookStruct.pt.x, hookStruct.pt.y, (int)hookStruct.time);
 						break;
 					case WindowsMessages.WM_RBUTTONUP:
-						OnMouse(MouseButtonType.Right, false, hookStruct.pt.x, hookStruct.pt.y, (int)hookStruct.time);
+						MouseEventHook(MouseButtonType.Right, false, hookStruct.pt.x, hookStruct.pt.y, (int)hookStruct.time);
 						break;
 					case WindowsMessages.WM_MBUTTONDOWN:
-						OnMouse(MouseButtonType.Middle, true, hookStruct.pt.x, hookStruct.pt.y, (int)hookStruct.time);
+						MouseEventHook(MouseButtonType.Middle, true, hookStruct.pt.x, hookStruct.pt.y, (int)hookStruct.time);
 						break;
 					case WindowsMessages.WM_MBUTTONUP:
-						OnMouse(MouseButtonType.Middle, false, hookStruct.pt.x, hookStruct.pt.y, (int)hookStruct.time);
+						MouseEventHook(MouseButtonType.Middle, false, hookStruct.pt.x, hookStruct.pt.y, (int)hookStruct.time);
+						break;
+					case WindowsMessages.WM_MOUSEMOVE:
+						MouseMoveHook(hookStruct.pt.x, hookStruct.pt.y, (int)hookStruct.time);
 						break;
 				}
 			}

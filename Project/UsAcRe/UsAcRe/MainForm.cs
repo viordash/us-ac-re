@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Windows.Forms;
 using CommonServiceLocator;
@@ -8,7 +9,6 @@ using UsAcRe.Mouse;
 using UsAcRe.Services;
 using UsAcRe.UIAutomationElement;
 using UsAcRe.WindowsSystem;
-using UsAcRe.ClickBlocker;
 
 namespace UsAcRe {
 	public partial class MainForm : Form {
@@ -23,11 +23,11 @@ namespace UsAcRe {
 			InitializeComponent();
 			RichTextBoxTarget.ReInitializeAllTextboxes(this);
 
-			//----------------------------------------------
-			MouseClickBlocker mouseClickBlocker = new MouseClickBlocker(30);
-			mouseClickBlocker.Show();
-			mouseClickBlocker.Size = 30;
-			//----------------------------------------------
+			////----------------------------------------------
+			//MouseClickBlocker mouseClickBlocker = new MouseClickBlocker(30);
+			//mouseClickBlocker.Show();
+			//mouseClickBlocker.Size = 30;
+			////----------------------------------------------
 		}
 
 		private void MainForm_Load(object sender, EventArgs e) {
@@ -95,17 +95,20 @@ namespace UsAcRe {
 
 		void StartHooks() {
 			MouseHook.Start();
-			MouseHook.OnMouseEvent -= MouseEvent;
-			MouseHook.OnMouseEvent += MouseEvent;
+			MouseHook.OnMouseEvent -= MouseEventHook;
+			MouseHook.OnMouseEvent += MouseEventHook;
+			MouseHook.OnMouseMove -= MouseMoveHook;
+			MouseHook.OnMouseMove += MouseMoveHook;
 		}
 
 		void StopHooks() {
-			MouseHook.OnMouseEvent -= MouseEvent;
+			MouseHook.OnMouseEvent -= MouseEventHook;
+			MouseHook.OnMouseMove -= MouseMoveHook;
 			MouseHook.Stop();
 
 		}
 
-		void MouseEvent(object sender, Mouse.MouseEventArgs e) {
+		void MouseEventHook(object sender, Mouse.MouseEventArgs e) {
 			BeginInvoke((Action<Mouse.MouseEventArgs>)((args) => {
 				if(args.Event == null) {
 					return;
@@ -115,6 +118,12 @@ namespace UsAcRe {
 					return;
 				}
 				logger.Info($"MouseEvent: {args.Event.Type}, down:{args.Event.DownClickedPoint}, up:{args.Event.UpClickedPoint}");
+			}), e);
+		}
+
+		void MouseMoveHook(object sender, Mouse.MouseMoveArgs e) {
+			BeginInvoke((Action<Mouse.MouseMoveArgs>)((args) => {
+				Debug.WriteLine($"MouseMoveHook :     moving:{args.Stopped};  coord:{args.Coord}");
 			}), e);
 		}
 	}

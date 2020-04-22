@@ -100,6 +100,7 @@
     <Compile Include="ClickBlocker\MouseClickBlocker.xaml.cs">
       <DependentUpon>MouseClickBlocker.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Extensions\PointExtension.cs" />
     <Compile Include="Helpers\NamingHelpers.cs" />
     <Compile Include="Highlighter\ElementHighlighter.cs" />
     <Compile Include="MainForm.cs">
