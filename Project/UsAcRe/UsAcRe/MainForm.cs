@@ -115,12 +115,17 @@ namespace UsAcRe {
 					elementFromPoint = new ElementFromPoint(AutomationElementService, WinApiService, args.Coord, true);
 					CloseMouseClickBlocker();
 					ShowHighlighter();
+					logger.Info(elementFromPoint);
 				} else {
 					CloseMouseClickBlocker();
 					CloseHighlighter();
 				}
 
 			}), e);
+		}
+
+		private void miClearLog_Click(object sender, EventArgs e) {
+			txtLog.Clear();
 		}
 	}
 }

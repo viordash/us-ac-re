@@ -55,7 +55,7 @@ namespace UsAcRe.UIAutomationElement {
 
 		public override string ToString() {
 			if(treeOfSpecificElement.Count > 0) {
-				return string.Format($"{nameof(ElementFromPoint)} ({elementCoord.x}, {elementCoord.y}). [{treeOfSpecificElement.Count}] {treeOfSpecificElement}");
+				return string.Format($"{nameof(ElementFromPoint)} ({elementCoord.x}, {elementCoord.y}) |{treeOfSpecificElement.Count}|\r\n{treeOfSpecificElement}");
 			} else {
 				return string.Format($"{nameof(ElementFromPoint)} ({elementCoord.x}, {elementCoord.y}). No element");
 			}
@@ -90,6 +90,7 @@ namespace UsAcRe.UIAutomationElement {
 			}
 
 			var rootElement = automationElementService.FromHandle(rootWindowHwnd);
+			rootElement.Index = 0;
 
 			try {
 				treeOfSpecificElement.ProgramName = automationElementService.GetProgramName(rootElement);
@@ -122,6 +123,7 @@ namespace UsAcRe.UIAutomationElement {
 		void RetreiveChildrenUnderPoint(UiElement elementUnderPoint, List<UiElement> elements) {
 			BreakOperationsIfCoordChanged();
 			var childElements = GetChildren(elementUnderPoint);
+
 			var elementsUnderPoint = childElements
 				.Where(x => x.BoundingRectangle.Contains(elementCoord.x, elementCoord.y))
 				.ToList();
@@ -142,9 +144,19 @@ namespace UsAcRe.UIAutomationElement {
 				}
 			}
 
-			Debug.WriteLine("elementsUnderPoint: {0}, childs: {1}", elementUnderPoint, elementsUnderPoint.Count());
+			Debug.WriteLine($"elementsUnderPoint: {elementUnderPoint}, childs: {elementsUnderPoint.Count()}");
 
 			if(elementsUnderPoint.Count > 0) {
+
+				foreach(var item in elementsUnderPoint) {
+					var similars = childElements.Where(x => automationElementService.ElementsIsSimilar(x, item));
+					for(int i = 0; i < similars.Count(); i++) {
+						if(item == similars.ElementAt(i)) {
+							item.Index = i;
+						}
+					}
+				}
+
 				elements.AddRange(elementsUnderPoint);
 				foreach(var item in elementsUnderPoint) {
 					RetreiveChildrenUnderPoint(item, elements);
@@ -195,8 +207,13 @@ namespace UsAcRe.UIAutomationElement {
 				}
 			}
 			foreach(var key in keysToBeDeleted) {
+				var keyLikely = tree.Values.Select(x => x.Where(e => automationElementService.Compare(key, e))).SelectMany(x => x);
+				foreach(var item in keyLikely) {
+					item.Index = key.Index;
+				}
 				tree.Remove(key);
 			}
+
 		}
 
 		int GetTreeOrder(UiElement rootElement, UiElement element) {

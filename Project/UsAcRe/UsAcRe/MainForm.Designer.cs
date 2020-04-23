@@ -27,12 +27,12 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
 			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
 			this.btnStart = new System.Windows.Forms.ToolStripButton();
+			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.chDetailedSearching = new System.Windows.Forms.ToolStripButton();
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.miClearLog = new System.Windows.Forms.ToolStripMenuItem();
 			this.miCopyLog = new System.Windows.Forms.ToolStripMenuItem();
 			this.txtLog = new System.Windows.Forms.RichTextBox();
-			this.chDetailedSearching = new System.Windows.Forms.ToolStripButton();
-			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStrip1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
 			this.SuspendLayout();
@@ -60,24 +60,40 @@
 			this.btnStart.Text = "Start";
 			this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
 			// 
+			// toolStripSeparator1
+			// 
+			this.toolStripSeparator1.Name = "toolStripSeparator1";
+			this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+			// 
+			// chDetailedSearching
+			// 
+			this.chDetailedSearching.CheckOnClick = true;
+			this.chDetailedSearching.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.chDetailedSearching.Image = ((System.Drawing.Image)(resources.GetObject("chDetailedSearching.Image")));
+			this.chDetailedSearching.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.chDetailedSearching.Name = "chDetailedSearching";
+			this.chDetailedSearching.Size = new System.Drawing.Size(106, 22);
+			this.chDetailedSearching.Text = "DetailedSearching";
+			// 
 			// contextMenuStrip1
 			// 
 			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.miClearLog,
             this.miCopyLog});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(103, 48);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(181, 70);
 			// 
 			// miClearLog
 			// 
 			this.miClearLog.Name = "miClearLog";
-			this.miClearLog.Size = new System.Drawing.Size(102, 22);
+			this.miClearLog.Size = new System.Drawing.Size(180, 22);
 			this.miClearLog.Text = "Clear";
+			this.miClearLog.Click += new System.EventHandler(this.miClearLog_Click);
 			// 
 			// miCopyLog
 			// 
 			this.miCopyLog.Name = "miCopyLog";
-			this.miCopyLog.Size = new System.Drawing.Size(102, 22);
+			this.miCopyLog.Size = new System.Drawing.Size(180, 22);
 			this.miCopyLog.Text = "Copy";
 			// 
 			// txtLog
@@ -92,21 +108,6 @@
 			this.txtLog.Size = new System.Drawing.Size(429, 75);
 			this.txtLog.TabIndex = 5;
 			this.txtLog.Text = "";
-			// 
-			// chDetailedSearching
-			// 
-			this.chDetailedSearching.CheckOnClick = true;
-			this.chDetailedSearching.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.chDetailedSearching.Image = ((System.Drawing.Image)(resources.GetObject("chDetailedSearching.Image")));
-			this.chDetailedSearching.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.chDetailedSearching.Name = "chDetailedSearching";
-			this.chDetailedSearching.Size = new System.Drawing.Size(106, 22);
-			this.chDetailedSearching.Text = "DetailedSearching";
-			// 
-			// toolStripSeparator1
-			// 
-			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
 			// 
 			// MainForm
 			// 

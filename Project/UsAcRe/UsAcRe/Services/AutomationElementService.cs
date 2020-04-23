@@ -18,6 +18,7 @@ namespace UsAcRe.Services {
 		IntPtr GetNativeWindowHandle(UiElement element);
 
 		bool Compare(UiElement left, UiElement right);
+		bool ElementsIsSimilar(UiElement expected, UiElement actual);
 		string BuildFriendlyInfo(AutomationElement element);
 		void RetrieveElementValue(UiElement element);
 		string GetProgramName(UiElement element);
@@ -44,7 +45,7 @@ namespace UsAcRe.Services {
 				return null;
 			}
 
-			var rect = new System.Windows.Rect(0, 0, 0, 0);
+			var rect = new Rect(0, 0, 0, 0);
 			var condBoundingRectangle = new PropertyCondition(AutomationElement.BoundingRectangleProperty, rect);
 			var condOffscreen = new PropertyCondition(AutomationElement.IsOffscreenProperty, false);
 			var cond = new AndCondition(new NotCondition(condBoundingRectangle), condOffscreen);
@@ -103,6 +104,12 @@ namespace UsAcRe.Services {
 				return leftRuntimeId.Length != rightRuntimeId.Length || leftRuntimeId.SequenceEqual(rightRuntimeId);
 			}
 			return false;
+		}
+
+		public bool ElementsIsSimilar(UiElement expected, UiElement actual) {
+			return expected.ControlTypeId == actual.ControlTypeId
+				&& expected.Name == actual.Name
+				&& expected.Value == actual.Value;
 		}
 
 		UiElement ToUiElement(AutomationElement element) {
