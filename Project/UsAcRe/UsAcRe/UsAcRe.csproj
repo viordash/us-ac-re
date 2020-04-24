@@ -110,6 +110,9 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Keyboard\KeyboardHook.cs" />
+    <Compile Include="MainForm.Hooks.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Mouse\MouseButtonType.cs" />
     <Compile Include="Mouse\MouseEvent.cs" />
     <Compile Include="Mouse\MouseHook.cs" />
