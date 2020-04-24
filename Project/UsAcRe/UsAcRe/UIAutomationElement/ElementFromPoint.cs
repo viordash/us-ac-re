@@ -55,9 +55,9 @@ namespace UsAcRe.UIAutomationElement {
 
 		public override string ToString() {
 			if(treeOfSpecificElement.Count > 0) {
-				return string.Format($"{nameof(ElementFromPoint)} ({elementCoord.x}, {elementCoord.y}) |{treeOfSpecificElement.Count}|\r\n{treeOfSpecificElement}");
+				return string.Format("{0} ({1}, {2}) |{3}|\r\n{4}", nameof(ElementFromPoint), elementCoord.x, elementCoord.y, treeOfSpecificElement.Count, treeOfSpecificElement);
 			} else {
-				return string.Format($"{nameof(ElementFromPoint)} ({elementCoord.x}, {elementCoord.y}). No element");
+				return string.Format("{0} ({1}, {2}). No element", nameof(ElementFromPoint), elementCoord.x, elementCoord.y);
 			}
 		}
 

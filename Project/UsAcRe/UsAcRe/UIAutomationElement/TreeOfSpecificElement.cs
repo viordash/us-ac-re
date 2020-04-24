@@ -22,7 +22,7 @@ namespace UsAcRe.UIAutomationElement {
 			var sb = new StringBuilder();
 			int indent = 0;
 			foreach(var item in this) {
-				sb.AppendFormat($"{new string('\t', indent++)}{item}\r\n");
+				sb.AppendFormat("{0}{1}\r\n", new string('\t', indent++), item);
 			}
 
 			sb.AppendFormat($"{ProgramName}\r\n");

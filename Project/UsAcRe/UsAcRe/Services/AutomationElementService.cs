@@ -109,6 +109,7 @@ namespace UsAcRe.Services {
 		public bool ElementsIsSimilar(UiElement expected, UiElement actual) {
 			return expected.ControlTypeId == actual.ControlTypeId
 				&& expected.Name == actual.Name
+				&& expected.AutomationId == actual.AutomationId
 				&& expected.Value == actual.Value;
 		}
 
@@ -118,7 +119,8 @@ namespace UsAcRe.Services {
 			}
 			try {
 				return new UiElement() {
-					Name = NamingHelpers.Escape(element.Current.Name, 300),
+					Name = NamingHelpers.Escape(element.Current.Name, 100),
+					AutomationId = NamingHelpers.Escape(element.Current.AutomationId, 100),
 					ControlTypeId = element.Current.ControlType.Id,
 					BoundingRectangle = element.Current.BoundingRectangle,
 					AutomationElementObj = element
