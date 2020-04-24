@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Windows.Forms;
 using UsAcRe.Highlighter;
+using UsAcRe.Keyboard;
 using UsAcRe.Mouse;
 using UsAcRe.UIAutomationElement;
 using UsAcRe.WindowsSystem;
@@ -9,18 +10,30 @@ using UsAcRe.WindowsSystem;
 namespace UsAcRe {
 	public partial class MainForm : Form {
 		void StartHooks() {
+			logger.Warn("Start");
 			MouseHook.Start();
 			MouseHook.OnMouseEvent -= MouseEventHook;
 			MouseHook.OnMouseEvent += MouseEventHook;
 			MouseHook.OnMouseMove -= MouseMoveHook;
 			MouseHook.OnMouseMove += MouseMoveHook;
+
+			KeyboardHook.Start();
+			KeyboardHook.KeyAction -= KeyboardEvent;
+			KeyboardHook.KeyAction += KeyboardEvent;
 		}
 
 		void StopHooks() {
+			logger.Warn("Stop");
+			CloseHighlighter();
 			MouseHook.OnMouseEvent -= MouseEventHook;
 			MouseHook.OnMouseMove -= MouseMoveHook;
 			MouseHook.Stop();
 
+			KeyboardHook.KeyAction -= KeyboardEvent;
+			KeyboardHook.Stop();
+			if(btnStart.Checked) {
+				btnStart.Checked = false;
+			}
 		}
 
 		void MouseEventHook(object sender, Mouse.MouseEventArgs e) {
@@ -85,6 +98,13 @@ namespace UsAcRe {
 				}
 
 			}), e);
+		}
+
+		void KeyboardEvent(object sender, RawKeyEventArgs e) {
+			if(e.VKCode == KeyboardHook.KeyStartStop) {
+				StopHooks();
+				return;
+			}
 		}
 
 	}

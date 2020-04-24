@@ -34,16 +34,15 @@ namespace UsAcRe {
 
 		private void btnStart_Click(object sender, EventArgs e) {
 			if(btnStart.Checked) {
-				logger.Warn("Start");
 				StartHooks();
 			} else {
 				StopHooks();
-				logger.Warn("Stop");
 			}
 		}
 
 		private void miClearLog_Click(object sender, EventArgs e) {
 			txtLog.Clear();
 		}
+
 	}
 }
