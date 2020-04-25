@@ -1,7 +1,8 @@
-﻿using System.Drawing;
+﻿using System.Collections.Generic;
+using System.Drawing;
 using System.Threading;
 using Microsoft.Test.Input;
-using UsAcRe.Helpers;
+using UsAcRe.Extensions;
 using UsAcRe.MouseProcess;
 
 namespace UsAcRe.Actions {
@@ -23,8 +24,14 @@ namespace UsAcRe.Actions {
 		public override string ToString() {
 			return string.Format("{0} Type:{1}, Down:{2}, Up:{2}", nameof(MouseAction), ActionType, DownClickedPoint, UpClickedPoint);
 		}
-		public override string ToScriptSource() {
-			return string.Format("new {0}({1}, {2}, {3}).{4}()", nameof(MouseAction), ScriptSourceHelper.ToNew(ActionType), ScriptSourceHelper.ToNew(DownClickedPoint), ScriptSourceHelper.ToNew(UpClickedPoint),
+		public override List<string> UsingsForScriptSource() {
+			return new List<string>() {
+				ActionType.ForUsings(),
+				DownClickedPoint.ForUsings(),
+			};
+		}
+		public override string ExecuteAsScriptSource() {
+			return string.Format("new {0}({1}, {2}, {3}).{4}()", nameof(MouseAction), ActionType.ForNew(), DownClickedPoint.ForNew(), UpClickedPoint.ForNew(),
 				nameof(MouseAction.Execute));
 		}
 

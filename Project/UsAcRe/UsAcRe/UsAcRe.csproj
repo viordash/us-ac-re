@@ -110,9 +110,9 @@
     <Compile Include="ClickBlocker\MouseClickBlocker.xaml.cs">
       <DependentUpon>MouseClickBlocker.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Extensions\ScriptSourceExtension.cs" />
     <Compile Include="Extensions\PointExtension.cs" />
     <Compile Include="Helpers\NamingHelpers.cs" />
-    <Compile Include="Helpers\ScriptSourceHelper.cs" />
     <Compile Include="Highlighter\ElementHighlighter.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
