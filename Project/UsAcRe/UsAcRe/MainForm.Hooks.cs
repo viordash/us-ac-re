@@ -49,6 +49,27 @@ namespace UsAcRe {
 			}), e);
 		}
 
+		void MouseMoveHook(object sender, MouseProcess.MouseMoveArgs e) {
+			BeginInvoke((Action<MouseProcess.MouseMoveArgs>)((args) => {
+				if(elementFromPoint != null) {
+					elementFromPoint.BreakOperations();
+					elementFromPoint = null;
+				}
+
+				if(args.Stopped) {
+					ShowMouseClickBlocker(args.Coord);
+					elementFromPoint = new ElementFromPoint(AutomationElementService, WinApiService, args.Coord, true);
+					CloseMouseClickBlocker();
+					ShowHighlighter();
+					logger.Info(elementFromPoint);
+				} else {
+					CloseMouseClickBlocker();
+					CloseHighlighter();
+				}
+
+			}), e);
+		}
+
 
 		void ShowHighlighter() {
 			CloseHighlighter();
@@ -73,30 +94,9 @@ namespace UsAcRe {
 
 		void CloseMouseClickBlocker() {
 			if(mouseClickBlocker != null) {
-				mouseClickBlocker.StopHighlighting();//				mouseClickBlocker.Hide();
+				mouseClickBlocker.StopHighlighting();
 				mouseClickBlocker = null;
 			}
-		}
-
-		void MouseMoveHook(object sender, MouseProcess.MouseMoveArgs e) {
-			BeginInvoke((Action<MouseProcess.MouseMoveArgs>)((args) => {
-				if(elementFromPoint != null) {
-					elementFromPoint.BreakOperations();
-					elementFromPoint = null;
-				}
-
-				if(args.Stopped) {
-					ShowMouseClickBlocker(args.Coord);
-					elementFromPoint = new ElementFromPoint(AutomationElementService, WinApiService, args.Coord, true);
-					CloseMouseClickBlocker();
-					ShowHighlighter();
-					logger.Info(elementFromPoint);
-				} else {
-					CloseMouseClickBlocker();
-					CloseHighlighter();
-				}
-
-			}), e);
 		}
 
 		void KeyboardEvent(object sender, RawKeyEventArgs e) {

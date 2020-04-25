@@ -22,7 +22,7 @@ namespace UsAcRe.Actions {
 		}
 
 		public override string ToString() {
-			return string.Format("{0} Type:{1}, Down:{2}, Up:{2}", nameof(MouseAction), ActionType, DownClickedPoint, UpClickedPoint);
+			return string.Format("{0} Type:{1}, Down:{2}, Up:{3}", nameof(MouseAction), ActionType, DownClickedPoint, UpClickedPoint);
 		}
 		public override List<string> UsingsForScriptSource() {
 			return new List<string>() {
