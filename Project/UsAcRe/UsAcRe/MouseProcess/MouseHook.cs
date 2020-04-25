@@ -162,7 +162,7 @@ namespace UsAcRe.MouseProcess {
 			}
 		}
 
-		private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
+		static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
 			if(nCode >= 0) {
 				WinAPI.MSLLHOOKSTRUCT hookStruct = (WinAPI.MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(WinAPI.MSLLHOOKSTRUCT));
 				switch((uint)wParam) {
