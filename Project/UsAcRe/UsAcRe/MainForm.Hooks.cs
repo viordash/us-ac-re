@@ -45,7 +45,7 @@ namespace UsAcRe {
 					|| (Bounds.Contains(args.Event.UpClickedPoint.X, args.Event.UpClickedPoint.Y))) {
 					return;
 				}
-				logger.Info($"MouseEvent: {args.Event.Type}, down:{args.Event.DownClickedPoint}, up:{args.Event.UpClickedPoint}");
+				Actions.Add(new Actions.MouseAction(args.Event.Type, args.Event.DownClickedPoint, args.Event.UpClickedPoint));
 			}), e);
 		}
 

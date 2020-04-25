@@ -6,13 +6,19 @@ namespace UsAcRe.Actions {
 	}
 
 	public class ActionsContainer {
+		NLog.Logger logger = NLog.LogManager.GetLogger("UsAcRe.FormMain");
+
 		public string Name { get; set; }
 		public ActionsList Items;
 
 
 		public ActionsContainer() {
 			Items = new ActionsList();
+		}
 
+		public void Add(BaseAction actionInfo) {
+			Items.Add(actionInfo);
+			logger.Info("Add | {0}", actionInfo.ToString());
 		}
 	}
 }

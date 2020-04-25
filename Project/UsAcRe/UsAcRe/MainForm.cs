@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using CommonServiceLocator;
 using NLog.Windows.Forms;
+using UsAcRe.Actions;
 using UsAcRe.Highlighter;
 using UsAcRe.Services;
 using UsAcRe.UIAutomationElement;
@@ -13,6 +14,8 @@ namespace UsAcRe {
 		ElementHighlighter elementHighlighter = null;
 		ElementFromPoint elementFromPoint = null;
 		ElementHighlighter mouseClickBlocker = null;
+
+		ActionsContainer Actions = new ActionsContainer();
 
 		IAutomationElementService AutomationElementService { get { return ServiceLocator.Current.GetInstance<IAutomationElementService>(); } }
 		IWinApiService WinApiService { get { return ServiceLocator.Current.GetInstance<IWinApiService>(); } }
