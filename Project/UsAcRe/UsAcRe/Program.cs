@@ -4,6 +4,7 @@ using NLog;
 
 namespace UsAcRe {
 	static class Program {
+		public static IntPtr MainFormHandle = IntPtr.Zero;
 		static readonly Logger logger = LogManager.GetCurrentClassLogger();
 		/// <summary>
 		/// The main entry point for the application.
@@ -11,6 +12,7 @@ namespace UsAcRe {
 		/// 
 		[STAThread]
 		static void Main() {
+			Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
 			AppDomain.CurrentDomain.UnhandledException +=
 				(sender, args) => HandleUnhandledException(args.ExceptionObject as Exception);
 			Application.ThreadException +=
@@ -19,6 +21,9 @@ namespace UsAcRe {
 			Application.SetCompatibleTextRenderingDefault(false);
 
 			Bootstrapper.Initialize();
+
+			var form = new MainForm();
+			MainFormHandle = form.Handle;
 			Application.Run(new MainForm());
 		}
 

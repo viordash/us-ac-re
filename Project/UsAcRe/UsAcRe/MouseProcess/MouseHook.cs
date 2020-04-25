@@ -3,10 +3,9 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Threading;
-using UsAcRe.Extensions;
 using UsAcRe.WindowsSystem;
 
-namespace UsAcRe.Mouse {
+namespace UsAcRe.MouseProcess {
 	public delegate void MouseEventHandler(object sender, MouseEventArgs args);
 	public class MouseEventArgs : EventArgs {
 		public MouseEvent Event;

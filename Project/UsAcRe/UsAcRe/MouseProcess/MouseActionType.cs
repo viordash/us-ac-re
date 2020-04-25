@@ -1,4 +1,4 @@
-﻿namespace UsAcRe.Mouse {
+﻿namespace UsAcRe.MouseProcess {
 	public enum MouseActionType {
 		None = 0,
 		LeftClick,

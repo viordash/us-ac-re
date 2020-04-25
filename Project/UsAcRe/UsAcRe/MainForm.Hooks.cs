@@ -2,8 +2,8 @@
 using System.Diagnostics;
 using System.Windows.Forms;
 using UsAcRe.Highlighter;
-using UsAcRe.Keyboard;
-using UsAcRe.Mouse;
+using UsAcRe.KeyboardProcess;
+using UsAcRe.MouseProcess;
 using UsAcRe.UIAutomationElement;
 using UsAcRe.WindowsSystem;
 
@@ -36,8 +36,8 @@ namespace UsAcRe {
 			}
 		}
 
-		void MouseEventHook(object sender, Mouse.MouseEventArgs e) {
-			BeginInvoke((Action<Mouse.MouseEventArgs>)((args) => {
+		void MouseEventHook(object sender, MouseProcess.MouseEventArgs e) {
+			BeginInvoke((Action<MouseProcess.MouseEventArgs>)((args) => {
 				if(args.Event == null) {
 					return;
 				}
@@ -66,8 +66,7 @@ namespace UsAcRe {
 
 		void ShowMouseClickBlocker(WinAPI.POINT coord) {
 			CloseMouseClickBlocker();
-			mouseClickBlocker = new ElementHighlighter(new System.Windows.Rect(coord.x - 3, coord.y - 3, 6, 6), string.Empty);// MouseClickBlocker();
-																															  //mouseClickBlocker.Show(coord);
+			mouseClickBlocker = new ElementHighlighter(new System.Windows.Rect(coord.x - 3, coord.y - 3, 6, 6), string.Empty);
 			mouseClickBlocker.StartHighlighting();
 			Debug.WriteLine($"ShowMouseClickBlocker :   coord:{coord}");
 		}
@@ -79,8 +78,8 @@ namespace UsAcRe {
 			}
 		}
 
-		void MouseMoveHook(object sender, Mouse.MouseMoveArgs e) {
-			BeginInvoke((Action<Mouse.MouseMoveArgs>)((args) => {
+		void MouseMoveHook(object sender, MouseProcess.MouseMoveArgs e) {
+			BeginInvoke((Action<MouseProcess.MouseMoveArgs>)((args) => {
 				if(elementFromPoint != null) {
 					elementFromPoint.BreakOperations();
 					elementFromPoint = null;
