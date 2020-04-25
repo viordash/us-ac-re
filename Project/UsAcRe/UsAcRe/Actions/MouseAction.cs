@@ -1,82 +1,68 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Threading;
 using Microsoft.Test.Input;
+using UsAcRe.Helpers;
 using UsAcRe.MouseProcess;
-using System.ComponentModel;
 
 namespace UsAcRe.Actions {
-
 	public class MouseAction : BaseAction {
-		MouseActionType actionType;
-		Point downClickedPoint;
-		Point upClickedPoint;
+		public MouseActionType ActionType { get; set; }
+		public Point DownClickedPoint { get; set; }
+		public Point UpClickedPoint { get; set; }
 
-		public MouseActionType ActionType {
-			get { return actionType; }
-			set {
-				actionType = value;
-				Modified();
-			}
-		}
-		public Point DownClickedPoint {
-			get { return downClickedPoint; }
-			set {
-				downClickedPoint = value;
-				Modified();
-			}
-		}
-		public Point UpClickedPoint {
-			get { return upClickedPoint; }
-			set {
-				upClickedPoint = value;
-				Modified();
-			}
-		}
-
-		public override int ExecuteTimeoutMs {
-			get { return 60 * 1000; }
+		public MouseAction(MouseActionType type, Point downClickedPoint, Point upClickedPoint) {
+			ActionType = type;
+			DownClickedPoint = downClickedPoint;
+			UpClickedPoint = upClickedPoint;
 		}
 
 		public override void Execute() {
-			throw new System.NotImplementedException();
+			SafeAction(() => DoClick());
 		}
 
-		bool DoClick() {
+		public override string ToString() {
+			return string.Format("{0} Type:{1}, Down:{2}, Up:{2}", nameof(MouseAction), ActionType, DownClickedPoint, UpClickedPoint);
+		}
+		public override string ToScriptSource() {
+			return string.Format("new {0}({1}, {2}, {3}).{4}()", nameof(MouseAction), ScriptSourceHelper.ToNew(ActionType), ScriptSourceHelper.ToNew(DownClickedPoint), ScriptSourceHelper.ToNew(UpClickedPoint),
+				nameof(MouseAction.Execute));
+		}
+
+		void DoClick() {
 			MainForm.MoveOutFromPoint(DownClickedPoint.X, DownClickedPoint.Y);
 			switch(ActionType) {
 				case MouseActionType.LeftClick:
 					Mouse_MoveTo(DownClickedPoint.X, DownClickedPoint.Y);
 					Mouse.Click(MouseButton.Left);
-					return true;
+					break;
 				case MouseActionType.RightClick:
 					Mouse_MoveTo(DownClickedPoint.X, DownClickedPoint.Y);
 					Mouse.Click(MouseButton.Right);
-					return true;
+					break;
 				case MouseActionType.MiddleClick:
 					Mouse_MoveTo(DownClickedPoint.X, DownClickedPoint.Y);
 					Mouse.Click(MouseButton.Middle);
-					return true;
+					break;
 				case MouseActionType.LeftDoubleClick:
 					Mouse_MoveTo(DownClickedPoint.X, DownClickedPoint.Y);
 					Mouse.DoubleClick(MouseButton.Left);
-					return true;
+					break;
 				case MouseActionType.LeftDrag:
-					SafeAction(() => DragTo(MouseButton.Left, DownClickedPoint));
-					return true;
+					DragTo(MouseButton.Left, DownClickedPoint);
+					break;
 				case MouseActionType.RightDrag:
-					SafeAction(() => DragTo(MouseButton.Right, DownClickedPoint));
-					return true;
+					DragTo(MouseButton.Right, DownClickedPoint);
+					break;
 				case MouseActionType.MiddleDrag:
-					SafeAction(() => DragTo(MouseButton.Middle, DownClickedPoint));
-					return true;
+					DragTo(MouseButton.Middle, DownClickedPoint);
+					break;
 				default:
-					throw new ExecuteMouseActionException(this, nameof(DoClick));
+					throw new SevereException(this, nameof(DoClick));
 			}
 		}
 
 		void Mouse_MoveTo(int x, int y) {
-			SafeAction(() => Mouse.MoveTo(new Point(x, y)));
+			Mouse.MoveTo(new Point(x, y));
 		}
 
 		void DragTo(MouseButton mouseButton, Point downClickablePoint) {
@@ -108,14 +94,6 @@ namespace UsAcRe.Actions {
 			Mouse.Up(mouseButton);
 		}
 
-		void SafeAction(Action action) {
-			try {
-				action();
-			} catch(Win32Exception ex) {
-				if((uint)ex.ErrorCode != 0x80004005) {
-					throw;
-				}
-			}
-		}
+
 	}
 }
