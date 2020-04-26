@@ -159,15 +159,18 @@ namespace UsAcRe.Services {
 				throw new InvalidOperationException();
 			}
 
-			var processes = Process.GetProcesses();
-			var selectedProcess = processes
-				.Where(x => x.Id == automationElement.Current.ProcessId)
-				.Single();
+			var selectedProcess = Process.GetProcessById(automationElement.Current.ProcessId);
+			var processes = Process.GetProcesses()
+				.Where(x => x.ProcessName == selectedProcess.ProcessName)
+				.ToDictionary(x => x.Id, x => Path.GetFileName(x.MainModule.FileName));
 
 			var exePath = Path.GetFileName(selectedProcess.MainModule.FileName);
-			var index = Array.FindIndex(processes, x => exePath == Path.GetFileName(x.MainModule.FileName));
+			var singleFileProcesses = processes
+				.Where(x => x.Value == exePath)
+				.ToList();
+			var index = singleFileProcesses.FindIndex(x => x.Key == selectedProcess.Id);
 
-			var elementProgram = new ElementProgram(index, Path.GetFileName(exePath));
+			var elementProgram = new ElementProgram(index, exePath);
 			return elementProgram;
 		}
 	}
