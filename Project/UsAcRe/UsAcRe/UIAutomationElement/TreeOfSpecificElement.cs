@@ -7,7 +7,7 @@ namespace UsAcRe.UIAutomationElement {
 	[Serializable]
 	public class TreeOfSpecificUiElement : List<UiElement> {
 
-		public string ProgramName { get; set; }
+		public ElementProgram Program { get; set; }
 
 		public System.Windows.Rect BoundingRectangle {
 			get {
@@ -25,7 +25,7 @@ namespace UsAcRe.UIAutomationElement {
 				sb.AppendFormat("{0}{1}\r\n", new string('\t', indent++), item);
 			}
 
-			sb.AppendFormat($"{ProgramName}\r\n");
+			sb.AppendFormat($"{Program}\r\n");
 			return sb.ToString();
 		}
 	}

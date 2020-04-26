@@ -11,7 +11,7 @@ namespace UsAcRe.Tests.ScriptTests {
 	public class ScriptBuilderTests {
 		[Test]
 		public void CreateUsingsSection_Test() {
-			var elementMatchAction = new ElementMatchAction("notepad.exe", new List<UiElement>() {
+			var elementMatchAction = new ElementMatchAction(new ElementProgram(42, "notepad.exe"), new List<UiElement>() {
 				new UiElement(4, "value1", "name1", "automationId1", ControlType.Button.Id, new Rect(1, 2, 3, 4)),
 				new UiElement(3, "value2", "name2", "automationId2", ControlType.CheckBox.Id, new Rect()),
 				new UiElement(1, "value3", "name3", "automationId3", ControlType.ComboBox.Id, new Rect(9, 10, 11, 12)),

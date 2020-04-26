@@ -21,7 +21,7 @@ namespace UsAcRe.Services {
 		bool ElementsIsSimilar(UiElement expected, UiElement actual);
 		string BuildFriendlyInfo(AutomationElement element);
 		void RetrieveElementValue(UiElement element);
-		string GetProgramName(UiElement element);
+		ElementProgram GetProgram(UiElement element);
 	}
 
 	public class AutomationElementService : IAutomationElementService {
@@ -154,14 +154,21 @@ namespace UsAcRe.Services {
 			}
 		}
 
-		public string GetProgramName(UiElement element) {
+		public ElementProgram GetProgram(UiElement element) {
 			if(!TryGetAutomationElement(element, out AutomationElement automationElement)) {
 				throw new InvalidOperationException();
 			}
 
-			var proc = Process.GetProcessById(automationElement.Current.ProcessId);
-			var exePath = proc.MainModule.FileName.ToString();
-			return Path.GetFileName(exePath);
+			var processes = Process.GetProcesses();
+			var selectedProcess = processes
+				.Where(x => x.Id == automationElement.Current.ProcessId)
+				.Single();
+
+			var exePath = Path.GetFileName(selectedProcess.MainModule.FileName);
+			var index = Array.FindIndex(processes, x => exePath == Path.GetFileName(x.MainModule.FileName));
+
+			var elementProgram = new ElementProgram(index, Path.GetFileName(exePath));
+			return elementProgram;
 		}
 	}
 }

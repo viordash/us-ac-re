@@ -18,6 +18,9 @@ namespace UsAcRe.Extensions {
 		public static string ForNew(this string val) {
 			return string.Format("\"{0}\"", val);
 		}
+		public static string ForNew(this ElementProgram val) {
+			return string.Format("new {0}({1}, {2})", val.GetType().Name, val.Index.ForNew(), val.FileName.ForNew());
+		}
 
 		public static string ForNew(this System.Windows.Rect val) {
 			if(val.IsEmpty) {

@@ -86,7 +86,7 @@ namespace UsAcRe.UIAutomationElement {
 			rootElement.Index = 0;
 
 			try {
-				TreeOfSpecificUiElement.ProgramName = automationElementService.GetProgramName(rootElement);
+				TreeOfSpecificUiElement.Program = automationElementService.GetProgram(rootElement);
 				TreeOfSpecificUiElement.Add(rootElement);
 				var elementsUnderPoint = new List<UiElement>();
 

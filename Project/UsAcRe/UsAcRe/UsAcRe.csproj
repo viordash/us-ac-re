@@ -136,6 +136,7 @@
     <Compile Include="Scripts\ScriptBuilder.cs" />
     <Compile Include="Services\AutomationElementService.cs" />
     <Compile Include="Services\WinApiService.cs" />
+    <Compile Include="UIAutomationElement\ElementProgram.cs" />
     <Compile Include="UIAutomationElement\TreeOfSpecificElement.cs" />
     <Compile Include="WindowsSystem\VirtualKeyCodes.cs" />
     <Compile Include="WindowsSystem\WinAPI.cs" />

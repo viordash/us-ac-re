@@ -52,7 +52,7 @@ namespace UsAcRe {
 					return;
 				}
 				if(elementFromPoint != null) {
-					Actions.Add(new Actions.ElementMatchAction(elementFromPoint.TreeOfSpecificUiElement.ProgramName, elementFromPoint.TreeOfSpecificUiElement));
+					Actions.Add(new Actions.ElementMatchAction(elementFromPoint.TreeOfSpecificUiElement.Program, elementFromPoint.TreeOfSpecificUiElement));
 					CloseMouseClickBlocker();
 					CloseHighlighter();
 					elementFromPoint = null;
