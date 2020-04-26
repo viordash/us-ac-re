@@ -29,14 +29,7 @@ namespace UsAcRe.UIAutomationElement {
 			breakOperations = true;
 		}
 
-
-		TreeOfSpecificUiElement treeOfSpecificElement = new TreeOfSpecificUiElement();
-
-		public System.Windows.Rect BoundingRectangle {
-			get {
-				return treeOfSpecificElement.BoundingRectangle;
-			}
-		}
+		public TreeOfSpecificUiElement TreeOfSpecificUiElement { get; } = new TreeOfSpecificUiElement();
 
 		public ElementFromPoint(
 			IAutomationElementService automationElementService,
@@ -54,8 +47,8 @@ namespace UsAcRe.UIAutomationElement {
 		}
 
 		public override string ToString() {
-			if(treeOfSpecificElement.Count > 0) {
-				return string.Format("{0} ({1}, {2}) |{3}|\r\n{4}", nameof(ElementFromPoint), elementCoord.x, elementCoord.y, treeOfSpecificElement.Count, treeOfSpecificElement);
+			if(TreeOfSpecificUiElement.Count > 0) {
+				return string.Format("{0} ({1}, {2}) |{3}|\r\n{4}", nameof(ElementFromPoint), elementCoord.x, elementCoord.y, TreeOfSpecificUiElement.Count, TreeOfSpecificUiElement);
 			} else {
 				return string.Format("{0} ({1}, {2}). No element", nameof(ElementFromPoint), elementCoord.x, elementCoord.y);
 			}
@@ -63,9 +56,9 @@ namespace UsAcRe.UIAutomationElement {
 
 		void DetermineElementUnderPoint() {
 			BuildTreeOfSpecificElement();
-			if(treeOfSpecificElement.Count > 0) {
-				var specificElement = treeOfSpecificElement.FirstOrDefault();
-				automationElementService.RetrieveElementValue(treeOfSpecificElement.FirstOrDefault());
+			if(TreeOfSpecificUiElement.Count > 0) {
+				var specificElement = TreeOfSpecificUiElement.FirstOrDefault();
+				automationElementService.RetrieveElementValue(TreeOfSpecificUiElement.FirstOrDefault());
 				logger.Trace("             DetermineElementUnderPoint 1: {0}; {1}", specificElement, specificElement.BoundingRectangle);
 			}
 		}
@@ -84,7 +77,7 @@ namespace UsAcRe.UIAutomationElement {
 			if(!detailedRetrieve) {
 				var element = automationElementService.FromPoint(new System.Windows.Point(elementCoord.x, elementCoord.y));
 				if(element != null) {
-					treeOfSpecificElement.Insert(0, element);
+					TreeOfSpecificUiElement.Insert(0, element);
 					return;
 				}
 			}
@@ -93,8 +86,8 @@ namespace UsAcRe.UIAutomationElement {
 			rootElement.Index = 0;
 
 			try {
-				treeOfSpecificElement.ProgramName = automationElementService.GetProgramName(rootElement);
-				treeOfSpecificElement.Add(rootElement);
+				TreeOfSpecificUiElement.ProgramName = automationElementService.GetProgramName(rootElement);
+				TreeOfSpecificUiElement.Add(rootElement);
 				var elementsUnderPoint = new List<UiElement>();
 
 				RetreiveChildrenUnderPoint(rootElement, elementsUnderPoint);
@@ -110,8 +103,8 @@ namespace UsAcRe.UIAutomationElement {
 					.FirstOrDefault();
 
 				if(sortedElements.Key != null) {
-					treeOfSpecificElement.InsertRange(0, sortedElements.Value);
-					treeOfSpecificElement.Insert(0, sortedElements.Key);
+					TreeOfSpecificUiElement.InsertRange(0, sortedElements.Value);
+					TreeOfSpecificUiElement.Insert(0, sortedElements.Key);
 				}
 			} catch(Exception ex) {
 				if(ex is OperationCanceledException) {

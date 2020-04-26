@@ -87,6 +87,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActionsTests\ElementMatchActionTests.cs" />
     <Compile Include="ActionsTests\MouseActionTests.cs" />
     <Compile Include="UIAutomationElement\ElementFromPointTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -14,7 +14,7 @@ namespace UsAcRe.Highlighter {
 
 		WpfElementBounding wpfElementBounding;
 
-		public ElementHighlighter(ElementFromPoint elementFromPoint) : this(elementFromPoint.BoundingRectangle, elementFromPoint.ToString()) {
+		public ElementHighlighter(ElementFromPoint elementFromPoint) : this(elementFromPoint.TreeOfSpecificUiElement.BoundingRectangle, elementFromPoint.ToString()) {
 			wpfElementBounding = new WpfElementBounding(1, 0.6, Colors.Yellow, Colors.Red);
 		}
 

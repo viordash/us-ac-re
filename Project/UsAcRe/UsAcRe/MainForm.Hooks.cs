@@ -51,6 +51,12 @@ namespace UsAcRe {
 				if(IsRestrictedArea(args.Event.DownClickedPoint) || IsRestrictedArea(args.Event.UpClickedPoint)) {
 					return;
 				}
+				if(elementFromPoint != null) {
+					Actions.Add(new Actions.ElementMatchAction(elementFromPoint.TreeOfSpecificUiElement.ProgramName, elementFromPoint.TreeOfSpecificUiElement));
+					CloseMouseClickBlocker();
+					CloseHighlighter();
+					elementFromPoint = null;
+				}
 
 				Actions.Add(new Actions.MouseAction(args.Event.Type, args.Event.DownClickedPoint, args.Event.UpClickedPoint));
 			}), e);
@@ -68,7 +74,6 @@ namespace UsAcRe {
 					elementFromPoint = new ElementFromPoint(AutomationElementService, WinApiService, args.Coord, true);
 					CloseMouseClickBlocker();
 					ShowHighlighter();
-					logger.Info(elementFromPoint);
 				} else {
 					CloseMouseClickBlocker();
 					CloseHighlighter();
