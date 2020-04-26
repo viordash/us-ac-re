@@ -6,25 +6,6 @@ using UsAcRe.UIAutomationElement;
 
 namespace UsAcRe.Extensions {
 	public static class ScriptSourceExtension {
-		public static string ForUsings(this int val) {
-			return string.Format("using {0};", val.GetType().Namespace);
-		}
-		public static string ForUsings(this Enum val) {
-			return string.Format("using {0};", val.GetType().Namespace);
-		}
-		public static string ForUsings(this System.Drawing.Point val) {
-			return string.Format("using {0};", val.GetType().Namespace);
-		}
-		public static string ForUsings(this string val) {
-			return string.Format("using {0};", val.GetType().Namespace);
-		}
-		public static string ForUsings<T>(this List<T> val) {
-			return string.Format("using {0};", val.GetType().Namespace);
-		}
-		public static string ForUsings(this System.Windows.Rect val) {
-			return string.Format("using {0};", val.GetType().Namespace);
-		}
-
 		public static string ForNew(this int val) {
 			return string.Format("{0}", val);
 		}
@@ -46,7 +27,7 @@ namespace UsAcRe.Extensions {
 			}
 		}
 		public static string ForNew(this UiElement val) {
-			return string.Format("new {0}({1}, {2}, {3}, {4}, {5}, {6})", val.GetType().Name, val.Index.ForNew(), val.Value.ForNew(), val.Name.ForNew(), val.AutomationId.ForNew(), 
+			return string.Format("new {0}({1}, {2}, {3}, {4}, {5}, {6})", val.GetType().Name, val.Index.ForNew(), val.Value.ForNew(), val.Name.ForNew(), val.AutomationId.ForNew(),
 				val.ControlTypeId.ForNew(), val.BoundingRectangle.ForNew());
 		}
 		public static string ForNew(this List<UiElement> val) {

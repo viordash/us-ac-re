@@ -24,12 +24,6 @@ namespace UsAcRe.Actions {
 		public override string ToString() {
 			return string.Format("{0} Type:{1}, Down:{2}, Up:{3}", nameof(MouseAction), ActionType, DownClickedPoint, UpClickedPoint);
 		}
-		public override List<string> UsingsForScriptSource() {
-			return new List<string>() {
-				ActionType.ForUsings(),
-				DownClickedPoint.ForUsings(),
-			};
-		}
 		public override string ExecuteAsScriptSource() {
 			return string.Format("new {0}({1}, {2}, {3}).{4}()", nameof(MouseAction), ActionType.ForNew(), DownClickedPoint.ForNew(), UpClickedPoint.ForNew(),
 				nameof(MouseAction.Execute));

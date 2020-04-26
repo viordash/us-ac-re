@@ -29,13 +29,6 @@ namespace UsAcRe.Actions {
 			}
 			return sb.ToString();
 		}
-		public override List<string> UsingsForScriptSource() {
-			return new List<string>() {
-				ProgramName.ForUsings(),
-				SearchPath.ForUsings(),
-				TimeoutMs.ForUsings()
-			};
-		}
 		public override string ExecuteAsScriptSource() {
 			return string.Format("new {0}({1}, {2}, {3}).{4}()", nameof(ElementMatchAction), ProgramName.ForNew(), SearchPath.ForNew(), TimeoutMs.ForNew(),
 				nameof(ElementMatchAction.Execute));

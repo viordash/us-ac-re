@@ -10,18 +10,6 @@ namespace UsAcRe.Tests.ActionsTests {
 	public class ElementMatchActionTests {
 
 		[Test]
-		public void UsingsForScriptSource_Test() {
-			var action = new ElementMatchAction("notepad.exe", new List<UiElement>() {
-				new UiElement(0, "value1", "name1", "automationId1", ControlType.Button.Id, Rect.Empty),
-				new UiElement(0, "value2", "name2", "automationId2", ControlType.CheckBox.Id, Rect.Empty),
-				new UiElement(0, "value3", "name3", "automationId3", ControlType.ComboBox.Id, Rect.Empty),
-			}, 1000);
-			var source = action.UsingsForScriptSource();
-			Assert.That(source, Contains.Item("using System.Collections.Generic;"));
-			Assert.That(source, Contains.Item("using System;"));
-		}
-
-		[Test]
 		public void ToString_Test() {
 			var action = new ElementMatchAction("notepad.exe", new List<UiElement>() {
 				new UiElement(4, "value1", "name1", "automationId1", ControlType.Button.Id, Rect.Empty),

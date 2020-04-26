@@ -1,6 +1,5 @@
 ﻿
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace UsAcRe.Actions {
@@ -8,7 +7,6 @@ namespace UsAcRe.Actions {
 	public abstract class BaseAction {
 		protected NLog.Logger logger = NLog.LogManager.GetLogger("UsAcRe.FormMain");
 
-		public abstract List<string> UsingsForScriptSource();
 		public abstract string ExecuteAsScriptSource();
 		public abstract void Execute();
 
