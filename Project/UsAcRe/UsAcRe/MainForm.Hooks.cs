@@ -36,15 +36,22 @@ namespace UsAcRe {
 			}
 		}
 
+		bool IsRestrictedArea(System.Drawing.Point point) {
+			return Bounds.Contains(point);
+		}
+		bool IsRestrictedArea(WinAPI.POINT coord) {
+			return Bounds.Contains(coord.x, coord.y);
+		}
+
 		void MouseEventHook(object sender, MouseProcess.MouseEventArgs e) {
 			BeginInvoke((Action<MouseProcess.MouseEventArgs>)((args) => {
 				if(args.Event == null) {
 					return;
 				}
-				if(Bounds.Contains(args.Event.DownClickedPoint.X, args.Event.DownClickedPoint.Y)
-					|| (Bounds.Contains(args.Event.UpClickedPoint.X, args.Event.UpClickedPoint.Y))) {
+				if(IsRestrictedArea(args.Event.DownClickedPoint) || IsRestrictedArea(args.Event.UpClickedPoint)) {
 					return;
 				}
+
 				Actions.Add(new Actions.MouseAction(args.Event.Type, args.Event.DownClickedPoint, args.Event.UpClickedPoint));
 			}), e);
 		}
@@ -56,7 +63,7 @@ namespace UsAcRe {
 					elementFromPoint = null;
 				}
 
-				if(args.Stopped && args.Buttons.Count == 0) {
+				if(!IsRestrictedArea(args.Coord) && args.Stopped && args.Buttons.Count == 0) {
 					ShowMouseClickBlocker(args.Coord);
 					elementFromPoint = new ElementFromPoint(AutomationElementService, WinApiService, args.Coord, true);
 					CloseMouseClickBlocker();
@@ -69,7 +76,6 @@ namespace UsAcRe {
 
 			}), e);
 		}
-
 
 		void ShowHighlighter() {
 			CloseHighlighter();
