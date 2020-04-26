@@ -56,7 +56,7 @@ namespace UsAcRe {
 					elementFromPoint = null;
 				}
 
-				if(args.Stopped && Control.MouseButtons == MouseButtons.None) {
+				if(args.Stopped && args.Buttons.Count == 0) {
 					ShowMouseClickBlocker(args.Coord);
 					elementFromPoint = new ElementFromPoint(AutomationElementService, WinApiService, args.Coord, true);
 					CloseMouseClickBlocker();

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
@@ -9,7 +10,8 @@ namespace UsAcRe.MouseProcess {
 	public delegate void MouseEventHandler(object sender, MouseEventArgs args);
 	public class MouseEventArgs : EventArgs {
 		public MouseEvent Event;
-		public MouseEventArgs(MouseEvent mouseEvent) {
+		public List<MouseButtonType> Buttons { get; set; }
+		public MouseEventArgs(MouseEvent mouseEvent, List<MouseButtonType> buttons) {
 			Event = mouseEvent;
 		}
 	}
@@ -17,9 +19,11 @@ namespace UsAcRe.MouseProcess {
 	public class MouseMoveArgs : EventArgs {
 		public WinAPI.POINT Coord { get; set; }
 		public bool Stopped { get; set; }
-		public MouseMoveArgs(WinAPI.POINT coord, bool stopped) {
+		public List<MouseButtonType> Buttons { get; set; }
+		public MouseMoveArgs(WinAPI.POINT coord, bool stopped, List<MouseButtonType> buttons) {
 			Coord = coord;
 			Stopped = stopped;
+			Buttons = buttons;
 		}
 	}
 
@@ -38,6 +42,7 @@ namespace UsAcRe.MouseProcess {
 		private static WinAPI.POINT prevMouseCoord = WinAPI.POINT.Empty;
 		private static bool moving = false;
 		private static Timer timerStopMouseMoveDetection = null;
+		private static List<MouseButtonType> pressedButtons = new List<MouseButtonType>();
 
 		public static void Start() {
 			_hookID = SetHook(_proc);
@@ -95,7 +100,9 @@ namespace UsAcRe.MouseProcess {
 					};
 				}
 				logger.Info("IsDown 1:              {1}; {0}; {2}", button, DateTime.Now.Ticks, prevMouseEvent == null ? "null" : "");
+				pressedButtons.Add(button);
 			} else {
+				pressedButtons.Remove(button);
 				logger.Info("IsUp:                  {1}; {0}; {2}", button, DateTime.Now.Ticks, prevMouseEvent == null ? "null" : "");
 				if(prevMouseEvent == null) {
 					return;//                    throw new InvalidOperationException("MouseDown is missed");
@@ -141,7 +148,7 @@ namespace UsAcRe.MouseProcess {
 			}
 			timerStopMouseMoveDetection = new Timer((state) => {
 				moving = false;
-				OnMouseMove(null, new MouseMoveArgs(new WinAPI.POINT(x, y), !moving));
+				OnMouseMove(null, new MouseMoveArgs(new WinAPI.POINT(x, y), !moving, pressedButtons));
 			}, null, 400, Timeout.Infinite);
 
 			if(!moving) {
@@ -152,13 +159,13 @@ namespace UsAcRe.MouseProcess {
 			prevMouseCoord.y = y;
 
 			if(OnMouseMove != null) {
-				OnMouseMove(null, new MouseMoveArgs(prevMouseCoord, !moving));
+				OnMouseMove(null, new MouseMoveArgs(prevMouseCoord, !moving, pressedButtons));
 			}
 		}
 
 		static void DelayedStoringMouseAction(object state) {
 			if(OnMouseEvent != null) {
-				OnMouseEvent(null, new MouseEventArgs(state as MouseEvent));
+				OnMouseEvent(null, new MouseEventArgs(state as MouseEvent, pressedButtons));
 			}
 		}
 
