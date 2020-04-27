@@ -18,7 +18,7 @@ namespace UsAcRe.Actions {
 
 		public void Add(BaseAction actionInfo) {
 			Items.Add(actionInfo);
-			logger.Info("Add | {0}", actionInfo.ToString());
+			logger.Info("{0}", actionInfo.ExecuteAsScriptSource());
 		}
 	}
 }
