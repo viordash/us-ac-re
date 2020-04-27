@@ -12,9 +12,9 @@ namespace UsAcRe.Tests.ScriptTests {
 		[Test]
 		public void CreateUsingsSection_Test() {
 			var elementMatchAction = new ElementMatchAction(new ElementProgram(42, "notepad.exe"), new List<UiElement>() {
-				new UiElement(4, "value1", "name1", "automationId1", ControlType.Button.Id, new Rect(1, 2, 3, 4)),
-				new UiElement(3, "value2", "name2", "automationId2", ControlType.CheckBox.Id, new Rect()),
-				new UiElement(1, "value3", "name3", "automationId3", ControlType.ComboBox.Id, new Rect(9, 10, 11, 12)),
+				new UiElement(4, "value1", "name1", "className1", "automationId1", ControlType.Button.Id, new Rect(1, 2, 3, 4)),
+				new UiElement(3, "value2", "name2", "className2", "automationId2", ControlType.CheckBox.Id, new Rect()),
+				new UiElement(1, "value3", "name3", "className3", "automationId3", ControlType.ComboBox.Id, new Rect(9, 10, 11, 12)),
 			}, 1000);
 
 			var mouseAction = new MouseAction(MouseProcess.MouseActionType.LeftClick, new System.Drawing.Point(1, 2), new System.Drawing.Point(3, 4));

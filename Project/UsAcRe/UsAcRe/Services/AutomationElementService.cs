@@ -15,6 +15,7 @@ namespace UsAcRe.Services {
 		UiElement FromHandle(IntPtr hwnd);
 		List<UiElement> FindAllValidElements(UiElement element, TreeScope scope);
 		UiElement GetParent(UiElement element);
+		UiElement GetDesktop();
 		IntPtr GetNativeWindowHandle(UiElement element);
 
 		bool Compare(UiElement left, UiElement right);
@@ -60,6 +61,10 @@ namespace UsAcRe.Services {
 				return null;
 			}
 			return ToUiElement(TreeWalker.RawViewWalker.GetParent(automationElement));
+		}
+
+		public UiElement GetDesktop() {
+			return ToUiElement(AutomationElement.RootElement);
 		}
 
 		public IntPtr GetNativeWindowHandle(UiElement element) {
@@ -118,11 +123,8 @@ namespace UsAcRe.Services {
 				return null;
 			}
 			try {
-				return new UiElement() {
-					Name = NamingHelpers.Escape(element.Current.Name, 100),
-					AutomationId = NamingHelpers.Escape(element.Current.AutomationId, 100),
-					ControlTypeId = element.Current.ControlType.Id,
-					BoundingRectangle = element.Current.BoundingRectangle,
+				return new UiElement(-1, null, NamingHelpers.Escape(element.Current.Name, 100), element.Current.ClassName,
+					NamingHelpers.Escape(element.Current.AutomationId, 100), element.Current.ControlType.Id, element.Current.BoundingRectangle) {
 					AutomationElementObj = element
 				};
 			} catch {

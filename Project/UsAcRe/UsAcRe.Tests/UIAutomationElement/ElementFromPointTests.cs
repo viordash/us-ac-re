@@ -34,10 +34,7 @@ namespace UsAcRe.Tests.UIAutomationElement {
 			automationElementServiceMock
 				.Setup(x => x.FromHandle(It.Is<IntPtr>(h => h == new IntPtr(42))))
 				.Returns(() => {
-					return new UiElement() {
-						Name = "Button1",
-						ControlTypeId = ControlType.Tree.Id,
-						BoundingRectangle = new System.Windows.Rect(1, 2, 3, 4),
+					return new UiElement(-1, null, "Button1", "SomeClass", "AutomationId", ControlType.Tree.Id, new System.Windows.Rect(1, 2, 3, 4)) {
 						AutomationElementObj = new object()
 					};
 				});
@@ -46,10 +43,7 @@ namespace UsAcRe.Tests.UIAutomationElement {
 				.Setup(x => x.FindAllValidElements(It.IsAny<UiElement>(), It.IsAny<TreeScope>()))
 				.Returns(() => {
 					return new List<UiElement>() {
-						new UiElement() {
-							Name = "Button2",
-							ControlTypeId = ControlType.Tree.Id,
-							BoundingRectangle = new System.Windows.Rect(1, 2, 3, 4),
+						new UiElement(-1, null, "Button2", "SomeClass", "AutomationId", ControlType.Tree.Id, new System.Windows.Rect(1, 2, 3, 4)) {
 							AutomationElementObj = new object()
 						}
 					};

@@ -83,7 +83,17 @@ namespace UsAcRe.UIAutomationElement {
 			}
 
 			var rootElement = automationElementService.FromHandle(rootWindowHwnd);
+			var desktop = automationElementService.GetDesktop();
+			var desktopChildren = GetChildren(desktop);
+
 			rootElement.Index = 0;
+			var similars = desktopChildren.Where(x => automationElementService.ElementsIsSimilar(x, rootElement));
+			for(int i = 0; i < similars.Count(); i++) {
+				if(automationElementService.Compare(rootElement, similars.ElementAt(i))) {
+					rootElement.Index = i;
+					break;
+				}
+			}
 
 			try {
 				TreeOfSpecificUiElement.Program = automationElementService.GetProgram(rootElement);
@@ -140,12 +150,12 @@ namespace UsAcRe.UIAutomationElement {
 			Debug.WriteLine($"elementsUnderPoint: {elementUnderPoint}, childs: {elementsUnderPoint.Count()}");
 
 			if(elementsUnderPoint.Count > 0) {
-
 				foreach(var item in elementsUnderPoint) {
 					var similars = childElements.Where(x => automationElementService.ElementsIsSimilar(x, item));
 					for(int i = 0; i < similars.Count(); i++) {
 						if(item == similars.ElementAt(i)) {
 							item.Index = i;
+							break;
 						}
 					}
 				}
