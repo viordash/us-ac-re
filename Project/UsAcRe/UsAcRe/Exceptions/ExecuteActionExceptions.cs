@@ -1,6 +1,7 @@
 ﻿using System;
+using UsAcRe.Actions;
 
-namespace UsAcRe.Actions {
+namespace UsAcRe.Exceptions {
 	public class ExecuteBaseActionException : Exception {
 		public ExecuteBaseActionException(string message) : base(message) { }
 		protected ExecuteBaseActionException(BaseAction baseAction, string targetName) : this(BuildMessage(baseAction, targetName)) { }
@@ -23,5 +24,10 @@ namespace UsAcRe.Actions {
 	public class SevereException : ExecuteBaseActionException {
 		public SevereException(MouseAction mouseAction, string targetName) : base(mouseAction, targetName) { }
 		public SevereException(BaseAction baseAction) : base(baseAction) { }
+	}
+
+	public class ScriptComposeException : ExecuteBaseActionException {
+		public ScriptComposeException() : this("Script composing") { }
+		public ScriptComposeException(string message) : base(message) { }
 	}
 }

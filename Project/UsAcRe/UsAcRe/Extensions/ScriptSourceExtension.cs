@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UsAcRe.Exceptions;
 using UsAcRe.UIAutomationElement;
 
 namespace UsAcRe.Extensions {
@@ -34,8 +35,15 @@ namespace UsAcRe.Extensions {
 				val.ControlTypeId.ForNew(), val.BoundingRectangle.ForNew());
 		}
 		public static string ForNew(this List<UiElement> val) {
+			var type = val.GetType();
+			while (type.GenericTypeArguments.Length == 0) {
+				type = type.BaseType;
+				if (type == null) {
+					throw new ScriptComposeException();
+				}
+			}
 			var sb = new StringBuilder();
-			sb.AppendFormat("new List<{0}>() {{", val.GetType().GenericTypeArguments[0].Name);
+			sb.AppendFormat("new List<{0}>() {{", type.GenericTypeArguments[0].Name);
 			sb.AppendLine();
 			foreach(var item in val.AsEnumerable().Reverse()) {
 				sb.AppendFormat("  {0},", item.ForNew());

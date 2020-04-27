@@ -106,7 +106,7 @@
   <ItemGroup>
     <Compile Include="Actions\ActionsContainer.cs" />
     <Compile Include="Actions\BaseAction.cs" />
-    <Compile Include="Actions\ExecuteActionExceptions.cs" />
+    <Compile Include="Exceptions\ExecuteActionExceptions.cs" />
     <Compile Include="Actions\ElementMatchAction.cs" />
     <Compile Include="Actions\MouseAction.cs" />
     <Compile Include="Bootstrapper.cs" />

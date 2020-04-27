@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Threading;
 using Microsoft.Test.Input;
+using UsAcRe.Exceptions;
 using UsAcRe.Extensions;
 using UsAcRe.MouseProcess;
 
