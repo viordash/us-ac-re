@@ -31,6 +31,15 @@ namespace UsAcRe.Tests.UIAutomationElement {
 					return new IntPtr(42);
 				});
 
+
+			automationElementServiceMock
+				.Setup(x => x.GetDesktop())
+				.Returns(() => {
+					return new UiElement(-1, null, "Desktop", "", "", ControlType.Window.Id, new System.Windows.Rect(1, 2, 300, 400)) {
+						AutomationElementObj = new object()
+					};
+				});
+
 			automationElementServiceMock
 				.Setup(x => x.FromHandle(It.Is<IntPtr>(h => h == new IntPtr(42))))
 				.Returns(() => {
@@ -50,7 +59,6 @@ namespace UsAcRe.Tests.UIAutomationElement {
 				});
 
 			var testable = new ElementFromPoint(automationElementServiceMock.Object, winApiServiceMock.Object, new WinAPI.POINT(100, 200), true);
-
 
 			winApiServiceMock.VerifyAll();
 			automationElementServiceMock.VerifyAll();
