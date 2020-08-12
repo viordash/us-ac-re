@@ -27,8 +27,8 @@ namespace UsAcRe.UIAutomationElement {
 		}
 
 		public override string ToString() {
-			return string.Format("[{0}] \"{1}\" \"{2}\" \"{3}\" \"{4}\" \"{5}\"", Index, ControlType.LookupById(ControlTypeId).LocalizedControlType,
-				Name?.Substring(0, Math.Min(Name.Length, 60)), ClassName?.Substring(0, Math.Min(ClassName.Length, 60)), AutomationId, Value);
+			return string.Format("[{0}] \"{1}\" \"{2}\" \"{3}\" \"{4}\" \"{5}\" {6}", Index, ControlType.LookupById(ControlTypeId).LocalizedControlType,
+				Name?.Substring(0, Math.Min(Name.Length, 60)), ClassName?.Substring(0, Math.Min(ClassName.Length, 60)), AutomationId, Value, BoundingRectangle);
 		}
 	}
 }

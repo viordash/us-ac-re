@@ -109,7 +109,7 @@ namespace UsAcRe.UIAutomationElement {
 					.Where(x => x.Value != null)
 					.OrderByDescending(x => GetZOrder(x.Key))
 					.ThenByDescending(x => x.Value.Count)
-					.ThenBy(x => x.Key.BoundingRectangle, new BoundingRectangleComp())
+					.OrderBy(x => x.Key.BoundingRectangle, new BoundingRectangleComp())
 					.FirstOrDefault();
 
 				if(sortedElements.Key != null) {
