@@ -10,6 +10,12 @@ namespace UsAcRe.Extensions {
 		public static string ForNew(this int val) {
 			return string.Format("{0}", val);
 		}
+		public static string ForNew(this uint val) {
+			return string.Format("{0}", val);
+		}
+		public static string ForNew(this bool val) {
+			return string.Format("{0:L}", val).ToLower();
+		}
 		public static string ForNew(this Enum val) {
 			return string.Format("{0}.{1}", val.GetType().Name, val);
 		}
@@ -36,9 +42,9 @@ namespace UsAcRe.Extensions {
 		}
 		public static string ForNew(this List<UiElement> val) {
 			var type = val.GetType();
-			while (type.GenericTypeArguments.Length == 0) {
+			while(type.GenericTypeArguments.Length == 0) {
 				type = type.BaseType;
-				if (type == null) {
+				if(type == null) {
 					throw new ScriptComposeException();
 				}
 			}

@@ -88,6 +88,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActionsTests\ElementMatchActionTests.cs" />
+    <Compile Include="ActionsTests\KeybdActionTests.cs" />
     <Compile Include="ActionsTests\MouseActionTests.cs" />
     <Compile Include="ScriptTests\ScriptBuilderTests.cs" />
     <Compile Include="UIAutomationElement\ElementFromPointTests.cs" />

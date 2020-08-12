@@ -6,11 +6,11 @@ using UsAcRe.WindowsSystem;
 namespace UsAcRe.KeyboardProcess {
 	public delegate void RawKeyEventHandler(object sender, RawKeyEventArgs args);
 	public class RawKeyEventArgs : EventArgs {
-		public uint VKCode;
+		public VirtualKeyCodes VKCode;
 		public bool IsUp;
 		public int MessageTimeStamp;
 
-		public RawKeyEventArgs(uint vKCode, bool isUp, int messageTimeStamp) {
+		public RawKeyEventArgs(VirtualKeyCodes vKCode, bool isUp, int messageTimeStamp) {
 			this.VKCode = vKCode;
 			this.IsUp = isUp;
 			this.MessageTimeStamp = messageTimeStamp;
@@ -18,8 +18,8 @@ namespace UsAcRe.KeyboardProcess {
 	}
 
 	public static class KeyboardHook {
-		public static uint KeyStartStop = (uint)VirtualKeyCodes.VK_PAUSE;
-		public static uint KeyTestControl = (uint)VirtualKeyCodes.VK_SNAPSHOT;
+		public static VirtualKeyCodes KeyStartStop = VirtualKeyCodes.VK_PAUSE;
+		public static VirtualKeyCodes KeyTestControl = VirtualKeyCodes.VK_SNAPSHOT;
 		public static event RawKeyEventHandler KeyAction = delegate { };
 		private static WinAPI.LowLevelKeyboardProc _proc = HookCallback;
 		private static IntPtr _hookID = IntPtr.Zero;
@@ -52,24 +52,24 @@ namespace UsAcRe.KeyboardProcess {
 				switch((int)wParam) {
 					case WindowsMessages.WM_SYSKEYDOWN:
 					case WindowsMessages.WM_KEYDOWN:
-						if(hookStruct.vkCode == KeyStartStop || hookStruct.vkCode == KeyTestControl) { //skip keys
-							KeyAction(null, new RawKeyEventArgs(hookStruct.vkCode, false, (int)hookStruct.time));
+						if((VirtualKeyCodes)hookStruct.vkCode == KeyStartStop || (VirtualKeyCodes)hookStruct.vkCode == KeyTestControl) { //skip keys
+							KeyAction(null, new RawKeyEventArgs((VirtualKeyCodes)hookStruct.vkCode, false, (int)hookStruct.time));
 							return new IntPtr(1);
 						}
 						if(prevVKCode != hookStruct.vkCode || prevKeyUP != false) {
-							KeyAction(null, new RawKeyEventArgs(hookStruct.vkCode, false, (int)hookStruct.time));
+							KeyAction(null, new RawKeyEventArgs((VirtualKeyCodes)hookStruct.vkCode, false, (int)hookStruct.time));
 						}
 						prevVKCode = hookStruct.vkCode;
 						prevKeyUP = false;
 						break;
 					case WindowsMessages.WM_SYSKEYUP:
 					case WindowsMessages.WM_KEYUP:
-						if(hookStruct.vkCode == KeyStartStop || hookStruct.vkCode == KeyTestControl) { //skip keys
-							KeyAction(null, new RawKeyEventArgs(hookStruct.vkCode, true, (int)hookStruct.time));
+						if((VirtualKeyCodes)hookStruct.vkCode == KeyStartStop || (VirtualKeyCodes)hookStruct.vkCode == KeyTestControl) { //skip keys
+							KeyAction(null, new RawKeyEventArgs((VirtualKeyCodes)hookStruct.vkCode, true, (int)hookStruct.time));
 							return new IntPtr(1);
 						}
 						if(prevVKCode != hookStruct.vkCode || prevKeyUP != true) {
-							KeyAction(null, new RawKeyEventArgs(hookStruct.vkCode, true, (int)hookStruct.time));
+							KeyAction(null, new RawKeyEventArgs((VirtualKeyCodes)hookStruct.vkCode, true, (int)hookStruct.time));
 						}
 						prevVKCode = hookStruct.vkCode;
 						prevKeyUP = true;

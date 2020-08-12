@@ -62,8 +62,8 @@ namespace UsAcRe {
 			}), e);
 		}
 
-		void MouseMoveHook(object sender, MouseProcess.MouseMoveArgs e) {
-			BeginInvoke((Action<MouseProcess.MouseMoveArgs>)((args) => {
+		void MouseMoveHook(object sender, MouseMoveArgs e) {
+			BeginInvoke((Action<MouseMoveArgs>)((args) => {
 				if(elementFromPoint != null) {
 					elementFromPoint.BreakOperations();
 					elementFromPoint = null;
@@ -74,6 +74,7 @@ namespace UsAcRe {
 					elementFromPoint = new ElementFromPoint(AutomationElementService, WinApiService, args.Coord, true);
 					CloseMouseClickBlocker();
 					ShowHighlighter();
+					//logger.Info(elementFromPoint);
 				} else {
 					CloseMouseClickBlocker();
 					CloseHighlighter();
@@ -115,6 +116,22 @@ namespace UsAcRe {
 				StopHooks();
 				return;
 			}
+
+			BeginInvoke((Action<RawKeyEventArgs>)((args) => {
+				if(elementFromPoint != null) {
+					elementFromPoint.BreakOperations();
+					elementFromPoint = null;
+				}
+
+				WinAPI.POINT pt;
+				WinAPI.GetCursorPos(out pt);
+
+				if(!IsRestrictedArea(pt)) {
+					Actions.Add(new Actions.KeybdAction(args.VKCode, e.IsUp));
+				}
+				CloseMouseClickBlocker();
+				CloseHighlighter();
+			}), e);
 		}
 
 	}
