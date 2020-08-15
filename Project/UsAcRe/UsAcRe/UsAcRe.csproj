@@ -116,6 +116,7 @@
     </Compile>
     <Compile Include="Extensions\ScriptSourceExtension.cs" />
     <Compile Include="Extensions\PointExtension.cs" />
+    <Compile Include="Helpers\FormsHelper.cs" />
     <Compile Include="Helpers\NamingHelpers.cs" />
     <Compile Include="Highlighter\ElementHighlighter.cs" />
     <Compile Include="MainForm.cs">

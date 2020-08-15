@@ -81,19 +81,19 @@
             this.miClearLog,
             this.miCopyLog});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(181, 70);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(103, 48);
 			// 
 			// miClearLog
 			// 
 			this.miClearLog.Name = "miClearLog";
-			this.miClearLog.Size = new System.Drawing.Size(180, 22);
+			this.miClearLog.Size = new System.Drawing.Size(102, 22);
 			this.miClearLog.Text = "Clear";
 			this.miClearLog.Click += new System.EventHandler(this.miClearLog_Click);
 			// 
 			// miCopyLog
 			// 
 			this.miCopyLog.Name = "miCopyLog";
-			this.miCopyLog.Size = new System.Drawing.Size(180, 22);
+			this.miCopyLog.Size = new System.Drawing.Size(102, 22);
 			this.miCopyLog.Text = "Copy";
 			// 
 			// txtLog
@@ -105,7 +105,7 @@
 			this.txtLog.Location = new System.Drawing.Point(0, 25);
 			this.txtLog.Name = "txtLog";
 			this.txtLog.ReadOnly = true;
-			this.txtLog.Size = new System.Drawing.Size(429, 75);
+			this.txtLog.Size = new System.Drawing.Size(429, 76);
 			this.txtLog.TabIndex = 5;
 			this.txtLog.Text = "";
 			// 
@@ -113,10 +113,11 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(429, 100);
+			this.ClientSize = new System.Drawing.Size(429, 101);
 			this.Controls.Add(this.txtLog);
 			this.Controls.Add(this.toolStrip1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.MinimumSize = new System.Drawing.Size(445, 140);
 			this.Name = "MainForm";
 			this.Text = "User\'s actions repeater";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);

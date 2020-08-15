@@ -3,7 +3,9 @@ using System.Windows.Forms;
 using CommonServiceLocator;
 using NLog.Windows.Forms;
 using UsAcRe.Actions;
+using UsAcRe.Helpers;
 using UsAcRe.Highlighter;
+using UsAcRe.Properties;
 using UsAcRe.Services;
 using UsAcRe.UIAutomationElement;
 using UsAcRe.WindowsSystem;
@@ -29,9 +31,16 @@ namespace UsAcRe {
 			if(logger == null) {
 				logger = NLog.LogManager.GetLogger("UsAcRe.FormMain");
 			}
+			FormsHelper.LoadLocation(Settings.Default.MainFormLocation, this);
+			FormsHelper.LoadSize(Settings.Default.MainFormSize, this);
+
 		}
 
 		private void MainForm_FormClosed(object sender, FormClosedEventArgs e) {
+			Settings.Default.MainFormLocation = Location;
+			Settings.Default.MainFormSize = Size;
+			Settings.Default.Save();
+
 			CloseMouseClickBlocker();
 			CloseHighlighter();
 		}
