@@ -13,7 +13,7 @@ namespace UsAcRe.UIAutomationElement {
 
 		#region inner classes
 
-		protected class TreeElement {
+		public class TreeElement {
 			public UiElement Element { get; private set; }
 			public List<UiElement> Childs { get; } = new List<UiElement>();
 			public TreeElement(UiElement element, List<UiElement> childs) {
@@ -150,10 +150,10 @@ namespace UsAcRe.UIAutomationElement {
 				.Where(x => x.Item1 == topElement.Item1)
 				.Select(x => x.Item2);
 
-			var proximityElements = topElements
+			var proximityElement = topElements
 				.OrderBy(x => x.Element.BoundingRectangle, new BoundingRectangleComp())
 				.FirstOrDefault();
-			return proximityElements;
+			return proximityElement;
 		}
 
 		void RetreiveElementsUnderPoint(UiElement elementUnderPoint, List<TreeElement> elements) {
@@ -207,63 +207,6 @@ namespace UsAcRe.UIAutomationElement {
 			} else {
 				return automationElementService.FindAllValidElements(element, TreeScope.Children);
 			}
-		}
-
-		Dictionary<UiElement, List<UiElement>> BuildElementsTree(UiElement rootElement, List<UiElement> elementsUnderPoint) {
-			var tree = new Dictionary<UiElement, List<UiElement>>();
-			foreach(var element in elementsUnderPoint) {
-				BreakOperationsIfCoordChanged();
-				var elementTree = GetAncestors(rootElement, element);
-				tree.Add(element, elementTree);
-			}
-			return tree;
-		}
-
-		List<UiElement> GetAncestors(UiElement rootElement, UiElement element) {
-			var list = new List<UiElement>();
-			do {
-				element = automationElementService.GetParent(element);
-				if(element != null && automationElementService.Compare(rootElement, element)) {
-					break;
-				}
-				list.Add(element);
-			} while(list.Count < 10000);
-
-			return list;
-		}
-
-		void RemoveParents(Dictionary<UiElement, List<UiElement>> tree) {
-			var keysToBeDeleted = new List<UiElement>();
-			foreach(var element in tree.Keys) {
-				foreach(var ancestors in tree.Values) {
-					var itemIsParent = ancestors.Any(x => automationElementService.Compare(element, x));
-					if(itemIsParent) {
-						keysToBeDeleted.Add(element);
-					}
-				}
-			}
-			foreach(var key in keysToBeDeleted) {
-				var keyLikely = tree.Values.Select(x => x.Where(e => automationElementService.Compare(key, e))).SelectMany(x => x);
-				foreach(var item in keyLikely) {
-					item.Index = key.Index;
-				}
-				tree.Remove(key);
-			}
-		}
-
-		int GetTreeOrder(UiElement rootElement, UiElement element) {
-			if(element == null) {
-				return -1;
-			}
-			var _element = element;
-			var z = 0;
-			while(!automationElementService.Compare(rootElement, _element)) {
-				_element = automationElementService.GetParent(_element);
-				z++;
-			}
-
-			Debug.WriteLine("GetTreeOrder: {0}, z: {1}", element, z);
-			return z;
 		}
 
 		protected virtual int GetZOrder(UiElement element, IntPtr rootWindow) {
