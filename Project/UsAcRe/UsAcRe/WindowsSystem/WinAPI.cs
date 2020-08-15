@@ -375,5 +375,18 @@ namespace UsAcRe.WindowsSystem {
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool GetWindowInfo(IntPtr hwnd, ref WINDOWINFO pwi);
 
+		public delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
+		[DllImport("user32.dll")]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam);
+
+		[DllImport("user32.dll")]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool IntersectRect([Out] out RECT lprcDst, [In] ref RECT lprcSrc1, [In] ref RECT lprcSrc2);
+
+		[DllImport("user32.dll")]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool IsWindowVisible(IntPtr hWnd);
+
 	}
 }

@@ -12,6 +12,16 @@ namespace UsAcRe.UIAutomationElement {
 		NLog.Logger logger = NLog.LogManager.GetLogger("UsAcRe.Trace");
 
 		#region inner classes
+
+		protected class TreeElement {
+			public UiElement Element { get; private set; }
+			public List<UiElement> Childs { get; } = new List<UiElement>();
+			public TreeElement(UiElement element, List<UiElement> childs) {
+				Element = element;
+				Childs.AddRange(childs);
+			}
+		}
+
 		class BoundingRectangleComp : IComparer<System.Windows.Rect> {
 			public int Compare(System.Windows.Rect x, System.Windows.Rect y) {
 				return (x.Height + x.Width).CompareTo(y.Height + y.Width);
@@ -98,23 +108,14 @@ namespace UsAcRe.UIAutomationElement {
 			try {
 				TreeOfSpecificUiElement.Program = automationElementService.GetProgram(rootElement);
 				TreeOfSpecificUiElement.Add(rootElement);
-				var elementsUnderPoint = new List<UiElement>();
 
-				RetreiveChildrenUnderPoint(rootElement, elementsUnderPoint);
+				var elements = new List<TreeElement>();
+				RetreiveElementsUnderPoint(rootElement, elements);
 
-				var tree = BuildElementsTree(rootElement, elementsUnderPoint);
-				RemoveParents(tree);
-
-				var sortedElements = tree
-					.Where(x => x.Value != null)
-					.OrderByDescending(x => GetZOrder(x.Key))
-					.ThenByDescending(x => x.Value.Count)
-					.OrderBy(x => x.Key.BoundingRectangle, new BoundingRectangleComp())
-					.FirstOrDefault();
-
-				if(sortedElements.Key != null) {
-					TreeOfSpecificUiElement.InsertRange(0, sortedElements.Value);
-					TreeOfSpecificUiElement.Insert(0, sortedElements.Key);
+				var sortedElements = SortElementsByPointProximity(elements, rootWindowHwnd);
+				if(sortedElements != null) {
+					TreeOfSpecificUiElement.InsertRange(0, sortedElements.Childs);
+					TreeOfSpecificUiElement.Insert(0, sortedElements.Element);
 				}
 			} catch(Exception ex) {
 				if(ex is OperationCanceledException) {
@@ -123,7 +124,39 @@ namespace UsAcRe.UIAutomationElement {
 			}
 		}
 
-		void RetreiveChildrenUnderPoint(UiElement elementUnderPoint, List<UiElement> elements) {
+		protected TreeElement SortElementsByPointProximity(List<TreeElement> elements, IntPtr rootWindow) {
+			var elementsByChilds = elements
+				.OrderBy(x => x.Childs.Count)
+				.ToList();
+
+			if(!elementsByChilds.Any()) {
+				return null;
+			}
+
+			var elementWithLeastChilds = elementsByChilds.First();
+			var elementsWithLeastChilds = elementsByChilds
+				.Where(x => x.Childs.Count == elementWithLeastChilds.Childs.Count);
+
+			var elementsByZOrder = elementsWithLeastChilds
+				.Select(x => Tuple.Create(GetZOrder(x.Element, rootWindow), x))
+				.OrderBy(x => x.Item1)
+				.ToList();
+
+			if(!elementsByZOrder.Any()) {
+				return null;
+			}
+			var topElement = elementsByZOrder.First();
+			var topElements = elementsByZOrder
+				.Where(x => x.Item1 == topElement.Item1)
+				.Select(x => x.Item2);
+
+			var proximityElements = topElements
+				.OrderBy(x => x.Element.BoundingRectangle, new BoundingRectangleComp())
+				.FirstOrDefault();
+			return proximityElements;
+		}
+
+		void RetreiveElementsUnderPoint(UiElement elementUnderPoint, List<TreeElement> elements) {
 			BreakOperationsIfCoordChanged();
 			var childElements = GetChildren(elementUnderPoint);
 
@@ -148,6 +181,7 @@ namespace UsAcRe.UIAutomationElement {
 			}
 
 			Debug.WriteLine($"elementsUnderPoint: {elementUnderPoint}, childs: {elementsUnderPoint.Count()}");
+			elements.Add(new TreeElement(elementUnderPoint, elementsUnderPoint));
 
 			if(elementsUnderPoint.Count > 0) {
 				foreach(var item in elementsUnderPoint) {
@@ -160,9 +194,8 @@ namespace UsAcRe.UIAutomationElement {
 					}
 				}
 
-				elements.AddRange(elementsUnderPoint);
 				foreach(var item in elementsUnderPoint) {
-					RetreiveChildrenUnderPoint(item, elements);
+					RetreiveElementsUnderPoint(item, elements);
 				}
 			}
 		}
@@ -216,7 +249,6 @@ namespace UsAcRe.UIAutomationElement {
 				}
 				tree.Remove(key);
 			}
-
 		}
 
 		int GetTreeOrder(UiElement rootElement, UiElement element) {
@@ -234,7 +266,7 @@ namespace UsAcRe.UIAutomationElement {
 			return z;
 		}
 
-		int GetZOrder(UiElement element) {
+		protected virtual int GetZOrder(UiElement element, IntPtr rootWindow) {
 			if(element == null) {
 				return int.MaxValue;
 			}
@@ -242,18 +274,20 @@ namespace UsAcRe.UIAutomationElement {
 			if(hWnd == IntPtr.Zero) {
 				return int.MaxValue;
 			}
-			var lowestHwnd = winApiService.GetWindow(hWnd, WinAPI.GW_HWNDLAST);
-			var hwndTmp = lowestHwnd;
-			int z = 0;
-			while(hwndTmp != IntPtr.Zero) {
-				if(hWnd == hwndTmp) {
-					Debug.WriteLine("GetZOrder: {0}, z: {1}", element, z);
-					return z;
-				}
-				hwndTmp = winApiService.GetWindow(hwndTmp, WinAPI.GW_HWNDPREV);
-				z++;
+
+			var coord = elementCoord;
+			WinAPI.ScreenToClient(rootWindow, ref coord);
+
+			var childWindowFromPoint = WinAPI.ChildWindowFromPointEx(rootWindow, coord, WinAPI.CWP_SKIPDISABLED | WinAPI.CWP_SKIPINVISIBLE);
+			if(childWindowFromPoint == IntPtr.Zero) {
+				return int.MaxValue;
 			}
-			return int.MaxValue;
+			Debug.WriteLine("zOrder: {0}, z: {1} {2}", element, childWindowFromPoint, hWnd);
+			if(childWindowFromPoint == hWnd) {
+				return 0;
+			} else {
+				return int.MaxValue;
+			}
 		}
 
 		void BreakOperationsIfCoordChanged() {
