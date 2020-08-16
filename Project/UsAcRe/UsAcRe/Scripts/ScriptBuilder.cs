@@ -16,6 +16,11 @@ namespace UsAcRe.Scripts {
 		}
 
 		public string CreateUsingsSection() {
+			var actionsTypes = actions
+				.Select(x => x.GetType())
+				.Distinct();
+
+
 			var ctorsArgs = actions
 				.SelectMany(x => GetConstructorArgumentsTypes(x))
 				.Distinct();
@@ -29,6 +34,7 @@ namespace UsAcRe.Scripts {
 				.Distinct();
 
 			var usings = args
+				.Concat(actionsTypes)
 				.Select(x => x.Namespace)
 				.Distinct()
 				.OrderBy(x => x)
