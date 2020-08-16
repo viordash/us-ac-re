@@ -33,6 +33,7 @@ namespace UsAcRe.Tests.ScriptTests {
 			Assert.That(usings, Does.Contain("using System;"));
 			Assert.That(usings, Does.Contain("using System.Collections.Generic;"));
 			Assert.That(usings, Does.Contain("using System.Drawing;"));
+			Assert.That(usings, Does.Contain("using System.Text;"));
 			Assert.That(usings, Does.Contain("using UsAcRe.Actions;"));
 			Assert.That(usings, Does.Contain("using UsAcRe.MouseProcess;"));
 			Assert.That(usings, Does.Contain("using UsAcRe.UIAutomationElement;"));

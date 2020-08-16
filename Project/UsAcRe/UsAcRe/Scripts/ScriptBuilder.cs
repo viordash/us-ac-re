@@ -15,25 +15,43 @@ namespace UsAcRe.Scripts {
 			this.actions = actions;
 		}
 
-		public string CreateUsingsSection() {
-			var actionsTypes = actions
-				.Select(x => x.GetType())
-				.Distinct();
-
-
-			var ctorsArgs = actions
-				.SelectMany(x => GetConstructorArgumentsTypes(x))
-				.Distinct();
+		static void ObtainCtorArgumentsTypes(Type type, List<Type> ctorArgsTypes) {
+			var ctors = type.GetConstructors();
+			var ctorsArgs = ctors
+				.Select(x => x.GetParameters())
+				.SelectMany(x => x)
+				.Select(x => x.ParameterType);
 
 			var genericArgs = ctorsArgs
 				.Where(x => x.GenericTypeArguments.Length > 0)
 				.SelectMany(x => x.GenericTypeArguments);
 
-			var args = ctorsArgs
+			var types = ctorsArgs
 				.Concat(genericArgs)
+				.Where(x => !ctorArgsTypes.Contains(x))
+				.ToList();
+
+			ctorArgsTypes.AddRange(types);
+
+			foreach(var argType in types) {
+				ObtainCtorArgumentsTypes(argType, ctorArgsTypes);
+			}
+		}
+
+		public string CreateUsingsSection() {
+			var actionsTypes = actions
+				.Select(x => x.GetType())
 				.Distinct();
 
-			var usings = args
+			var types = new List<Type>();
+			foreach(var item in actionsTypes) {
+				ObtainCtorArgumentsTypes(item, types);
+			}
+
+			var ctorsArgs = types
+				.Distinct();
+
+			var usings = ctorsArgs
 				.Concat(actionsTypes)
 				.Select(x => x.Namespace)
 				.Distinct()
@@ -41,14 +59,6 @@ namespace UsAcRe.Scripts {
 				.Select(x => string.Format("using {0};", x));
 
 			return string.Join(newLine, usings);
-		}
-
-		static IEnumerable<Type> GetConstructorArgumentsTypes<T>(T examinedClass) {
-			var ctors = examinedClass.GetType().GetConstructors();
-			return ctors
-				.Select(x => x.GetParameters())
-				.SelectMany(x => x)
-				.Select(x => x.ParameterType);
 		}
 
 		public string CreateNamespaceSection(string code) {
