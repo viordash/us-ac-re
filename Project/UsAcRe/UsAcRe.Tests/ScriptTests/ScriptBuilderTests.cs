@@ -18,10 +18,14 @@ namespace UsAcRe.Tests.ScriptTests {
 			}, 1000);
 
 			var mouseAction = new MouseAction(MouseProcess.MouseActionType.LeftClick, new System.Drawing.Point(1, 2), new System.Drawing.Point(3, 4));
+			var keybdActionDown = new KeybdAction(WindowsSystem.VirtualKeyCodes.K_G, false);
+			var keybdActionUp = new KeybdAction(WindowsSystem.VirtualKeyCodes.K_G, true);
 
 			var actions = new ActionsList() {
 				elementMatchAction,
-				mouseAction
+				mouseAction,
+				keybdActionDown,
+				keybdActionUp
 			};
 			var scriptBuilder = new ScriptBuilder(actions);
 			var usings = scriptBuilder.CreateUsingsSection();
@@ -31,6 +35,7 @@ namespace UsAcRe.Tests.ScriptTests {
 			Assert.That(usings, Does.Contain("using System.Drawing;"));
 			Assert.That(usings, Does.Contain("using UsAcRe.MouseProcess;"));
 			Assert.That(usings, Does.Contain("using UsAcRe.UIAutomationElement;"));
+			Assert.That(usings, Does.Contain("using UsAcRe.WindowsSystem;"));
 		}
 	}
 }
