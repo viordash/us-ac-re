@@ -147,7 +147,7 @@ namespace UsAcRe.MouseProcess {
 		}
 
 		static void MouseMoveHook(int x, int y, int messageTimeStamp) {
-			if(prevMouseCoord.WithBoundaries(x, y, 10)) {
+			if(prevMouseCoord.WithBoundaries(x, y, 5)) {
 				return;
 			}
 			if(timerStopMouseMoveDetection != null) {
@@ -160,7 +160,9 @@ namespace UsAcRe.MouseProcess {
 				: 200;
 
 			timerStopMouseMoveDetection = new Timer((state) => {
-				OnMouseMove?.Invoke(null, new MouseMoveArgs(new WinAPI.POINT(x, y), true, pressedButtons));
+				if(WinAPI.GetCursorPos(out WinAPI.POINT pt)) {
+					OnMouseMove?.Invoke(null, new MouseMoveArgs(pt, true, pressedButtons));
+				}				
 			}, null, dueTime, Timeout.Infinite);
 
 			prevMouseCoord.x = x;
