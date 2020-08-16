@@ -36,11 +36,9 @@ namespace UsAcRe.MouseProcess {
 		private static int doubleClickTime = WinAPI.GetDoubleClickTime();
 		private static int maxDoubleClickTime = doubleClickTime + (doubleClickTime / 10);
 		private static int onClickMessageTimeStamp;
-		private static TimerCallback timerCallbackDelayedStoringMouseAction = new TimerCallback(DelayedStoringMouseAction);
 		private static Timer timerStoringMouseAction = null;
 		private static MouseEvent prevMouseEvent = null;
 		private static WinAPI.POINT prevMouseCoord = WinAPI.POINT.Empty;
-		private static bool moving = false;
 		private static Timer timerStopMouseMoveDetection = null;
 		private static List<MouseButtonType> pressedButtons = new List<MouseButtonType>();
 
@@ -133,40 +131,40 @@ namespace UsAcRe.MouseProcess {
 						: MouseActionType.MiddleClick;
 				}
 
-				timerStoringMouseAction = new Timer(timerCallbackDelayedStoringMouseAction, new MouseEvent(prevMouseEvent), maxDoubleClickTime, Timeout.Infinite);
+				if(timerStoringMouseAction != null) {
+					timerStoringMouseAction.Dispose();
+					timerStoringMouseAction = null;
+				}
+				timerStoringMouseAction = new Timer(
+					(state) => {
+						OnMouseEvent?.Invoke(null, new MouseEventArgs(state as MouseEvent, pressedButtons));
+						timerStoringMouseAction = null;
+					},
+					new MouseEvent(prevMouseEvent), maxDoubleClickTime, Timeout.Infinite);
 				logger.Info("IsUp 1:                {1}; {0}", prevMouseEvent.Type, DateTime.Now.Ticks);
 			}
 			onClickMessageTimeStamp = messageTimeStamp;
 		}
+
 		static void MouseMoveHook(int x, int y, int messageTimeStamp) {
-			if(!moving && prevMouseCoord.WithBoundaries(x, y, 10)) {
+			if(prevMouseCoord.WithBoundaries(x, y, 10)) {
 				return;
 			}
 			if(timerStopMouseMoveDetection != null) {
 				timerStopMouseMoveDetection.Dispose();
 				timerStopMouseMoveDetection = null;
 			}
-			timerStopMouseMoveDetection = new Timer((state) => {
-				moving = false;
-				OnMouseMove(null, new MouseMoveArgs(new WinAPI.POINT(x, y), !moving, pressedButtons));
-			}, null, 400, Timeout.Infinite);
 
-			if(!moving) {
-				moving = true;
-			}
+			int dueTime = timerStoringMouseAction != null
+				? maxDoubleClickTime + (maxDoubleClickTime / 10)
+				: 200;
+
+			timerStopMouseMoveDetection = new Timer((state) => {
+				OnMouseMove?.Invoke(null, new MouseMoveArgs(new WinAPI.POINT(x, y), true, pressedButtons));
+			}, null, dueTime, Timeout.Infinite);
 
 			prevMouseCoord.x = x;
 			prevMouseCoord.y = y;
-
-			if(OnMouseMove != null) {
-				OnMouseMove(null, new MouseMoveArgs(prevMouseCoord, !moving, pressedButtons));
-			}
-		}
-
-		static void DelayedStoringMouseAction(object state) {
-			if(OnMouseEvent != null) {
-				OnMouseEvent(null, new MouseEventArgs(state as MouseEvent, pressedButtons));
-			}
 		}
 
 		static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {

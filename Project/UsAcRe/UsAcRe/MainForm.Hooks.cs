@@ -9,6 +9,7 @@ using UsAcRe.WindowsSystem;
 
 namespace UsAcRe {
 	public partial class MainForm : Form {
+
 		void StartHooks() {
 			logger.Warn("Start");
 			MouseHook.Start();
@@ -69,17 +70,16 @@ namespace UsAcRe {
 					elementFromPoint = null;
 				}
 
-				if(!IsRestrictedArea(args.Coord) && args.Stopped && args.Buttons.Count == 0) {
+				if(args.Stopped && args.Buttons.Count == 0 && !IsRestrictedArea(args.Coord)) {
 					ShowMouseClickBlocker(args.Coord);
 					elementFromPoint = new ElementFromPoint(AutomationElementService, WinApiService, args.Coord, true);
-					CloseMouseClickBlocker();
 					ShowHighlighter();
-					//logger.Info(elementFromPoint);
-				} else {
 					CloseMouseClickBlocker();
+					//logger.Info("elementFromPoint {0}", elementFromPoint == null);
+				} else {
 					CloseHighlighter();
+					CloseMouseClickBlocker();
 				}
-
 			}), e);
 		}
 
