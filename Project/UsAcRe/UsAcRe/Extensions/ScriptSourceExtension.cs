@@ -21,7 +21,8 @@ namespace UsAcRe.Extensions {
 			return string.Format("{0}.{1}", val.GetType().Name, val);
 		}
 		public static string ForNew(this System.Drawing.Point val) {
-			return string.Format("new {0}({1}, {2})", val.GetType().Name, val.X, val.Y);
+			var type = val.GetType();
+			return string.Format("new {0}.{1}({2}, {3})", type.Namespace, type.Name, val.X, val.Y);
 		}
 		public static string ForNew(this string val) {
 			return string.Format("\"{0}\"", val);
@@ -31,10 +32,11 @@ namespace UsAcRe.Extensions {
 		}
 
 		public static string ForNew(this System.Windows.Rect val) {
+			var type = val.GetType();
 			if(val.IsEmpty) {
-				return string.Format("new {0}()", val.GetType().Name);
+				return string.Format("new {0}.{1}()", type.Namespace, type.Name);
 			} else {
-				return string.Format("new {0}({1}, {2}, {3}, {4})", val.GetType().Name, val.X, val.Y, val.Width, val.Height);
+				return string.Format("new {0}.{1}({2}, {3}, {4}, {5})", type.Namespace, type.Name, val.X, val.Y, val.Width, val.Height);
 			}
 		}
 		public static string ForNew(this UiElement val) {
