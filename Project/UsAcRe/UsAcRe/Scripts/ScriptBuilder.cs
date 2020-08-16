@@ -84,7 +84,7 @@ namespace UsAcRe.Scripts {
 			return sb.ToString();
 		}
 
-		public string Build() {
+		public string Generate() {
 			var executeMethod = CreateExecuteMethodSection(CreateExecuteMethodBody());
 			var classSection = CreateClassSection(executeMethod);
 
@@ -94,7 +94,6 @@ namespace UsAcRe.Scripts {
 			sb.AppendLine();
 			sb.Append(CreateNamespaceSection(classSection));
 			sb.AppendLine();
-
 			return sb.ToString();
 		}
 	}

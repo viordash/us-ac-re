@@ -109,7 +109,7 @@ namespace UsAcRe.Tests.ScriptTests {
 				keybdActionDown,
 			};
 			var scriptBuilder = new ScriptBuilder(actions);
-			var code = scriptBuilder.Build();
+			var code = scriptBuilder.Generate();
 			Assert.IsNotEmpty(code);
 			Assert.That(code, Does.Contain("using System.Drawing;"));
 			Assert.That(code, Does.Contain("namespace UsAcRe.TestsScripts {"));

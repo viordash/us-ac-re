@@ -85,5 +85,12 @@ namespace UsAcRe {
 
 			WinAPI.SetWindowPos(Program.MainFormHandle, WinAPI.HWND_TOPMOST, newX, newY, formWidth, formHeight, 0x10);
 		}
+
+		private void btnStoreActions_Click(object sender, EventArgs e) {
+			if (saveFileDialog1.ShowDialog() != DialogResult.OK) {
+				return;
+			}
+			Actions.Store(saveFileDialog1.FileName);
+		}
 	}
 }

@@ -33,6 +33,9 @@
 			this.miClearLog = new System.Windows.Forms.ToolStripMenuItem();
 			this.miCopyLog = new System.Windows.Forms.ToolStripMenuItem();
 			this.txtLog = new System.Windows.Forms.RichTextBox();
+			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+			this.btnStoreActions = new System.Windows.Forms.ToolStripButton();
+			this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
 			this.toolStrip1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
 			this.SuspendLayout();
@@ -42,7 +45,9 @@
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.btnStart,
             this.toolStripSeparator1,
-            this.chDetailedSearching});
+            this.chDetailedSearching,
+            this.toolStripSeparator2,
+            this.btnStoreActions});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip1.Name = "toolStrip1";
 			this.toolStrip1.Size = new System.Drawing.Size(429, 25);
@@ -109,6 +114,26 @@
 			this.txtLog.TabIndex = 5;
 			this.txtLog.Text = "";
 			// 
+			// toolStripSeparator2
+			// 
+			this.toolStripSeparator2.Name = "toolStripSeparator2";
+			this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+			// 
+			// btnStoreActions
+			// 
+			this.btnStoreActions.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.btnStoreActions.Image = ((System.Drawing.Image)(resources.GetObject("btnStoreActions.Image")));
+			this.btnStoreActions.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.btnStoreActions.Name = "btnStoreActions";
+			this.btnStoreActions.Size = new System.Drawing.Size(38, 22);
+			this.btnStoreActions.Text = "Store";
+			this.btnStoreActions.Click += new System.EventHandler(this.btnStoreActions_Click);
+			// 
+			// saveFileDialog1
+			// 
+			this.saveFileDialog1.DefaultExt = "scrcs";
+			this.saveFileDialog1.Filter = "Tests files (*.scrcs)|*.scrcs|All files (*.*)|*.*";
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -140,6 +165,9 @@
 		private System.Windows.Forms.RichTextBox txtLog;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 		private System.Windows.Forms.ToolStripButton chDetailedSearching;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+		private System.Windows.Forms.ToolStripButton btnStoreActions;
+		private System.Windows.Forms.SaveFileDialog saveFileDialog1;
 	}
 }
 
