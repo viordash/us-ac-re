@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UsAcRe.Exceptions;
+using UsAcRe.Scripts;
 using UsAcRe.UIAutomationElement;
 
 namespace UsAcRe.Extensions {
@@ -37,8 +38,8 @@ namespace UsAcRe.Extensions {
 			}
 		}
 		public static string ForNew(this UiElement val) {
-			return string.Format("new {0}({1}, {2}, {3}, {4}, {5}, {6})", val.GetType().Name, val.Index.ForNew(), val.Value.ForNew(), val.Name.ForNew(), val.AutomationId.ForNew(),
-				val.ControlTypeId.ForNew(), val.BoundingRectangle.ForNew());
+			return string.Format("new {0}({1}, {2}, {3}, {4}, {5}, {6}, {7})", val.GetType().Name, val.Index.ForNew(), val.Value.ForNew(), val.Name.ForNew(), val.ClassName.ForNew(),
+				val.AutomationId.ForNew(), val.ControlTypeId.ForNew(), val.BoundingRectangle.ForNew());
 		}
 		public static string ForNew(this List<UiElement> val) {
 			var type = val.GetType();
@@ -51,9 +52,8 @@ namespace UsAcRe.Extensions {
 			var sb = new StringBuilder();
 			sb.AppendFormat("new List<{0}>() {{", type.GenericTypeArguments[0].Name);
 			sb.AppendLine();
-			foreach(var item in val.AsEnumerable().Reverse()) {
-				sb.AppendFormat("  {0},", item.ForNew());
-				sb.AppendLine();
+			foreach(var item in val.AsEnumerable()) {
+				sb.AppendFormat("{0}{1},{2}", ScriptBuilder.tab, item.ForNew(), ScriptBuilder.newLine);
 			}
 			sb.Append("}");
 			return sb.ToString();
