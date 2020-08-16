@@ -11,9 +11,9 @@
         Topmost="True"
         ShowInTaskbar="False"
         Name="ElementBoundingWindow"
-        Opacity="0.6">
-    <Border Name="outerBounding" BorderBrush="Cyan" BorderThickness="1">
-        <Border Name="innerBounding" BorderBrush="Blue" BorderThickness="1">
+        Opacity="0.6" IsEnabled="False" ResizeMode="NoResize">
+    <Border Name="outerBounding" BorderBrush="Cyan" BorderThickness="1" IsEnabled="False">
+        <Border Name="innerBounding" BorderBrush="Blue" BorderThickness="1" IsEnabled="False">
         </Border>
     </Border>
 </Window>
