@@ -34,9 +34,9 @@ namespace UsAcRe.Scripts {
 		}
 
 		static void CreateAndInvoke(Assembly assembly) {
-			var instance = assembly.CreateInstance("UsAcRe.TestsScripts" + "." + "TestsScript");
+			var instance = assembly.CreateInstance(ScriptBuilder.TestsNamespace + "." + ScriptBuilder.TestsClassname);
 			if(instance == null) {
-				throw new ApplicationException("There is no TestsScript class in the compiled Assembly");
+				throw new ApplicationException("There is no " + ScriptBuilder.TestsClassname + " class in the compiled Assembly");
 			}
 			Type type = instance.GetType();
 			MethodInfo method = type.GetMethod("Execute");

@@ -8,6 +8,8 @@ namespace UsAcRe.Scripts {
 	public class ScriptBuilder {
 		public const string newLine = "\r\n";
 		public const string tab = "\t";
+		public const string TestsNamespace = "UsAcRe.TestsScripts";
+		public const string TestsClassname = "TestsScript";
 
 		readonly ActionsList actions;
 
@@ -62,7 +64,7 @@ namespace UsAcRe.Scripts {
 		}
 
 		public string CreateNamespaceSection(string code) {
-			return "namespace UsAcRe.TestsScripts {"
+			return "namespace " + TestsNamespace + " {"
 				+ newLine
 				+ code
 				+ newLine
@@ -70,7 +72,7 @@ namespace UsAcRe.Scripts {
 		}
 
 		public string CreateClassSection(string code) {
-			return tab + "public class TestsScript {"
+			return tab + "public class " + TestsClassname + " {"
 				+ newLine
 				+ code
 				+ newLine
@@ -79,7 +81,7 @@ namespace UsAcRe.Scripts {
 
 		public string CreateExecuteMethodSection(string code) {
 			return tab + tab
-				+ "public void Execute() {"
+				+ "public void " + nameof(BaseAction.Execute) + "() {"
 				+ newLine
 				+ code
 				+ newLine
