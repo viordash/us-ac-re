@@ -91,6 +91,7 @@
     <Compile Include="ActionsTests\KeybdActionTests.cs" />
     <Compile Include="ActionsTests\MouseActionTests.cs" />
     <Compile Include="ScriptTests\ScriptBuilderTests.cs" />
+    <Compile Include="ServicesTests\AutomationElementServiceTests.cs" />
     <Compile Include="UIAutomationElement\ElementFromPointTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CommonTest1.cs" />

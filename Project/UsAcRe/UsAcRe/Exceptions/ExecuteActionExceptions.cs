@@ -1,5 +1,6 @@
 ﻿using System;
 using UsAcRe.Actions;
+using UsAcRe.UIAutomationElement;
 
 namespace UsAcRe.Exceptions {
 	public class ExecuteBaseActionException : Exception {
@@ -29,5 +30,9 @@ namespace UsAcRe.Exceptions {
 	public class ScriptComposeException : ExecuteBaseActionException {
 		public ScriptComposeException() : this("Script composing") { }
 		public ScriptComposeException(string message) : base(message) { }
+	}
+
+	public class TargetProgramNotFoundExeption : ExecuteBaseActionException {
+		public TargetProgramNotFoundExeption(ElementProgram targetProgram) : base(string.Format("Target program {0} not found", targetProgram.ToString())) { }
 	}
 }

@@ -8,6 +8,9 @@ using UsAcRe.Helpers;
 using UsAcRe.UIAutomationElement;
 using System.Diagnostics;
 using System.IO;
+using UsAcRe.Exceptions;
+using System.ComponentModel;
+using System.Collections;
 
 namespace UsAcRe.Services {
 	public interface IAutomationElementService {
@@ -23,6 +26,7 @@ namespace UsAcRe.Services {
 		string BuildFriendlyInfo(AutomationElement element);
 		void RetrieveElementValue(UiElement element);
 		ElementProgram GetProgram(UiElement element);
+		UiElement GetRootElement(ElementProgram program);
 	}
 
 	public class AutomationElementService : IAutomationElementService {
@@ -174,6 +178,30 @@ namespace UsAcRe.Services {
 
 			var elementProgram = new ElementProgram(index, exePath);
 			return elementProgram;
+		}
+
+		string SafeGetProcessFileName(Process process) {
+			try {
+				return Path.GetFileName(process.MainModule.FileName);
+			} catch(Win32Exception ex) {
+				if((uint)ex.ErrorCode != 0x80004005) {
+					throw;
+				}
+			}
+			return null;
+		}
+
+		public UiElement GetRootElement(ElementProgram program) {
+			var processes = Process.GetProcesses()
+				.Where(x => x.MainWindowHandle != IntPtr.Zero)
+				.Where(x => SafeGetProcessFileName(x) == program.FileName)
+				.ToList();
+			if(processes.Count <= program.Index) {
+				throw new TargetProgramNotFoundExeption(program);
+			}
+			var process = processes[program.Index];
+			var element = AutomationElement.FromHandle(process.MainWindowHandle);
+			return ToUiElement(element);
 		}
 	}
 }
