@@ -18,7 +18,7 @@ namespace UsAcRe.Actions {
 			UpClickedPoint = upClickedPoint;
 		}
 
-		public override void Execute() {
+		protected override void ExecuteCore() {
 			SafeAction(() => DoClick());
 		}
 

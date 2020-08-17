@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Windows.Forms;
 using CommonServiceLocator;
 using NLog.Windows.Forms;
@@ -6,6 +7,7 @@ using UsAcRe.Actions;
 using UsAcRe.Helpers;
 using UsAcRe.Highlighter;
 using UsAcRe.Properties;
+using UsAcRe.Scripts;
 using UsAcRe.Services;
 using UsAcRe.UIAutomationElement;
 using UsAcRe.WindowsSystem;
@@ -91,6 +93,16 @@ namespace UsAcRe {
 				return;
 			}
 			Actions.Store(saveFileDialog1.FileName);
+		}
+
+		private void btnRunTest_Click(object sender, EventArgs e) {
+			if(openFileDialog1.ShowDialog() != DialogResult.OK) {
+				return;
+			}
+			var sourceCode = File.ReadAllText(openFileDialog1.FileName);
+			txtLog.Clear();
+			txtLog.Text = sourceCode;
+			ScriptCompiler.RunTest(sourceCode);
 		}
 	}
 }

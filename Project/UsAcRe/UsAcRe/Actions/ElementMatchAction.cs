@@ -16,7 +16,7 @@ namespace UsAcRe.Actions {
 			TimeoutMs = timeoutMs;
 		}
 
-		public override void Execute() {
+		protected override void ExecuteCore() {
 			//SafeAction(() => DoClick());
 		}
 

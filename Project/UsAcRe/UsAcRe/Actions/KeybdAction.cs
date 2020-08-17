@@ -12,7 +12,7 @@ namespace UsAcRe.Actions {
 			IsUp = isUp;
 		}
 
-		public override void Execute() {
+		protected override void ExecuteCore() {
 			//SafeAction(() => DoClick());
 		}
 

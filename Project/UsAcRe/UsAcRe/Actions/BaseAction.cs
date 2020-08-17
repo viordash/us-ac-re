@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.ComponentModel;
+using System.Threading;
 using UsAcRe.Exceptions;
 
 namespace UsAcRe.Actions {
@@ -8,8 +9,14 @@ namespace UsAcRe.Actions {
 	public abstract class BaseAction {
 		protected NLog.Logger logger = NLog.LogManager.GetLogger("UsAcRe.FormMain");
 
-		public abstract string ExecuteAsScriptSource();
-		public abstract void Execute();
+		public abstract string ExecuteAsScriptSource();		
+		public virtual void Execute() {
+			ExecuteCore();
+			logger.Info("\r\n {0}", ExecuteAsScriptSource());
+			Thread.Sleep(200);
+		}
+
+		protected abstract void ExecuteCore();
 
 		protected void SafeAction(Action action) {
 			try {
