@@ -12,9 +12,9 @@ namespace UsAcRe.Tests.ScriptTests {
 		[Test]
 		public void CreateUsingsSection_Test() {
 			var elementMatchAction = new ElementMatchAction(new ElementProgram(42, "notepad.exe"), new List<UiElement>() {
-				new UiElement(4, "value1", "name1", "className1", "automationId1", ControlType.Button.Id, new Rect(1, 2, 3, 4)),
-				new UiElement(3, "value2", "name2", "className2", "automationId2", ControlType.CheckBox.Id, new Rect()),
-				new UiElement(1, "value3", "name3", "className3", "automationId3", ControlType.ComboBox.Id, new Rect(9, 10, 11, 12)),
+				new UiElement(4, "value1", "name1", "className1", "automationId1", ControlType.Button.Id, new System.Windows.Rect(1, 2, 3, 4)),
+				new UiElement(3, "value2", "name2", "className2", "automationId2", ControlType.CheckBox.Id, new System.Windows.Rect()),
+				new UiElement(1, "value3", "name3", "className3", "automationId3", ControlType.ComboBox.Id, new System.Windows.Rect(9, 10, 11, 12)),
 			}, 1000);
 
 			var mouseAction = new MouseAction(MouseProcess.MouseActionType.LeftClick, new System.Drawing.Point(1, 2), new System.Drawing.Point(3, 4));
@@ -73,8 +73,8 @@ namespace UsAcRe.Tests.ScriptTests {
 		[Test]
 		public void CreateExecuteMethodBody_Test() {
 			var elementMatchAction = new ElementMatchAction(new ElementProgram(42, "notepad.exe"), new List<UiElement>() {
-				new UiElement(4, "", "Calculator", "", "automationId1", ControlType.Table.Id, new Rect(10, 20, 30, 40)),
-				new UiElement(3, "value2", "7", "137", "automationId2", ControlType.CheckBox.Id, new Rect(11, 22, 33, 44)),
+				new UiElement(4, "", "Calculator", "", "automationId1", ControlType.Table.Id, new System.Windows.Rect(10, 20, 30, 40)),
+				new UiElement(3, "value2", "7", "137", "automationId2", ControlType.CheckBox.Id, new System.Windows.Rect(11, 22, 33, 44)),
 			}, 1000);
 
 			var mouseAction = new MouseAction(MouseProcess.MouseActionType.LeftClick, new System.Drawing.Point(1, 2), new System.Drawing.Point(3, 4));
@@ -92,11 +92,11 @@ namespace UsAcRe.Tests.ScriptTests {
 			Assert.IsNotEmpty(code);
 			Assert.That(code, Does.StartWith(
 				"\t\t\tnew ElementMatchAction(new ElementProgram(42, \"notepad.exe\"), new List<UiElement>() {\r\n"
-				+ "\t\t\t\tnew UiElement(4, \"\", \"Calculator\", \"\", \"automationId1\", 50036, new Rect(10, 20, 30, 40)),\r\n"
-				+ "\t\t\t\tnew UiElement(3, \"value2\", \"7\", \"137\", \"automationId2\", 50002, new Rect(11, 22, 33, 44)),\r\n"
+				+ "\t\t\t\tnew UiElement(4, \"\", \"Calculator\", \"\", \"automationId1\", 50036, new System.Windows.Rect(10, 20, 30, 40)),\r\n"
+				+ "\t\t\t\tnew UiElement(3, \"value2\", \"7\", \"137\", \"automationId2\", 50002, new System.Windows.Rect(11, 22, 33, 44)),\r\n"
 				+ "\t\t\t}, 1000).Execute();"));
 
-			Assert.That(code, Does.Contain("new MouseAction(MouseActionType.LeftClick, new Point(1, 2), new Point(3, 4)).Execute();"));
+			Assert.That(code, Does.Contain("new MouseAction(MouseActionType.LeftClick, new System.Drawing.Point(1, 2), new System.Drawing.Point(3, 4)).Execute();"));
 			Assert.That(code, Does.Contain("new KeybdAction(VirtualKeyCodes.K_1, false).Execute();"));
 			Assert.That(code, Does.Contain("new KeybdAction(VirtualKeyCodes.K_1, true).Execute();"));
 		}
@@ -115,7 +115,7 @@ namespace UsAcRe.Tests.ScriptTests {
 			Assert.IsNotEmpty(code);
 			Assert.That(code, Does.Contain("using System.Drawing;"));
 			Assert.That(code, Does.Contain("namespace UsAcRe.TestsScripts {"));
-			Assert.That(code, Does.Contain("new MouseAction(MouseActionType.LeftDoubleClick, new Point(1, 2), new Point(3, 4)).Execute();"));
+			Assert.That(code, Does.Contain("new MouseAction(MouseActionType.LeftDoubleClick, new System.Drawing.Point(1, 2), new System.Drawing.Point(3, 4)).Execute();"));
 		}
 	}
 }

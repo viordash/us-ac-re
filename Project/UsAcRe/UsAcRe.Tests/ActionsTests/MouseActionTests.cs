@@ -9,7 +9,7 @@ namespace UsAcRe.Tests.ActionsTests {
 		public void ExecuteAsScriptSource_Test() {
 			var action = new MouseAction(MouseProcess.MouseActionType.LeftClick, new System.Drawing.Point(1, 2), new System.Drawing.Point(3, 4));
 			var sourcePresentation = action.ExecuteAsScriptSource();
-			Assert.AreEqual(sourcePresentation, "new MouseAction(MouseActionType.LeftClick, new Point(1, 2), new Point(3, 4)).Execute()");
+			Assert.AreEqual(sourcePresentation, "new MouseAction(MouseActionType.LeftClick, new System.Drawing.Point(1, 2), new System.Drawing.Point(3, 4)).Execute()");
 		}
 	}
 }
