@@ -27,10 +27,8 @@ namespace UsAcRe.Tests.ServicesTests {
 		public void GetRootElement_Get_ByIndex_Test() {
 			var process1 = Process.Start("notepad.exe");
 			Thread.Sleep(100);
-
 			var process2 = Process.Start("notepad.exe");
 			Thread.Sleep(100);
-
 
 			try {
 				var elementProgram = new ElementProgram(1, "notepad.exe");
@@ -41,7 +39,7 @@ namespace UsAcRe.Tests.ServicesTests {
 
 				var selectedProcess = Process.GetProcessById(automationElement.Current.ProcessId);
 				Assert.NotNull(selectedProcess);
-				Assert.That(selectedProcess.Id, Is.EqualTo(process1.Id).Or.EqualTo(process2.Id));
+				Assert.That(selectedProcess.Id, Is.EqualTo(process2.Id));
 			} finally {
 				process1.Kill();
 				process2.Kill();

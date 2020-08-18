@@ -168,6 +168,7 @@ namespace UsAcRe.Services {
 			var selectedProcess = Process.GetProcessById(automationElement.Current.ProcessId);
 			var processes = Process.GetProcesses()
 				.Where(x => x.ProcessName == selectedProcess.ProcessName)
+				.OrderBy(x => x.StartTime)
 				.ToDictionary(x => x.Id, x => Path.GetFileName(x.MainModule.FileName));
 
 			var exePath = Path.GetFileName(selectedProcess.MainModule.FileName);
@@ -195,6 +196,7 @@ namespace UsAcRe.Services {
 			var processes = Process.GetProcesses()
 				.Where(x => x.MainWindowHandle != IntPtr.Zero)
 				.Where(x => SafeGetProcessFileName(x) == program.FileName)
+				.OrderBy(x => x.StartTime)
 				.ToList();
 			if(processes.Count <= program.Index) {
 				throw new TargetProgramNotFoundExeption(program);
