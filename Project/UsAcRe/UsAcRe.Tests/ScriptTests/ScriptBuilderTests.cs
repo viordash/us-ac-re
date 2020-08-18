@@ -1,14 +1,26 @@
 ﻿using System.Collections.Generic;
-using System.Windows;
 using System.Windows.Automation;
 using NUnit.Framework;
 using UsAcRe.Actions;
 using UsAcRe.Scripts;
+using UsAcRe.Tests.ActionsTests;
 using UsAcRe.UIAutomationElement;
 
 namespace UsAcRe.Tests.ScriptTests {
 	[TestFixture]
-	public class ScriptBuilderTests {
+	public class ScriptBuilderTests : BaseActionTestable {
+
+		[SetUp]
+		public override void Setup() {
+			base.Setup();
+		}
+
+		[TearDown]
+		public override void TearDown() {
+			base.TearDown();
+		}
+
+
 		[Test]
 		public void CreateUsingsSection_Test() {
 			var elementMatchAction = new ElementMatchAction(new ElementProgram(42, "notepad.exe"), new List<UiElement>() {
@@ -66,7 +78,7 @@ namespace UsAcRe.Tests.ScriptTests {
 			var scriptBuilder = new ScriptBuilder(actions);
 			var code = scriptBuilder.CreateExecuteMethodSection("//something");
 			Assert.IsNotEmpty(code);
-			Assert.That(code, Does.StartWith("\t\tpublic void Execute() {"));
+			Assert.That(code, Does.StartWith("\t\tpublic async void ExecuteAsync() {"));
 			Assert.That(code, Does.EndWith("\t\t}"));
 		}
 
@@ -91,14 +103,14 @@ namespace UsAcRe.Tests.ScriptTests {
 			var code = scriptBuilder.CreateExecuteMethodBody();
 			Assert.IsNotEmpty(code);
 			Assert.That(code, Does.StartWith(
-				"\t\t\tnew ElementMatchAction(new ElementProgram(42, \"notepad.exe\"), new List<UiElement>() {\r\n"
+				"\t\t\tawait new ElementMatchAction(new ElementProgram(42, \"notepad.exe\"), new List<UiElement>() {\r\n"
 				+ "\t\t\t\tnew UiElement(4, \"\", \"Calculator\", \"\", \"automationId1\", 50036, new System.Windows.Rect(10, 20, 30, 40)),\r\n"
 				+ "\t\t\t\tnew UiElement(3, \"value2\", \"7\", \"137\", \"automationId2\", 50002, new System.Windows.Rect(11, 22, 33, 44)),\r\n"
-				+ "\t\t\t}, 1000).Execute();"));
+				+ "\t\t\t}, 1000).ExecuteAsync();"));
 
-			Assert.That(code, Does.Contain("new MouseAction(MouseActionType.LeftClick, new System.Drawing.Point(1, 2), new System.Drawing.Point(3, 4)).Execute();"));
-			Assert.That(code, Does.Contain("new KeybdAction(VirtualKeyCodes.K_1, false).Execute();"));
-			Assert.That(code, Does.Contain("new KeybdAction(VirtualKeyCodes.K_1, true).Execute();"));
+			Assert.That(code, Does.Contain("await new MouseAction(MouseActionType.LeftClick, new System.Drawing.Point(1, 2), new System.Drawing.Point(3, 4)).ExecuteAsync();"));
+			Assert.That(code, Does.Contain("await new KeybdAction(VirtualKeyCodes.K_1, false).ExecuteAsync();"));
+			Assert.That(code, Does.Contain("await new KeybdAction(VirtualKeyCodes.K_1, true).ExecuteAsync();"));
 		}
 
 		[Test]
@@ -115,7 +127,7 @@ namespace UsAcRe.Tests.ScriptTests {
 			Assert.IsNotEmpty(code);
 			Assert.That(code, Does.Contain("using System.Drawing;"));
 			Assert.That(code, Does.Contain("namespace UsAcRe.TestsScripts {"));
-			Assert.That(code, Does.Contain("new MouseAction(MouseActionType.LeftDoubleClick, new System.Drawing.Point(1, 2), new System.Drawing.Point(3, 4)).Execute();"));
+			Assert.That(code, Does.Contain("new MouseAction(MouseActionType.LeftDoubleClick, new System.Drawing.Point(1, 2), new System.Drawing.Point(3, 4)).ExecuteAsync();"));
 		}
 	}
 }

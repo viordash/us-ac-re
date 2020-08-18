@@ -3,19 +3,15 @@ using System.Text;
 using System.Linq;
 using UsAcRe.Extensions;
 using UsAcRe.UIAutomationElement;
-using UsAcRe.Services;
-using CommonServiceLocator;
 using System.Threading.Tasks;
 using System.Diagnostics;
 
 namespace UsAcRe.Actions {
 	public class ElementMatchAction : BaseAction {
-
 		public ElementProgram Program { get; set; }
 		public List<UiElement> SearchPath { get; set; }
 		public int TimeoutMs { get; set; }
 
-		IAutomationElementService AutomationElementService { get { return ServiceLocator.Current.GetInstance<IAutomationElementService>(); } }
 
 		public ElementMatchAction(ElementProgram program, List<UiElement> searchPath, int timeoutMs = 10 * 1000) {
 			Program = program;
@@ -42,7 +38,7 @@ namespace UsAcRe.Actions {
 		}
 
 		UiElement GetElement() {
-			var rootElement = AutomationElementService.GetRootElement(Program);
+			var rootElement = automationElementService.GetRootElement(Program);
 			if(rootElement == null) {
 				return null;
 			}
@@ -52,8 +48,8 @@ namespace UsAcRe.Actions {
 		async ValueTask DoWorkAsync() {
 			await Task.Run(() => {
 				int i = 0;
-				var sw = Stopwatch.StartNew();
-				while(sw.Elapsed.TotalMilliseconds < TimeoutMs) {
+				var stopwatch = Stopwatch.StartNew();
+				while(!cancellationToken.IsCancellationRequested && stopwatch.Elapsed.TotalMilliseconds < TimeoutMs) {
 
 
 					++i;

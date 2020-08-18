@@ -4,13 +4,23 @@ using UsAcRe.WindowsSystem;
 
 namespace UsAcRe.Tests.ActionsTests {
 	[TestFixture]
-	public class KeybdActionTests {
+	public class KeybdActionTests : BaseActionTestable {
+
+		[SetUp]
+		public override void Setup() {
+			base.Setup();
+		}
+
+		[TearDown]
+		public override void TearDown() {
+			base.TearDown();
+		}
 
 		[Test]
 		public void ExecuteAsScriptSource_Test() {
 			var action = new KeybdAction(VirtualKeyCodes.VK_CONTROL, false);
 			var sourcePresentation = action.ExecuteAsScriptSource();
-			Assert.AreEqual(sourcePresentation, "new KeybdAction(VirtualKeyCodes.VK_CONTROL, false).Execute()");
+			Assert.AreEqual(sourcePresentation, "await new KeybdAction(VirtualKeyCodes.VK_CONTROL, false).ExecuteAsync()");
 		}
 	}
 }

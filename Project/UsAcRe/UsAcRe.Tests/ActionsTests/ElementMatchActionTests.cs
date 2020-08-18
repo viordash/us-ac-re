@@ -7,7 +7,18 @@ using UsAcRe.UIAutomationElement;
 
 namespace UsAcRe.Tests.ActionsTests {
 	[TestFixture]
-	public class ElementMatchActionTests {
+	public class ElementMatchActionTests : BaseActionTestable {
+
+		[SetUp]
+		public override void Setup() {
+			base.Setup();
+		}
+
+		[TearDown]
+		public override void TearDown() {
+			base.TearDown();
+		}
+
 
 		[Test]
 		public void ToString_Test() {

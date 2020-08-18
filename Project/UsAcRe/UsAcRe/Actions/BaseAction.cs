@@ -3,12 +3,27 @@ using System;
 using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
+using CommonServiceLocator;
 using UsAcRe.Exceptions;
+using UsAcRe.Services;
 
 namespace UsAcRe.Actions {
 
 	public abstract class BaseAction {
 		protected NLog.Logger logger = NLog.LogManager.GetLogger("UsAcRe.FormMain");
+
+		protected readonly IAutomationElementService automationElementService;
+		readonly ITestsLaunchingService testsLaunchingService;
+		protected readonly CancellationToken cancellationToken;
+
+		public BaseAction() : this(ServiceLocator.Current.GetInstance<IAutomationElementService>(), ServiceLocator.Current.GetInstance<ITestsLaunchingService>()) {
+		}
+
+		public BaseAction(IAutomationElementService automationElementService, ITestsLaunchingService testsLaunchingService) {
+			this.automationElementService = automationElementService;
+			this.testsLaunchingService = testsLaunchingService;
+			cancellationToken = testsLaunchingService.GetCurrentCancellationToken();
+		}
 
 		public abstract string ExecuteAsScriptSource();
 
