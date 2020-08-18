@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Test.Input;
 using UsAcRe.Exceptions;
 using UsAcRe.Extensions;
@@ -18,19 +18,20 @@ namespace UsAcRe.Actions {
 			UpClickedPoint = upClickedPoint;
 		}
 
-		protected override void ExecuteCore() {
-			SafeAction(() => DoClick());
+		protected override async Task ExecuteCoreAsync() {
+			await SafeActionAsync(DoClick);
 		}
 
 		public override string ToString() {
 			return string.Format("{0} Type:{1}, Down:{2}, Up:{3}", nameof(MouseAction), ActionType, DownClickedPoint, UpClickedPoint);
 		}
 		public override string ExecuteAsScriptSource() {
-			return string.Format("new {0}({1}, {2}, {3}).{4}()", nameof(MouseAction), ActionType.ForNew(), DownClickedPoint.ForNew(), UpClickedPoint.ForNew(),
-				nameof(MouseAction.Execute));
+			return string.Format("await new {0}({1}, {2}, {3}).{4}()", nameof(MouseAction), ActionType.ForNew(), DownClickedPoint.ForNew(), UpClickedPoint.ForNew(),
+				nameof(MouseAction.ExecuteAsync));
 		}
 
-		void DoClick() {
+
+		ValueTask DoClick() {
 			MainForm.MoveOutFromPoint(DownClickedPoint.X, DownClickedPoint.Y);
 			switch(ActionType) {
 				case MouseActionType.LeftClick:
@@ -61,6 +62,7 @@ namespace UsAcRe.Actions {
 				default:
 					throw new SevereException(this, nameof(DoClick));
 			}
+			return new ValueTask(Task.CompletedTask);
 		}
 
 		void Mouse_MoveTo(int x, int y) {

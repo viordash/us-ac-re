@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Threading;
+using System.Threading.Tasks;
 using UsAcRe.Exceptions;
 
 namespace UsAcRe.Actions {
@@ -9,18 +10,19 @@ namespace UsAcRe.Actions {
 	public abstract class BaseAction {
 		protected NLog.Logger logger = NLog.LogManager.GetLogger("UsAcRe.FormMain");
 
-		public abstract string ExecuteAsScriptSource();		
-		public virtual void Execute() {
-			ExecuteCore();
+		public abstract string ExecuteAsScriptSource();
+
+		public virtual async Task ExecuteAsync() {
+			await ExecuteCoreAsync();
 			logger.Info("\r\n {0}", ExecuteAsScriptSource());
 			Thread.Sleep(200);
 		}
 
-		protected abstract void ExecuteCore();
+		protected abstract Task ExecuteCoreAsync();
 
-		protected void SafeAction(Action action) {
+		protected async Task SafeActionAsync(Func<ValueTask> action) {
 			try {
-				action();
+				await action();
 			} catch(Exception ex) {
 				if(ex is Win32Exception && (uint)((Win32Exception)ex).ErrorCode == 0x80004005) {
 					throw new MinorException(this);

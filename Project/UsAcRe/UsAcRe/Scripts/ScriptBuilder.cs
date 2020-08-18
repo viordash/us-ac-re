@@ -81,7 +81,7 @@ namespace UsAcRe.Scripts {
 
 		public string CreateExecuteMethodSection(string code) {
 			return tab + tab
-				+ "public void " + nameof(BaseAction.Execute) + "() {"
+				+ "public async void " + nameof(BaseAction.ExecuteAsync) + "() {"
 				+ newLine
 				+ code
 				+ newLine
