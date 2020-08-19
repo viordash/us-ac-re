@@ -30,7 +30,6 @@ namespace UsAcRe.Actions {
 		public virtual async Task ExecuteAsync() {
 			await ExecuteCoreAsync();
 			logger.Info("\r\n {0}", ExecuteAsScriptSource());
-			Thread.Sleep(200);
 		}
 
 		protected abstract Task ExecuteCoreAsync();

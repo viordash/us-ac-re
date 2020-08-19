@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Automation;
 using NUnit.Framework;
@@ -53,6 +56,52 @@ namespace UsAcRe.Tests.ActionsTests {
 			Assert.IsNotEmpty(sourcePresentation);
 		}
 
+		[Test]
+		public async Task ExecuteAsync_Return_By_Timeout_Test() {
+			var cancellationToken = new CancellationToken(false);
+			testsLaunchingServiceMock
+				.Setup(x => x.GetCurrentCancellationToken())
+				.Returns(() => {
+					return cancellationToken;
+				});
+
+			var action = new ElementMatchAction(new ElementProgram(19, "notepad.exe"), new TreeOfSpecificUiElement() {
+				new UiElement(4, "value1", "name1", "className1", "automationId1", ControlType.Button.Id, new Rect(1, 2, 3, 4)),
+			}, 100);
+
+			var stopwatch = Stopwatch.StartNew();
+			await action.ExecuteAsync();
+			var elapsed = stopwatch.Elapsed.TotalMilliseconds;
+			Assert.That(elapsed, Is.GreaterThan(100));
+		}
+
+		[Test]
+		public void ExecuteAsync_CanceleationToken_Test() {
+			var cancelTokenSource = new CancellationTokenSource();
+			var cancellationToken = cancelTokenSource.Token;
+
+			testsLaunchingServiceMock
+				.Setup(x => x.GetCurrentCancellationToken())
+				.Returns(() => {
+					return cancellationToken;
+				});
+
+			var action = new ElementMatchAction(new ElementProgram(42, "notepad.exe"), new TreeOfSpecificUiElement() {
+				new UiElement(4, "value1", "name1", "className1", "automationId1", ControlType.Button.Id, new Rect(1, 2, 3, 4)),
+			}, 500);
+
+			var stopwatch = Stopwatch.StartNew();
+
+			Parallel.Invoke(() => {
+				Thread.Sleep(150);
+				cancelTokenSource.Cancel();
+			},
+			async () => await action.ExecuteAsync()
+			);
+
+			var elapsed = stopwatch.Elapsed.TotalMilliseconds;
+			Assert.That(elapsed, Is.LessThan(500 - 1));
+		}
 
 	}
 }
