@@ -107,15 +107,15 @@ namespace UsAcRe.UIAutomationElement {
 
 			try {
 				TreeOfSpecificUiElement.Program = automationElementService.GetProgram(rootElement);
-				TreeOfSpecificUiElement.Add(rootElement);
 
 				var elements = new List<TreeElement>();
 				RetreiveElementsUnderPoint(rootElement, elements);
 
-				var sortedElements = SortElementsByPointProximity(elements, rootWindowHwnd);
-				if(sortedElements != null) {
-					TreeOfSpecificUiElement.InsertRange(0, sortedElements.Childs);
-					TreeOfSpecificUiElement.Insert(0, sortedElements.Element);
+				var targetedElement = SortElementsByPointProximity(elements, rootWindowHwnd);
+				if(targetedElement != null) {
+					var tree = BuildElementTree(targetedElement, elements, rootWindowHwnd);
+					TreeOfSpecificUiElement.Add(tree.Key);
+					TreeOfSpecificUiElement.AddRange(tree.Value);
 				}
 			} catch(Exception ex) {
 				if(ex is OperationCanceledException) {
@@ -124,7 +124,25 @@ namespace UsAcRe.UIAutomationElement {
 			}
 		}
 
-		protected TreeElement SortElementsByPointProximity(List<TreeElement> elements, IntPtr rootWindow) {
+		KeyValuePair<UiElement, List<UiElement>> BuildElementTree(TreeElement targetedElement, List<TreeElement> elements, IntPtr rootWindow) {
+			var tree = new KeyValuePair<UiElement, List<UiElement>>(targetedElement.Element, new List<UiElement>());
+
+			while(true) {
+				BreakOperationsIfCoordChanged();
+				var ancestors = elements
+					.Where(x => x.Childs.Contains(targetedElement.Element));
+
+				if(ancestors == null || !ancestors.Any()) {
+					break;
+				}
+
+				targetedElement = SortElementsByPointProximity(ancestors, rootWindow);
+				tree.Value.Add(targetedElement.Element);
+			}
+			return tree;
+		}
+
+		protected TreeElement SortElementsByPointProximity(IEnumerable<TreeElement> elements, IntPtr rootWindow) {
 			var elementsByChilds = elements
 				.OrderBy(x => x.Childs.Count)
 				.ToList();
