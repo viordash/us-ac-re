@@ -141,6 +141,7 @@
     <Compile Include="Services\AutomationElementService.cs" />
     <Compile Include="Services\TestsLaunchingService.cs" />
     <Compile Include="Services\WinApiService.cs" />
+    <Compile Include="Services\WindowsFormsService.cs" />
     <Compile Include="UIAutomationElement\ElementProgram.cs" />
     <Compile Include="UIAutomationElement\TreeOfSpecificElement.cs" />
     <Compile Include="WindowsSystem\VirtualKeyCodes.cs" />
