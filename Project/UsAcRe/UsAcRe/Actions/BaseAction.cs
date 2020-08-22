@@ -13,7 +13,7 @@ namespace UsAcRe.Actions {
 		protected NLog.Logger logger = NLog.LogManager.GetLogger("UsAcRe.FormMain");
 
 		protected readonly IAutomationElementService automationElementService;
-		readonly ITestsLaunchingService testsLaunchingService;
+		protected readonly ITestsLaunchingService testsLaunchingService;
 		protected readonly CancellationToken cancellationToken;
 
 		public BaseAction() : this(ServiceLocator.Current.GetInstance<IAutomationElementService>(), ServiceLocator.Current.GetInstance<ITestsLaunchingService>()) {
