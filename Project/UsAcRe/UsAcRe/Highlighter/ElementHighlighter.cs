@@ -14,15 +14,22 @@ namespace UsAcRe.Highlighter {
 
 		WpfElementBounding wpfElementBounding;
 
-		public ElementHighlighter(ElementFromPoint elementFromPoint) : this(elementFromPoint.TreeOfSpecificUiElement.BoundingRectangle, elementFromPoint.ToString()) {
-			wpfElementBounding = new WpfElementBounding(1, 0.6, Colors.Yellow, Colors.Red);
+		public ElementHighlighter(ElementFromPoint elementFromPoint)
+			: this(elementFromPoint.TreeOfSpecificUiElement.BoundingRectangle, null, 1, 0.6, Colors.Yellow, Colors.Red) {
 		}
 
-		public ElementHighlighter(Rect boundingRectangle, string toolTip) {
+		public ElementHighlighter(Rect boundingRectangle, string toolTip)
+			: this(boundingRectangle, toolTip, 2, 0.6, Colors.Green, Colors.LightGreen) {
+		}
+
+		public ElementHighlighter(Rect boundingRectangle)
+			: this(boundingRectangle, null, 4, 0.6, Colors.Red, Colors.DarkRed) {
+		}
+
+		public ElementHighlighter(Rect boundingRectangle, string toolTip, int boundingThickness, double opacity, Color innerColor, Color outerColor) {
 			this.boundingRectangle = boundingRectangle;
 			this.toolTip = toolTip;
-			wpfElementBounding = new WpfElementBounding(4, 0.6, Colors.Red, Colors.DarkRed);
-
+			wpfElementBounding = new WpfElementBounding(boundingThickness, opacity, innerColor, outerColor);
 		}
 
 		public void StartHighlighting() {
@@ -36,7 +43,7 @@ namespace UsAcRe.Highlighter {
 					wpfElementBounding.SetVisibility(false);
 					return;
 				}
-				wpfElementBounding.Location = new Rect((int)rectangle.Left, (int)rectangle.Top, (int)rectangle.Width, (int)rectangle.Height);
+				wpfElementBounding.Location = rectangle;
 				wpfElementBounding.SetToolTip(toolTip);
 				wpfElementBounding.SetVisibility(true);
 

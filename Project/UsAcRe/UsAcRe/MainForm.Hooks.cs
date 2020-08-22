@@ -99,7 +99,7 @@ namespace UsAcRe {
 
 		void ShowMouseClickBlocker(WinAPI.POINT coord) {
 			CloseMouseClickBlocker();
-			mouseClickBlocker = new ElementHighlighter(new System.Windows.Rect(coord.x - 3, coord.y - 3, 6, 6), string.Empty);
+			mouseClickBlocker = new ElementHighlighter(new System.Windows.Rect(coord.x - 3, coord.y - 3, 6, 6));
 			mouseClickBlocker.StartHighlighting();
 			Debug.WriteLine($"ShowMouseClickBlocker :   coord:{coord}");
 		}
