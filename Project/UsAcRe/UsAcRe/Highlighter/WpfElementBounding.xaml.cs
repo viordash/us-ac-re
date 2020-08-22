@@ -7,31 +7,30 @@ namespace UsAcRe {
 	/// </summary>
 	public partial class WpfElementBounding : Window {
 		private int boundingThickness = 1;
-		private Rect location;
+		private Rect boundRect;
 
 		public WpfElementBounding(int boundingThickness, double opacity, Color innerColor, Color outerColor) {
 			InitializeComponent();
 			this.boundingThickness = boundingThickness;
 			outerBounding.BorderThickness = new Thickness(boundingThickness);
 			innerBounding.BorderThickness = new Thickness(boundingThickness);
-			outerBounding.BorderBrush = new SolidColorBrush(innerColor );
+			outerBounding.BorderBrush = new SolidColorBrush(innerColor);
 			innerBounding.BorderBrush = new SolidColorBrush(outerColor);
 			Opacity = opacity;
 		}
 
-		public Rect Location {
-			get { return location; }
+		public Rect BoundRect {
+			get { return boundRect; }
 			set {
-				location = value;
-				Left = location.Left - (2 * boundingThickness);
-				Width = location.Width + (4 * boundingThickness);
-				Top = location.Top - (2 * boundingThickness);
-				Height = location.Height + (4 * boundingThickness);
+				boundRect = value;
+				Left = boundRect.Left - (2 * boundingThickness);
+				Width = boundRect.Width + (4 * boundingThickness);
+				Top = boundRect.Top - (2 * boundingThickness);
+				Height = boundRect.Height + (4 * boundingThickness);
 			}
 		}
 
 		public void SetToolTip(string toolTipMessage) {
-
 		}
 
 		public void SetVisibility(bool show) {

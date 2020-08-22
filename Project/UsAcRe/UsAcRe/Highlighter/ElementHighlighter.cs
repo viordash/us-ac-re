@@ -43,7 +43,7 @@ namespace UsAcRe.Highlighter {
 					wpfElementBounding.SetVisibility(false);
 					return;
 				}
-				wpfElementBounding.Location = rectangle;
+				wpfElementBounding.BoundRect = rectangle;
 				wpfElementBounding.SetToolTip(toolTip);
 				wpfElementBounding.SetVisibility(true);
 
