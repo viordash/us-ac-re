@@ -10,7 +10,6 @@ using System.Diagnostics;
 using System.IO;
 using UsAcRe.Exceptions;
 using System.ComponentModel;
-using System.Collections;
 
 namespace UsAcRe.Services {
 	public interface IAutomationElementService {
@@ -27,6 +26,7 @@ namespace UsAcRe.Services {
 		void RetrieveElementValue(UiElement element);
 		ElementProgram GetProgram(UiElement element);
 		UiElement GetRootElement(ElementProgram program);
+		bool TryGetClickablePoint(UiElement element, out Point pt);
 	}
 
 	public class AutomationElementService : IAutomationElementService {
@@ -204,6 +204,17 @@ namespace UsAcRe.Services {
 			var process = processes[program.Index];
 			var element = AutomationElement.FromHandle(process.MainWindowHandle);
 			return ToUiElement(element);
+		}
+
+		public bool TryGetClickablePoint(UiElement element, out Point pt) {
+			if(TryGetAutomationElement(element, out AutomationElement automationElement)) {
+				try {
+					pt = automationElement.GetClickablePoint();
+					return true;
+				} catch(NoClickablePointException) { } catch(ElementNotAvailableException) { }
+			}
+			pt = new Point();
+			return false;
 		}
 	}
 }

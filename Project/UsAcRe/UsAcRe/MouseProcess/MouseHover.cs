@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using System.Threading;
+﻿using System.Threading.Tasks;
 using Microsoft.Test.Input;
 
 namespace UsAcRe.MouseProcess {
@@ -8,7 +7,7 @@ namespace UsAcRe.MouseProcess {
 		const int beamLengthStep = 2;
 		const int beamLengthStepMaxCount = 16 + 1;
 
-		public static void Perform(Point point, int step) {
+		public static async Task Perform(System.Windows.Point point, int step) {
 			for(int beamNumb = 1; beamNumb < beamCount; beamNumb++) {
 				var gradation = step % (beamCount * beamLengthStepMaxCount);
 				var beamLengthNum = gradation % beamLengthStepMaxCount;
@@ -45,8 +44,8 @@ namespace UsAcRe.MouseProcess {
 						y = y - shiftPos;
 						break;
 				}
-				Mouse.MoveTo(new Point(x, y));
-				Thread.Sleep(100);
+				Mouse.MoveTo(new System.Drawing.Point((int)x, (int)y));
+				await Task.Delay(100);
 			}
 		}
 	}

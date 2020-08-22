@@ -66,38 +66,40 @@ namespace UsAcRe.Actions {
 		}
 
 		async Task WaitAppearElement(RequiredElement requiredElement) {
-			System.Drawing.Point point;
+			System.Windows.Rect rect;
 
-			if(requiredElement != null && requiredElement.Parent != null) {
-				point = CalculateRelativePoint(requiredElement);
+			if(requiredElement?.Parent != null) {
+				rect = GetRelativeRectangle(requiredElement);
 			} else {
-				point = new System.Drawing.Point((int)MatchedElement.BoundingRectangle.X, (int)MatchedElement.BoundingRectangle.Y);
+				rect = MatchedElement.BoundingRectangle;
 			}
-			var rect = MatchedElement.BoundingRectangle;
-
+			var clickablePoint = GetClickablePoint(requiredElement, rect);
 			testsLaunchingService.ShowHighlighter(rect, MatchedElement.ToShortString());
-			await Task.Delay(100);
-			MouseHover.Perform(point, stepWaitAppear);
+			await Task.Delay(50);
+			await MouseHover.Perform(clickablePoint, stepWaitAppear);
 			stepWaitAppear++;
 		}
 
-		System.Drawing.Point CalculateRelativePoint(RequiredElement requiredElement) {
+		System.Windows.Rect GetRelativeRectangle(RequiredElement requiredElement) {
 			var originalLocation = requiredElement.ParentEquivalentInSearchPath.BoundingRectangle.Location;
 			var originalSize = requiredElement.ParentEquivalentInSearchPath.BoundingRectangle.Size;
 			var currentLocation = requiredElement.Parent.BoundingRectangle.Location;
 			var currentSize = requiredElement.Parent.BoundingRectangle.Size;
-			var shiftX = originalLocation.X - currentLocation.X;
-			var shiftY = originalLocation.Y - currentLocation.Y;
-			var shiftWidth = originalSize.Width - currentSize.Width;
-			var shiftHeight = originalSize.Height - currentSize.Height;
+			var offsetX = currentLocation.X - originalLocation.X;
+			var offsetY = currentLocation.Y - originalLocation.Y;
 
-			var point = new System.Drawing.Point((int)MatchedElement.BoundingRectangle.X, (int)MatchedElement.BoundingRectangle.Y);
-
-			point.X = point.X - (int)shiftX;
-			point.Y = point.Y - (int)shiftY;
-			return point;
+			var rect = MatchedElement.BoundingRectangle;
+			rect.Offset(offsetX, offsetY);
+			return rect;
 		}
 
+		System.Windows.Point GetClickablePoint(RequiredElement requiredElement, System.Windows.Rect boundingRect) {
+			if(requiredElement?.Element != null && automationElementService.TryGetClickablePoint(requiredElement.Element, out System.Windows.Point point)) {
+				return point;
+			}
+			boundingRect.Offset(boundingRect.Width / 2, boundingRect.Height / 2);
+			return boundingRect.Location;
+		}
 
 		RequiredElement GetElement() {
 			var rootElement = automationElementService.GetRootElement(Program);
