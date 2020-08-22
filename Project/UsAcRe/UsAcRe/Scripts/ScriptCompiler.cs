@@ -2,6 +2,7 @@
 using System.CodeDom.Compiler;
 using System.Linq;
 using System.Reflection;
+using UsAcRe.Actions;
 
 namespace UsAcRe.Scripts {
 	public class ScriptCompiler {
@@ -39,7 +40,7 @@ namespace UsAcRe.Scripts {
 				throw new ApplicationException("There is no " + ScriptBuilder.TestsClassname + " class in the compiled Assembly");
 			}
 			Type type = instance.GetType();
-			MethodInfo method = type.GetMethod("Execute");
+			MethodInfo method = type.GetMethod(nameof(BaseAction.ExecuteAsync));
 			if(instance == null) {
 				throw new ApplicationException("There is no TestsScript.Execute method in the compiled class");
 			}
