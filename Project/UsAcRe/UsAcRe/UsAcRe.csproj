@@ -120,6 +120,9 @@
     <Compile Include="Helpers\FormsHelper.cs" />
     <Compile Include="Helpers\NamingHelpers.cs" />
     <Compile Include="Highlighter\ElementHighlighter.cs" />
+    <Compile Include="Highlighter\WpfElementToolTip.xaml.cs">
+      <DependentUpon>WpfElementToolTip.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -187,6 +190,10 @@
     <Page Include="ClickBlocker\MouseClickBlocker.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Highlighter\WpfElementToolTip.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Highlighter\WpfElementBounding.xaml">
       <SubType>Designer</SubType>
