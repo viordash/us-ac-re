@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Media;
 using UsAcRe.UIAutomationElement;
 
@@ -7,7 +8,6 @@ namespace UsAcRe.Highlighter {
 	public class ElementHighlighter : IDisposable {
 		NLog.Logger logger = NLog.LogManager.GetLogger("UsAcRe.Trace");
 
-		readonly string toolTip;
 		bool isHighlighting;
 		bool isDisposed;
 
@@ -19,7 +19,7 @@ namespace UsAcRe.Highlighter {
 		}
 
 		public ElementHighlighter(Rect boundingRectangle, string toolTip)
-			: this(boundingRectangle, toolTip, 2, 0.6, Colors.LightBlue, Colors.LightGreen) {
+			: this(boundingRectangle, toolTip, 2, 0.6, Colors.Black, Colors.Orange) {
 		}
 
 		public ElementHighlighter(Rect boundingRectangle)
@@ -27,14 +27,34 @@ namespace UsAcRe.Highlighter {
 		}
 
 		public ElementHighlighter(Rect boundingRectangle, string toolTip, int boundingThickness, double opacity, Color innerColor, Color outerColor) {
-			this.toolTip = toolTip;
 			wpfElementBounding = new WpfElementBounding(boundingThickness, opacity, innerColor, outerColor, boundingRectangle);
 
-			var toolTipLocation = boundingRectangle.BottomLeft;
-			toolTipLocation.Offset(0, boundingRectangle.Height * 0.2);
 			wpfElementToolTip = !string.IsNullOrEmpty(toolTip)
-				? new WpfElementToolTip(toolTip, opacity * 1.2, outerColor, toolTipLocation)
+				? new WpfElementToolTip(toolTip, opacity * 1.2, innerColor, outerColor, GetTooltipLocation(boundingRectangle, GetTooltipSize(toolTip)))
 				: null;
+		}
+
+		Size GetTooltipSize(string toolTip) {
+			var font = new System.Drawing.Font("Segoe UI", 9.0F);
+			var toolTipSize = TextRenderer.MeasureText(toolTip, font);
+			return new Size(toolTipSize.Width, toolTipSize.Height);
+		}
+
+		Point GetTooltipLocation(Rect boundingRectangle, Size tooltipSize) {
+			var toolTipLocation = new Point();
+
+			if(boundingRectangle.Y < Screen.PrimaryScreen.Bounds.Height / 4) {
+				toolTipLocation.Y = boundingRectangle.Bottom + tooltipSize.Height * 1;
+			} else {
+				toolTipLocation.Y = boundingRectangle.Top - tooltipSize.Height * 2;
+			}
+
+			if(boundingRectangle.X < Screen.PrimaryScreen.Bounds.Width / 4) {
+				toolTipLocation.X = boundingRectangle.Right + (tooltipSize.Width * 0.02);
+			} else {
+				toolTipLocation.X = boundingRectangle.Left - (tooltipSize.Width * 0.9);
+			}
+			return toolTipLocation;
 		}
 
 		public void StartHighlighting() {
