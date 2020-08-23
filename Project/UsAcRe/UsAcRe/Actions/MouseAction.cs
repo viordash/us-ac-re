@@ -12,10 +12,14 @@ namespace UsAcRe.Actions {
 		public Point DownClickedPoint { get; set; }
 		public Point UpClickedPoint { get; set; }
 
-		public MouseAction(MouseActionType type, Point downClickedPoint, Point upClickedPoint) {
+		public MouseAction(MouseActionType type, Point downClickedPoint, Point upClickedPoint) : this(type, downClickedPoint) {
+			UpClickedPoint = upClickedPoint;
+		}
+
+		public MouseAction(MouseActionType type, Point downClickedPoint) {
 			ActionType = type;
 			DownClickedPoint = downClickedPoint;
-			UpClickedPoint = upClickedPoint;
+			UpClickedPoint = Point.Empty;
 		}
 
 		protected override async Task ExecuteCoreAsync() {
@@ -26,8 +30,13 @@ namespace UsAcRe.Actions {
 			return string.Format("{0} Type:{1}, Down:{2}, Up:{3}", nameof(MouseAction), ActionType, DownClickedPoint, UpClickedPoint);
 		}
 		public override string ExecuteAsScriptSource() {
-			return string.Format("await new {0}({1}, {2}, {3}).{4}()", nameof(MouseAction), ActionType.ForNew(), DownClickedPoint.ForNew(), UpClickedPoint.ForNew(),
-				nameof(MouseAction.ExecuteAsync));
+			if(UpClickedPoint.IsEmpty) {
+				return string.Format("await new {0}({1}, {2}).{3}()", nameof(MouseAction), ActionType.ForNew(), DownClickedPoint.ForNew(),
+					nameof(MouseAction.ExecuteAsync));
+			} else {
+				return string.Format("await new {0}({1}, {2}, {3}).{4}()", nameof(MouseAction), ActionType.ForNew(), DownClickedPoint.ForNew(), UpClickedPoint.ForNew(),
+					nameof(MouseAction.ExecuteAsync));
+			}
 		}
 
 

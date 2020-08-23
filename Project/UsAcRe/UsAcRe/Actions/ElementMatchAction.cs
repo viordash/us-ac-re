@@ -28,7 +28,7 @@ namespace UsAcRe.Actions {
 
 		int stepWaitAppear;
 
-		public ElementMatchAction(ElementProgram program, List<UiElement> searchPath, int timeoutMs = 1000 * 1000) {
+		public ElementMatchAction(ElementProgram program, List<UiElement> searchPath, int timeoutMs = 20 * 1000) {
 			Program = program;
 			SearchPath = searchPath;
 			TimeoutMs = timeoutMs;
