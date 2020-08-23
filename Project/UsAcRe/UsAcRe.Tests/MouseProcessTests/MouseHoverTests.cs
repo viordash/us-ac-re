@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using NUnit.Framework;
 using UsAcRe.MouseProcess;
 using UsAcRe.WindowsSystem;
@@ -25,12 +26,14 @@ namespace UsAcRe.Tests.MouseProcessTests {
 			WinAPI.POINT currPt;
 			WinAPI.POINT startPt;
 
+			WinAPI.SetCursorPos(Screen.PrimaryScreen.Bounds.Width / 2, Screen.PrimaryScreen.Bounds.Height / 2);
+
 			var stopwatch = Stopwatch.StartNew();
 			WinAPI.GetCursorPos(out startPt);
-			for(int i = 0; i < 16; i++) {
+			for(int i = 0; i < 4; i++) {
 				var point = new System.Windows.Point(startPt.x, startPt.y);
 				await MouseHover.Perform(point, step, 1);
-				step++;
+				step += 4;
 			}
 
 			var elapsed = stopwatch.Elapsed.TotalMilliseconds;

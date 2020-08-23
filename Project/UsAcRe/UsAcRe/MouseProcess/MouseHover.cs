@@ -13,8 +13,7 @@ namespace UsAcRe.MouseProcess {
 			var shiftPos = beamLengthStep * beamLengthNum;
 			var x = point.X - (shiftPos / 2);
 			var y = point.Y - (shiftPos + (shiftPos / 2));
-			var prevX = x;
-			var prevY = y;
+			var prev = new System.Windows.Point(x, y);
 
 			for(int beamNumb = 0; beamNumb < beamCount; beamNumb++) {
 				switch(beamNumb) {
@@ -47,28 +46,30 @@ namespace UsAcRe.MouseProcess {
 						y = y - shiftPos;
 						break;
 				}
-
-				const int interpolate = 4;
-				var deltaX = (x - prevX) / interpolate;
-				var deltaY = (y - prevY) / interpolate;
-				var delayDelta = delay / interpolate;
-				if(delayDelta <= 0) {
-					delayDelta = 1;
-				}
-				if(deltaX >= 1 && deltaY >= 1) {
-					for(int i = 0; i < interpolate; i++) {
-						prevX += deltaX;
-						prevY += deltaY;
-						Mouse.MoveTo(new System.Drawing.Point((int)prevX, (int)prevY));
-						await Task.Delay(delayDelta);
-					}
-				} else {
-					Mouse.MoveTo(new System.Drawing.Point((int)x, (int)y));
-					await Task.Delay(delay);
-				}
-				prevX = x;
-				prevY = y;
+				prev = await SmoothMove(prev, new System.Windows.Point(x, y), delay, 4);
 			}
+		}
+
+
+		public static async Task<System.Windows.Point> SmoothMove(System.Windows.Point from, System.Windows.Point to, int delay, int interpolate) {
+			var deltaX = (to.X - from.X) / interpolate;
+			var deltaY = (to.Y - from.Y) / interpolate;
+			var delayDelta = delay / interpolate;
+			if(delayDelta <= 0) {
+				delayDelta = 1;
+			}
+			if(deltaX != 0 || deltaY != 0) {
+				for(int i = 0; i < interpolate; i++) {
+					from.X += deltaX;
+					from.Y += deltaY;
+					Mouse.MoveTo(new System.Drawing.Point((int)from.X, (int)from.Y));
+					await Task.Delay(delayDelta);
+				}
+			} else {
+				Mouse.MoveTo(new System.Drawing.Point((int)to.X, (int)to.Y));
+				await Task.Delay(delay);
+			}
+			return from;
 		}
 	}
 }
