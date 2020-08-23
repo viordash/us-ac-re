@@ -55,11 +55,11 @@ namespace UsAcRe.Actions {
 
 		async ValueTask DoWorkAsync() {
 			await Task.Run(async () => {
-				var stopwatch = Stopwatch.StartNew();
 				stepWaitAppear = 0;
 				ClickablePoint = null;
 				testsLaunchingService.OpenHighlighter(MatchedElement.BoundingRectangle, MatchedElement.ToShortString());
 				await Task.Delay(200);
+				var stopwatch = Stopwatch.StartNew();
 				while(!cancellationToken.IsCancellationRequested && stopwatch.Elapsed.TotalMilliseconds < TimeoutMs) {
 					var requiredElement = GetElement();
 					if(requiredElement != null
