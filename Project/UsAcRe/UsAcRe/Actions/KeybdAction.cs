@@ -21,7 +21,7 @@ namespace UsAcRe.Actions {
 			return string.Format("{0} Code:{0:D3}, Down:{2}, Up:{3}", nameof(KeybdAction), VKCode, IsUp ? "Up" : "  ", Convert.ToChar(VKCode));
 		}
 		public override string ExecuteAsScriptSource() {
-			return string.Format("await new {0}({1}, {2}).{3}()", nameof(KeybdAction), VKCode.ForNew(), IsUp.ForNew(), nameof(KeybdAction.ExecuteAsync));
+			return string.Format("new {0}({1}, {2}).{3}(prevAction)", nameof(KeybdAction), VKCode.ForNew(), IsUp.ForNew(), nameof(KeybdAction.ExecuteAsync));
 		}
 
 		async ValueTask DoWorkAsync() {

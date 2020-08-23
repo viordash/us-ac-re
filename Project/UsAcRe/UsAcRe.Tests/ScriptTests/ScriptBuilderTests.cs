@@ -103,14 +103,14 @@ namespace UsAcRe.Tests.ScriptTests {
 			var code = scriptBuilder.CreateExecuteMethodBody();
 			Assert.IsNotEmpty(code);
 			Assert.That(code, Does.StartWith(
-				"\t\t\tawait new ElementMatchAction(new ElementProgram(42, \"notepad.exe\"), new List<UiElement>() {\r\n"
+				"\t\t\tprevAction = await new ElementMatchAction(new ElementProgram(42, \"notepad.exe\"), new List<UiElement>() {\r\n"
 				+ "\t\t\t\tnew UiElement(4, \"\", \"Calculator\", \"\", \"automationId1\", 50036, new System.Windows.Rect(10, 20, 30, 40)),\r\n"
 				+ "\t\t\t\tnew UiElement(3, \"value2\", \"7\", \"137\", \"automationId2\", 50002, new System.Windows.Rect(11, 22, 33, 44)),\r\n"
-				+ "\t\t\t}, 1000).ExecuteAsync();"));
+				+ "\t\t\t}, 1000).ExecuteAsync(prevAction);"));
 
-			Assert.That(code, Does.Contain("await new MouseAction(MouseActionType.LeftClick, new System.Drawing.Point(1, 2), new System.Drawing.Point(3, 4)).ExecuteAsync();"));
-			Assert.That(code, Does.Contain("await new KeybdAction(VirtualKeyCodes.K_1, false).ExecuteAsync();"));
-			Assert.That(code, Does.Contain("await new KeybdAction(VirtualKeyCodes.K_1, true).ExecuteAsync();"));
+			Assert.That(code, Does.Contain("new MouseAction(MouseActionType.LeftClick, new System.Drawing.Point(1, 2), new System.Drawing.Point(3, 4)).ExecuteAsync(prevAction);"));
+			Assert.That(code, Does.Contain("new KeybdAction(VirtualKeyCodes.K_1, false).ExecuteAsync(prevAction);"));
+			Assert.That(code, Does.Contain("new KeybdAction(VirtualKeyCodes.K_1, true).ExecuteAsync(prevAction);"));
 		}
 
 		[Test]
@@ -127,7 +127,7 @@ namespace UsAcRe.Tests.ScriptTests {
 			Assert.IsNotEmpty(code);
 			Assert.That(code, Does.Contain("using System.Drawing;"));
 			Assert.That(code, Does.Contain("namespace UsAcRe.TestsScripts {"));
-			Assert.That(code, Does.Contain("new MouseAction(MouseActionType.LeftDoubleClick, new System.Drawing.Point(1, 2), new System.Drawing.Point(3, 4)).ExecuteAsync();"));
+			Assert.That(code, Does.Contain("new MouseAction(MouseActionType.LeftDoubleClick, new System.Drawing.Point(1, 2), new System.Drawing.Point(3, 4)).ExecuteAsync(prevAction);"));
 		}
 	}
 }

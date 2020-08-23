@@ -20,7 +20,7 @@ namespace UsAcRe.Tests.ActionsTests {
 		public void ExecuteAsScriptSource_Test() {
 			var action = new KeybdAction(VirtualKeyCodes.VK_CONTROL, false);
 			var sourcePresentation = action.ExecuteAsScriptSource();
-			Assert.AreEqual(sourcePresentation, "await new KeybdAction(VirtualKeyCodes.VK_CONTROL, false).ExecuteAsync()");
+			Assert.AreEqual(sourcePresentation, "new KeybdAction(VirtualKeyCodes.VK_CONTROL, false).ExecuteAsync(prevAction)");
 		}
 	}
 }

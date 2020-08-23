@@ -31,10 +31,10 @@ namespace UsAcRe.Actions {
 		}
 		public override string ExecuteAsScriptSource() {
 			if(UpClickedPoint.IsEmpty) {
-				return string.Format("await new {0}({1}, {2}).{3}()", nameof(MouseAction), ActionType.ForNew(), DownClickedPoint.ForNew(),
+				return string.Format("new {0}({1}, {2}).{3}(prevAction)", nameof(MouseAction), ActionType.ForNew(), DownClickedPoint.ForNew(),
 					nameof(MouseAction.ExecuteAsync));
 			} else {
-				return string.Format("await new {0}({1}, {2}, {3}).{4}()", nameof(MouseAction), ActionType.ForNew(), DownClickedPoint.ForNew(), UpClickedPoint.ForNew(),
+				return string.Format("new {0}({1}, {2}, {3}).{4}(prevAction)", nameof(MouseAction), ActionType.ForNew(), DownClickedPoint.ForNew(), UpClickedPoint.ForNew(),
 					nameof(MouseAction.ExecuteAsync));
 			}
 		}

@@ -83,6 +83,8 @@ namespace UsAcRe.Scripts {
 			return tab + tab
 				+ "public async void " + nameof(BaseAction.ExecuteAsync) + "() {"
 				+ newLine
+				+ tab + tab + tab + "BaseAction prevAction = null;"
+				+ newLine
 				+ code
 				+ newLine
 				+ tab + tab + "}";
@@ -91,7 +93,7 @@ namespace UsAcRe.Scripts {
 		public string CreateExecuteMethodBody() {
 			var sb = new StringBuilder();
 			foreach(var action in actions) {
-				var codeLines = action.ExecuteAsScriptSource()
+				var codeLines = ("prevAction = await " + action.ExecuteAsScriptSource())
 					.Split('\r', '\n')
 					.Where(x => !string.IsNullOrEmpty(x))
 					.Select(x => string.Format("{0}{0}{0}{1}", tab, x));

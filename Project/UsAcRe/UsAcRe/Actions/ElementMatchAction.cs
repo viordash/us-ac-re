@@ -49,7 +49,7 @@ namespace UsAcRe.Actions {
 			return sb.ToString();
 		}
 		public override string ExecuteAsScriptSource() {
-			return string.Format("await new {0}({1}, {2}, {3}).{4}()", nameof(ElementMatchAction), Program.ForNew(), SearchPath.ForNew(), TimeoutMs.ForNew(),
+			return string.Format("new {0}({1}, {2}, {3}).{4}(prevAction)", nameof(ElementMatchAction), Program.ForNew(), SearchPath.ForNew(), TimeoutMs.ForNew(),
 				nameof(ElementMatchAction.ExecuteAsync));
 		}
 
