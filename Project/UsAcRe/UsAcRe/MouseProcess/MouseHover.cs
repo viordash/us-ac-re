@@ -7,13 +7,16 @@ namespace UsAcRe.MouseProcess {
 		const int beamLengthStep = 2;
 		const int beamLengthStepMaxCount = 16 + 1;
 
-		public static async Task Perform(System.Windows.Point point, int step) {
-			for(int beamNumb = 1; beamNumb < beamCount; beamNumb++) {
-				var gradation = step % (beamCount * beamLengthStepMaxCount);
-				var beamLengthNum = gradation % beamLengthStepMaxCount;
-				var x = point.X;
-				var y = point.Y;
-				var shiftPos = beamLengthStep * beamLengthNum;
+		public static async Task Perform(System.Windows.Point point, int step, int delay = 20) {
+			var gradation = step % (beamCount * beamLengthStepMaxCount);
+			var beamLengthNum = gradation % beamLengthStepMaxCount;
+			var shiftPos = beamLengthStep * beamLengthNum;
+			var x = point.X - (shiftPos / 2);
+			var y = point.Y - (shiftPos + (shiftPos / 2));
+			var prevX = x;
+			var prevY = y;
+
+			for(int beamNumb = 0; beamNumb < beamCount; beamNumb++) {
 				switch(beamNumb) {
 					case 0:
 						x = x + shiftPos;
@@ -44,8 +47,27 @@ namespace UsAcRe.MouseProcess {
 						y = y - shiftPos;
 						break;
 				}
-				Mouse.MoveTo(new System.Drawing.Point((int)x, (int)y));
-				await Task.Delay(100);
+
+				const int interpolate = 4;
+				var deltaX = (x - prevX) / interpolate;
+				var deltaY = (y - prevY) / interpolate;
+				var delayDelta = delay / interpolate;
+				if(delayDelta <= 0) {
+					delayDelta = 1;
+				}
+				if(deltaX >= 1 && deltaY >= 1) {
+					for(int i = 0; i < interpolate; i++) {
+						prevX += deltaX;
+						prevY += deltaY;
+						Mouse.MoveTo(new System.Drawing.Point((int)prevX, (int)prevY));
+						await Task.Delay(delayDelta);
+					}
+				} else {
+					Mouse.MoveTo(new System.Drawing.Point((int)x, (int)y));
+					await Task.Delay(delay);
+				}
+				prevX = x;
+				prevY = y;
 			}
 		}
 	}
