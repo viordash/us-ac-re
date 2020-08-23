@@ -8,7 +8,7 @@ namespace UsAcRe.Services {
 		CancellationToken GetCurrentCancellationToken();
 		void Start();
 		void Stop();
-		void ShowHighlighter(System.Windows.Rect boundingRectangle, string toolTip);
+		void OpenHighlighter(System.Windows.Rect boundingRectangle, string toolTip);
 		void CloseHighlighter();
 	}
 
@@ -46,7 +46,7 @@ namespace UsAcRe.Services {
 			CloseHighlighter();
 		}
 
-		public void ShowHighlighter(System.Windows.Rect boundingRectangle, string toolTip) {
+		public void OpenHighlighter(System.Windows.Rect boundingRectangle, string toolTip) {
 			windowsFormsService.GetMainForm().BeginInvoke((Action)(() => {
 				CloseHighlighterInternal();
 				elementHighlighter = new ElementHighlighter(boundingRectangle, toolTip);

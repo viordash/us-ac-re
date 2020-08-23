@@ -8,7 +8,6 @@ namespace UsAcRe.Highlighter {
 	public class ElementHighlighter : IDisposable {
 		NLog.Logger logger = NLog.LogManager.GetLogger("UsAcRe.Trace");
 
-		bool isHighlighting;
 		bool isDisposed;
 
 		WpfElementBounding wpfElementBounding;
@@ -58,27 +57,13 @@ namespace UsAcRe.Highlighter {
 		}
 
 		public void StartHighlighting() {
-			if(isDisposed) {
-				throw new ObjectDisposedException(nameof(ElementHighlighter));
-			}
-
-			if(!isHighlighting) {
-				isHighlighting = true;
-				wpfElementBounding.Show();
-				wpfElementToolTip?.Show();
-			}
+			wpfElementBounding.Show();
+			wpfElementToolTip?.Show();
 		}
 
 		public void StopHighlighting() {
-			if(isDisposed) {
-				throw new ObjectDisposedException(nameof(ElementHighlighter));
-			}
-
-			if(isHighlighting) {
-				wpfElementBounding.Hide();
-				wpfElementToolTip?.Hide();
-				isHighlighting = false;
-			}
+			wpfElementBounding.Hide();
+			wpfElementToolTip?.Hide();
 		}
 
 		public void Dispose() {

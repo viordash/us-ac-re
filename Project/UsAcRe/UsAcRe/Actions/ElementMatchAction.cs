@@ -54,6 +54,9 @@ namespace UsAcRe.Actions {
 			await Task.Run(async () => {
 				var stopwatch = Stopwatch.StartNew();
 				stepWaitAppear = 0;
+
+				testsLaunchingService.OpenHighlighter(MatchedElement.BoundingRectangle, MatchedElement.ToShortString());
+				await Task.Delay(200);
 				while(!cancellationToken.IsCancellationRequested && stopwatch.Elapsed.TotalMilliseconds < TimeoutMs) {
 					var requiredElement = GetElement();
 					if(requiredElement != null && requiredElement.Element != null) {
@@ -74,9 +77,10 @@ namespace UsAcRe.Actions {
 				rect = MatchedElement.BoundingRectangle;
 			}
 			var clickablePoint = GetClickablePoint(requiredElement, rect);
-			testsLaunchingService.ShowHighlighter(rect, MatchedElement.ToShortString());
-			await Task.Delay(50);
-			await MouseHover.Perform(clickablePoint, stepWaitAppear);
+			testsLaunchingService.CloseHighlighter();
+			await MouseHover.Perform(clickablePoint, stepWaitAppear, 50);
+			testsLaunchingService.OpenHighlighter(rect, MatchedElement.ToShortString());
+			await Task.Delay(200);
 			stepWaitAppear++;
 		}
 
