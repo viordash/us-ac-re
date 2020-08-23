@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Automation;
 using NUnit.Framework;
 using UsAcRe.Actions;
+using UsAcRe.Exceptions;
 using UsAcRe.UIAutomationElement;
 
 namespace UsAcRe.Tests.ActionsTests {
@@ -57,7 +58,7 @@ namespace UsAcRe.Tests.ActionsTests {
 		}
 
 		[Test]
-		public async Task ExecuteAsync_Return_By_Timeout_Test() {
+		public void ExecuteAsync_Return_By_Timeout_Test() {
 			var cancellationToken = new CancellationToken(false);
 			testsLaunchingServiceMock
 				.Setup(x => x.GetCurrentCancellationToken())
@@ -70,7 +71,7 @@ namespace UsAcRe.Tests.ActionsTests {
 			}, 100);
 
 			var stopwatch = Stopwatch.StartNew();
-			await action.ExecuteAsync();
+			Assert.ThrowsAsync<TestFailedExeption>(async () => await action.ExecuteAsync());
 			var elapsed = stopwatch.Elapsed.TotalMilliseconds;
 			Assert.That(elapsed, Is.GreaterThan(100));
 		}

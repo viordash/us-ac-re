@@ -37,6 +37,8 @@ namespace UsAcRe.Actions {
 		protected async Task SafeActionAsync(Func<ValueTask> action) {
 			try {
 				await action();
+			} catch(TestFailedExeption) {
+				throw;
 			} catch(Exception ex) {
 				if(ex is Win32Exception && (uint)((Win32Exception)ex).ErrorCode == 0x80004005) {
 					throw new MinorException(this);

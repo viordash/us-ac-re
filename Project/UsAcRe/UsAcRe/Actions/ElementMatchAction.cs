@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Windows.Automation;
 using System;
 using UsAcRe.MouseProcess;
+using UsAcRe.Exceptions;
 
 namespace UsAcRe.Actions {
 	public class ElementMatchAction : BaseAction {
@@ -19,10 +20,11 @@ namespace UsAcRe.Actions {
 		}
 		#endregion
 
-		public ElementProgram Program { get; set; }
-		public List<UiElement> SearchPath { get; set; }
+		public ElementProgram Program { get; private set; }
+		public List<UiElement> SearchPath { get; private set; }
 		public UiElement MatchedElement { get => SearchPath?[0]; }
-		public int TimeoutMs { get; set; }
+		public int TimeoutMs { get; private set; }
+		public System.Windows.Point? ClickablePoint { get; private set; }
 
 		int stepWaitAppear;
 
@@ -30,6 +32,7 @@ namespace UsAcRe.Actions {
 			Program = program;
 			SearchPath = searchPath;
 			TimeoutMs = timeoutMs;
+			ClickablePoint = null;
 		}
 
 		protected override async Task ExecuteCoreAsync() {
@@ -54,17 +57,23 @@ namespace UsAcRe.Actions {
 			await Task.Run(async () => {
 				var stopwatch = Stopwatch.StartNew();
 				stepWaitAppear = 0;
-
+				ClickablePoint = null;
 				testsLaunchingService.OpenHighlighter(MatchedElement.BoundingRectangle, MatchedElement.ToShortString());
 				await Task.Delay(200);
 				while(!cancellationToken.IsCancellationRequested && stopwatch.Elapsed.TotalMilliseconds < TimeoutMs) {
 					var requiredElement = GetElement();
-					if(requiredElement != null && requiredElement.Element != null) {
+					if(requiredElement != null
+					&& requiredElement.Element != null
+					&& automationElementService.TryGetClickablePoint(requiredElement.Element, out System.Windows.Point point)) {
+						ClickablePoint = point;
 						break;
 					}
 					await WaitAppearElement(requiredElement);
 				}
 				testsLaunchingService.CloseHighlighter();
+				if(!ClickablePoint.HasValue) {
+					throw new TestFailedExeption(this);
+				}
 			});
 		}
 

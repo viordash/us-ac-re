@@ -35,4 +35,8 @@ namespace UsAcRe.Exceptions {
 	public class TargetProgramNotFoundExeption : ExecuteBaseActionException {
 		public TargetProgramNotFoundExeption(ElementProgram targetProgram) : base(string.Format("Target program {0} not found", targetProgram.ToString())) { }
 	}
+
+	public class TestFailedExeption : ExecuteBaseActionException {
+		public TestFailedExeption(BaseAction baseAction) : base(baseAction) { }
+	}
 }
