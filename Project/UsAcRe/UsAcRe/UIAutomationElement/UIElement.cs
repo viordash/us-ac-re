@@ -34,7 +34,7 @@ namespace UsAcRe.UIAutomationElement {
 		}
 
 		public string ToShortString() {
-			var strings = new[] { Name, ClassName, Value };
+			var strings = new[] { Value, Name, ClassName };
 			return string.Format("\"{0}\" \"{1}\"", ControlType.LookupById(ControlTypeId).LocalizedControlType,
 				strings.FirstOrDefault(s => !string.IsNullOrEmpty(s))?.MaxLength(30));
 		}

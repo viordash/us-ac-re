@@ -9,6 +9,7 @@ using System.Windows.Automation;
 using System;
 using UsAcRe.MouseProcess;
 using UsAcRe.Exceptions;
+using UsAcRe.Helpers;
 
 namespace UsAcRe.Actions {
 	public class ElementMatchAction : BaseAction {
@@ -57,20 +58,24 @@ namespace UsAcRe.Actions {
 			await Task.Run(async () => {
 				stepWaitAppear = 0;
 				ClickablePoint = null;
-				testsLaunchingService.OpenHighlighter(MatchedElement.BoundingRectangle, MatchedElement.ToShortString());
-				await Task.Delay(200);
-				var stopwatch = Stopwatch.StartNew();
-				while(!cancellationToken.IsCancellationRequested && stopwatch.Elapsed.TotalMilliseconds < TimeoutMs) {
-					var requiredElement = GetElement();
-					if(requiredElement != null
-					&& requiredElement.Element != null
-					&& automationElementService.TryGetClickablePoint(requiredElement.Element, out System.Windows.Point point)) {
-						ClickablePoint = point;
-						break;
+				try {
+					var stopwatch = Stopwatch.StartNew();
+					while(!cancellationToken.IsCancellationRequested && stopwatch.Elapsed.TotalMilliseconds < TimeoutMs) {
+						var requiredElement = GetElement();
+						if(requiredElement != null
+						&& requiredElement.Element != null
+						&& automationElementService.TryGetClickablePoint(requiredElement.Element, out System.Windows.Point point)) {
+							ClickablePoint = point;
+							testsLaunchingService.OpenHighlighter(requiredElement.Element.BoundingRectangle, null);
+							MouseHover.MoveTo(point);
+							await Task.Delay(50);
+							break;
+						}
+						await WaitAppearElement(requiredElement);
 					}
-					await WaitAppearElement(requiredElement);
+				} finally {
+					testsLaunchingService.CloseHighlighter();
 				}
-				testsLaunchingService.CloseHighlighter();
 				if(!ClickablePoint.HasValue) {
 					throw new TestFailedExeption(this);
 				}
@@ -89,7 +94,7 @@ namespace UsAcRe.Actions {
 			testsLaunchingService.CloseHighlighter();
 			await MouseHover.Perform(clickablePoint, stepWaitAppear, 50);
 			testsLaunchingService.OpenHighlighter(rect, MatchedElement.ToShortString());
-			await Task.Delay(200);
+			await Task.Delay(100);
 			stepWaitAppear++;
 		}
 
@@ -150,7 +155,7 @@ namespace UsAcRe.Actions {
 				|| !TextMatched(element1.Name, element2.Name)
 				|| !StringEquals(element1.ClassName, element2.ClassName)
 				|| !StringEquals(element1.AutomationId, element2.AutomationId)
-				|| (compareSizes && !AreSizeEquals(element1.BoundingRectangle.Size, element2.BoundingRectangle.Size))) {
+				|| (compareSizes && !DimensionsHelper.AreSizeEquals(element1.BoundingRectangle.Size, element2.BoundingRectangle.Size, GetClickPositionToleranceInPercent()))) {
 				return false;
 			}
 			return true;
@@ -197,29 +202,10 @@ namespace UsAcRe.Actions {
 			return false;
 		}
 
-		bool AreSizeEquals(System.Windows.Size size1, System.Windows.Size size2) {
-			if((size1.Height <= 0 || size1.Width <= 0)
-				&& (size2.Height <= 0 || size2.Width <= 0)) {
-				return true;
-			}
-			var tolerance = (double)20;//			GetControlSizeToleranceInPercent();
-			double heightTolerance = 0;
-			double widthTolerance = 0;
-			if(tolerance < 0) {
-				return true;
-			} else if(tolerance > 0) {
-				tolerance = 100 / tolerance;
-				heightTolerance = Math.Max((int)size1.Height, size2.Height) / tolerance;
-				widthTolerance = Math.Max((int)size1.Width, size2.Width) / tolerance;
-			}
-			return Math.Abs((int)size1.Height - size2.Height) <= heightTolerance
-				&& Math.Abs((int)size1.Width - size2.Width) <= widthTolerance;
-		}
-
-
 		bool AreValueEquals(UiElement element1, UiElement element2) {
+			automationElementService.RetrieveElementValue(element1);
 			return true /*IsCheckByValue()*/
-				&& StringEquals(element1.Value, element1.Value);
+				&& StringEquals(element1.Value, element2.Value);
 		}
 
 		bool StringEquals(string s1, string s2) {

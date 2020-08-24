@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Test.Input;
 using UsAcRe.Exceptions;
 using UsAcRe.Extensions;
+using UsAcRe.Helpers;
 using UsAcRe.MouseProcess;
 
 namespace UsAcRe.Actions {
@@ -41,6 +42,11 @@ namespace UsAcRe.Actions {
 
 
 		ValueTask DoClick() {
+			if(UpClickedPoint.IsEmpty || DimensionsHelper.IsClickPointInSamePosition(UpClickedPoint, DownClickedPoint, GetClickPositionToleranceInPercent())) {
+				if(prevAction is ElementMatchAction elementMatchAction && elementMatchAction.ClickablePoint.HasValue) {
+					DownClickedPoint = new Point((int)elementMatchAction.ClickablePoint.Value.X, (int)elementMatchAction.ClickablePoint.Value.Y);
+				}
+			}
 			MainForm.MoveOutFromPoint(DownClickedPoint.X, DownClickedPoint.Y);
 			switch(ActionType) {
 				case MouseActionType.LeftClick:

@@ -51,5 +51,9 @@ namespace UsAcRe.Actions {
 			}
 
 		}
+
+		protected int GetClickPositionToleranceInPercent() {
+			return 20;//			Properties.Settings.Default.ClickPositionToleranceInPercent;
+		}
 	}
 }
