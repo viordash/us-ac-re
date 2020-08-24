@@ -25,7 +25,7 @@ namespace UsAcRe {
 
 		void StopHooks() {
 			logger.Warn("Stop");
-			CloseHighlighter();
+			TestsLaunchingService.CloseHighlighter();
 			MouseHook.OnMouseEvent -= MouseEventHook;
 			MouseHook.OnMouseMove -= MouseMoveHook;
 			MouseHook.Stop();
@@ -55,7 +55,7 @@ namespace UsAcRe {
 				if(elementFromPoint != null) {
 					Actions.Add(new Actions.ElementMatchAction(elementFromPoint.TreeOfSpecificUiElement.Program, elementFromPoint.TreeOfSpecificUiElement));
 					CloseMouseClickBlocker();
-					CloseHighlighter();
+					TestsLaunchingService.CloseHighlighter();
 					elementFromPoint = null;
 				}
 
@@ -73,28 +73,14 @@ namespace UsAcRe {
 				if(args.Stopped && args.Buttons.Count == 0 && !IsRestrictedArea(args.Coord)) {
 					ShowMouseClickBlocker(args.Coord);
 					elementFromPoint = new ElementFromPoint(AutomationElementService, WinApiService, args.Coord, true);
-					ShowHighlighter();
+					TestsLaunchingService.OpenHighlighter(elementFromPoint);
 					CloseMouseClickBlocker();
 					//logger.Info("elementFromPoint {0}", elementFromPoint == null);
 				} else {
-					CloseHighlighter();
+					TestsLaunchingService.CloseHighlighter();
 					CloseMouseClickBlocker();
 				}
 			}), e);
-		}
-
-		void ShowHighlighter() {
-			CloseHighlighter();
-			elementHighlighter = new ElementHighlighter(elementFromPoint);
-			elementHighlighter.StartHighlighting();
-		}
-
-		void CloseHighlighter() {
-			if(elementHighlighter != null) {
-				var highlighter = elementHighlighter;
-				highlighter.StopHighlighting();
-				elementHighlighter = null;
-			}
 		}
 
 		void ShowMouseClickBlocker(WinAPI.POINT coord) {
@@ -130,7 +116,7 @@ namespace UsAcRe {
 					Actions.Add(new Actions.KeybdAction(args.VKCode, e.IsUp));
 				}
 				CloseMouseClickBlocker();
-				CloseHighlighter();
+				TestsLaunchingService.CloseHighlighter();
 			}), e);
 		}
 

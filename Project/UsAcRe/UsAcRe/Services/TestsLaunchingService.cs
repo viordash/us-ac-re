@@ -2,6 +2,7 @@
 using System.Threading;
 using NGuard;
 using UsAcRe.Highlighter;
+using UsAcRe.UIAutomationElement;
 
 namespace UsAcRe.Services {
 	public interface ITestsLaunchingService {
@@ -9,6 +10,7 @@ namespace UsAcRe.Services {
 		void Start();
 		void Stop();
 		void OpenHighlighter(System.Windows.Rect boundingRectangle, string toolTip);
+		void OpenHighlighter(ElementFromPoint elementFromPoint);
 		void CloseHighlighter();
 	}
 
@@ -50,6 +52,14 @@ namespace UsAcRe.Services {
 			windowsFormsService.GetMainForm().BeginInvoke((Action)(() => {
 				CloseHighlighterInternal();
 				elementHighlighter = new ElementHighlighter(boundingRectangle, toolTip);
+				elementHighlighter.StartHighlighting();
+			}));
+		}
+
+		public void OpenHighlighter(ElementFromPoint elementFromPoint) {
+			windowsFormsService.GetMainForm().BeginInvoke((Action)(() => {
+				CloseHighlighterInternal();
+				elementHighlighter = new ElementHighlighter(elementFromPoint);
 				elementHighlighter.StartHighlighting();
 			}));
 		}

@@ -15,7 +15,6 @@ using UsAcRe.WindowsSystem;
 namespace UsAcRe {
 	public partial class MainForm : Form {
 		NLog.Logger logger;
-		ElementHighlighter elementHighlighter = null;
 		ElementFromPoint elementFromPoint = null;
 		ElementHighlighter mouseClickBlocker = null;
 
@@ -23,6 +22,7 @@ namespace UsAcRe {
 
 		IAutomationElementService AutomationElementService { get { return ServiceLocator.Current.GetInstance<IAutomationElementService>(); } }
 		IWinApiService WinApiService { get { return ServiceLocator.Current.GetInstance<IWinApiService>(); } }
+		ITestsLaunchingService TestsLaunchingService { get { return ServiceLocator.Current.GetInstance<ITestsLaunchingService>(); } }
 
 		public MainForm() {
 			InitializeComponent();
@@ -44,7 +44,7 @@ namespace UsAcRe {
 			Settings.Default.Save();
 
 			CloseMouseClickBlocker();
-			CloseHighlighter();
+			TestsLaunchingService.CloseHighlighter();
 		}
 
 		private void btnStart_Click(object sender, EventArgs e) {
@@ -89,7 +89,7 @@ namespace UsAcRe {
 		}
 
 		private void btnStoreActions_Click(object sender, EventArgs e) {
-			if (saveFileDialog1.ShowDialog() != DialogResult.OK) {
+			if(saveFileDialog1.ShowDialog() != DialogResult.OK) {
 				return;
 			}
 			Actions.Store(saveFileDialog1.FileName);
