@@ -40,29 +40,39 @@ namespace UsAcRe.Actions {
 			}
 		}
 
+		async ValueTask DoClick() {
+			var downClickedPoint = DownClickedPoint;
+			await Task.Delay(MouseHook.MaxDoubleClickTime);
 
-		ValueTask DoClick() {
-			if(UpClickedPoint.IsEmpty || DimensionsHelper.IsClickPointInSamePosition(UpClickedPoint, DownClickedPoint, GetClickPositionToleranceInPercent())) {
-				if(prevAction is ElementMatchAction elementMatchAction && elementMatchAction.ClickablePoint.HasValue) {
-					DownClickedPoint = new Point((int)elementMatchAction.ClickablePoint.Value.X, (int)elementMatchAction.ClickablePoint.Value.Y);
+			if(UpClickedPoint.IsEmpty || DimensionsHelper.IsClickPointInSamePosition(UpClickedPoint, downClickedPoint, GetClickPositionToleranceInPercent())) {
+				var actionForDetermineClickPoint = prevAction;
+				while(actionForDetermineClickPoint is MouseAction prevMouseAction
+					&& DimensionsHelper.IsClickPointInSamePosition(downClickedPoint, prevMouseAction.DownClickedPoint, GetClickPositionToleranceInPercent())) {
+					actionForDetermineClickPoint = prevMouseAction.prevAction;
+				}
+
+				if(actionForDetermineClickPoint is ElementMatchAction elementMatchAction && elementMatchAction.ClickablePoint.HasValue) {
+					downClickedPoint = new Point((int)elementMatchAction.ClickablePoint.Value.X, (int)elementMatchAction.ClickablePoint.Value.Y);
 				}
 			}
-			MainForm.MoveOutFromPoint(DownClickedPoint.X, DownClickedPoint.Y);
+
+			testsLaunchingService.CloseHighlighter();
+			MainForm.MoveOutFromPoint(downClickedPoint.X, downClickedPoint.Y);
 			switch(ActionType) {
 				case MouseActionType.LeftClick:
-					Mouse_MoveTo(DownClickedPoint.X, DownClickedPoint.Y);
+					Mouse_MoveTo(downClickedPoint.X, downClickedPoint.Y);
 					Mouse.Click(MouseButton.Left);
 					break;
 				case MouseActionType.RightClick:
-					Mouse_MoveTo(DownClickedPoint.X, DownClickedPoint.Y);
+					Mouse_MoveTo(downClickedPoint.X, downClickedPoint.Y);
 					Mouse.Click(MouseButton.Right);
 					break;
 				case MouseActionType.MiddleClick:
-					Mouse_MoveTo(DownClickedPoint.X, DownClickedPoint.Y);
+					Mouse_MoveTo(downClickedPoint.X, downClickedPoint.Y);
 					Mouse.Click(MouseButton.Middle);
 					break;
 				case MouseActionType.LeftDoubleClick:
-					Mouse_MoveTo(DownClickedPoint.X, DownClickedPoint.Y);
+					Mouse_MoveTo(downClickedPoint.X, downClickedPoint.Y);
 					Mouse.DoubleClick(MouseButton.Left);
 					break;
 				case MouseActionType.LeftDrag:
@@ -77,7 +87,6 @@ namespace UsAcRe.Actions {
 				default:
 					throw new SevereException(this, nameof(DoClick));
 			}
-			return new ValueTask(Task.CompletedTask);
 		}
 
 		void Mouse_MoveTo(int x, int y) {

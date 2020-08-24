@@ -58,24 +58,20 @@ namespace UsAcRe.Actions {
 			await Task.Run(async () => {
 				stepWaitAppear = 0;
 				ClickablePoint = null;
-				try {
-					var stopwatch = Stopwatch.StartNew();
-					while(!cancellationToken.IsCancellationRequested && stopwatch.Elapsed.TotalMilliseconds < TimeoutMs) {
-						var requiredElement = GetElement();
-						if(requiredElement != null
-						&& requiredElement.Element != null
-						&& automationElementService.TryGetClickablePoint(requiredElement.Element, out System.Windows.Point point)) {
-							ClickablePoint = point;
-							testsLaunchingService.OpenHighlighter(requiredElement.Element.BoundingRectangle, null);
-							MouseHover.MoveTo(point);
-							await Task.Delay(50);
-							break;
-						}
-						await WaitAppearElement(requiredElement);
+				var stopwatch = Stopwatch.StartNew();
+				while(!cancellationToken.IsCancellationRequested && stopwatch.Elapsed.TotalMilliseconds < TimeoutMs) {
+					var requiredElement = GetElement();
+					if(requiredElement != null
+					&& requiredElement.Element != null
+					&& automationElementService.TryGetClickablePoint(requiredElement.Element, out System.Windows.Point point)) {
+						ClickablePoint = point;
+						testsLaunchingService.OpenHighlighter(requiredElement.Element.BoundingRectangle, null);
+						MouseHover.MoveTo(point);
+						break;
 					}
-				} finally {
-					testsLaunchingService.CloseHighlighter();
+					await WaitAppearElement(requiredElement);
 				}
+
 				if(!ClickablePoint.HasValue) {
 					throw new TestFailedExeption(this);
 				}

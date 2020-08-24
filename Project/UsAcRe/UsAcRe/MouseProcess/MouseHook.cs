@@ -33,8 +33,8 @@ namespace UsAcRe.MouseProcess {
 		public static event MouseMoveHandler OnMouseMove = delegate { };
 		private static WinAPI.LowLevelMouseProc _proc = HookCallback;
 		private static IntPtr _hookID = IntPtr.Zero;
-		private static int doubleClickTime = WinAPI.GetDoubleClickTime();
-		private static int maxDoubleClickTime = doubleClickTime + (doubleClickTime / 10);
+		public static int DoubleClickTime = WinAPI.GetDoubleClickTime();
+		public static int MaxDoubleClickTime = DoubleClickTime + (DoubleClickTime / 10);
 		private static int onClickMessageTimeStamp;
 		private static Timer timerStoringMouseAction = null;
 		private static MouseEvent prevMouseEvent = null;
@@ -64,7 +64,7 @@ namespace UsAcRe.MouseProcess {
 		}
 
 		static bool IsOverdueClick(int messageTimeStamp) {
-			return (messageTimeStamp < onClickMessageTimeStamp) || (messageTimeStamp - onClickMessageTimeStamp > doubleClickTime);
+			return (messageTimeStamp < onClickMessageTimeStamp) || (messageTimeStamp - onClickMessageTimeStamp > DoubleClickTime);
 		}
 
 		static bool IsDoubleClick(MouseEvent mouseEvent, int x, int y, int messageTimeStamp) {
@@ -140,7 +140,7 @@ namespace UsAcRe.MouseProcess {
 						OnMouseEvent?.Invoke(null, new MouseEventArgs(state as MouseEvent, pressedButtons));
 						timerStoringMouseAction = null;
 					},
-					new MouseEvent(prevMouseEvent), maxDoubleClickTime, Timeout.Infinite);
+					new MouseEvent(prevMouseEvent), MaxDoubleClickTime, Timeout.Infinite);
 				logger.Info("IsUp 1:                {1}; {0}", prevMouseEvent.Type, DateTime.Now.Ticks);
 			}
 			onClickMessageTimeStamp = messageTimeStamp;
@@ -156,7 +156,7 @@ namespace UsAcRe.MouseProcess {
 			}
 
 			int dueTime = timerStoringMouseAction != null
-				? maxDoubleClickTime + (maxDoubleClickTime / 10)
+				? MaxDoubleClickTime + (MaxDoubleClickTime / 10)
 				: 200;
 
 			timerStopMouseMoveDetection = new Timer((state) => {
