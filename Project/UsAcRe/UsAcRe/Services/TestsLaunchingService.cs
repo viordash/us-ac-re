@@ -73,7 +73,7 @@ namespace UsAcRe.Services {
 		}
 
 		public void CloseHighlighter() {
-			windowsFormsService.GetMainForm().BeginInvoke((Action)(() => {
+			windowsFormsService.GetMainForm()?.BeginInvoke((Action)(() => {
 				CloseHighlighterInternal();
 			}));
 		}
