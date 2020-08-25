@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.IO;
 using UsAcRe.Exceptions;
 using System.ComponentModel;
+using UsAcRe.Extensions;
 
 namespace UsAcRe.Services {
 	public interface IAutomationElementService {
@@ -127,8 +128,8 @@ namespace UsAcRe.Services {
 				return null;
 			}
 			try {
-				return new UiElement(-1, null, NamingHelpers.Escape(element.Current.Name, 100), element.Current.ClassName,
-					NamingHelpers.Escape(element.Current.AutomationId, 100), element.Current.ControlType.Id, element.Current.BoundingRectangle) {
+				return new UiElement(-1, null, element.Current.Name?.MaxLength(100), element.Current.ClassName,
+					element.Current.AutomationId.MaxLength(100), element.Current.ControlType.Id, element.Current.BoundingRectangle) {
 					AutomationElementObj = element
 				};
 			} catch {

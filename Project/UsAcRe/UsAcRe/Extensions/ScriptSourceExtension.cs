@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UsAcRe.Exceptions;
+using UsAcRe.Helpers;
 using UsAcRe.Scripts;
 using UsAcRe.UIAutomationElement;
 
@@ -25,7 +26,7 @@ namespace UsAcRe.Extensions {
 			return string.Format("new {0}.{1}({2}, {3})", type.Namespace, type.Name, val.X, val.Y);
 		}
 		public static string ForNew(this string val) {
-			return string.Format("\"{0}\"", val);
+			return string.Format("\"{0}\"", NamingHelpers.Escape(val, int.MaxValue));
 		}
 		public static string ForNew(this ElementProgram val) {
 			return string.Format("new {0}({1}, {2})", val.GetType().Name, val.Index.ForNew(), val.FileName.ForNew());
