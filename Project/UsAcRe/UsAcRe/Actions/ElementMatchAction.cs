@@ -182,6 +182,9 @@ namespace UsAcRe.Actions {
 			if(StringEquals(text, sSearchTerm)) {
 				return true;
 			}
+			if(string.IsNullOrEmpty(text) || string.IsNullOrEmpty(sSearchTerm)) {
+				return false;
+			}
 			if(text.Equals(sSearchTerm, StringComparison.OrdinalIgnoreCase)) {
 				return true;
 			}
