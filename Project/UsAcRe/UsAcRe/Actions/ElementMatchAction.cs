@@ -62,11 +62,10 @@ namespace UsAcRe.Actions {
 				while(!cancellationToken.IsCancellationRequested && stopwatch.Elapsed.TotalMilliseconds < TimeoutMs) {
 					var requiredElement = GetElement();
 					if(requiredElement != null
-					&& requiredElement.Element != null
-					&& automationElementService.TryGetClickablePoint(requiredElement.Element, out System.Windows.Point point)) {
-						ClickablePoint = point;
+					&& requiredElement.Element != null) {
+						ClickablePoint = GetClickablePoint(requiredElement, requiredElement.Element.BoundingRectangle);
 						testsLaunchingService.OpenHighlighter(requiredElement.Element.BoundingRectangle, null);
-						MouseHover.MoveTo(point);
+						MouseHover.MoveTo(ClickablePoint.Value);
 						break;
 					}
 					await WaitAppearElement(requiredElement);
@@ -151,7 +150,8 @@ namespace UsAcRe.Actions {
 				|| !TextMatched(element1.Name, element2.Name)
 				|| !StringEquals(element1.ClassName, element2.ClassName)
 				|| !StringEquals(element1.AutomationId, element2.AutomationId)
-				|| (compareSizes && !DimensionsHelper.AreSizeEquals(element1.BoundingRectangle.Size, element2.BoundingRectangle.Size, GetClickPositionToleranceInPercent()))) {
+				|| (compareSizes && !DimensionsHelper.AreSizeEquals(element1.BoundingRectangle.Size, element2.BoundingRectangle.Size,
+						GetClickPositionToleranceInPercent()))) {
 				return false;
 			}
 			return true;
