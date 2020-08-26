@@ -4,8 +4,8 @@ using Microsoft.Test.Input;
 namespace UsAcRe.MouseProcess {
 	public class MouseHover {
 		const int beamCount = 8;
-		const int beamLengthStep = 2;
-		const int beamLengthStepMaxCount = 16 + 1;
+		const int beamLengthStep = 1;
+		const int beamLengthStepMaxCount = 8 + 1;
 
 		public static async Task Perform(System.Windows.Point point, int step, int delay = 20) {
 			var gradation = step % (beamCount * beamLengthStepMaxCount);
@@ -46,7 +46,7 @@ namespace UsAcRe.MouseProcess {
 						y = y - shiftPos;
 						break;
 				}
-				prev = await SmoothMove(prev, new System.Windows.Point(x, y), delay, 4);
+				prev = await SmoothMove(prev, new System.Windows.Point(x, y), delay, 8);
 			}
 		}
 
