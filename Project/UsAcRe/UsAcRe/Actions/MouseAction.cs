@@ -51,8 +51,10 @@ namespace UsAcRe.Actions {
 					actionForDetermineClickPoint = prevMouseAction.prevAction;
 				}
 
-				if(actionForDetermineClickPoint is ElementMatchAction elementMatchAction && elementMatchAction.ClickablePoint.HasValue) {
-					downClickedPoint = new Point((int)elementMatchAction.ClickablePoint.Value.X, (int)elementMatchAction.ClickablePoint.Value.Y);
+				if(actionForDetermineClickPoint is ElementMatchAction elementMatchAction) {
+					if(elementMatchAction.OffsetPoint.HasValue) {
+						downClickedPoint.Offset((int)elementMatchAction.OffsetPoint.Value.X, (int)elementMatchAction.OffsetPoint.Value.Y);
+					}
 				}
 			}
 

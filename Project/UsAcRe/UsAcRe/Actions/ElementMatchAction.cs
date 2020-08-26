@@ -21,19 +21,23 @@ namespace UsAcRe.Actions {
 		}
 		#endregion
 
+
 		public ElementProgram Program { get; private set; }
 		public List<UiElement> SearchPath { get; private set; }
+		public System.Windows.Forms.AnchorStyles Anchor { get; private set; }
 		public UiElement MatchedElement { get => SearchPath?[0]; }
 		public int TimeoutMs { get; private set; }
-		public System.Windows.Point? ClickablePoint { get; private set; }
+		public System.Windows.Point? OffsetPoint { get; private set; }
+
 
 		int stepWaitAppear;
 
 		public ElementMatchAction(ElementProgram program, List<UiElement> searchPath, int timeoutMs = 20 * 1000) {
 			Program = program;
 			SearchPath = searchPath;
+			Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left;
 			TimeoutMs = timeoutMs;
-			ClickablePoint = null;
+			OffsetPoint = null;
 		}
 
 		protected override async Task ExecuteCoreAsync() {
@@ -57,21 +61,20 @@ namespace UsAcRe.Actions {
 		async ValueTask DoWorkAsync() {
 			await Task.Run(async () => {
 				stepWaitAppear = 0;
-				ClickablePoint = null;
+				OffsetPoint = null;
 				var stopwatch = Stopwatch.StartNew();
 				while(!cancellationToken.IsCancellationRequested && stopwatch.Elapsed.TotalMilliseconds < TimeoutMs) {
 					var requiredElement = GetElement();
-					if(requiredElement != null
-					&& requiredElement.Element != null) {
-						ClickablePoint = GetClickablePoint(requiredElement, requiredElement.Element.BoundingRectangle);
+					if(requiredElement?.Element != null) {
 						testsLaunchingService.OpenHighlighter(requiredElement.Element.BoundingRectangle, null);
-						MouseHover.MoveTo(ClickablePoint.Value);
+						OffsetPoint = GetClickablePointOffset(MatchedElement, requiredElement.Element);
+						MouseHover.MoveTo(requiredElement.Element.BoundingRectangle.Location);
 						break;
 					}
 					await WaitAppearElement(requiredElement);
 				}
 
-				if(!ClickablePoint.HasValue) {
+				if(!OffsetPoint.HasValue) {
 					throw new TestFailedExeption(this);
 				}
 			});
@@ -81,37 +84,50 @@ namespace UsAcRe.Actions {
 			System.Windows.Rect rect;
 
 			if(requiredElement?.Parent != null) {
-				rect = GetRelativeRectangle(requiredElement);
+				var offset = GetClickablePointOffset(requiredElement.ParentEquivalentInSearchPath, requiredElement.Parent);
+				rect = MatchedElement.BoundingRectangle;
+				rect.Offset(offset.X, offset.Y);
 			} else {
 				rect = MatchedElement.BoundingRectangle;
 			}
-			var clickablePoint = GetClickablePoint(requiredElement, rect);
+			var clickableRect = rect;
+			clickableRect.Offset(clickableRect.Width / 2, clickableRect.Height / 2);
 			testsLaunchingService.CloseHighlighter();
-			await MouseHover.Perform(clickablePoint, stepWaitAppear, 50);
+			await MouseHover.Perform(clickableRect.Location, stepWaitAppear, 50);
 			testsLaunchingService.OpenHighlighter(rect, MatchedElement.ToShortString());
 			await Task.Delay(100);
 			stepWaitAppear++;
 		}
 
-		System.Windows.Rect GetRelativeRectangle(RequiredElement requiredElement) {
-			var originalLocation = requiredElement.ParentEquivalentInSearchPath.BoundingRectangle.Location;
-			var originalSize = requiredElement.ParentEquivalentInSearchPath.BoundingRectangle.Size;
-			var currentLocation = requiredElement.Parent.BoundingRectangle.Location;
-			var currentSize = requiredElement.Parent.BoundingRectangle.Size;
-			var offsetX = currentLocation.X - originalLocation.X;
-			var offsetY = currentLocation.Y - originalLocation.Y;
-
-			var rect = MatchedElement.BoundingRectangle;
-			rect.Offset(offsetX, offsetY);
-			return rect;
-		}
-
-		System.Windows.Point GetClickablePoint(RequiredElement requiredElement, System.Windows.Rect boundingRect) {
-			if(requiredElement?.Element != null && automationElementService.TryGetClickablePoint(requiredElement.Element, out System.Windows.Point point)) {
+		System.Windows.Point GetClickablePointOffset(UiElement original, UiElement current) {
+			var point = new System.Windows.Point();
+			if(Anchor == System.Windows.Forms.AnchorStyles.None) {
 				return point;
 			}
-			boundingRect.Offset(boundingRect.Width / 2, boundingRect.Height / 2);
-			return boundingRect.Location;
+			var originalRect = original.BoundingRectangle;
+			var originalLocation = originalRect.Location;
+			var originalSize = originalRect.Size;
+
+			var currentRect = current.BoundingRectangle;
+			var currentLocation = currentRect.Location;
+			var currentSize = currentRect.Size;
+
+			point.X = currentLocation.X - originalLocation.X;
+			point.Y = currentLocation.Y - originalLocation.Y;
+			var offsetWidth = currentSize.Width - originalSize.Width;
+			var offsetHeight = currentSize.Height - originalSize.Height;
+
+			if(Anchor.HasFlag(System.Windows.Forms.AnchorStyles.Left) && Anchor.HasFlag(System.Windows.Forms.AnchorStyles.Right)) {
+				point.X = point.X - (offsetWidth / 2);
+			} else if(Anchor.HasFlag(System.Windows.Forms.AnchorStyles.Right)) {
+				point.X = point.X - offsetWidth;
+			}
+			if(Anchor.HasFlag(System.Windows.Forms.AnchorStyles.Top) && Anchor.HasFlag(System.Windows.Forms.AnchorStyles.Bottom)) {
+				point.Y = point.Y - (offsetHeight / 2);
+			} else if(Anchor.HasFlag(System.Windows.Forms.AnchorStyles.Bottom)) {
+				point.Y = point.Y - offsetHeight;
+			}
+			return point;
 		}
 
 		RequiredElement GetElement() {
@@ -120,7 +136,7 @@ namespace UsAcRe.Actions {
 				return null;
 			}
 			var parentEquivalentInSearchPath = SearchPath[SearchPath.Count - 1];
-			if(!AreUiElementsEquals(rootElement, parentEquivalentInSearchPath, true)) {
+			if(!AreUiElementsEquals(rootElement, parentEquivalentInSearchPath, false)) {
 				return null;
 			}
 
