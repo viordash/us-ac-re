@@ -93,7 +93,7 @@ namespace UsAcRe.Actions {
 			var clickableRect = rect;
 			clickableRect.Offset(clickableRect.Width / 2, clickableRect.Height / 2);
 			testsLaunchingService.CloseHighlighter();
-			await MouseHover.Perform(clickableRect.Location, stepWaitAppear, 20);
+			await MouseHover.Perform(clickableRect.Location, stepWaitAppear, 10);
 			testsLaunchingService.OpenHighlighter(rect, MatchedElement.ToShortString());
 			await Task.Delay(200);
 			stepWaitAppear++;
