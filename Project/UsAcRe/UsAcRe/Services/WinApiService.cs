@@ -8,11 +8,23 @@ namespace UsAcRe.Services {
 		IntPtr GetAncestor(IntPtr hwnd, uint gaFlags);
 		IntPtr GetWindow(WinAPI.POINT point);
 		IntPtr GetRootWindowForElementUnderPoint(WinAPI.POINT point);
+		IntPtr GetRootOwnerWindowForElementUnderPoint(WinAPI.POINT point);
+		IntPtr ChildWindowFromPointEx(IntPtr hWndParent, WinAPI.POINT pt, uint uFlags);
+		IntPtr RealChildWindowFromPoint(IntPtr hWndParent, WinAPI.POINT pt);
+		bool ScreenToClient(IntPtr hWnd, ref WinAPI.POINT point);
 	}
 
 	public class WinApiService : IWinApiService {
 		public WinApiService() {
 
+		}
+
+		public IntPtr ChildWindowFromPointEx(IntPtr hWndParent, WinAPI.POINT pt, uint uFlags) {
+			return WinAPI.ChildWindowFromPointEx(hWndParent, pt, uFlags);
+		}
+
+		public IntPtr RealChildWindowFromPoint(IntPtr hWndParent, WinAPI.POINT pt) {
+			return WinAPI.RealChildWindowFromPoint(hWndParent, pt);
 		}
 
 		public IntPtr GetAncestor(IntPtr hwnd, uint gaFlags) {
@@ -35,12 +47,24 @@ namespace UsAcRe.Services {
 			return hwnd;
 		}
 
+		public IntPtr GetRootOwnerWindowForElementUnderPoint(WinAPI.POINT point) {
+			var hwnd = GetWindow(point);
+			if(hwnd != IntPtr.Zero) {
+				hwnd = GetAncestor(hwnd, WinAPI.GA_ROOTOWNER);
+			}
+			return hwnd;
+		}
+
 		public IntPtr GetWindow(IntPtr hwnd, uint uCmd) {
 			return WinAPI.GetWindow(hwnd, uCmd);
 		}
 
 		public IntPtr GetWindow(WinAPI.POINT point) {
 			return WinAPI.WindowFromPoint(point);
+		}
+
+		public bool ScreenToClient(IntPtr hWnd, ref WinAPI.POINT point) {
+			return WinAPI.ScreenToClient(hWnd, ref point);
 		}
 	}
 }

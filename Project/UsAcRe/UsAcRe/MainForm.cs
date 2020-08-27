@@ -49,6 +49,7 @@ namespace UsAcRe {
 
 		private void btnStart_Click(object sender, EventArgs e) {
 			if(btnStart.Checked) {
+				Actions.Items.Clear();
 				StartHooks();
 			} else {
 				StopHooks();

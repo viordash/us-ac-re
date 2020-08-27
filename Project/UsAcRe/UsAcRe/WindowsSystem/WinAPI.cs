@@ -203,6 +203,9 @@ namespace UsAcRe.WindowsSystem {
 		public static extern IntPtr ChildWindowFromPointEx(IntPtr hWndParent, POINT pt, uint uFlags);
 
 		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		public static extern IntPtr RealChildWindowFromPoint(IntPtr hWndParent, POINT pt);
+
+		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
 		public static extern IntPtr GetParent(IntPtr hWnd);
 
 		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]

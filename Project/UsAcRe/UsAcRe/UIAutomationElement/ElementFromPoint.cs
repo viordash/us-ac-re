@@ -105,14 +105,31 @@ namespace UsAcRe.UIAutomationElement {
 				}
 			}
 
+			Debug.WriteLine($"rootElement: {rootElement}");
+
 			try {
 				TreeOfSpecificUiElement.Program = automationElementService.GetProgram(rootElement);
 
 				var elements = new List<TreeElement>();
+
+				var rootParent = automationElementService.GetParent(rootElement);
+				while(rootParent != null && !automationElementService.Compare(rootParent, desktop)) {
+					BreakOperationsIfCoordChanged();
+					var childElements = GetChildren(rootParent);
+					var elementsUnderPoint = childElements
+						.Where(x => x.BoundingRectangle.Contains(elementCoord.x, elementCoord.y))
+						.ToList();
+
+					Debug.WriteLine($"inserted rootParent: {rootParent}");
+					elements.Add(new TreeElement(rootParent, elementsUnderPoint));
+					rootParent = automationElementService.GetParent(rootParent);
+				}
+
 				RetreiveElementsUnderPoint(rootElement, elements);
 
 				var targetedElement = SortElementsByPointProximity(elements, rootWindowHwnd);
 				if(targetedElement != null) {
+					Debug.WriteLine($"targetedElement: {targetedElement.Element}");
 					var tree = BuildElementTree(targetedElement, elements, rootWindowHwnd);
 					TreeOfSpecificUiElement.Add(tree.Key);
 					TreeOfSpecificUiElement.AddRange(tree.Value);
@@ -130,7 +147,8 @@ namespace UsAcRe.UIAutomationElement {
 			while(true) {
 				BreakOperationsIfCoordChanged();
 				var ancestors = elements
-					.Where(x => x.Childs.Contains(targetedElement.Element));
+					.Where(x =>
+						x.Childs.Any(c => automationElementService.Compare(c, targetedElement.Element)));
 
 				if(ancestors == null || !ancestors.Any()) {
 					break;
@@ -237,9 +255,9 @@ namespace UsAcRe.UIAutomationElement {
 			}
 
 			var coord = elementCoord;
-			WinAPI.ScreenToClient(rootWindow, ref coord);
+			winApiService.ScreenToClient(rootWindow, ref coord);
 
-			var childWindowFromPoint = WinAPI.ChildWindowFromPointEx(rootWindow, coord, WinAPI.CWP_SKIPDISABLED | WinAPI.CWP_SKIPINVISIBLE);
+			var childWindowFromPoint = winApiService.RealChildWindowFromPoint(rootWindow, coord);
 			if(childWindowFromPoint == IntPtr.Zero) {
 				return int.MaxValue;
 			}
