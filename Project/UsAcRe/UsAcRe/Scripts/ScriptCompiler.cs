@@ -2,6 +2,7 @@
 using System.CodeDom.Compiler;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using UsAcRe.Actions;
 
 namespace UsAcRe.Scripts {
@@ -34,22 +35,22 @@ namespace UsAcRe.Scripts {
 			return compilerResults.CompiledAssembly;
 		}
 
-		static void CreateAndInvoke(Assembly assembly) {
+		static async Task CreateAndInvoke(Assembly assembly) {
 			var instance = assembly.CreateInstance(ScriptBuilder.TestsNamespace + "." + ScriptBuilder.TestsClassname);
 			if(instance == null) {
 				throw new ApplicationException("There is no " + ScriptBuilder.TestsClassname + " class in the compiled Assembly");
 			}
 			Type type = instance.GetType();
 			MethodInfo method = type.GetMethod(nameof(BaseAction.ExecuteAsync));
-			if(instance == null) {
+			if(method == null) {
 				throw new ApplicationException("There is no TestsScript.Execute method in the compiled class");
 			}
-			method.Invoke(instance, null);
+			await (Task)method.Invoke(instance, null);
 		}
 
-		public static void RunTest(string sourceCode) {
+		public async static Task RunTest(string sourceCode) {
 			var assembly = PrepareAssembly(sourceCode);
-			CreateAndInvoke(assembly);
+			await CreateAndInvoke(assembly);
 		}
 	}
 }

@@ -59,25 +59,23 @@ namespace UsAcRe.Actions {
 		}
 
 		async ValueTask DoWorkAsync() {
-			await Task.Run(async () => {
-				stepWaitAppear = 0;
-				OffsetPoint = null;
-				var stopwatch = Stopwatch.StartNew();
-				while(!cancellationToken.IsCancellationRequested && stopwatch.Elapsed.TotalMilliseconds < TimeoutMs) {
-					var requiredElement = GetElement();
-					if(requiredElement?.Element != null) {
-						testsLaunchingService.OpenHighlighter(requiredElement.Element.BoundingRectangle, null);
-						OffsetPoint = GetClickablePointOffset(MatchedElement, requiredElement.Element);
-						MouseHover.MoveTo(requiredElement.Element.BoundingRectangle.Location);
-						break;
-					}
-					await WaitAppearElement(requiredElement);
+			stepWaitAppear = 0;
+			OffsetPoint = null;
+			var stopwatch = Stopwatch.StartNew();
+			while(!cancellationToken.IsCancellationRequested && stopwatch.Elapsed.TotalMilliseconds < TimeoutMs) {
+				var requiredElement = GetElement();
+				if(requiredElement?.Element != null) {
+					testsLaunchingService.OpenHighlighter(requiredElement.Element.BoundingRectangle, null);
+					OffsetPoint = GetClickablePointOffset(MatchedElement, requiredElement.Element);
+					MouseHover.MoveTo(requiredElement.Element.BoundingRectangle.Location);
+					break;
 				}
+				await WaitAppearElement(requiredElement);
+			}
 
-				if(!OffsetPoint.HasValue) {
-					throw new TestFailedExeption(this);
-				}
-			});
+			if(!OffsetPoint.HasValue) {
+				throw new TestFailedExeption(this);
+			}
 		}
 
 		async Task WaitAppearElement(RequiredElement requiredElement) {

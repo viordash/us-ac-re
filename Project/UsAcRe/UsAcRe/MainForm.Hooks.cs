@@ -9,6 +9,16 @@ using UsAcRe.WindowsSystem;
 
 namespace UsAcRe {
 	public partial class MainForm : Form {
+		void StartKeyboardHooks() {
+			KeyboardHook.Start();
+			KeyboardHook.KeyAction -= KeyboardEvent;
+			KeyboardHook.KeyAction += KeyboardEvent;
+		}
+
+		void StopKeyboadHooks() {
+			KeyboardHook.KeyAction -= KeyboardEvent;
+			KeyboardHook.Stop();
+		}
 
 		void StartHooks() {
 			logger.Warn("Start");
@@ -18,9 +28,7 @@ namespace UsAcRe {
 			MouseHook.OnMouseMove -= MouseMoveHook;
 			MouseHook.OnMouseMove += MouseMoveHook;
 
-			KeyboardHook.Start();
-			KeyboardHook.KeyAction -= KeyboardEvent;
-			KeyboardHook.KeyAction += KeyboardEvent;
+			StartKeyboardHooks();
 		}
 
 		void StopHooks() {
@@ -30,8 +38,7 @@ namespace UsAcRe {
 			MouseHook.OnMouseMove -= MouseMoveHook;
 			MouseHook.Stop();
 
-			KeyboardHook.KeyAction -= KeyboardEvent;
-			KeyboardHook.Stop();
+			StopKeyboadHooks();
 			if(btnStart.Checked) {
 				btnStart.Checked = false;
 			}
@@ -98,6 +105,13 @@ namespace UsAcRe {
 		}
 
 		void KeyboardEvent(object sender, RawKeyEventArgs e) {
+			if(!btnStart.Checked) {
+				if(e.VKCode == KeyboardHook.KeyStartStop) {
+					TestsLaunchingService.Stop();
+				}
+				return;
+			}
+
 			if(e.VKCode == KeyboardHook.KeyStartStop) {
 				StopHooks();
 				return;

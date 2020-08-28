@@ -96,14 +96,17 @@ namespace UsAcRe {
 			Actions.Store(saveFileDialog1.FileName);
 		}
 
-		private void btnRunTest_Click(object sender, EventArgs e) {
+		private async void btnRunTest_Click(object sender, EventArgs e) {
 			if(openFileDialog1.ShowDialog() != DialogResult.OK) {
 				return;
 			}
 			var sourceCode = File.ReadAllText(openFileDialog1.FileName);
 			txtLog.Clear();
 			txtLog.Text = sourceCode;
-			ScriptCompiler.RunTest(sourceCode);
+			TestsLaunchingService.Start();
+			StartKeyboardHooks();
+			await ScriptCompiler.RunTest(sourceCode);
+			TestsLaunchingService.Stop();
 		}
 	}
 }

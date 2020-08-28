@@ -43,7 +43,6 @@ namespace UsAcRe.Services {
 		public void Stop() {
 			if(cancelTokenSource != null) {
 				cancelTokenSource.Cancel();
-				cancelTokenSource = null;
 			}
 			CloseHighlighter();
 		}
