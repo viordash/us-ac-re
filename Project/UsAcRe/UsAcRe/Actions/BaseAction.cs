@@ -30,12 +30,17 @@ namespace UsAcRe.Actions {
 
 		public async Task<BaseAction> ExecuteAsync(BaseAction prevAction) {
 			this.prevAction = prevAction;
+			await DelayBeforeExecute();
 			await ExecuteCoreAsync();
 			logger.Info("\r\n {0}", ExecuteAsScriptSource());
 			return this;
 		}
 
 		protected abstract Task ExecuteCoreAsync();
+
+		protected virtual async Task DelayBeforeExecute() {
+			await Task.Delay(10);
+		}
 
 		protected async Task SafeActionAsync(Func<ValueTask> action) {
 			try {

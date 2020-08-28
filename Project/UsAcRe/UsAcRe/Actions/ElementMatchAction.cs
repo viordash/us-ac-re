@@ -44,6 +44,10 @@ namespace UsAcRe.Actions {
 			await SafeActionAsync(DoWorkAsync);
 		}
 
+		protected override Task DelayBeforeExecute() {
+			return Task.CompletedTask;
+		}
+
 		public override string ToString() {
 			var sb = new StringBuilder();
 			sb.Append(nameof(ElementMatchAction));
