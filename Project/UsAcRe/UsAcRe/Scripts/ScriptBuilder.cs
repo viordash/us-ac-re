@@ -50,11 +50,19 @@ namespace UsAcRe.Scripts {
 				ObtainCtorArgumentsTypes(item, types);
 			}
 
+			var method = typeof(BaseAction).GetMethod(nameof(BaseAction.ExecuteAsync));
+			var executeAsyncMethodTypes = method?.GetParameters()
+				.Select(x => x.ParameterType)
+				.ToList();
+
+			executeAsyncMethodTypes.Add(method?.ReturnParameter.ParameterType);
+
 			var ctorsArgs = types
 				.Distinct();
 
 			var usings = ctorsArgs
 				.Concat(actionsTypes)
+				.Concat(executeAsyncMethodTypes)
 				.Select(x => x.Namespace)
 				.Distinct()
 				.OrderBy(x => x)
@@ -81,7 +89,7 @@ namespace UsAcRe.Scripts {
 
 		public string CreateExecuteMethodSection(string code) {
 			return tab + tab
-				+ "public async void " + nameof(BaseAction.ExecuteAsync) + "() {"
+				+ "public async Task " + nameof(BaseAction.ExecuteAsync) + "() {"
 				+ newLine
 				+ tab + tab + tab + "BaseAction prevAction = null;"
 				+ newLine
