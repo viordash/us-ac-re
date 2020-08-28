@@ -78,7 +78,7 @@ namespace UsAcRe.Tests.ScriptTests {
 			var scriptBuilder = new ScriptBuilder(actions);
 			var code = scriptBuilder.CreateExecuteMethodSection("//something");
 			Assert.IsNotEmpty(code);
-			Assert.That(code, Does.StartWith("\t\tpublic async void ExecuteAsync() {"));
+			Assert.That(code, Does.StartWith("\t\tpublic async Task ExecuteAsync() {"));
 			Assert.That(code, Does.EndWith("\t\t}"));
 		}
 
