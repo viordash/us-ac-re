@@ -19,22 +19,15 @@ namespace UsAcRe.Actions {
 			return action;
 		}
 
-		public static async Task<BaseAction> MouseDrag(this Task<BaseAction> taskPrevAction, MouseActionType type, System.Drawing.Point downClickedPoint,
-			System.Drawing.Point upClickedPoint) {
+		public static async Task<BaseAction> Mouse(this Task<BaseAction> taskPrevAction, MouseActionType type, System.Drawing.Point downClickedPoint,
+			System.Drawing.Point upClickedPoint = default) {
 			var prevAction = await taskPrevAction;
 			var action = new MouseAction(prevAction, type, downClickedPoint, upClickedPoint);
 			await action.ExecuteAsync();
 			return action;
 		}
 
-		public static async Task<BaseAction> MouseClick(this Task<BaseAction> taskPrevAction, MouseActionType type, System.Drawing.Point downClickedPoint) {
-			var prevAction = await taskPrevAction;
-			var action = new MouseAction(prevAction, type, downClickedPoint);
-			await action.ExecuteAsync();
-			return action;
-		}
-
-		public static async Task<BaseAction> KeybdPress(this Task<BaseAction> taskPrevAction, VirtualKeyCodes vKCode, bool isUp) {
+		public static async Task<BaseAction> Keyboard(this Task<BaseAction> taskPrevAction, VirtualKeyCodes vKCode, bool isUp) {
 			var prevAction = await taskPrevAction;
 			var action = new KeybdAction(prevAction, vKCode, isUp);
 			await action.ExecuteAsync();

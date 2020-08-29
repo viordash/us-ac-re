@@ -48,16 +48,16 @@ namespace UsAcRe.Tests.ActionsTests {
 				.Perform
 				.ElementMatching(new ElementProgram(0, "Progr0"), new List<UiElement>())
 				.ElementMatching(new ElementProgram(1, "Progr1"), new List<UiElement>())
-				.MouseClick(MouseActionType.LeftClick, new System.Drawing.Point(0, 0))
+				.Mouse(MouseActionType.LeftClick, new System.Drawing.Point(0, 0))
 				.ElementMatching(new ElementProgram(2, "Progr2"), new List<UiElement>())
-				.MouseDrag(MouseActionType.LeftClick, new System.Drawing.Point(1, 1), new System.Drawing.Point(0, 0))
-				.MouseClick(MouseActionType.RightDrag, new System.Drawing.Point(2, 2))
-				.MouseDrag(MouseActionType.LeftClick, new System.Drawing.Point(3, 3), new System.Drawing.Point(0, 0))
+				.Mouse(MouseActionType.LeftClick, new System.Drawing.Point(1, 1), new System.Drawing.Point(0, 0))
+				.Mouse(MouseActionType.RightDrag, new System.Drawing.Point(2, 2))
+				.Mouse(MouseActionType.LeftClick, new System.Drawing.Point(3, 3), new System.Drawing.Point(0, 0))
 				.ElementMatching(new ElementProgram(3, "Progr3"), new List<UiElement>())
-				.MouseClick(MouseActionType.RightClick, new System.Drawing.Point(4, 4))
-				.MouseDrag(MouseActionType.LeftClick, new System.Drawing.Point(5, 5), new System.Drawing.Point(0, 0))
-				.KeybdPress(VirtualKeyCodes.K_H, false)
-				.MouseClick(MouseActionType.MiddleDoubleClick, new System.Drawing.Point(6, 6));
+				.Mouse(MouseActionType.RightClick, new System.Drawing.Point(4, 4))
+				.Mouse(MouseActionType.LeftClick, new System.Drawing.Point(5, 5), new System.Drawing.Point(0, 0))
+				.Keyboard(VirtualKeyCodes.K_H, false)
+				.Mouse(MouseActionType.MiddleDoubleClick, new System.Drawing.Point(6, 6));
 
 			Assert.That(executedActions, Is.EquivalentTo(new string[] {
 				"ElementMatchActionProgr0",

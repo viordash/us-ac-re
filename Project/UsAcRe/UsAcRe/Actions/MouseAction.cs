@@ -13,21 +13,14 @@ namespace UsAcRe.Actions {
 		public Point DownClickedPoint { get; set; }
 		public Point UpClickedPoint { get; set; }
 
-		public MouseAction(MouseActionType type, Point downClickedPoint, Point upClickedPoint)
+		public MouseAction(MouseActionType type, Point downClickedPoint, Point upClickedPoint = default)
 			: this(null, type, downClickedPoint, upClickedPoint) { }
 
-		public MouseAction(BaseAction prevAction, MouseActionType type, Point downClickedPoint, Point upClickedPoint)
-			: this(prevAction, type, downClickedPoint) {
-			UpClickedPoint = upClickedPoint;
-		}
-
-		public MouseAction(MouseActionType type, Point downClickedPoint)
-			: this(null, type, downClickedPoint) { }
-
-		public MouseAction(BaseAction prevAction, MouseActionType type, Point downClickedPoint) : base(prevAction) {
+		public MouseAction(BaseAction prevAction, MouseActionType type, Point downClickedPoint, Point upClickedPoint = default)
+			: base(prevAction) {
 			ActionType = type;
 			DownClickedPoint = downClickedPoint;
-			UpClickedPoint = Point.Empty;
+			UpClickedPoint = upClickedPoint;
 		}
 
 		protected override async ValueTask ExecuteCoreAsync() {
@@ -38,7 +31,7 @@ namespace UsAcRe.Actions {
 			return string.Format("{0} Type:{1}, Down:{2}, Up:{3}", nameof(MouseAction), ActionType, DownClickedPoint, UpClickedPoint);
 		}
 		public override string ExecuteAsScriptSource() {
-			if(UpClickedPoint.IsEmpty) {
+			if(UpClickedPoint == default) {
 				return string.Format("new {0}({1}, {2}).{3}(prevAction)", nameof(MouseAction), ActionType.ForNew(), DownClickedPoint.ForNew(),
 					nameof(MouseAction.ExecuteAsync));
 			} else {
