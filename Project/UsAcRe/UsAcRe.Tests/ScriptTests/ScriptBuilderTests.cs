@@ -23,13 +23,13 @@ namespace UsAcRe.Tests.ScriptTests {
 
 		[Test]
 		public void CreateUsingsSection_Test() {
-			var elementMatchAction = new ElementMatchAction(new ElementProgram(42, "notepad.exe"), new List<UiElement>() {
+			var elementMatchAction = new ElementMatchAction(null, new ElementProgram(42, "notepad.exe"), new List<UiElement>() {
 				new UiElement(4, "value1", "name1", "className1", "automationId1", ControlType.Button.Id, new System.Windows.Rect(1, 2, 3, 4)),
 				new UiElement(3, "value2", "name2", "className2", "automationId2", ControlType.CheckBox.Id, new System.Windows.Rect()),
 				new UiElement(1, "value3", "name3", "className3", "automationId3", ControlType.ComboBox.Id, new System.Windows.Rect(9, 10, 11, 12)),
 			}, 1000);
 
-			var mouseAction = new MouseAction(MouseProcess.MouseActionType.LeftClick, new System.Drawing.Point(1, 2), new System.Drawing.Point(3, 4));
+			var mouseAction = new MouseAction(null, MouseProcess.MouseActionType.LeftClick, new System.Drawing.Point(1, 2), new System.Drawing.Point(3, 4));
 			var keybdActionDown = new KeybdAction(WindowsSystem.VirtualKeyCodes.K_G, false);
 			var keybdActionUp = new KeybdAction(WindowsSystem.VirtualKeyCodes.K_G, true);
 
@@ -84,12 +84,12 @@ namespace UsAcRe.Tests.ScriptTests {
 
 		[Test]
 		public void CreateExecuteMethodBody_Test() {
-			var elementMatchAction = new ElementMatchAction(new ElementProgram(42, "notepad.exe"), new List<UiElement>() {
+			var elementMatchAction = new ElementMatchAction(null, new ElementProgram(42, "notepad.exe"), new List<UiElement>() {
 				new UiElement(4, "", "Calculator", "", "automationId1", ControlType.Table.Id, new System.Windows.Rect(10, 20, 30, 40)),
 				new UiElement(3, "value2", "7", "137", "automationId2", ControlType.CheckBox.Id, new System.Windows.Rect(11, 22, 33, 44)),
 			}, 1000);
 
-			var mouseAction = new MouseAction(MouseProcess.MouseActionType.LeftClick, new System.Drawing.Point(1, 2), new System.Drawing.Point(3, 4));
+			var mouseAction = new MouseAction(null, MouseProcess.MouseActionType.LeftClick, new System.Drawing.Point(1, 2), new System.Drawing.Point(3, 4));
 			var keybdActionDown = new KeybdAction(WindowsSystem.VirtualKeyCodes.K_1, false);
 			var keybdActionUp = new KeybdAction(WindowsSystem.VirtualKeyCodes.K_1, true);
 
@@ -115,7 +115,7 @@ namespace UsAcRe.Tests.ScriptTests {
 
 		[Test]
 		public void Build_Test() {
-			var mouseAction = new MouseAction(MouseProcess.MouseActionType.LeftDoubleClick, new System.Drawing.Point(1, 2), new System.Drawing.Point(3, 4));
+			var mouseAction = new MouseAction(null, MouseProcess.MouseActionType.LeftDoubleClick, new System.Drawing.Point(1, 2), new System.Drawing.Point(3, 4));
 			var keybdActionDown = new KeybdAction(WindowsSystem.VirtualKeyCodes.K_1, false);
 
 			var actions = new ActionsList() {

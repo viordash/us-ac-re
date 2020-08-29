@@ -13,8 +13,8 @@ namespace UsAcRe.Actions {
 		public Point DownClickedPoint { get; set; }
 		public Point UpClickedPoint { get; set; }
 
-		public MouseAction(MouseActionType type, Point downClickedPoint, Point upClickedPoint = default)
-			: this(null, type, downClickedPoint, upClickedPoint) { }
+		public MouseAction(MouseEvent mouseEvent)
+			: this(null, mouseEvent.Type, mouseEvent.DownClickedPoint, mouseEvent.UpClickedPoint) { }
 
 		public MouseAction(BaseAction prevAction, MouseActionType type, Point downClickedPoint, Point upClickedPoint = default)
 			: base(prevAction) {

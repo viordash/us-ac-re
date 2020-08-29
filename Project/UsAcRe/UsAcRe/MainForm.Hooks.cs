@@ -60,13 +60,13 @@ namespace UsAcRe {
 					return;
 				}
 				if(elementFromPoint != null) {
-					Actions.Add(new Actions.ElementMatchAction(elementFromPoint.TreeOfSpecificUiElement.Program, elementFromPoint.TreeOfSpecificUiElement));
+					Actions.Add(new Actions.ElementMatchAction(elementFromPoint));
 					CloseMouseClickBlocker();
 					TestsLaunchingService.CloseHighlighter();
 					elementFromPoint = null;
 				}
 
-				Actions.Add(new Actions.MouseAction(args.Event.Type, args.Event.DownClickedPoint, args.Event.UpClickedPoint));
+				Actions.Add(new Actions.MouseAction(args.Event));
 			}), e);
 		}
 

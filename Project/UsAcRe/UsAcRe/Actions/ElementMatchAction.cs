@@ -31,8 +31,8 @@ namespace UsAcRe.Actions {
 
 		int stepWaitAppear;
 
-		public ElementMatchAction(ElementProgram program, List<UiElement> searchPath, int timeoutMs = 20 * 1000)
-			: this(null, program, searchPath, timeoutMs) { }
+		public ElementMatchAction(ElementFromPoint elementFromPoint)
+			: this(null, elementFromPoint.TreeOfSpecificUiElement.Program, elementFromPoint.TreeOfSpecificUiElement) { }
 
 		public ElementMatchAction(BaseAction prevAction, ElementProgram program, List<UiElement> searchPath, int timeoutMs = 20 * 1000) : base(prevAction) {
 			Program = program;
