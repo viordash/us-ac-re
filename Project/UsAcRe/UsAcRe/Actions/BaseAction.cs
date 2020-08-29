@@ -32,15 +32,18 @@ namespace UsAcRe.Actions {
 		public abstract string ExecuteAsScriptSource();
 
 		public async Task<BaseAction> ExecuteAsync() {
-			await ExecuteCoreAsync();
+			await SafeActionAsync(ExecuteCoreAsync);
 			return this;
 		}
 
-		protected abstract Task ExecuteCoreAsync();
+		protected abstract ValueTask ExecuteCoreAsync();
 
 		protected async Task SafeActionAsync(Func<ValueTask> action) {
 			try {
 				testsLaunchingService.Log(this);
+				if(cancellationToken.IsCancellationRequested) {
+					return;
+				}
 				await action();
 			} catch(TestFailedExeption) {
 				throw;

@@ -31,8 +31,7 @@ namespace UsAcRe.Actions {
 
 		int stepWaitAppear;
 
-
-		public ElementMatchAction(ElementProgram program, List<UiElement> searchPath, int timeoutMs = 20 * 1000) 
+		public ElementMatchAction(ElementProgram program, List<UiElement> searchPath, int timeoutMs = 20 * 1000)
 			: this(null, program, searchPath, timeoutMs) { }
 
 		public ElementMatchAction(BaseAction prevAction, ElementProgram program, List<UiElement> searchPath, int timeoutMs = 20 * 1000) : base(prevAction) {
@@ -43,25 +42,7 @@ namespace UsAcRe.Actions {
 			OffsetPoint = null;
 		}
 
-		protected override async Task ExecuteCoreAsync() {
-			await SafeActionAsync(DoWorkAsync);
-		}
-
-		public override string ToString() {
-			var sb = new StringBuilder();
-			sb.Append(nameof(ElementMatchAction));
-			sb.AppendFormat($" {Program}");
-			foreach(var item in SearchPath.AsEnumerable().Reverse()) {
-				sb.AppendFormat(" -> {0}", item);
-			}
-			return sb.ToString();
-		}
-		public override string ExecuteAsScriptSource() {
-			return string.Format("new {0}({1}, {2}, {3}).{4}(prevAction)", nameof(ElementMatchAction), Program.ForNew(), SearchPath.ForNew(), TimeoutMs.ForNew(),
-				nameof(ElementMatchAction.ExecuteAsync));
-		}
-
-		async ValueTask DoWorkAsync() {
+		protected override async ValueTask ExecuteCoreAsync() {
 			stepWaitAppear = 0;
 			OffsetPoint = null;
 			var stopwatch = Stopwatch.StartNew();
@@ -79,6 +60,20 @@ namespace UsAcRe.Actions {
 			if(!OffsetPoint.HasValue) {
 				throw new TestFailedExeption(this);
 			}
+		}
+
+		public override string ToString() {
+			var sb = new StringBuilder();
+			sb.Append(nameof(ElementMatchAction));
+			sb.AppendFormat($" {Program}");
+			foreach(var item in SearchPath.AsEnumerable().Reverse()) {
+				sb.AppendFormat(" -> {0}", item);
+			}
+			return sb.ToString();
+		}
+		public override string ExecuteAsScriptSource() {
+			return string.Format("new {0}({1}, {2}, {3}).{4}(prevAction)", nameof(ElementMatchAction), Program.ForNew(), SearchPath.ForNew(), TimeoutMs.ForNew(),
+				nameof(ElementMatchAction.ExecuteAsync));
 		}
 
 		async Task WaitAppearElement(RequiredElement requiredElement) {

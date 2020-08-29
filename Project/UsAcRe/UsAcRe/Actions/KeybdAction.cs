@@ -17,8 +17,8 @@ namespace UsAcRe.Actions {
 			IsUp = isUp;
 		}
 
-		protected override async Task ExecuteCoreAsync() {
-			await SafeActionAsync(DoWorkAsync);
+		protected override async ValueTask ExecuteCoreAsync() {
+			await Task.Delay(10);
 		}
 
 		public override string ToString() {
@@ -28,8 +28,5 @@ namespace UsAcRe.Actions {
 			return string.Format("new {0}({1}, {2}).{3}(prevAction)", nameof(KeybdAction), VKCode.ForNew(), IsUp.ForNew(), nameof(KeybdAction.ExecuteAsync));
 		}
 
-		async ValueTask DoWorkAsync() {
-			await Task.Delay(10);
-		}
 	}
 }

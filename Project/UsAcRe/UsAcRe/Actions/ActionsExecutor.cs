@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using UsAcRe.MouseProcess;
 using UsAcRe.UIAutomationElement;
+using UsAcRe.WindowsSystem;
 
 namespace UsAcRe.Actions {
 	public static class ActionsExecutor {
@@ -13,7 +14,7 @@ namespace UsAcRe.Actions {
 
 		public static async Task<BaseAction> ElementMatching(this Task<BaseAction> taskPrevAction, ElementProgram program, List<UiElement> searchPath, int timeoutMs = 20 * 1000) {
 			var prevAction = await taskPrevAction;
-			var action = new ElementMatchAction(prevAction, new ElementProgram(1, "win32calc.exe"), new List<UiElement>(), 20000);
+			var action = new ElementMatchAction(prevAction, program, searchPath, timeoutMs);
 			await action.ExecuteAsync();
 			return action;
 		}
@@ -33,11 +34,12 @@ namespace UsAcRe.Actions {
 			return action;
 		}
 
-
-	}
-
-	public static class BaseActionExtensions {
-
+		public static async Task<BaseAction> KeybdPress(this Task<BaseAction> taskPrevAction, VirtualKeyCodes vKCode, bool isUp) {
+			var prevAction = await taskPrevAction;
+			var action = new KeybdAction(prevAction, vKCode, isUp);
+			await action.ExecuteAsync();
+			return action;
+		}
 	}
 
 }

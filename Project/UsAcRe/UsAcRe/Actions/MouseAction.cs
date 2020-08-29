@@ -30,8 +30,8 @@ namespace UsAcRe.Actions {
 			UpClickedPoint = Point.Empty;
 		}
 
-		protected override async Task ExecuteCoreAsync() {
-			await SafeActionAsync(DoClick);
+		protected override async ValueTask ExecuteCoreAsync() {
+			await DoClick();
 		}
 
 		public override string ToString() {
@@ -47,10 +47,8 @@ namespace UsAcRe.Actions {
 			}
 		}
 
-
 		async ValueTask DoClick() {
 			await Task.Delay(20);
-
 			var downClickedPoint = DownClickedPoint;
 
 			if(prevAction is MouseAction prevMouseAction) {
