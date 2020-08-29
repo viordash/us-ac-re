@@ -32,11 +32,9 @@ namespace UsAcRe.Actions {
 		}
 		public override string ExecuteAsScriptSource() {
 			if(UpClickedPoint == default) {
-				return string.Format("new {0}({1}, {2}).{3}(prevAction)", nameof(MouseAction), ActionType.ForNew(), DownClickedPoint.ForNew(),
-					nameof(MouseAction.ExecuteAsync));
+				return string.Format("{0}({1}, {2})", nameof(ActionsExecutor.Mouse), ActionType.ForNew(), DownClickedPoint.ForNew());
 			} else {
-				return string.Format("new {0}({1}, {2}, {3}).{4}(prevAction)", nameof(MouseAction), ActionType.ForNew(), DownClickedPoint.ForNew(), UpClickedPoint.ForNew(),
-					nameof(MouseAction.ExecuteAsync));
+				return string.Format("{0}({1}, {2}, {3})", nameof(ActionsExecutor.Mouse), ActionType.ForNew(), DownClickedPoint.ForNew(), UpClickedPoint.ForNew());
 			}
 		}
 

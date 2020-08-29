@@ -72,8 +72,7 @@ namespace UsAcRe.Actions {
 			return sb.ToString();
 		}
 		public override string ExecuteAsScriptSource() {
-			return string.Format("new {0}({1}, {2}, {3}).{4}(prevAction)", nameof(ElementMatchAction), Program.ForNew(), SearchPath.ForNew(), TimeoutMs.ForNew(),
-				nameof(ElementMatchAction.ExecuteAsync));
+			return string.Format("{0}({1}, {2}, {3})", nameof(ActionsExecutor.ElementMatching), Program.ForNew(), SearchPath.ForNew(), TimeoutMs.ForNew());
 		}
 
 		async Task WaitAppearElement(RequiredElement requiredElement) {

@@ -9,7 +9,7 @@ namespace UsAcRe.Scripts {
 		public const string newLine = "\r\n";
 		public const string tab = "\t";
 		public const string TestsNamespace = "UsAcRe.TestsScripts";
-		public const string TestsClassname = "TestsScript";
+		public const string TestsClassName = "TestsScript";
 
 		readonly ActionsList actions;
 
@@ -80,7 +80,7 @@ namespace UsAcRe.Scripts {
 		}
 
 		public string CreateClassSection(string code) {
-			return tab + "public class " + TestsClassname + " {"
+			return tab + "public class " + TestsClassName + " {"
 				+ newLine
 				+ code
 				+ newLine
@@ -91,7 +91,7 @@ namespace UsAcRe.Scripts {
 			return tab + tab
 				+ "public async Task " + nameof(BaseAction.ExecuteAsync) + "() {"
 				+ newLine
-				+ tab + tab + tab + "BaseAction prevAction = null;"
+				+ tab + tab + tab + "await ActionsExecutor.Perform"
 				+ newLine
 				+ code
 				+ newLine
@@ -100,15 +100,23 @@ namespace UsAcRe.Scripts {
 
 		public string CreateExecuteMethodBody() {
 			var sb = new StringBuilder();
+			var lastAction = actions.LastOrDefault();
 			foreach(var action in actions) {
-				var codeLines = ("prevAction = await " + action.ExecuteAsScriptSource())
+				var codeLines = ("." + action.ExecuteAsScriptSource())
 					.Split('\r', '\n')
 					.Where(x => !string.IsNullOrEmpty(x))
-					.Select(x => string.Format("{0}{0}{0}{1}", tab, x));
+					.Select(x => string.Format("{0}{0}{0}{0}{1}", tab, x));
 
 				var code = string.Join(newLine, codeLines);
-				sb.AppendFormat("{0};{1}", code, newLine);
+
+				var lastItem = action == lastAction;
+				if(lastItem) {
+					sb.Append(code);
+				} else {
+					sb.AppendFormat("{0}{1}", code, newLine);
+				}
 			}
+			sb.Append(";");
 			return sb.ToString();
 		}
 

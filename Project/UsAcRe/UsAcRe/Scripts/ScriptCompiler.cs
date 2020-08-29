@@ -36,9 +36,9 @@ namespace UsAcRe.Scripts {
 		}
 
 		static async Task CreateAndInvoke(Assembly assembly) {
-			var instance = assembly.CreateInstance(ScriptBuilder.TestsNamespace + "." + ScriptBuilder.TestsClassname);
+			var instance = assembly.CreateInstance(ScriptBuilder.TestsNamespace + "." + ScriptBuilder.TestsClassName);
 			if(instance == null) {
-				throw new ApplicationException("There is no " + ScriptBuilder.TestsClassname + " class in the compiled Assembly");
+				throw new ApplicationException("There is no " + ScriptBuilder.TestsClassName + " class in the compiled Assembly");
 			}
 			Type type = instance.GetType();
 			MethodInfo method = type.GetMethod(nameof(BaseAction.ExecuteAsync));

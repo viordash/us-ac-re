@@ -20,7 +20,6 @@ namespace UsAcRe.Tests.ScriptTests {
 			base.TearDown();
 		}
 
-
 		[Test]
 		public void CreateUsingsSection_Test() {
 			var elementMatchAction = new ElementMatchAction(null, new ElementProgram(42, "notepad.exe"), new List<UiElement>() {
@@ -103,31 +102,37 @@ namespace UsAcRe.Tests.ScriptTests {
 			var code = scriptBuilder.CreateExecuteMethodBody();
 			Assert.IsNotEmpty(code);
 			Assert.That(code, Does.StartWith(
-				"\t\t\tprevAction = await new ElementMatchAction(new ElementProgram(42, \"notepad.exe\"), new List<UiElement>() {\r\n"
-				+ "\t\t\t\tnew UiElement(4, \"\", \"Calculator\", \"\", \"automationId1\", 50036, new System.Windows.Rect(10, 20, 30, 40)),\r\n"
-				+ "\t\t\t\tnew UiElement(3, \"value2\", \"7\", \"137\", \"automationId2\", 50002, new System.Windows.Rect(11, 22, 33, 44)),\r\n"
-				+ "\t\t\t}, 1000).ExecuteAsync(prevAction);"));
+				"\t\t\t\t.ElementMatching(new ElementProgram(42, \"notepad.exe\"), new List<UiElement>() {\r\n"
+				+ "\t\t\t\t\tnew UiElement(4, \"\", \"Calculator\", \"\", \"automationId1\", 50036, new System.Windows.Rect(10, 20, 30, 40)),\r\n"
+				+ "\t\t\t\t\tnew UiElement(3,"));
 
-			Assert.That(code, Does.Contain("new MouseAction(MouseActionType.LeftClick, new System.Drawing.Point(1, 2), new System.Drawing.Point(3, 4)).ExecuteAsync(prevAction);"));
-			Assert.That(code, Does.Contain("new KeybdAction(VirtualKeyCodes.K_1, false).ExecuteAsync(prevAction);"));
-			Assert.That(code, Does.Contain("new KeybdAction(VirtualKeyCodes.K_1, true).ExecuteAsync(prevAction);"));
+			Assert.That(code, Does.Contain(".Mouse(MouseActionType.LeftClick, new System.Drawing.Point(1, 2), new System.Drawing.Point(3, 4))"));
+			Assert.That(code, Does.Contain(".Keyboard(VirtualKeyCodes.K_1, false)"));
+			Assert.That(code, Does.Contain(".Keyboard(VirtualKeyCodes.K_1, true);"));
 		}
 
 		[Test]
 		public void Build_Test() {
 			var mouseAction = new MouseAction(null, MouseProcess.MouseActionType.LeftDoubleClick, new System.Drawing.Point(1, 2), new System.Drawing.Point(3, 4));
 			var keybdActionDown = new KeybdAction(WindowsSystem.VirtualKeyCodes.K_1, false);
+			var elementMatchAction = new ElementMatchAction(null, new ElementProgram(42, "notepad.exe"), new List<UiElement>() {
+				new UiElement(0, "", "Decimal", "Button", "314", 50013, new System.Windows.Rect(2017, 289, 59, 15)),
+				new UiElement(0, "", "", "CalcFrame", "", 50033, new System.Windows.Rect(1998, 130, 407, 330)),
+				new UiElement(0, "", "Calculator", "CalcFrame", "", 50032, new System.Windows.Rect(1990, 79, 423, 389)),
+			}, 1000);
 
 			var actions = new ActionsList() {
 				mouseAction,
 				keybdActionDown,
+				elementMatchAction
 			};
 			var scriptBuilder = new ScriptBuilder(actions);
 			var code = scriptBuilder.Generate();
 			Assert.IsNotEmpty(code);
 			Assert.That(code, Does.Contain("using System.Drawing;"));
 			Assert.That(code, Does.Contain("namespace UsAcRe.TestsScripts {"));
-			Assert.That(code, Does.Contain("new MouseAction(MouseActionType.LeftDoubleClick, new System.Drawing.Point(1, 2), new System.Drawing.Point(3, 4)).ExecuteAsync(prevAction);"));
+			Assert.That(code, Does.Contain(".Mouse(MouseActionType.LeftDoubleClick, new System.Drawing.Point(1, 2), new System.Drawing.Point(3, 4))"));
+			Assert.That(code, Does.Contain("}, 1000);"));
 		}
 	}
 }
