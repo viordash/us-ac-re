@@ -8,7 +8,11 @@ namespace UsAcRe.Actions {
 		public VirtualKeyCodes VKCode { get; set; }
 		public bool IsUp { get; set; }
 
-		public KeybdAction(VirtualKeyCodes vKCode, bool isUp) {
+
+		public KeybdAction(VirtualKeyCodes vKCode, bool isUp)
+			: this(null, vKCode, isUp) { }
+
+		public KeybdAction(BaseAction prevAction, VirtualKeyCodes vKCode, bool isUp) : base(prevAction) {
 			VKCode = vKCode;
 			IsUp = isUp;
 		}

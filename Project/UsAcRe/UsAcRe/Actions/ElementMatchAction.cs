@@ -29,16 +29,26 @@ namespace UsAcRe.Actions {
 		public int TimeoutMs { get; private set; }
 		public System.Windows.Point? OffsetPoint { get; private set; }
 
-
 		int stepWaitAppear;
 
-		public ElementMatchAction(ElementProgram program, List<UiElement> searchPath, int timeoutMs = 20 * 1000) {
+
+		public ElementMatchAction(ElementProgram program, List<UiElement> searchPath, int timeoutMs = 20 * 1000) 
+			: this(null, program, searchPath, timeoutMs) { }
+
+		public ElementMatchAction(BaseAction prevAction, ElementProgram program, List<UiElement> searchPath, int timeoutMs = 20 * 1000) : base(prevAction) {
 			Program = program;
 			SearchPath = searchPath;
 			Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left;
 			TimeoutMs = timeoutMs;
 			OffsetPoint = null;
 		}
+
+		//public static async Task<BaseAction> PerformAsync(BaseAction action, ElementProgram program, List<UiElement> searchPath, int timeoutMs = 20 * 1000) {
+		//	var instance = new ElementMatchAction(program, searchPath, timeoutMs);
+		//	instance.prevAction = action;
+		//	await instance.ExecuteAsync(action);
+		//	return instance;
+		//}
 
 		protected override async Task ExecuteCoreAsync() {
 			await SafeActionAsync(DoWorkAsync);

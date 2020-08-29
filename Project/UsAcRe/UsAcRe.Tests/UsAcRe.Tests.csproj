@@ -96,6 +96,7 @@
     <Compile Include="ActionsTests\ElementMatchActionTests.cs" />
     <Compile Include="ActionsTests\KeybdActionTests.cs" />
     <Compile Include="ActionsTests\MouseActionTests.cs" />
+    <Compile Include="ActionsTests\ActionsExecutorTests.cs" />
     <Compile Include="MouseProcessTests\MouseHoverTests.cs" />
     <Compile Include="ScriptTests\ScriptBuilderTests.cs" />
     <Compile Include="ServicesTests\AutomationElementServiceTests.cs" />

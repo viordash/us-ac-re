@@ -15,12 +15,15 @@ namespace UsAcRe.Actions {
 		protected readonly IAutomationElementService automationElementService;
 		protected readonly ITestsLaunchingService testsLaunchingService;
 		protected readonly CancellationToken cancellationToken;
-		protected BaseAction prevAction;
+		protected readonly BaseAction prevAction;
 
-		public BaseAction() : this(ServiceLocator.Current.GetInstance<IAutomationElementService>(), ServiceLocator.Current.GetInstance<ITestsLaunchingService>()) {
+		public BaseAction(BaseAction prevAction)
+			: this(prevAction, ServiceLocator.Current.GetInstance<IAutomationElementService>(), ServiceLocator.Current.GetInstance<ITestsLaunchingService>()) {
+
 		}
 
-		public BaseAction(IAutomationElementService automationElementService, ITestsLaunchingService testsLaunchingService) {
+		public BaseAction(BaseAction prevAction, IAutomationElementService automationElementService, ITestsLaunchingService testsLaunchingService) {
+			this.prevAction = prevAction;
 			this.automationElementService = automationElementService;
 			this.testsLaunchingService = testsLaunchingService;
 			cancellationToken = testsLaunchingService.GetCurrentCancellationToken();
@@ -28,8 +31,7 @@ namespace UsAcRe.Actions {
 
 		public abstract string ExecuteAsScriptSource();
 
-		public async Task<BaseAction> ExecuteAsync(BaseAction prevAction) {
-			this.prevAction = prevAction;
+		public async Task<BaseAction> ExecuteAsync() {
 			await DelayBeforeExecute();
 			await ExecuteCoreAsync();
 			logger.Info("\r\n {0}", ExecuteAsScriptSource());

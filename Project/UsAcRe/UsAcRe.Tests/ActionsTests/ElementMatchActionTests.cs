@@ -71,7 +71,7 @@ namespace UsAcRe.Tests.ActionsTests {
 			}, 100);
 
 			var stopwatch = Stopwatch.StartNew();
-			Assert.ThrowsAsync<TestFailedExeption>(async () => await action.ExecuteAsync(null));
+			Assert.ThrowsAsync<TestFailedExeption>(async () => await action.ExecuteAsync());
 			var elapsed = stopwatch.Elapsed.TotalMilliseconds;
 			Assert.That(elapsed, Is.GreaterThan(100));
 		}
@@ -97,7 +97,7 @@ namespace UsAcRe.Tests.ActionsTests {
 				Thread.Sleep(150);
 				cancelTokenSource.Cancel();
 			},
-			async () => await action.ExecuteAsync(null)
+			async () => await action.ExecuteAsync()
 			);
 
 			var elapsed = stopwatch.Elapsed.TotalMilliseconds;
