@@ -33,7 +33,6 @@ namespace UsAcRe.Actions {
 
 		public async Task<BaseAction> ExecuteAsync() {
 			await ExecuteCoreAsync();
-			logger.Info("\r\n {0}", ExecuteAsScriptSource());
 			return this;
 		}
 
@@ -41,6 +40,7 @@ namespace UsAcRe.Actions {
 
 		protected async Task SafeActionAsync(Func<ValueTask> action) {
 			try {
+				testsLaunchingService.Log(this);
 				await action();
 			} catch(TestFailedExeption) {
 				throw;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using NGuard;
+using UsAcRe.Actions;
 using UsAcRe.Highlighter;
 using UsAcRe.UIAutomationElement;
 
@@ -12,9 +13,11 @@ namespace UsAcRe.Services {
 		void OpenHighlighter(System.Windows.Rect boundingRectangle, string toolTip);
 		void OpenHighlighter(ElementFromPoint elementFromPoint);
 		void CloseHighlighter();
+		void Log(BaseAction baseAction);
 	}
 
 	public class TestsLaunchingService : ITestsLaunchingService {
+		protected NLog.Logger logger = NLog.LogManager.GetLogger("UsAcRe.FormMain");
 		readonly IWindowsFormsService windowsFormsService;
 		CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
 		ElementHighlighter elementHighlighter = null;
@@ -75,6 +78,10 @@ namespace UsAcRe.Services {
 			windowsFormsService.GetMainForm()?.BeginInvoke((Action)(() => {
 				CloseHighlighterInternal();
 			}));
+		}
+
+		public void Log(BaseAction baseAction) {
+			logger.Info("\r\n {0}", baseAction.ExecuteAsScriptSource());
 		}
 	}
 }
