@@ -34,16 +34,6 @@ namespace UsAcRe.Actions {
 			await SafeActionAsync(DoClick);
 		}
 
-		protected override async Task DelayBeforeExecute() {
-			await Task.Delay(20);
-
-			if(prevAction is MouseAction prevMouseAction) {
-				if(DimensionsHelper.IsClickPointInSamePosition(prevMouseAction.DownClickedPoint, DownClickedPoint, GetClickPositionToleranceInPercent())) {
-					await Task.Delay(MouseHook.DoubleClickTime);
-				}
-			}
-		}
-
 		public override string ToString() {
 			return string.Format("{0} Type:{1}, Down:{2}, Up:{3}", nameof(MouseAction), ActionType, DownClickedPoint, UpClickedPoint);
 		}
@@ -58,15 +48,23 @@ namespace UsAcRe.Actions {
 		}
 
 
-		ValueTask DoClick() {
+		async ValueTask DoClick() {
+			await Task.Delay(20);
+
 			var downClickedPoint = DownClickedPoint;
+
+			if(prevAction is MouseAction prevMouseAction) {
+				if(DimensionsHelper.IsClickPointInSamePosition(prevMouseAction.DownClickedPoint, downClickedPoint, GetClickPositionToleranceInPercent())) {
+					await Task.Delay(MouseHook.DoubleClickTime);
+				}
+			}
 
 			if(UpClickedPoint.IsEmpty || DimensionsHelper.IsClickPointInSamePosition(UpClickedPoint, downClickedPoint, GetClickPositionToleranceInPercent())) {
 				var actionForDetermineClickPoint = prevAction;
 
-				while(actionForDetermineClickPoint is MouseAction prevMouseAction
-					&& DimensionsHelper.IsClickPointInSamePosition(downClickedPoint, prevMouseAction.DownClickedPoint, GetClickPositionToleranceInPercent())) {
-					actionForDetermineClickPoint = prevMouseAction.prevAction;
+				while(actionForDetermineClickPoint is MouseAction prevMouseAct
+					&& DimensionsHelper.IsClickPointInSamePosition(downClickedPoint, prevMouseAct.DownClickedPoint, GetClickPositionToleranceInPercent())) {
+					actionForDetermineClickPoint = prevMouseAct.prevAction;
 				}
 
 				if(actionForDetermineClickPoint is ElementMatchAction elementMatchAction) {
@@ -107,7 +105,6 @@ namespace UsAcRe.Actions {
 				default:
 					throw new SevereException(this, nameof(DoClick));
 			}
-			return new ValueTask(Task.CompletedTask);
 		}
 
 		void Mouse_MoveTo(int x, int y) {

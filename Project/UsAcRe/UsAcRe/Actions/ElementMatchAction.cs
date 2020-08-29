@@ -43,19 +43,8 @@ namespace UsAcRe.Actions {
 			OffsetPoint = null;
 		}
 
-		//public static async Task<BaseAction> PerformAsync(BaseAction action, ElementProgram program, List<UiElement> searchPath, int timeoutMs = 20 * 1000) {
-		//	var instance = new ElementMatchAction(program, searchPath, timeoutMs);
-		//	instance.prevAction = action;
-		//	await instance.ExecuteAsync(action);
-		//	return instance;
-		//}
-
 		protected override async Task ExecuteCoreAsync() {
 			await SafeActionAsync(DoWorkAsync);
-		}
-
-		protected override Task DelayBeforeExecute() {
-			return Task.CompletedTask;
 		}
 
 		public override string ToString() {
