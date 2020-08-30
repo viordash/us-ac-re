@@ -133,5 +133,90 @@ namespace UsAcRe.Tests.ScriptTests {
 			Assert.That(code, Does.Contain(".Mouse(MouseActionType.LeftDoubleClick, new System.Drawing.Point(1, 2), new System.Drawing.Point(3, 4))"));
 			Assert.That(code, Does.Contain("}, 1000);"));
 		}
+
+		[Test]
+		public void CombineTextTypingActions_Test() {
+			var actions = new ActionsList() {
+				new MouseAction(null, MouseProcess.MouseActionType.LeftDoubleClick, new System.Drawing.Point(1, 2)),
+				new MouseAction(null, MouseProcess.MouseActionType.LeftDoubleClick, new System.Drawing.Point(1, 2)),
+				new KeybdAction(WindowsSystem.VirtualKeyCodes.VK_RSHIFT, false),
+				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_T, false),
+				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_T, true),
+				new KeybdAction(WindowsSystem.VirtualKeyCodes.VK_RSHIFT, true),
+				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_E, false),
+				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_E, true),
+				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_S, false),
+				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_S, true),
+				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_T, false),
+				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_T, true),
+				new MouseAction(null, MouseProcess.MouseActionType.LeftDoubleClick, new System.Drawing.Point(1, 2)),
+				new KeybdAction(WindowsSystem.VirtualKeyCodes.VK_RSHIFT, false),
+				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_H, false),
+				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_H, true),
+				new KeybdAction(WindowsSystem.VirtualKeyCodes.VK_RSHIFT, true),
+				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_E, false),
+				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_E, true),
+				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_L, false),
+				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_L, true),
+				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_L, false),
+				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_L, true),
+				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_O, false),
+				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_O, true),
+				new MouseAction(null, MouseProcess.MouseActionType.RightClick, new System.Drawing.Point(1, 2)),
+			};
+			var scriptBuilder = new ScriptBuilder(actions, settingsServiceMock.Object);
+			scriptBuilder.CombineTextTypingActions();
+
+			Assert.That(actions.Count, Is.EqualTo(14));
+			Assert.IsInstanceOf<TextTypingAction>(actions[6]);
+			Assert.That((actions[6] as TextTypingAction).Text, Is.EqualTo("est"));
+
+			Assert.IsInstanceOf<TextTypingAction>(actions[12]);
+			Assert.That((actions[12] as TextTypingAction).Text, Is.EqualTo("ello"));
+		}
+
+		[Test]
+		public void CombineTextTypingActions_With_Error_In_Seq_Test() {
+			var actions = new ActionsList() {
+				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_T, false),
+				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_T, true),
+				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_E, false),
+				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_E, true),
+				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_S, false),
+				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_S, true),
+				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_T, false),
+				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_T, true),
+				new MouseAction(null, MouseProcess.MouseActionType.RightClick, new System.Drawing.Point(1, 2)),
+				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_H, false),
+				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_H, true),
+				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_E, false),
+				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_E, true),
+				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_L, false),
+				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_L, true),
+				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_L, false),
+				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_L, true),
+				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_O, false),
+				//new KeybdAction(WindowsSystem.VirtualKeyCodes.K_O, true),
+			};
+			var scriptBuilder = new ScriptBuilder(actions, settingsServiceMock.Object);
+			scriptBuilder.CombineTextTypingActions();
+
+			Assert.That(actions.Count, Is.EqualTo(11));
+			Assert.IsInstanceOf<TextTypingAction>(actions[0]);
+			Assert.That((actions[0] as TextTypingAction).Text, Is.EqualTo("test"));
+		}
+
+		[Test]
+		public void CombineTextTypingActions_Seq_For_One_Key_Is_Skipped_Test() {
+			var actions = new ActionsList() {
+				new MouseAction(null, MouseProcess.MouseActionType.RightClick, new System.Drawing.Point(1, 2)),
+				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_H, false),
+				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_H, true),
+			};
+			var scriptBuilder = new ScriptBuilder(actions, settingsServiceMock.Object);
+			scriptBuilder.CombineTextTypingActions();
+
+			Assert.That(actions.Count, Is.EqualTo(3));
+		}
 	}
 }

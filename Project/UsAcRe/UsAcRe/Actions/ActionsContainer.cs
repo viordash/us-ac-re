@@ -6,6 +6,9 @@ using UsAcRe.Services;
 
 namespace UsAcRe.Actions {
 	public class ActionsList : List<BaseAction> {
+		public ActionsList(IEnumerable<BaseAction> acions) : this() {
+			AddRange(acions);
+		}
 		public ActionsList() { }
 	}
 

@@ -5,6 +5,7 @@ using UsAcRe.Actions;
 using System.Text;
 using UsAcRe.Services;
 using NGuard;
+using UsAcRe.Extensions;
 
 namespace UsAcRe.Scripts {
 	public class ScriptBuilder {
@@ -17,7 +18,7 @@ namespace UsAcRe.Scripts {
 		readonly ISettingsService settingsService;
 
 		public ScriptBuilder(
-			ActionsList actions, 
+			ActionsList actions,
 			ISettingsService settingsService) {
 			Guard.Requires(actions, nameof(actions));
 			Guard.Requires(settingsService, nameof(settingsService));
@@ -108,6 +109,7 @@ namespace UsAcRe.Scripts {
 
 		public string CreateExecuteMethodBody() {
 			var sb = new StringBuilder();
+			CombineTextTypingActions();
 			var lastAction = actions.LastOrDefault();
 			foreach(var action in actions) {
 				var codeLines = ("." + action.ExecuteAsScriptSource())
@@ -139,6 +141,61 @@ namespace UsAcRe.Scripts {
 			sb.Append(CreateNamespaceSection(classSection));
 			sb.AppendLine();
 			return sb.ToString();
+		}
+
+		internal void CombineTextTypingActions() {
+			var keysSeqList = new List<(int start, int end)>();
+			int? startKeysSeq = null;
+			KeybdAction prevKeybdAction = null;
+			int prevIndex = -1;
+
+			foreach(var action in actions.Select((value, index) => (value, index))) {
+				if(action.value is KeybdAction keybdAction
+					&& keybdAction.VKCode.IsPrintable()
+					&& keybdAction.IsUp != prevKeybdAction?.IsUp) {
+					if(!keybdAction.IsUp && !startKeysSeq.HasValue) {
+						startKeysSeq = action.index;
+					}
+				} else {
+					if(prevKeybdAction != null && prevKeybdAction.IsUp && startKeysSeq.HasValue) {
+						keysSeqList.Add((startKeysSeq.Value, prevIndex));
+					}
+					startKeysSeq = null;
+				}
+				prevKeybdAction = action.value as KeybdAction;
+				prevIndex = action.index;
+			}
+			if(prevKeybdAction != null && prevKeybdAction.IsUp && startKeysSeq.HasValue) {
+				keysSeqList.Add((startKeysSeq.Value, prevIndex));
+			}
+
+			foreach(var keysSeq in keysSeqList) {
+				var size = (keysSeq.end - keysSeq.start) + 1;
+				if(size <= 2) {
+					continue;
+				}
+				var keysActions = actions
+					.Skip(keysSeq.start)
+					.Take(size)
+					.OfType<KeybdAction>()
+					.Where(x => x.IsUp)
+					.Select(x => x.VKCode);
+
+				if(keysActions.Count() * 2 == size) {
+					var sb = new StringBuilder();
+					foreach(var key in keysActions) {
+						if(key.TryGetKeyValue(out char value)) {
+							sb.Append(value);
+						}
+					}
+					var textTypingAction = new TextTypingAction(sb.ToString());
+					actions[keysSeq.start] = textTypingAction;
+					for(int i = keysSeq.start + 1; i <= keysSeq.end; i++) {
+						actions[i] = null;
+					}
+				}
+			}
+			actions.RemoveAll(x => x == null);
 		}
 	}
 }
