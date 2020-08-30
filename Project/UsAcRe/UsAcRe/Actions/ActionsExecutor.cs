@@ -33,6 +33,13 @@ namespace UsAcRe.Actions {
 			await action.ExecuteAsync();
 			return action;
 		}
+
+		public static async Task<BaseAction> TextType(this Task<BaseAction> taskPrevAction, string text) {
+			var prevAction = await taskPrevAction;
+			var action = new TextTypingAction(prevAction, text);
+			await action.ExecuteAsync();
+			return action;
+		}
 	}
 
 }

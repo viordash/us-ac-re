@@ -94,6 +94,7 @@
   <ItemGroup>
     <Compile Include="ActionsTests\BaseActionTestable.cs" />
     <Compile Include="ActionsTests\ElementMatchActionTests.cs" />
+    <Compile Include="ActionsTests\TextTypingActionTests.cs" />
     <Compile Include="ActionsTests\KeybdActionTests.cs" />
     <Compile Include="ActionsTests\MouseActionTests.cs" />
     <Compile Include="ActionsTests\ActionsExecutorTests.cs" />
