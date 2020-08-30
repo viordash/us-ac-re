@@ -14,6 +14,7 @@ namespace UsAcRe {
 			container.RegisterType<IWinApiService, WinApiService>(new ContainerControlledLifetimeManager());
 			container.RegisterType<ITestsLaunchingService, TestsLaunchingService>(new ContainerControlledLifetimeManager());
 			container.RegisterType<IWindowsFormsService, WindowsFormsService>(new ContainerControlledLifetimeManager());
+			container.RegisterType<ISettingsService, SettingsService>(new ContainerControlledLifetimeManager());
 
 			var serviceLocator = new UnityServiceLocator(container);
 			ServiceLocator.SetLocatorProvider(() => serviceLocator);    // Warning: do NOT remove serviceLocator local variable, do not inline "new UnityServiceLocator"!

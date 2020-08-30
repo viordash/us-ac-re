@@ -9,6 +9,7 @@ namespace UsAcRe.Tests.ActionsTests {
 		protected Mock<IAutomationElementService> automationElementServiceMock;
 		protected Mock<IWinApiService> winApiServiceMock;
 		protected Mock<ITestsLaunchingService> testsLaunchingServiceMock;
+		protected Mock<ISettingsService> settingsServiceMock;
 
 		public virtual void Setup() {
 
@@ -16,6 +17,7 @@ namespace UsAcRe.Tests.ActionsTests {
 			automationElementServiceMock = new Mock<IAutomationElementService>();
 			winApiServiceMock = new Mock<IWinApiService>();
 			testsLaunchingServiceMock = new Mock<ITestsLaunchingService>();
+			settingsServiceMock = new Mock<ISettingsService>();
 
 			serviceLocatorMock
 				.Setup(x => x.GetInstance<IAutomationElementService>())
@@ -33,6 +35,12 @@ namespace UsAcRe.Tests.ActionsTests {
 				.Setup(x => x.GetInstance<ITestsLaunchingService>())
 				.Returns(() => {
 					return testsLaunchingServiceMock.Object;
+				});
+
+			serviceLocatorMock
+				.Setup(x => x.GetInstance<ISettingsService>())
+				.Returns(() => {
+					return settingsServiceMock.Object;
 				});
 
 

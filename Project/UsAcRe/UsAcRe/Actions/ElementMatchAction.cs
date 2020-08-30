@@ -162,7 +162,7 @@ namespace UsAcRe.Actions {
 				|| !StringEquals(element1.ClassName, element2.ClassName)
 				|| !StringEquals(element1.AutomationId, element2.AutomationId)
 				|| (compareSizes && !DimensionsHelper.AreSizeEquals(element1.BoundingRectangle.Size, element2.BoundingRectangle.Size,
-						GetClickPositionToleranceInPercent()))) {
+						settingsService.GetClickPositionToleranceInPercent()))) {
 				return false;
 			}
 			return true;

@@ -43,16 +43,16 @@ namespace UsAcRe.Actions {
 			var downClickedPoint = DownClickedPoint;
 
 			if(prevAction is MouseAction prevMouseAction) {
-				if(DimensionsHelper.IsClickPointInSamePosition(prevMouseAction.DownClickedPoint, downClickedPoint, GetClickPositionToleranceInPercent())) {
+				if(DimensionsHelper.IsClickPointInSamePosition(prevMouseAction.DownClickedPoint, downClickedPoint, settingsService.GetClickPositionToleranceInPercent())) {
 					await Task.Delay(MouseHook.DoubleClickTime);
 				}
 			}
 
-			if(UpClickedPoint.IsEmpty || DimensionsHelper.IsClickPointInSamePosition(UpClickedPoint, downClickedPoint, GetClickPositionToleranceInPercent())) {
+			if(UpClickedPoint.IsEmpty || DimensionsHelper.IsClickPointInSamePosition(UpClickedPoint, downClickedPoint, settingsService.GetClickPositionToleranceInPercent())) {
 				var actionForDetermineClickPoint = prevAction;
 
 				while(actionForDetermineClickPoint is MouseAction prevMouseAct
-					&& DimensionsHelper.IsClickPointInSamePosition(downClickedPoint, prevMouseAct.DownClickedPoint, GetClickPositionToleranceInPercent())) {
+					&& DimensionsHelper.IsClickPointInSamePosition(downClickedPoint, prevMouseAct.DownClickedPoint, settingsService.GetClickPositionToleranceInPercent())) {
 					actionForDetermineClickPoint = prevMouseAct.prevAction;
 				}
 

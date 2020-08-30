@@ -145,6 +145,7 @@
     <Compile Include="Scripts\ScriptBuilder.cs" />
     <Compile Include="Scripts\ScriptCompiler.cs" />
     <Compile Include="Services\AutomationElementService.cs" />
+    <Compile Include="Services\SettingsService.cs" />
     <Compile Include="Services\TestsLaunchingService.cs" />
     <Compile Include="Services\WinApiService.cs" />
     <Compile Include="Services\WindowsFormsService.cs" />
