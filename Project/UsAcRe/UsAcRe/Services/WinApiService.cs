@@ -12,6 +12,7 @@ namespace UsAcRe.Services {
 		IntPtr ChildWindowFromPointEx(IntPtr hWndParent, WinAPI.POINT pt, uint uFlags);
 		IntPtr RealChildWindowFromPoint(IntPtr hWndParent, WinAPI.POINT pt);
 		bool ScreenToClient(IntPtr hWnd, ref WinAPI.POINT point);
+		bool SetForegroundWindow(IntPtr hWnd);
 	}
 
 	public class WinApiService : IWinApiService {
@@ -65,6 +66,10 @@ namespace UsAcRe.Services {
 
 		public bool ScreenToClient(IntPtr hWnd, ref WinAPI.POINT point) {
 			return WinAPI.ScreenToClient(hWnd, ref point);
+		}
+
+		public bool SetForegroundWindow(IntPtr hWnd) {
+			return WinAPI.SetForegroundWindow(hWnd);
 		}
 	}
 }

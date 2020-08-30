@@ -14,18 +14,26 @@ namespace UsAcRe.Actions {
 
 		protected readonly IAutomationElementService automationElementService;
 		protected readonly ITestsLaunchingService testsLaunchingService;
+		protected readonly IWinApiService winApiService;
 		protected readonly CancellationToken cancellationToken;
 		protected readonly BaseAction prevAction;
 
 		public BaseAction(BaseAction prevAction)
-			: this(prevAction, ServiceLocator.Current.GetInstance<IAutomationElementService>(), ServiceLocator.Current.GetInstance<ITestsLaunchingService>()) {
+			: this(prevAction, ServiceLocator.Current.GetInstance<IAutomationElementService>(), 
+				  ServiceLocator.Current.GetInstance<ITestsLaunchingService>(),
+				  ServiceLocator.Current.GetInstance<IWinApiService>()) {
 
 		}
 
-		public BaseAction(BaseAction prevAction, IAutomationElementService automationElementService, ITestsLaunchingService testsLaunchingService) {
+		public BaseAction(
+			BaseAction prevAction, 
+			IAutomationElementService automationElementService, 
+			ITestsLaunchingService testsLaunchingService, 
+			IWinApiService winApiService) {
 			this.prevAction = prevAction;
 			this.automationElementService = automationElementService;
 			this.testsLaunchingService = testsLaunchingService;
+			this.winApiService = winApiService;
 			cancellationToken = testsLaunchingService.GetCurrentCancellationToken();
 		}
 

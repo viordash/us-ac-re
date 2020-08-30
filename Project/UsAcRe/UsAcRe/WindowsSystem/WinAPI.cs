@@ -276,7 +276,8 @@ namespace UsAcRe.WindowsSystem {
 		public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
 		[DllImport("User32", SetLastError = true)]
-		public static extern int SetForegroundWindow(IntPtr hwnd);
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool SetForegroundWindow(IntPtr hwnd);
 
 		[DllImport("user32.dll", SetLastError = true)]
 		public static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
