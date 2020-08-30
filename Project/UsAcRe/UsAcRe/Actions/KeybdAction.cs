@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.Test.Input;
 using UsAcRe.Extensions;
 using UsAcRe.WindowsSystem;
 
@@ -18,7 +19,7 @@ namespace UsAcRe.Actions {
 		}
 
 		protected override async ValueTask ExecuteCoreAsync() {
-			await Task.Delay(10);
+			await DoKeyPress();
 		}
 
 		public override string ToString() {
@@ -28,5 +29,13 @@ namespace UsAcRe.Actions {
 			return string.Format("{0}({1}, {2})", nameof(ActionsExecutor.Keyboard), VKCode.ForNew(), IsUp.ForNew());
 		}
 
+		ValueTask DoKeyPress() {
+			if(!this.IsUp) {
+				Keyboard.Press((Key)this.VKCode);
+			} else if(this.IsUp) {
+				Keyboard.Release((Key)this.VKCode);
+			}
+			return new ValueTask(Task.CompletedTask);
+		}
 	}
 }
