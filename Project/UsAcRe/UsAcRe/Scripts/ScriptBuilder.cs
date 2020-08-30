@@ -3,6 +3,8 @@ using System.Linq;
 using System.Collections.Generic;
 using UsAcRe.Actions;
 using System.Text;
+using UsAcRe.Services;
+using NGuard;
 
 namespace UsAcRe.Scripts {
 	public class ScriptBuilder {
@@ -12,9 +14,15 @@ namespace UsAcRe.Scripts {
 		public const string TestsClassName = "TestsScript";
 
 		readonly ActionsList actions;
+		readonly ISettingsService settingsService;
 
-		public ScriptBuilder(ActionsList actions) {
+		public ScriptBuilder(
+			ActionsList actions, 
+			ISettingsService settingsService) {
+			Guard.Requires(actions, nameof(actions));
+			Guard.Requires(settingsService, nameof(settingsService));
 			this.actions = actions;
+			this.settingsService = settingsService;
 		}
 
 		static void ObtainCtorArgumentsTypes(Type type, List<Type> ctorArgsTypes) {

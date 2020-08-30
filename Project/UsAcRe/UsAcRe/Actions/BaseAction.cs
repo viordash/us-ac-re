@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 using CommonServiceLocator;
+using NGuard;
 using UsAcRe.Exceptions;
 using UsAcRe.Services;
 
@@ -31,6 +32,10 @@ namespace UsAcRe.Actions {
 			ITestsLaunchingService testsLaunchingService,
 			IWinApiService winApiService,
 			ISettingsService settingsService) {
+			Guard.Requires(automationElementService, nameof(automationElementService));
+			Guard.Requires(testsLaunchingService, nameof(testsLaunchingService));
+			Guard.Requires(winApiService, nameof(winApiService));
+			Guard.Requires(settingsService, nameof(settingsService));
 			this.prevAction = prevAction;
 			this.automationElementService = automationElementService;
 			this.testsLaunchingService = testsLaunchingService;

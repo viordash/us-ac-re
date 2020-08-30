@@ -9,7 +9,6 @@ using UsAcRe.UIAutomationElement;
 namespace UsAcRe.Tests.ScriptTests {
 	[TestFixture]
 	public class ScriptBuilderTests : BaseActionTestable {
-
 		[SetUp]
 		public override void Setup() {
 			base.Setup();
@@ -38,7 +37,7 @@ namespace UsAcRe.Tests.ScriptTests {
 				keybdActionDown,
 				keybdActionUp
 			};
-			var scriptBuilder = new ScriptBuilder(actions);
+			var scriptBuilder = new ScriptBuilder(actions, settingsServiceMock.Object);
 			var usings = scriptBuilder.CreateUsingsSection();
 			Assert.IsNotEmpty(usings);
 			Assert.That(usings, Does.Contain("using System;"));
@@ -54,7 +53,7 @@ namespace UsAcRe.Tests.ScriptTests {
 		[Test]
 		public void CreateNamespaceSection_Test() {
 			var actions = new ActionsList() { };
-			var scriptBuilder = new ScriptBuilder(actions);
+			var scriptBuilder = new ScriptBuilder(actions, settingsServiceMock.Object);
 			var code = scriptBuilder.CreateNamespaceSection("//something");
 			Assert.IsNotEmpty(code);
 			Assert.That(code, Does.StartWith("namespace UsAcRe.TestsScripts {"));
@@ -64,7 +63,7 @@ namespace UsAcRe.Tests.ScriptTests {
 		[Test]
 		public void CreateClassSection_Test() {
 			var actions = new ActionsList() { };
-			var scriptBuilder = new ScriptBuilder(actions);
+			var scriptBuilder = new ScriptBuilder(actions, settingsServiceMock.Object);
 			var code = scriptBuilder.CreateClassSection("//something");
 			Assert.IsNotEmpty(code);
 			Assert.That(code, Does.StartWith("\tpublic class TestsScript {"));
@@ -74,7 +73,7 @@ namespace UsAcRe.Tests.ScriptTests {
 		[Test]
 		public void CreateExecuteMethodSection_Test() {
 			var actions = new ActionsList() { };
-			var scriptBuilder = new ScriptBuilder(actions);
+			var scriptBuilder = new ScriptBuilder(actions, settingsServiceMock.Object);
 			var code = scriptBuilder.CreateExecuteMethodSection("//something");
 			Assert.IsNotEmpty(code);
 			Assert.That(code, Does.StartWith("\t\tpublic async Task ExecuteAsync() {"));
@@ -98,7 +97,7 @@ namespace UsAcRe.Tests.ScriptTests {
 				keybdActionDown,
 				keybdActionUp
 			};
-			var scriptBuilder = new ScriptBuilder(actions);
+			var scriptBuilder = new ScriptBuilder(actions, settingsServiceMock.Object);
 			var code = scriptBuilder.CreateExecuteMethodBody();
 			Assert.IsNotEmpty(code);
 			Assert.That(code, Does.StartWith(
@@ -126,7 +125,7 @@ namespace UsAcRe.Tests.ScriptTests {
 				keybdActionDown,
 				elementMatchAction
 			};
-			var scriptBuilder = new ScriptBuilder(actions);
+			var scriptBuilder = new ScriptBuilder(actions, settingsServiceMock.Object);
 			var code = scriptBuilder.Generate();
 			Assert.IsNotEmpty(code);
 			Assert.That(code, Does.Contain("using System.Drawing;"));
