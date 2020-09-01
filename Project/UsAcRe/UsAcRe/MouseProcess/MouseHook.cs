@@ -1,46 +1,77 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Threading;
+using UsAcRe.Extensions;
 using UsAcRe.WindowsSystem;
 
 namespace UsAcRe.MouseProcess {
-	public delegate void MouseEventHandler(object sender, MouseEventArgs args);
-	public class MouseEventArgs : EventArgs {
-		public MouseEvent Event;
-		public List<MouseButtonType> Buttons { get; set; }
-		public MouseEventArgs(MouseEvent mouseEvent, List<MouseButtonType> buttons) {
-			Event = mouseEvent;
+	public delegate void MouseStartDragEventHandler(object sender, MouseStartDragEventArgs args);
+	public class MouseStartDragEventArgs : EventArgs {
+		public Point Coord { get; set; }
+		public MouseButtonType Button { get; set; }
+		public MouseStartDragEventArgs(Point coord, MouseButtonType button) {
+			Coord = coord;
+			Button = button;
 		}
 	}
+	public delegate void MouseDragEventHandler(object sender, MouseDragEventArgs args);
+	public class MouseDragEventArgs : EventArgs {
+		public Point StartCoord { get; set; }
+		public Point EndCoord { get; set; }
+		public MouseButtonType Button { get; set; }
+		public MouseDragEventArgs(Point startCoord, Point endCoord, MouseButtonType button) {
+			StartCoord = startCoord;
+			EndCoord = endCoord;
+			Button = button;
+		}
+	}
+
+	public delegate void MouseClickEventHandler(object sender, MouseClickEventArgs args);
+	public class MouseClickEventArgs : EventArgs {
+		public Point Coord { get; set; }
+		public MouseButtonType Button { get; set; }
+		public bool DoubleClick { get; set; }
+		public MouseClickEventArgs(Point coord, MouseButtonType button, bool doubleClick) {
+			Coord = coord;
+			Button = button;
+			DoubleClick = doubleClick;
+		}
+	}
+
 	public delegate void MouseMoveHandler(object sender, MouseMoveArgs args);
 	public class MouseMoveArgs : EventArgs {
 		public WinAPI.POINT Coord { get; set; }
 		public bool Stopped { get; set; }
-		public List<MouseButtonType> Buttons { get; set; }
-		public MouseMoveArgs(WinAPI.POINT coord, bool stopped, List<MouseButtonType> buttons) {
+		public MouseMoveArgs(WinAPI.POINT coord, bool stopped) {
 			Coord = coord;
 			Stopped = stopped;
-			Buttons = buttons;
 		}
 	}
 
 	public static class MouseHook {
 		static NLog.Logger logger = NLog.LogManager.GetLogger("UsAcRe.Trace");
-		public static event MouseEventHandler OnMouseEvent = delegate { };
+		public static event MouseClickEventHandler OnMouseClick = delegate { };
+		public static event MouseStartDragEventHandler OnMouseStartDrag = delegate { };
+		public static event MouseDragEventHandler OnMouseDrag = delegate { };
 		public static event MouseMoveHandler OnMouseMove = delegate { };
 		private static WinAPI.LowLevelMouseProc _proc = HookCallback;
 		private static IntPtr _hookID = IntPtr.Zero;
 		public static int DoubleClickTime = WinAPI.GetDoubleClickTime();
-		public static int MaxDoubleClickTime = DoubleClickTime + (DoubleClickTime / 10);
+		public static int MaxDoubleClickTime = DoubleClickTime + (DoubleClickTime / 20);
 		private static int onClickMessageTimeStamp;
 		private static Timer timerStoringMouseAction = null;
-		private static MouseEvent prevMouseEvent = null;
+		private static WinAPI.POINT prevMouseClickCoord = WinAPI.POINT.Empty;
 		private static WinAPI.POINT prevMouseCoord = WinAPI.POINT.Empty;
 		private static Timer timerStopMouseMoveDetection = null;
-		private static List<MouseButtonType> pressedButtons = new List<MouseButtonType>();
+
+		private static MouseButtonType prevMouseButton = MouseButtonType.None;
+
+
+		private static bool startMouseDrag = false;
+		private static MouseButtonType mouseButtonDown = MouseButtonType.None;
+		private static Point startDragCoord;
 
 		public static void Start() {
 			_hookID = SetHook(_proc);
@@ -58,96 +89,58 @@ namespace UsAcRe.MouseProcess {
 			}
 		}
 
-		static bool IsClickInSamePosition(MouseEvent mouseEvent, int x, int y) {
-			return (Math.Abs(x - mouseEvent.DownClickedPoint.X) < 10)
-				&& (Math.Abs(y - mouseEvent.DownClickedPoint.Y) < 10);
-		}
+		static void MouseButtonUp(MouseButtonType button, int x, int y, int messageTimeStamp) {
+			if(timerStoringMouseAction != null) {
+				timerStoringMouseAction.Dispose();
+				timerStoringMouseAction = null;
+			}
 
-		static bool IsOverdueClick(int messageTimeStamp) {
-			return (messageTimeStamp < onClickMessageTimeStamp) || (messageTimeStamp - onClickMessageTimeStamp > DoubleClickTime);
-		}
+			var isDoubleClick = messageTimeStamp - onClickMessageTimeStamp <= DoubleClickTime;
 
-		static bool IsDoubleClick(MouseEvent mouseEvent, int x, int y, int messageTimeStamp) {
-			return !IsOverdueClick(messageTimeStamp) && IsClickInSamePosition(mouseEvent, x, y);
-		}
-
-		static bool IsSameButton(MouseButtonType button, MouseEvent mouseEvent) {
-			return (button == MouseButtonType.Left && (mouseEvent.Type == MouseActionType.LeftClick || mouseEvent.Type == MouseActionType.LeftDoubleClick
-						|| mouseEvent.Type == MouseActionType.LeftDrag))
-				|| (button == MouseButtonType.Right && (mouseEvent.Type == MouseActionType.RightClick || mouseEvent.Type == MouseActionType.RightDoubleClick
-						|| mouseEvent.Type == MouseActionType.RightDrag))
-				|| (button == MouseButtonType.Middle && (mouseEvent.Type == MouseActionType.MiddleClick || mouseEvent.Type == MouseActionType.MiddleDoubleClick
-						|| mouseEvent.Type == MouseActionType.MiddleDrag));
-		}
-
-		static void MouseEventHook(MouseButtonType button, bool isDown, int x, int y, int messageTimeStamp) {
-			if(isDown) {
-				logger.Info("IsDown 0:              {1}; {0}; {2}", button, DateTime.Now.Ticks, prevMouseEvent == null ? "null" : "");
-				if(prevMouseEvent != null) {
-					if(IsOverdueClick(messageTimeStamp)) {
-						prevMouseEvent = null;
-					} else if(!IsClickInSamePosition(prevMouseEvent, x, y)) {
-						prevMouseEvent = null;
-					} else if(!IsSameButton(button, prevMouseEvent)) {
-						prevMouseEvent = null;
-					}
-				}
-				if(prevMouseEvent == null) {
-					prevMouseEvent = new MouseEvent() {
-						DownClickedPoint = new Point(x, y)
-					};
-				}
-				logger.Info("IsDown 1:              {1}; {0}; {2}", button, DateTime.Now.Ticks, prevMouseEvent == null ? "null" : "");
-				pressedButtons.Add(button);
+			if(mouseButtonDown == button && !startDragCoord.WithBoundaries(x, y, 10)) {
+				OnMouseDrag?.Invoke(null, new MouseDragEventArgs(startDragCoord, new Point(x, y), mouseButtonDown));
+				Debug.WriteLine("-----------------        OnMouseDragEvent: end  {0} -> {1}", startDragCoord, new WinAPI.POINT(x, y));
+			} else if(prevMouseButton == button && prevMouseClickCoord.WithBoundaries(x, y, 10) && isDoubleClick) {
+				OnMouseClick?.Invoke(null, new MouseClickEventArgs(new Point(x, y), button, true));
+				Debug.WriteLine("-----------------        MouseButtonUp: DbCl  {0}; {1}", messageTimeStamp, button);
 			} else {
-				pressedButtons.Remove(button);
-				logger.Info("IsUp:                  {1}; {0}; {2}", button, DateTime.Now.Ticks, prevMouseEvent == null ? "null" : "");
-				if(prevMouseEvent == null) {
-					return;//                    throw new InvalidOperationException("MouseDown is missed");
-				}
-
-				if(prevMouseEvent.Type != MouseActionType.None && IsDoubleClick(prevMouseEvent, x, y, messageTimeStamp)) {
-					prevMouseEvent.Type = button == MouseButtonType.Left
-						? MouseActionType.LeftDoubleClick
-						: button == MouseButtonType.Right
-						? MouseActionType.RightDoubleClick
-						: MouseActionType.MiddleDoubleClick;
-					if(timerStoringMouseAction != null) {
-						timerStoringMouseAction.Dispose();
-						timerStoringMouseAction = null;
-					}
-				} else if(!IsClickInSamePosition(prevMouseEvent, x, y)) {
-					prevMouseEvent.Type = button == MouseButtonType.Left
-						? MouseActionType.LeftDrag
-						: button == MouseButtonType.Right
-						? MouseActionType.RightDrag
-						: MouseActionType.MiddleDrag;
-					prevMouseEvent.UpClickedPoint = new Point(x, y);
-				} else {
-					prevMouseEvent.Type = button == MouseButtonType.Left
-						? MouseActionType.LeftClick
-						: button == MouseButtonType.Right
-						? MouseActionType.RightClick
-						: MouseActionType.MiddleClick;
-				}
-
-				if(timerStoringMouseAction != null) {
-					timerStoringMouseAction.Dispose();
-					timerStoringMouseAction = null;
-				}
 				timerStoringMouseAction = new Timer(
 					(state) => {
-						OnMouseEvent?.Invoke(null, new MouseEventArgs(state as MouseEvent, pressedButtons));
+						OnMouseClick?.Invoke(null, state as MouseClickEventArgs);
 						timerStoringMouseAction = null;
+						Debug.WriteLine("-----------------        MouseButtonUp:       {0}; {1}", messageTimeStamp, button);
 					},
-					new MouseEvent(prevMouseEvent), MaxDoubleClickTime, Timeout.Infinite);
-				logger.Info("IsUp 1:                {1}; {0}", prevMouseEvent.Type, DateTime.Now.Ticks);
+					new MouseClickEventArgs(new Point(x, y), button, false),
+					MaxDoubleClickTime,
+					Timeout.Infinite);
 			}
+
+			startMouseDrag = false;
+			mouseButtonDown = MouseButtonType.None;
+			prevMouseButton = button;
+			prevMouseClickCoord.x = x;
+			prevMouseClickCoord.y = y;
 			onClickMessageTimeStamp = messageTimeStamp;
 		}
 
+		static void AssumeMouseDrag(MouseButtonType button, int x, int y) {
+			if(timerStoringMouseAction != null) {
+				timerStoringMouseAction.Dispose();
+				timerStoringMouseAction = null;
+			}
+			startMouseDrag = true;
+			mouseButtonDown = button;
+			startDragCoord = new Point(x, y);
+		}
+
 		static void MouseMoveHook(int x, int y, int messageTimeStamp) {
-			if(prevMouseCoord.WithBoundaries(x, y, 5)) {
+			if(startMouseDrag && mouseButtonDown != MouseButtonType.None) {
+				OnMouseStartDrag?.Invoke(null, new MouseStartDragEventArgs(startDragCoord, mouseButtonDown));
+				startMouseDrag = false;
+				Debug.WriteLine("-----------------        OnMouseDragEvent: str  {0} -> {1}", startDragCoord, new WinAPI.POINT(x, y));
+			}
+
+			if(prevMouseCoord.WithBoundaries(x, y, 10)) {
 				return;
 			}
 			if(timerStopMouseMoveDetection != null) {
@@ -161,8 +154,8 @@ namespace UsAcRe.MouseProcess {
 
 			timerStopMouseMoveDetection = new Timer((state) => {
 				if(WinAPI.GetCursorPos(out WinAPI.POINT pt)) {
-					OnMouseMove?.Invoke(null, new MouseMoveArgs(pt, true, pressedButtons));
-				}				
+					OnMouseMove?.Invoke(null, new MouseMoveArgs(pt, true));
+				}
 			}, null, dueTime, Timeout.Infinite);
 
 			prevMouseCoord.x = x;
@@ -174,22 +167,22 @@ namespace UsAcRe.MouseProcess {
 				WinAPI.MSLLHOOKSTRUCT hookStruct = (WinAPI.MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(WinAPI.MSLLHOOKSTRUCT));
 				switch((uint)wParam) {
 					case WindowsMessages.WM_LBUTTONDOWN:
-						MouseEventHook(MouseButtonType.Left, true, hookStruct.pt.x, hookStruct.pt.y, (int)hookStruct.time);
+						AssumeMouseDrag(MouseButtonType.Left, hookStruct.pt.x, hookStruct.pt.y);
 						break;
 					case WindowsMessages.WM_LBUTTONUP:
-						MouseEventHook(MouseButtonType.Left, false, hookStruct.pt.x, hookStruct.pt.y, (int)hookStruct.time);
+						MouseButtonUp(MouseButtonType.Left, hookStruct.pt.x, hookStruct.pt.y, (int)hookStruct.time);
 						break;
 					case WindowsMessages.WM_RBUTTONDOWN:
-						MouseEventHook(MouseButtonType.Right, true, hookStruct.pt.x, hookStruct.pt.y, (int)hookStruct.time);
+						AssumeMouseDrag(MouseButtonType.Right, hookStruct.pt.x, hookStruct.pt.y);
 						break;
 					case WindowsMessages.WM_RBUTTONUP:
-						MouseEventHook(MouseButtonType.Right, false, hookStruct.pt.x, hookStruct.pt.y, (int)hookStruct.time);
+						MouseButtonUp(MouseButtonType.Right, hookStruct.pt.x, hookStruct.pt.y, (int)hookStruct.time);
 						break;
 					case WindowsMessages.WM_MBUTTONDOWN:
-						MouseEventHook(MouseButtonType.Middle, true, hookStruct.pt.x, hookStruct.pt.y, (int)hookStruct.time);
+						AssumeMouseDrag(MouseButtonType.Middle, hookStruct.pt.x, hookStruct.pt.y);
 						break;
 					case WindowsMessages.WM_MBUTTONUP:
-						MouseEventHook(MouseButtonType.Middle, false, hookStruct.pt.x, hookStruct.pt.y, (int)hookStruct.time);
+						MouseButtonUp(MouseButtonType.Middle, hookStruct.pt.x, hookStruct.pt.y, (int)hookStruct.time);
 						break;
 					case WindowsMessages.WM_MOUSEMOVE:
 						MouseMoveHook(hookStruct.pt.x, hookStruct.pt.y, (int)hookStruct.time);

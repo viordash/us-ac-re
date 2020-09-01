@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Windows.Forms;
 using UsAcRe.Highlighter;
 using UsAcRe.KeyboardProcess;
@@ -23,8 +22,12 @@ namespace UsAcRe {
 		void StartHooks() {
 			logger.Warn("Start");
 			MouseHook.Start();
-			MouseHook.OnMouseEvent -= MouseEventHook;
-			MouseHook.OnMouseEvent += MouseEventHook;
+			MouseHook.OnMouseClick -= MouseClickHook;
+			MouseHook.OnMouseClick += MouseClickHook;
+			MouseHook.OnMouseStartDrag -= MouseStartDragHook;
+			MouseHook.OnMouseStartDrag += MouseStartDragHook;
+			MouseHook.OnMouseDrag -= MouseDragHook;
+			MouseHook.OnMouseDrag += MouseDragHook;
 			MouseHook.OnMouseMove -= MouseMoveHook;
 			MouseHook.OnMouseMove += MouseMoveHook;
 
@@ -34,7 +37,9 @@ namespace UsAcRe {
 		void StopHooks() {
 			logger.Warn("Stop");
 			TestsLaunchingService.CloseHighlighter();
-			MouseHook.OnMouseEvent -= MouseEventHook;
+			MouseHook.OnMouseClick -= MouseClickHook;
+			MouseHook.OnMouseStartDrag -= MouseStartDragHook;
+			MouseHook.OnMouseDrag -= MouseDragHook;
 			MouseHook.OnMouseMove -= MouseMoveHook;
 			MouseHook.Stop();
 
@@ -51,12 +56,9 @@ namespace UsAcRe {
 			return Bounds.Contains(coord.x, coord.y);
 		}
 
-		void MouseEventHook(object sender, MouseProcess.MouseEventArgs e) {
-			BeginInvoke((Action<MouseProcess.MouseEventArgs>)((args) => {
-				if(args.Event == null) {
-					return;
-				}
-				if(IsRestrictedArea(args.Event.DownClickedPoint) || IsRestrictedArea(args.Event.UpClickedPoint)) {
+		void MouseClickHook(object sender, MouseClickEventArgs e) {
+			BeginInvoke((Action<MouseClickEventArgs>)((args) => {
+				if(IsRestrictedArea(args.Coord)) {
 					return;
 				}
 				if(elementFromPoint != null) {
@@ -66,7 +68,32 @@ namespace UsAcRe {
 					elementFromPoint = null;
 				}
 
-				Actions.Add(new Actions.MouseAction(args.Event));
+				var mouseEvent = new MouseEvent(args);
+				Actions.Add(new Actions.MouseAction(mouseEvent));
+			}), e);
+		}
+
+		void MouseStartDragHook(object sender, MouseStartDragEventArgs e) {
+			BeginInvoke((Action<MouseStartDragEventArgs>)((args) => {
+				if(IsRestrictedArea(args.Coord)) {
+					return;
+				}
+				if(elementFromPoint != null) {
+					Actions.Add(new Actions.ElementMatchAction(elementFromPoint));
+					CloseMouseClickBlocker();
+					TestsLaunchingService.CloseHighlighter();
+					elementFromPoint = null;
+				}
+			}), e);
+		}
+
+		void MouseDragHook(object sender, MouseDragEventArgs e) {
+			BeginInvoke((Action<MouseDragEventArgs>)((args) => {
+				if(IsRestrictedArea(args.StartCoord)) {
+					return;
+				}
+				var mouseEvent = new MouseEvent(args.Button, args.StartCoord, args.EndCoord);
+				Actions.Add(new Actions.MouseAction(mouseEvent));
 			}), e);
 		}
 
@@ -77,7 +104,7 @@ namespace UsAcRe {
 					elementFromPoint = null;
 				}
 
-				if(args.Stopped && args.Buttons.Count == 0 && !IsRestrictedArea(args.Coord)) {
+				if(args.Stopped && !IsRestrictedArea(args.Coord)) {
 					ShowMouseClickBlocker(args.Coord);
 					elementFromPoint = new ElementFromPoint(AutomationElementService, WinApiService, args.Coord, true);
 					TestsLaunchingService.OpenHighlighter(elementFromPoint);
@@ -94,7 +121,7 @@ namespace UsAcRe {
 			CloseMouseClickBlocker();
 			mouseClickBlocker = new ElementHighlighter(new System.Windows.Rect(coord.x - 3, coord.y - 3, 6, 6));
 			mouseClickBlocker.StartHighlighting();
-			Debug.WriteLine($"ShowMouseClickBlocker :   coord:{coord}");
+			//Debug.WriteLine($"ShowMouseClickBlocker :   coord:{coord}");
 		}
 
 		void CloseMouseClickBlocker() {

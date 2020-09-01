@@ -74,10 +74,10 @@ namespace UsAcRe.UIAutomationElement {
 		}
 
 		void BuildTreeOfSpecificElement() {
-			Debug.WriteLine("");
-			Debug.WriteLine("------------------------");
-			Debug.WriteLine("ElementCoord: {0}", elementCoord);
-			Debug.WriteLine("");
+			//Debug.WriteLine("");
+			//Debug.WriteLine("------------------------");
+			//Debug.WriteLine("ElementCoord: {0}", elementCoord);
+			//Debug.WriteLine("");
 
 			var rootWindowHwnd = winApiService.GetRootWindowForElementUnderPoint(elementCoord);
 			if(rootWindowHwnd == IntPtr.Zero) {
@@ -105,7 +105,7 @@ namespace UsAcRe.UIAutomationElement {
 				}
 			}
 
-			Debug.WriteLine($"rootElement: {rootElement}");
+			//Debug.WriteLine($"rootElement: {rootElement}");
 
 			try {
 				TreeOfSpecificUiElement.Program = automationElementService.GetProgram(rootElement);
@@ -120,7 +120,7 @@ namespace UsAcRe.UIAutomationElement {
 						.Where(x => x.BoundingRectangle.Contains(elementCoord.x, elementCoord.y))
 						.ToList();
 
-					Debug.WriteLine($"inserted rootParent: {rootParent}");
+					//Debug.WriteLine($"inserted rootParent: {rootParent}");
 					elements.Add(new TreeElement(rootParent, elementsUnderPoint));
 					rootParent = automationElementService.GetParent(rootParent);
 				}
@@ -129,7 +129,7 @@ namespace UsAcRe.UIAutomationElement {
 
 				var targetedElement = SortElementsByPointProximity(elements, rootWindowHwnd);
 				if(targetedElement != null) {
-					Debug.WriteLine($"targetedElement: {targetedElement.Element}");
+					//Debug.WriteLine($"targetedElement: {targetedElement.Element}");
 					var tree = BuildElementTree(targetedElement, elements, rootWindowHwnd);
 					TreeOfSpecificUiElement.Add(tree.Key);
 					TreeOfSpecificUiElement.AddRange(tree.Value);
@@ -212,11 +212,11 @@ namespace UsAcRe.UIAutomationElement {
 					.ToList();
 				if(suspectedElementsUnderPoint.Count > 0) {
 					elementsUnderPoint.AddRange(suspectedElementsUnderPoint);
-					Debug.WriteLine("		suspected: {0}, childs: {1}", item, suspectedElementsUnderPoint.Count());
+					//Debug.WriteLine("		suspected: {0}, childs: {1}", item, suspectedElementsUnderPoint.Count());
 				}
 			}
 
-			Debug.WriteLine($"elementsUnderPoint: {elementUnderPoint}, childs: {elementsUnderPoint.Count()}");
+			//Debug.WriteLine($"elementsUnderPoint: {elementUnderPoint}, childs: {elementsUnderPoint.Count()}");
 			elements.Add(new TreeElement(elementUnderPoint, elementsUnderPoint));
 
 			if(elementsUnderPoint.Count > 0) {
@@ -261,7 +261,7 @@ namespace UsAcRe.UIAutomationElement {
 			if(childWindowFromPoint == IntPtr.Zero) {
 				return int.MaxValue;
 			}
-			Debug.WriteLine("zOrder: {0}, z: {1} {2}", element, childWindowFromPoint, hWnd);
+			//Debug.WriteLine("zOrder: {0}, z: {1} {2}", element, childWindowFromPoint, hWnd);
 			if(childWindowFromPoint == hWnd) {
 				return 0;
 			} else {
