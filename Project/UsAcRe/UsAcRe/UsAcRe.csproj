@@ -107,6 +107,7 @@
     <Compile Include="Actions\ActionsContainer.cs" />
     <Compile Include="Actions\BaseAction.cs" />
     <Compile Include="Actions\ActionsExecutor.cs" />
+    <Compile Include="Actions\MouseDragAction.cs" />
     <Compile Include="Actions\TextTypingAction.cs" />
     <Compile Include="Actions\KeybdAction.cs" />
     <Compile Include="Exceptions\ExecuteActionExceptions.cs" />

@@ -24,6 +24,7 @@ namespace UsAcRe.Exceptions {
 
 	public class SevereException : ExecuteBaseActionException {
 		public SevereException(MouseAction mouseAction, string targetName) : base(mouseAction, targetName) { }
+		public SevereException(MouseDragAction mouseAction, string targetName) : base(mouseAction, targetName) { }
 		public SevereException(BaseAction baseAction) : base(baseAction) { }
 	}
 

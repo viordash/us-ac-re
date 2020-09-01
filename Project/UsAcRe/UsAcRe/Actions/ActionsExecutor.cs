@@ -27,6 +27,14 @@ namespace UsAcRe.Actions {
 			return action;
 		}
 
+		public static async Task<BaseAction> MouseDrag(this Task<BaseAction> taskPrevAction, MouseButtonType button, System.Drawing.Point startCoord,
+				System.Drawing.Point endCoord) {
+			var prevAction = await taskPrevAction;
+			var action = new MouseDragAction(prevAction, button, startCoord, endCoord);
+			await action.ExecuteAsync();
+			return action;
+		}
+
 		public static async Task<BaseAction> Keyboard(this Task<BaseAction> taskPrevAction, VirtualKeyCodes vKCode, bool isUp) {
 			var prevAction = await taskPrevAction;
 			var action = new KeybdAction(prevAction, vKCode, isUp);

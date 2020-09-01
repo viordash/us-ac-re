@@ -92,8 +92,7 @@ namespace UsAcRe {
 				if(IsRestrictedArea(args.StartCoord)) {
 					return;
 				}
-				var mouseEvent = new MouseEvent(args.Button, args.StartCoord, args.EndCoord);
-				Actions.Add(new Actions.MouseAction(mouseEvent));
+				Actions.Add(new Actions.MouseDragAction(args));
 			}), e);
 		}
 
