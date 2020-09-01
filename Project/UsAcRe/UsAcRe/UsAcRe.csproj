@@ -112,7 +112,7 @@
     <Compile Include="Actions\KeybdAction.cs" />
     <Compile Include="Exceptions\ExecuteActionExceptions.cs" />
     <Compile Include="Actions\ElementMatchAction.cs" />
-    <Compile Include="Actions\MouseAction.cs" />
+    <Compile Include="Actions\MouseClickAction.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="ClickBlocker\MouseClickBlocker.xaml.cs">
       <DependentUpon>MouseClickBlocker.xaml</DependentUpon>
@@ -139,9 +139,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MouseProcess\MouseButtonType.cs" />
-    <Compile Include="MouseProcess\MouseEvent.cs" />
     <Compile Include="MouseProcess\MouseHook.cs" />
-    <Compile Include="MouseProcess\MouseActionType.cs" />
     <Compile Include="MouseProcess\MouseHover.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

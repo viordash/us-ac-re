@@ -17,14 +17,14 @@ namespace UsAcRe.Tests.ActionsTests {
 
 		[Test]
 		public void ExecuteAsScriptSource_Test() {
-			var action = new MouseAction(null, MouseProcess.MouseActionType.LeftClick, new System.Drawing.Point(1, 2), new System.Drawing.Point(3, 4));
+			var action = new MouseClickAction(null, MouseProcess.MouseActionType.LeftClick, new System.Drawing.Point(1, 2), new System.Drawing.Point(3, 4));
 			var sourcePresentation = action.ExecuteAsScriptSource();
 			Assert.AreEqual(sourcePresentation, "Mouse(MouseActionType.LeftClick, new System.Drawing.Point(1, 2), new System.Drawing.Point(3, 4))");
 		}
 
 		[Test]
 		public void ExecuteAsScriptSource_ForSinglePointClick_Test() {
-			var action = new MouseAction(null, MouseProcess.MouseActionType.LeftClick, new System.Drawing.Point(1, 2));
+			var action = new MouseClickAction(null, MouseProcess.MouseActionType.LeftClick, new System.Drawing.Point(1, 2));
 			var sourcePresentation = action.ExecuteAsScriptSource();
 			Assert.AreEqual(sourcePresentation, "Mouse(MouseActionType.LeftClick, new System.Drawing.Point(1, 2))");
 		}

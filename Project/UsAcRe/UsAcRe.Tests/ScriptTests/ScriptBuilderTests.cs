@@ -27,7 +27,7 @@ namespace UsAcRe.Tests.ScriptTests {
 				new UiElement(1, "value3", "name3", "className3", "automationId3", ControlType.ComboBox.Id, new System.Windows.Rect(9, 10, 11, 12)),
 			}, 1000);
 
-			var mouseAction = new MouseAction(null, MouseProcess.MouseActionType.LeftClick, new System.Drawing.Point(1, 2), new System.Drawing.Point(3, 4));
+			var mouseAction = new MouseClickAction(null, MouseProcess.MouseActionType.LeftClick, new System.Drawing.Point(1, 2), new System.Drawing.Point(3, 4));
 			var keybdActionDown = new KeybdAction(WindowsSystem.VirtualKeyCodes.K_G, false);
 			var keybdActionUp = new KeybdAction(WindowsSystem.VirtualKeyCodes.K_G, true);
 
@@ -87,7 +87,7 @@ namespace UsAcRe.Tests.ScriptTests {
 				new UiElement(3, "value2", "7", "137", "automationId2", ControlType.CheckBox.Id, new System.Windows.Rect(11, 22, 33, 44)),
 			}, 1000);
 
-			var mouseAction = new MouseAction(null, MouseProcess.MouseActionType.LeftClick, new System.Drawing.Point(1, 2), new System.Drawing.Point(3, 4));
+			var mouseAction = new MouseClickAction(null, MouseProcess.MouseActionType.LeftClick, new System.Drawing.Point(1, 2), new System.Drawing.Point(3, 4));
 			var keybdActionDown = new KeybdAction(WindowsSystem.VirtualKeyCodes.K_1, false);
 			var keybdActionUp = new KeybdAction(WindowsSystem.VirtualKeyCodes.K_1, true);
 
@@ -112,7 +112,7 @@ namespace UsAcRe.Tests.ScriptTests {
 
 		[Test]
 		public void Build_Test() {
-			var mouseAction = new MouseAction(null, MouseProcess.MouseActionType.LeftDoubleClick, new System.Drawing.Point(1, 2), new System.Drawing.Point(3, 4));
+			var mouseAction = new MouseClickAction(null, MouseProcess.MouseActionType.LeftDoubleClick, new System.Drawing.Point(1, 2), new System.Drawing.Point(3, 4));
 			var keybdActionDown = new KeybdAction(WindowsSystem.VirtualKeyCodes.K_1, false);
 			var elementMatchAction = new ElementMatchAction(null, new ElementProgram(42, "notepad.exe"), new List<UiElement>() {
 				new UiElement(0, "", "Decimal", "Button", "314", 50013, new System.Windows.Rect(2017, 289, 59, 15)),
@@ -137,8 +137,8 @@ namespace UsAcRe.Tests.ScriptTests {
 		[Test]
 		public void CombineTextTypingActions_Test() {
 			var actions = new ActionsList() {
-				new MouseAction(null, MouseProcess.MouseActionType.LeftDoubleClick, new System.Drawing.Point(1, 2)),
-				new MouseAction(null, MouseProcess.MouseActionType.LeftDoubleClick, new System.Drawing.Point(1, 2)),
+				new MouseClickAction(null, MouseProcess.MouseActionType.LeftDoubleClick, new System.Drawing.Point(1, 2)),
+				new MouseClickAction(null, MouseProcess.MouseActionType.LeftDoubleClick, new System.Drawing.Point(1, 2)),
 				new KeybdAction(WindowsSystem.VirtualKeyCodes.VK_RSHIFT, false),
 				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_T, false),
 				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_T, true),
@@ -149,7 +149,7 @@ namespace UsAcRe.Tests.ScriptTests {
 				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_S, true),
 				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_T, false),
 				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_T, true),
-				new MouseAction(null, MouseProcess.MouseActionType.LeftDoubleClick, new System.Drawing.Point(1, 2)),
+				new MouseClickAction(null, MouseProcess.MouseActionType.LeftDoubleClick, new System.Drawing.Point(1, 2)),
 				new KeybdAction(WindowsSystem.VirtualKeyCodes.VK_RSHIFT, false),
 				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_H, false),
 				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_H, true),
@@ -162,7 +162,7 @@ namespace UsAcRe.Tests.ScriptTests {
 				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_L, true),
 				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_O, false),
 				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_O, true),
-				new MouseAction(null, MouseProcess.MouseActionType.RightClick, new System.Drawing.Point(1, 2)),
+				new MouseClickAction(null, MouseProcess.MouseActionType.RightClick, new System.Drawing.Point(1, 2)),
 			};
 			var scriptBuilder = new ScriptBuilder(actions, settingsServiceMock.Object);
 			scriptBuilder.CombineTextTypingActions();
@@ -186,7 +186,7 @@ namespace UsAcRe.Tests.ScriptTests {
 				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_S, true),
 				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_T, false),
 				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_T, true),
-				new MouseAction(null, MouseProcess.MouseActionType.RightClick, new System.Drawing.Point(1, 2)),
+				new MouseClickAction(null, MouseProcess.MouseActionType.RightClick, new System.Drawing.Point(1, 2)),
 				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_H, false),
 				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_H, true),
 				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_E, false),
@@ -209,7 +209,7 @@ namespace UsAcRe.Tests.ScriptTests {
 		[Test]
 		public void CombineTextTypingActions_Seq_For_One_Key_Is_Skipped_Test() {
 			var actions = new ActionsList() {
-				new MouseAction(null, MouseProcess.MouseActionType.RightClick, new System.Drawing.Point(1, 2)),
+				new MouseClickAction(null, MouseProcess.MouseActionType.RightClick, new System.Drawing.Point(1, 2)),
 				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_H, false),
 				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_H, true),
 			};

@@ -19,10 +19,9 @@ namespace UsAcRe.Actions {
 			return action;
 		}
 
-		public static async Task<BaseAction> Mouse(this Task<BaseAction> taskPrevAction, MouseActionType type, System.Drawing.Point downClickedPoint,
-			System.Drawing.Point upClickedPoint = default) {
+		public static async Task<BaseAction> MouseClick(this Task<BaseAction> taskPrevAction, MouseButtonType button, System.Drawing.Point clickedPoint, bool doubleClick) {
 			var prevAction = await taskPrevAction;
-			var action = new MouseAction(prevAction, type, downClickedPoint, upClickedPoint);
+			var action = new MouseClickAction(prevAction, button, clickedPoint, doubleClick);
 			await action.ExecuteAsync();
 			return action;
 		}

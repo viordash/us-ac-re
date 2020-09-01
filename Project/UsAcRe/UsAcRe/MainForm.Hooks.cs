@@ -68,8 +68,7 @@ namespace UsAcRe {
 					elementFromPoint = null;
 				}
 
-				var mouseEvent = new MouseEvent(args);
-				Actions.Add(new Actions.MouseAction(mouseEvent));
+				Actions.Add(new Actions.MouseClickAction(args));
 			}), e);
 		}
 
