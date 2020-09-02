@@ -53,16 +53,20 @@ namespace UsAcRe.Services {
 		public void OpenHighlighter(System.Windows.Rect boundingRectangle, string toolTip) {
 			windowsFormsService.GetMainForm().BeginInvoke((Action)(() => {
 				CloseHighlighterInternal();
-				elementHighlighter = new ElementHighlighter(boundingRectangle, toolTip);
-				elementHighlighter.StartHighlighting();
+				if(!boundingRectangle.IsEmpty) {
+					elementHighlighter = new ElementHighlighter(boundingRectangle, toolTip);
+					elementHighlighter.StartHighlighting();
+				}
 			}));
 		}
 
 		public void OpenHighlighter(ElementFromPoint elementFromPoint) {
 			windowsFormsService.GetMainForm().BeginInvoke((Action)(() => {
 				CloseHighlighterInternal();
-				elementHighlighter = new ElementHighlighter(elementFromPoint);
-				elementHighlighter.StartHighlighting();
+				if(!elementFromPoint.TreeOfSpecificUiElement.BoundingRectangle.IsEmpty) {
+					elementHighlighter = new ElementHighlighter(elementFromPoint);
+					elementHighlighter.StartHighlighting();
+				}
 			}));
 		}
 
