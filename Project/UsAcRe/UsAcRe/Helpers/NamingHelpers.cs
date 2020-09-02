@@ -27,6 +27,10 @@ namespace UsAcRe.Helpers {
 					sb[i] = '\\';
 					sb.Insert(i + 1, '\"');
 					i++;
+				} else if(i16 == '\\') {
+					sb[i] = '\\';
+					sb.Insert(i + 1, '\\');
+					i++;
 				}
 			}
 			return sb.ToString();
