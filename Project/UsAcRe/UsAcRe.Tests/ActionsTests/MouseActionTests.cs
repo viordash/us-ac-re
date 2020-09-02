@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using UsAcRe.Actions;
+using UsAcRe.MouseProcess;
 
 namespace UsAcRe.Tests.ActionsTests {
 	[TestFixture]
@@ -17,16 +18,9 @@ namespace UsAcRe.Tests.ActionsTests {
 
 		[Test]
 		public void ExecuteAsScriptSource_Test() {
-			var action = new MouseClickAction(null, MouseProcess.MouseActionType.LeftClick, new System.Drawing.Point(1, 2), new System.Drawing.Point(3, 4));
+			var action = new MouseClickAction(null, MouseButtonType.Left, new System.Drawing.Point(1, 2), false);
 			var sourcePresentation = action.ExecuteAsScriptSource();
-			Assert.AreEqual(sourcePresentation, "Mouse(MouseActionType.LeftClick, new System.Drawing.Point(1, 2), new System.Drawing.Point(3, 4))");
-		}
-
-		[Test]
-		public void ExecuteAsScriptSource_ForSinglePointClick_Test() {
-			var action = new MouseClickAction(null, MouseProcess.MouseActionType.LeftClick, new System.Drawing.Point(1, 2));
-			var sourcePresentation = action.ExecuteAsScriptSource();
-			Assert.AreEqual(sourcePresentation, "Mouse(MouseActionType.LeftClick, new System.Drawing.Point(1, 2))");
+			Assert.AreEqual(sourcePresentation, "MouseClick(MouseButtonType.Left, new System.Drawing.Point(1, 2), false)");
 		}
 	}
 }
