@@ -99,16 +99,16 @@ namespace UsAcRe.MouseProcess {
 
 			if(mouseButtonDown == button && !startDragCoord.WithBoundaries(x, y, 10)) {
 				OnMouseDrag?.Invoke(null, new MouseDragEventArgs(startDragCoord, new Point(x, y), mouseButtonDown));
-				Debug.WriteLine("-----------------        OnMouseDragEvent: end  {0} -> {1}", startDragCoord, new WinAPI.POINT(x, y));
+				logger.Trace("-----------------        OnMouseDragEvent: end  {0} -> {1}", startDragCoord, new WinAPI.POINT(x, y));
 			} else if(prevMouseButton == button && prevMouseClickCoord.WithBoundaries(x, y, 10) && isDoubleClick) {
 				OnMouseClick?.Invoke(null, new MouseClickEventArgs(new Point(x, y), button, true));
-				Debug.WriteLine("-----------------        MouseButtonUp: DbCl  {0}; {1}", messageTimeStamp, button);
+				logger.Trace("-----------------        MouseButtonUp: DbCl  {0}; {1}", messageTimeStamp, button);
 			} else {
 				timerStoringMouseAction = new Timer(
 					(state) => {
 						OnMouseClick?.Invoke(null, state as MouseClickEventArgs);
 						timerStoringMouseAction = null;
-						Debug.WriteLine("-----------------        MouseButtonUp:       {0}; {1}", messageTimeStamp, button);
+						logger.Trace("-----------------        MouseButtonUp:       {0}; {1}", messageTimeStamp, button);
 					},
 					new MouseClickEventArgs(new Point(x, y), button, false),
 					MaxDoubleClickTime,
@@ -137,7 +137,7 @@ namespace UsAcRe.MouseProcess {
 			if(startMouseDrag && mouseButtonDown != MouseButtonType.None) {
 				OnMouseStartDrag?.Invoke(null, new MouseStartDragEventArgs(startDragCoord, mouseButtonDown));
 				startMouseDrag = false;
-				Debug.WriteLine("-----------------        OnMouseDragEvent: str  {0} -> {1}", startDragCoord, new WinAPI.POINT(x, y));
+				logger.Trace("-----------------        OnMouseDragEvent: str  {0} -> {1}", startDragCoord, new WinAPI.POINT(x, y));
 			}
 
 			if(prevMouseCoord.WithBoundaries(x, y, 10)) {
