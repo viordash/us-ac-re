@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Microsoft.Test.Input;
 using UsAcRe.Exceptions;
 using UsAcRe.Extensions;
-using UsAcRe.Helpers;
 using UsAcRe.MouseProcess;
 
 namespace UsAcRe.Actions {
@@ -38,16 +37,14 @@ namespace UsAcRe.Actions {
 			var clickedPoint = ClickedPoint;
 
 			if(prevAction is MouseClickAction prevMouseAction) {
-				if(DimensionsHelper.IsClickPointInSamePosition(prevMouseAction.ClickedPoint, clickedPoint, settingsService.GetClickPositionToleranceInPercent())) {
-					await Task.Delay(MouseHook.DoubleClickTime);
+				if(prevMouseAction.ClickedPoint.WithBoundaries(clickedPoint, settingsService.GetClickPositionToleranceInPercent())) {
+					await Task.Delay(MouseHook.MaxDoubleClickTime);
 				}
 			}
 
-
 			var actionForDetermineClickPoint = prevAction;
-
 			while(actionForDetermineClickPoint is MouseClickAction prevMouseAct
-				&& DimensionsHelper.IsClickPointInSamePosition(clickedPoint, prevMouseAct.ClickedPoint, settingsService.GetClickPositionToleranceInPercent())) {
+				&& clickedPoint.WithBoundaries(prevMouseAct.ClickedPoint, settingsService.GetClickPositionToleranceInPercent())) {
 				actionForDetermineClickPoint = prevMouseAct.prevAction;
 			}
 
