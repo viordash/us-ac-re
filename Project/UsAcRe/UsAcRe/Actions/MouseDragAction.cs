@@ -35,47 +35,55 @@ namespace UsAcRe.Actions {
 
 		async ValueTask DoDrag() {
 			await Task.Delay(20);
-			var downClickedPoint = StartCoord;
+			var startCoord = StartCoord;
+			var endCoord = EndCoord;
+
+			if(prevAction is ElementMatchAction elementMatchAction) {
+				if(elementMatchAction.OffsetPoint.HasValue) {
+					startCoord.Offset((int)elementMatchAction.OffsetPoint.Value.X, (int)elementMatchAction.OffsetPoint.Value.Y);
+					endCoord.Offset((int)elementMatchAction.OffsetPoint.Value.X, (int)elementMatchAction.OffsetPoint.Value.Y);
+				}
+			}
+
 
 			testsLaunchingService.CloseHighlighter();
-			MainForm.MoveOutFromPoint(downClickedPoint.X, downClickedPoint.Y);
+			MainForm.MoveOutFromPoint(startCoord.X, startCoord.Y);
 			switch(Button) {
 				case MouseButtonType.Left:
-					DragTo(MouseButton.Left, StartCoord);
+					DragTo(MouseButton.Left, startCoord, endCoord);
 					break;
 				case MouseButtonType.Right:
-					DragTo(MouseButton.Right, StartCoord);
+					DragTo(MouseButton.Right, startCoord, endCoord);
 					break;
 				case MouseButtonType.Middle:
-					DragTo(MouseButton.Middle, StartCoord);
+					DragTo(MouseButton.Middle, startCoord, endCoord);
 					break;
 				default:
 					throw new SevereException(this, nameof(DoDrag));
 			}
 		}
 
-		void DragTo(MouseButton mouseButton, Point downClickablePoint) {
-			Point nextClickablePoint = EndCoord;
-			Mouse.MoveTo(downClickablePoint);
+		void DragTo(MouseButton mouseButton, Point startCoord, Point endCoord) {
+			Mouse.MoveTo(startCoord);
 			Mouse.Down(mouseButton);
 			bool xPointReached = false, yPointReached = false;
 			int counter = 0;
 			do {
-				if(downClickablePoint.X < EndCoord.X) {
-					downClickablePoint.X++;
-				} else if(downClickablePoint.X > EndCoord.X) {
-					downClickablePoint.X--;
+				if(startCoord.X < endCoord.X) {
+					startCoord.X++;
+				} else if(startCoord.X > endCoord.X) {
+					startCoord.X--;
 				} else {
 					xPointReached = true;
 				}
-				if(downClickablePoint.Y < EndCoord.Y) {
-					downClickablePoint.Y++;
-				} else if(downClickablePoint.Y > EndCoord.Y) {
-					downClickablePoint.Y--;
+				if(startCoord.Y < endCoord.Y) {
+					startCoord.Y++;
+				} else if(startCoord.Y > endCoord.Y) {
+					startCoord.Y--;
 				} else {
 					yPointReached = true;
 				}
-				Mouse.MoveTo(downClickablePoint);
+				Mouse.MoveTo(startCoord);
 				if(counter++ % 10 == 0) {
 					Thread.Sleep(1);
 				}
