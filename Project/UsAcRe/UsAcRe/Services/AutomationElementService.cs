@@ -1,16 +1,16 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Automation;
 using NGuard;
+using UsAcRe.Exceptions;
+using UsAcRe.Extensions;
 using UsAcRe.Helpers;
 using UsAcRe.UIAutomationElement;
-using System.Diagnostics;
-using System.IO;
-using UsAcRe.Exceptions;
-using System.ComponentModel;
-using UsAcRe.Extensions;
 
 namespace UsAcRe.Services {
 	public interface IAutomationElementService {
