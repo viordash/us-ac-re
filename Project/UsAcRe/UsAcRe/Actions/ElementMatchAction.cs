@@ -1,15 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Text;
-using System.Linq;
-using UsAcRe.Extensions;
-using UsAcRe.UIAutomationElement;
-using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Automation;
-using System;
-using UsAcRe.MouseProcess;
 using UsAcRe.Exceptions;
+using UsAcRe.Extensions;
 using UsAcRe.Helpers;
+using UsAcRe.MouseProcess;
+using UsAcRe.UIAutomationElement;
 
 namespace UsAcRe.Actions {
 	public class ElementMatchAction : BaseAction {
