@@ -92,10 +92,19 @@ namespace UsAcRe.Services {
 				return false;
 			}
 
-			if(left.BoundingRectangle != right.BoundingRectangle
-				|| left.ControlTypeId != right.ControlTypeId
-				&& left.Name != right.Name
-				&& left.Value != right.Value) {
+			if(left.BoundingRectangle != right.BoundingRectangle) {
+				return false;
+			}
+
+			if(left.ControlTypeId != right.ControlTypeId) {
+				return false;
+			}
+
+			if(!StringHelper.ImplicitEquals(left.Name, right.Name)) {
+				return false;
+			}
+
+			if(!StringHelper.ImplicitEquals(left.Value, right.Value)) {
 				return false;
 			}
 
@@ -108,12 +117,21 @@ namespace UsAcRe.Services {
 				return false;
 			}
 
-			if(leftAutomationElement.Current.AutomationId == rightAutomationElement.Current.AutomationId) {
-				var leftRuntimeId = leftAutomationElement.GetRuntimeId();
-				var rightRuntimeId = rightAutomationElement.GetRuntimeId();
-				return leftRuntimeId.Length != rightRuntimeId.Length || leftRuntimeId.SequenceEqual(rightRuntimeId);
+
+			if(!StringHelper.ImplicitEquals(leftAutomationElement.Current.AutomationId, rightAutomationElement.Current.AutomationId)) {
+				return false;
 			}
-			return false;
+
+			var leftRuntimeId = leftAutomationElement.GetRuntimeId();
+			var rightRuntimeId = rightAutomationElement.GetRuntimeId();
+			if(!leftRuntimeId.SequenceEqual(rightRuntimeId)) {
+				return false;
+			}
+
+			if(!StringHelper.ImplicitEquals(leftAutomationElement.Current.ProviderDescription, rightAutomationElement.Current.ProviderDescription)) {
+				return false;
+			}
+			return true;
 		}
 
 		public bool ElementsIsSimilar(UiElement expected, UiElement actual) {

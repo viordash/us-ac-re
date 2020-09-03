@@ -124,6 +124,7 @@
     <Compile Include="Helpers\DimensionsHelper.cs" />
     <Compile Include="Helpers\FormsHelper.cs" />
     <Compile Include="Helpers\NamingHelpers.cs" />
+    <Compile Include="Helpers\StringHelper.cs" />
     <Compile Include="Highlighter\ElementHighlighter.cs" />
     <Compile Include="Highlighter\WpfElementToolTip.xaml.cs">
       <DependentUpon>WpfElementToolTip.xaml</DependentUpon>
