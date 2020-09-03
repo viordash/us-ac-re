@@ -125,11 +125,27 @@ namespace UsAcRe.Actions {
 			return point;
 		}
 
+		UiElement GetRootElementFromDesktop() {
+			var desktop = automationElementService.GetDesktop();
+			var childs = GetChildren(desktop);
+
+			var rootElement = SearchRequiredElement(SearchPath.Last(), childs);
+			return rootElement;
+		}
+
 		RequiredElement GetElement() {
-			var rootElement = automationElementService.GetRootElement(Program);
+			UiElement rootElement;
+			if(System.IO.Path.GetFileName(Program.FileName).ToLower() == "explorer.exe") {
+				var desktop = automationElementService.GetDesktop();
+				rootElement = GetRootElementFromDesktop();
+			} else {
+				rootElement = automationElementService.GetRootElement(Program);
+			}
+
 			if(rootElement == null) {
 				return null;
 			}
+
 			var parentEquivalentInSearchPath = SearchPath[SearchPath.Count - 1];
 			if(!AreUiElementsEquals(rootElement, parentEquivalentInSearchPath, false)) {
 				return null;
