@@ -129,7 +129,7 @@ namespace UsAcRe.UIAutomationElement {
 
 				var targetedElement = SortElementsByPointProximity(elements, rootWindowHwnd);
 				if(targetedElement != null) {
-					//Debug.WriteLine($"targetedElement: {targetedElement.Element}");
+					Debug.WriteLine($"targetedElement: {targetedElement.Element}");
 					var tree = BuildElementTree(targetedElement, elements, rootWindowHwnd);
 					TreeOfSpecificUiElement.Add(tree.Key);
 					TreeOfSpecificUiElement.AddRange(tree.Value);

@@ -3,11 +3,16 @@
 	public interface ISettingsService {
 		int GetClickPositionToleranceInPercent();
 		bool AnalyzeTextTyping();
+		bool CheckByValue();
 	}
 
 	public class SettingsService : ISettingsService {
 
 		public bool AnalyzeTextTyping() {
+			return true;
+		}
+
+		public bool CheckByValue() {
 			return true;
 		}
 

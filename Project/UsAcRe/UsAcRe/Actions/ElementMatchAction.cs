@@ -172,13 +172,14 @@ namespace UsAcRe.Actions {
 		}
 
 		bool AreUiElementsEquals(UiElement element1, UiElement element2, bool compareSizes) {
+			bool isTargetedElementWithPresentedValue = element1 == SearchPath[0];
 			if(element1.ControlTypeId != element2.ControlTypeId
-				|| !AreValueEquals(element1, element2)
 				|| !TextMatched(element1.Name, element2.Name)
 				|| !StringEquals(element1.ClassName, element2.ClassName)
 				|| !StringEquals(element1.AutomationId, element2.AutomationId)
+				|| (isTargetedElementWithPresentedValue && !AreValueEquals(element1, element2))
 				|| (compareSizes && !DimensionsHelper.AreSizeEquals(element1.BoundingRectangle.Size, element2.BoundingRectangle.Size,
-						settingsService.GetClickPositionToleranceInPercent()))) {
+					settingsService.GetClickPositionToleranceInPercent()))) {
 				return false;
 			}
 			return true;
@@ -229,8 +230,7 @@ namespace UsAcRe.Actions {
 		}
 
 		bool AreValueEquals(UiElement element1, UiElement element2) {
-			automationElementService.RetrieveElementValue(element1);
-			return true /*IsCheckByValue()*/
+			return settingsService.CheckByValue()
 				&& StringEquals(element1.Value, element2.Value);
 		}
 
