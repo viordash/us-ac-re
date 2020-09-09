@@ -179,7 +179,7 @@ namespace UsAcRe.Actions {
 				|| !StringEquals(element1.AutomationId, element2.AutomationId)
 				|| (isTargetedElementWithPresentedValue && !AreValueEquals(element1, element2))
 				|| (compareSizes && !DimensionsHelper.AreSizeEquals(element1.BoundingRectangle.Size, element2.BoundingRectangle.Size,
-					settingsService.GetClickPositionToleranceInPercent()))) {
+					settingsService.ClickPositionToleranceInPercent))) {
 				return false;
 			}
 			return true;
@@ -230,7 +230,7 @@ namespace UsAcRe.Actions {
 		}
 
 		bool AreValueEquals(UiElement element1, UiElement element2) {
-			return settingsService.CheckByValue()
+			return settingsService.CheckByValue
 				&& StringEquals(element1.Value, element2.Value);
 		}
 

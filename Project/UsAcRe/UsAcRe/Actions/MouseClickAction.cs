@@ -37,14 +37,14 @@ namespace UsAcRe.Actions {
 			var clickedPoint = ClickedPoint;
 
 			if(prevAction is MouseClickAction prevMouseAction) {
-				if(prevMouseAction.ClickedPoint.WithBoundaries(clickedPoint, settingsService.GetClickPositionToleranceInPercent())) {
+				if(prevMouseAction.ClickedPoint.WithBoundaries(clickedPoint, settingsService.ClickPositionToleranceInPercent)) {
 					await Task.Delay(MouseHook.MaxDoubleClickTime);
 				}
 			}
 
 			var actionForDetermineClickPoint = prevAction;
 			while(actionForDetermineClickPoint is MouseClickAction prevMouseAct
-				&& clickedPoint.WithBoundaries(prevMouseAct.ClickedPoint, settingsService.GetClickPositionToleranceInPercent())) {
+				&& clickedPoint.WithBoundaries(prevMouseAct.ClickedPoint, settingsService.ClickPositionToleranceInPercent)) {
 				actionForDetermineClickPoint = prevMouseAct.prevAction;
 			}
 

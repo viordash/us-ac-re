@@ -1,23 +1,35 @@
 ﻿namespace UsAcRe.Services {
 
 	public interface ISettingsService {
-		int GetClickPositionToleranceInPercent();
-		bool AnalyzeTextTyping();
-		bool CheckByValue();
+		int ClickPositionToleranceInPercent { get; }
+		bool AnalyzeTextTyping { get; }
+		bool CheckByValue { get; }
+		int ElementSearchNestingLevel { get; }
 	}
 
 	public class SettingsService : ISettingsService {
-
-		public bool AnalyzeTextTyping() {
-			return true;
+		int ISettingsService.ElementSearchNestingLevel {
+			get {
+				return 5;
+			}
 		}
 
-		public bool CheckByValue() {
-			return true;
+		int ISettingsService.ClickPositionToleranceInPercent {
+			get {
+				return 50;//			Properties.Settings.Default.ClickPositionToleranceInPercent;
+			}
 		}
 
-		public int GetClickPositionToleranceInPercent() {
-			return 50;//			Properties.Settings.Default.ClickPositionToleranceInPercent;
+		bool ISettingsService.AnalyzeTextTyping {
+			get {
+				return true;
+			}
+		}
+
+		bool ISettingsService.CheckByValue {
+			get {
+				return true;
+			}
 		}
 	}
 }
