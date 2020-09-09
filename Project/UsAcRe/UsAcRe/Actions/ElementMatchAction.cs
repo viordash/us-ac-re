@@ -186,11 +186,16 @@ namespace UsAcRe.Actions {
 		}
 
 		UiElement SearchRequiredElement(UiElement searchedElement, List<UiElement> childs) {
-			foreach(var element in childs) {
+			foreach(var element in childs) {			
 				if(!AreUiElementsEquals(element, searchedElement, true)) {
 					continue;
 				}
-				return element;
+				if(searchedElement.Index > 0) {
+					var similars = childs.Where(x => automationElementService.ElementsIsSimilar(x, element));
+					return similars.ElementAt(searchedElement.Index);
+				} else {
+					return element;
+				}
 			}
 			return null;
 		}

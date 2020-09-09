@@ -32,10 +32,15 @@ namespace UsAcRe.Services {
 
 	public class AutomationElementService : IAutomationElementService {
 		readonly IWinApiService winApiService;
+		readonly ISettingsService settingsService;
 
-		public AutomationElementService(IWinApiService winApiService) {
+		public AutomationElementService(
+			IWinApiService winApiService,
+			ISettingsService settingsService) {
 			Guard.Requires(winApiService, nameof(winApiService));
+			Guard.Requires(settingsService, nameof(settingsService));
 			this.winApiService = winApiService;
+			this.settingsService = settingsService;
 		}
 
 		public UiElement FromPoint(Point pt) {
@@ -85,6 +90,10 @@ namespace UsAcRe.Services {
 		}
 
 		public bool Compare(UiElement left, UiElement right) {
+			return Compare(left, right, 0);
+		}
+
+		bool Compare(UiElement left, UiElement right, int nestedLevel) {
 			if(object.Equals(left, null)) {
 				return (object.Equals(right, null));
 			}
@@ -131,7 +140,13 @@ namespace UsAcRe.Services {
 			if(!StringHelper.ImplicitEquals(leftAutomationElement.Current.ProviderDescription, rightAutomationElement.Current.ProviderDescription)) {
 				return false;
 			}
-			return true;
+
+			if(nestedLevel > settingsService.ElementSearchNestingLevel) {
+				return true;
+			}
+			var leftParent = TreeWalker.RawViewWalker.GetParent(leftAutomationElement);
+			var rightParent = TreeWalker.RawViewWalker.GetParent(rightAutomationElement);
+			return Compare(ToUiElement(leftParent), ToUiElement(rightParent), nestedLevel + 1);
 		}
 
 		public bool ElementsIsSimilar(UiElement expected, UiElement actual) {

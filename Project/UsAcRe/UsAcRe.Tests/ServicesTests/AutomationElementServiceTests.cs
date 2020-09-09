@@ -12,11 +12,13 @@ namespace UsAcRe.Tests.ServicesTests {
 
 		AutomationElementService testable;
 		Mock<IWinApiService> winApiServiceMock;
+		Mock<ISettingsService> settingsServiceMock;
 
 		[SetUp]
 		public virtual void Setup() {
 			winApiServiceMock = new Mock<IWinApiService>();
-			testable = new AutomationElementService(winApiServiceMock.Object);
+			settingsServiceMock = new Mock<ISettingsService>();
+			testable = new AutomationElementService(winApiServiceMock.Object, settingsServiceMock.Object);
 		}
 
 		[TearDown]
