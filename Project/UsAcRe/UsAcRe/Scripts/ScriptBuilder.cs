@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
-using UsAcRe.Actions;
+using System.Linq;
 using System.Text;
-using UsAcRe.Services;
 using NGuard;
-using UsAcRe.Extensions;
+using UsAcRe.Actions;
+using UsAcRe.Core.Extensions;
+using UsAcRe.Services;
 
 namespace UsAcRe.Scripts {
 	public class ScriptBuilder {

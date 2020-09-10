@@ -120,7 +120,6 @@
     <Compile Include="Extensions\ScriptSourceExtension.cs" />
     <Compile Include="Extensions\PointExtension.cs" />
     <Compile Include="Extensions\StringExtension.cs" />
-    <Compile Include="Extensions\VirtualKeyCodesExtensions.cs" />
     <Compile Include="Helpers\DimensionsHelper.cs" />
     <Compile Include="Helpers\FormsHelper.cs" />
     <Compile Include="Helpers\NamingHelpers.cs" />
@@ -149,13 +148,9 @@
     <Compile Include="Services\AutomationElementService.cs" />
     <Compile Include="Services\SettingsService.cs" />
     <Compile Include="Services\TestsLaunchingService.cs" />
-    <Compile Include="Services\WinApiService.cs" />
     <Compile Include="Services\WindowsFormsService.cs" />
     <Compile Include="UIAutomationElement\ElementProgram.cs" />
     <Compile Include="UIAutomationElement\TreeOfSpecificElement.cs" />
-    <Compile Include="WindowsSystem\VirtualKeyCodes.cs" />
-    <Compile Include="WindowsSystem\WinAPI.cs" />
-    <Compile Include="WindowsSystem\WindowsMessages.cs" />
     <Compile Include="UIAutomationElement\ElementFromPoint.cs" />
     <Compile Include="UIAutomationElement\UiElement.cs" />
     <Compile Include="Highlighter\WpfElementBounding.xaml.cs">
@@ -205,6 +200,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\UsAcRe.Core\UsAcRe.Core.csproj">
+      <Project>{397f80c0-e494-44ad-9996-d3b248dc41de}</Project>
+      <Name>UsAcRe.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

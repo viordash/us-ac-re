@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using UsAcRe.Core.WindowsSystem;
 using UsAcRe.MouseProcess;
 using UsAcRe.UIAutomationElement;
-using UsAcRe.WindowsSystem;
 
 namespace UsAcRe.Actions {
 	public static class ActionsExecutor {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Media.Animation;
-using UsAcRe.WindowsSystem;
+using UsAcRe.Core.WindowsSystem;
 
 namespace UsAcRe.ClickBlocker {
 	public partial class MouseClickBlocker : Window {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using UsAcRe.WindowsSystem;
+using UsAcRe.Core.WindowsSystem;
 
 namespace UsAcRe.KeyboardProcess {
 	public delegate void RawKeyEventHandler(object sender, RawKeyEventArgs args);

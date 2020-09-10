@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsAcRe", "UsAcRe\UsAcRe.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsAcRe.Tests", "UsAcRe.Tests\UsAcRe.Tests.csproj", "{CDD5CBF2-18C6-4C15-8AB5-1F4AD4BC69BB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsAcRe.Core", "UsAcRe.Core\UsAcRe.Core.csproj", "{397F80C0-E494-44AD-9996-D3B248DC41DE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{CDD5CBF2-18C6-4C15-8AB5-1F4AD4BC69BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CDD5CBF2-18C6-4C15-8AB5-1F4AD4BC69BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CDD5CBF2-18C6-4C15-8AB5-1F4AD4BC69BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{397F80C0-E494-44AD-9996-D3B248DC41DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{397F80C0-E494-44AD-9996-D3B248DC41DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{397F80C0-E494-44AD-9996-D3B248DC41DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{397F80C0-E494-44AD-9996-D3B248DC41DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

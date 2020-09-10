@@ -4,8 +4,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows.Automation;
 using NGuard;
+using UsAcRe.Core.Services;
+using UsAcRe.Core.WindowsSystem;
 using UsAcRe.Services;
-using UsAcRe.WindowsSystem;
 
 namespace UsAcRe.UIAutomationElement {
 	public class ElementFromPoint {

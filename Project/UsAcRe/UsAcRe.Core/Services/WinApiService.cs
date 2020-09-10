@@ -1,7 +1,7 @@
 ﻿using System;
-using UsAcRe.WindowsSystem;
+using UsAcRe.Core.WindowsSystem;
 
-namespace UsAcRe.Services {
+namespace UsAcRe.Core.Services {
 	public interface IWinApiService {
 		WinAPI.POINT GetMousePosition();
 		IntPtr GetWindow(IntPtr hwnd, uint uCmd);

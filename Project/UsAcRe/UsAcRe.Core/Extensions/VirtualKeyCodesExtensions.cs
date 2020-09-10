@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using UsAcRe.WindowsSystem;
+using UsAcRe.Core.WindowsSystem;
 
-namespace UsAcRe.Extensions {
+namespace UsAcRe.Core.Extensions {
 	public static class VirtualKeyCodesExtensions {
 		public static bool IsPrintable(this VirtualKeyCodes keyCode) {
 			return PrintableCodes.Any(x => x == keyCode);

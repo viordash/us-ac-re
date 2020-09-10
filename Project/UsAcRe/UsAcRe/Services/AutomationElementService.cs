@@ -7,6 +7,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Automation;
 using NGuard;
+using UsAcRe.Core.Services;
 using UsAcRe.Exceptions;
 using UsAcRe.Extensions;
 using UsAcRe.Helpers;

@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace UsAcRe.WindowsSystem {
+namespace UsAcRe.Core.WindowsSystem {
 	public static class WinAPI {
 		public delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 		public delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
@@ -295,50 +295,50 @@ namespace UsAcRe.WindowsSystem {
 		public static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
 
 		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-		internal static extern int GetWindowLong(IntPtr hWnd, int nIndex);
+		public static extern int GetWindowLong(IntPtr hWnd, int nIndex);
 
 		[DllImport("user32.dll", CharSet = CharSet.Auto)]
-		internal static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+		public static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
 
 		[DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
-		internal static extern bool SetWindowPos(IntPtr hWnd, IntPtr hwndAfter, int x, int y, int width, int height, int flags);
+		public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hwndAfter, int x, int y, int width, int height, int flags);
 
-		internal const int SRCCOPY = 13369376;
-		internal const int SM_CXSCREEN = 0;
-		internal const int SM_CYSCREEN = 1;
-
-		[DllImport("gdi32.dll", CharSet = CharSet.Auto)]
-		internal static extern IntPtr DeleteDC(IntPtr hDc);
+		public const int SRCCOPY = 13369376;
+		public const int SM_CXSCREEN = 0;
+		public const int SM_CYSCREEN = 1;
 
 		[DllImport("gdi32.dll", CharSet = CharSet.Auto)]
-		internal static extern IntPtr DeleteObject(IntPtr hDc);
+		public static extern IntPtr DeleteDC(IntPtr hDc);
 
 		[DllImport("gdi32.dll", CharSet = CharSet.Auto)]
-		internal static extern bool BitBlt(IntPtr hdcDest, int xDest, int yDest, int wDest, int hDest, IntPtr hdcSource, int xSrc, int ySrc, int RasterOp);
+		public static extern IntPtr DeleteObject(IntPtr hDc);
 
 		[DllImport("gdi32.dll", CharSet = CharSet.Auto)]
-		internal static extern IntPtr CreateCompatibleBitmap(IntPtr hdc, int nWidth, int nHeight);
+		public static extern bool BitBlt(IntPtr hdcDest, int xDest, int yDest, int wDest, int hDest, IntPtr hdcSource, int xSrc, int ySrc, int RasterOp);
 
 		[DllImport("gdi32.dll", CharSet = CharSet.Auto)]
-		internal static extern IntPtr CreateCompatibleDC(IntPtr hdc);
+		public static extern IntPtr CreateCompatibleBitmap(IntPtr hdc, int nWidth, int nHeight);
 
 		[DllImport("gdi32.dll", CharSet = CharSet.Auto)]
-		internal static extern IntPtr SelectObject(IntPtr hdc, IntPtr bmp);
+		public static extern IntPtr CreateCompatibleDC(IntPtr hdc);
+
+		[DllImport("gdi32.dll", CharSet = CharSet.Auto)]
+		public static extern IntPtr SelectObject(IntPtr hdc, IntPtr bmp);
 
 		[DllImport("user32.dll", CharSet = CharSet.Auto)]
-		internal static extern IntPtr GetDesktopWindow();
+		public static extern IntPtr GetDesktopWindow();
 
 		[DllImport("user32.dll", CharSet = CharSet.Auto)]
-		internal static extern IntPtr GetDC(IntPtr ptr);
+		public static extern IntPtr GetDC(IntPtr ptr);
 
 		[DllImport("user32.dll", CharSet = CharSet.Auto)]
-		internal static extern int GetSystemMetrics(int abc);
+		public static extern int GetSystemMetrics(int abc);
 
 		[DllImport("user32.dll", CharSet = CharSet.Auto)]
-		internal static extern IntPtr GetWindowDC(IntPtr ptr);
+		public static extern IntPtr GetWindowDC(IntPtr ptr);
 
 		[DllImport("user32.dll", CharSet = CharSet.Auto)]
-		internal static extern IntPtr ReleaseDC(IntPtr hWnd, IntPtr hDc);
+		public static extern IntPtr ReleaseDC(IntPtr hWnd, IntPtr hDc);
 
 		[DllImport("user32.dll", SetLastError = true)]
 		public static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);

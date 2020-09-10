@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Test.Input;
+using UsAcRe.Core.WindowsSystem;
 using UsAcRe.Extensions;
-using UsAcRe.WindowsSystem;
 
 namespace UsAcRe.Actions {
 	public class KeybdAction : BaseAction {

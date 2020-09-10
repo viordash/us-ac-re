@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Windows.Forms;
+using UsAcRe.Core.WindowsSystem;
 using UsAcRe.Highlighter;
 using UsAcRe.KeyboardProcess;
 using UsAcRe.MouseProcess;
 using UsAcRe.UIAutomationElement;
-using UsAcRe.WindowsSystem;
 
 namespace UsAcRe {
 	public partial class MainForm : Form {

@@ -3,8 +3,8 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Threading;
+using UsAcRe.Core.WindowsSystem;
 using UsAcRe.Extensions;
-using UsAcRe.WindowsSystem;
 
 namespace UsAcRe.MouseProcess {
 	public delegate void MouseStartDragEventHandler(object sender, MouseStartDragEventArgs args);

@@ -1,4 +1,4 @@
-﻿namespace UsAcRe.WindowsSystem {
+﻿namespace UsAcRe.Core.WindowsSystem {
 	public static class WindowsMessages {
 		public const int WM_GETTEXT = 0x000D;
 		public const int WM_GETTEXTLENGTH = 0x000E;

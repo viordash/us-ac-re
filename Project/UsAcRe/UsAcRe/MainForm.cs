@@ -4,13 +4,14 @@ using System.Windows.Forms;
 using CommonServiceLocator;
 using NLog.Windows.Forms;
 using UsAcRe.Actions;
+using UsAcRe.Core.Services;
+using UsAcRe.Core.WindowsSystem;
 using UsAcRe.Helpers;
 using UsAcRe.Highlighter;
 using UsAcRe.Properties;
 using UsAcRe.Scripts;
 using UsAcRe.Services;
 using UsAcRe.UIAutomationElement;
-using UsAcRe.WindowsSystem;
 
 namespace UsAcRe {
 	public partial class MainForm : Form {
