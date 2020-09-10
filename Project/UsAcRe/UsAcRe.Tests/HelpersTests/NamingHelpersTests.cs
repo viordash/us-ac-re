@@ -1,10 +1,5 @@
-﻿using System.Diagnostics;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using UsAcRe.Helpers;
-using UsAcRe.MouseProcess;
-using UsAcRe.WindowsSystem;
 
 namespace UsAcRe.Tests.MouseProcessTests {
 	[TestFixture]

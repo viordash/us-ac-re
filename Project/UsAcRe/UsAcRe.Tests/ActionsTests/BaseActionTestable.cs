@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using CommonServiceLocator;
 using Moq;
+using UsAcRe.Core.Services;
 using UsAcRe.Services;
 
 namespace UsAcRe.Tests.ActionsTests {

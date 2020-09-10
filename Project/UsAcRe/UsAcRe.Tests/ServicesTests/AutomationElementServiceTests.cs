@@ -3,6 +3,7 @@ using System.Threading;
 using System.Windows.Automation;
 using Moq;
 using NUnit.Framework;
+using UsAcRe.Core.Services;
 using UsAcRe.Services;
 using UsAcRe.UIAutomationElement;
 

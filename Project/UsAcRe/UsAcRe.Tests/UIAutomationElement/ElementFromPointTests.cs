@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Windows.Automation;
 using Moq;
 using NUnit.Framework;
+using UsAcRe.Core.Services;
+using UsAcRe.Core.WindowsSystem;
 using UsAcRe.Services;
 using UsAcRe.UIAutomationElement;
-using UsAcRe.WindowsSystem;
 using static UsAcRe.UIAutomationElement.ElementFromPoint;
 
 namespace UsAcRe.Tests.UIAutomationElement {

@@ -29,8 +29,8 @@ namespace UsAcRe.Tests.ScriptTests {
 			}, 1000);
 
 			var mouseAction = new MouseClickAction(null, MouseButtonType.Left, new System.Drawing.Point(1, 2), false);
-			var keybdActionDown = new KeybdAction(WindowsSystem.VirtualKeyCodes.K_G, false);
-			var keybdActionUp = new KeybdAction(WindowsSystem.VirtualKeyCodes.K_G, true);
+			var keybdActionDown = new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_G, false);
+			var keybdActionUp = new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_G, true);
 
 			var actions = new ActionsList() {
 				elementMatchAction,
@@ -48,7 +48,7 @@ namespace UsAcRe.Tests.ScriptTests {
 			Assert.That(usings, Does.Contain("using UsAcRe.Actions;"));
 			Assert.That(usings, Does.Contain("using UsAcRe.MouseProcess;"));
 			Assert.That(usings, Does.Contain("using UsAcRe.UIAutomationElement;"));
-			Assert.That(usings, Does.Contain("using UsAcRe.WindowsSystem;"));
+			Assert.That(usings, Does.Contain("using UsAcRe.Core.WindowsSystem;"));
 		}
 
 		[Test]
@@ -89,8 +89,8 @@ namespace UsAcRe.Tests.ScriptTests {
 			}, 1000);
 
 			var mouseAction = new MouseClickAction(null, MouseButtonType.Left, new System.Drawing.Point(1, 2), false);
-			var keybdActionDown = new KeybdAction(WindowsSystem.VirtualKeyCodes.K_1, false);
-			var keybdActionUp = new KeybdAction(WindowsSystem.VirtualKeyCodes.K_1, true);
+			var keybdActionDown = new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_1, false);
+			var keybdActionUp = new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_1, true);
 
 			var actions = new ActionsList() {
 				elementMatchAction,
@@ -114,7 +114,7 @@ namespace UsAcRe.Tests.ScriptTests {
 		[Test]
 		public void Build_Test() {
 			var mouseAction = new MouseClickAction(null, MouseButtonType.Left, new System.Drawing.Point(1, 2), true);
-			var keybdActionDown = new KeybdAction(WindowsSystem.VirtualKeyCodes.K_1, false);
+			var keybdActionDown = new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_1, false);
 			var elementMatchAction = new ElementMatchAction(null, new ElementProgram(42, "notepad.exe"), new List<UiElement>() {
 				new UiElement(0, "", "Decimal", "Button", "314", 50013, new System.Windows.Rect(2017, 289, 59, 15)),
 				new UiElement(0, "", "", "CalcFrame", "", 50033, new System.Windows.Rect(1998, 130, 407, 330)),
@@ -140,29 +140,29 @@ namespace UsAcRe.Tests.ScriptTests {
 			var actions = new ActionsList() {
 				new MouseClickAction(null, MouseButtonType.Left, new System.Drawing.Point(1, 2), true),
 				new MouseClickAction(null, MouseButtonType.Left, new System.Drawing.Point(1, 2), true),
-				new KeybdAction(WindowsSystem.VirtualKeyCodes.VK_RSHIFT, false),
-				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_T, false),
-				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_T, true),
-				new KeybdAction(WindowsSystem.VirtualKeyCodes.VK_RSHIFT, true),
-				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_E, false),
-				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_E, true),
-				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_S, false),
-				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_S, true),
-				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_T, false),
-				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_T, true),
+				new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.VK_RSHIFT, false),
+				new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_T, false),
+				new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_T, true),
+				new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.VK_RSHIFT, true),
+				new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_E, false),
+				new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_E, true),
+				new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_S, false),
+				new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_S, true),
+				new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_T, false),
+				new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_T, true),
 				new MouseClickAction(null, MouseButtonType.Left, new System.Drawing.Point(1, 2), true),
-				new KeybdAction(WindowsSystem.VirtualKeyCodes.VK_RSHIFT, false),
-				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_H, false),
-				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_H, true),
-				new KeybdAction(WindowsSystem.VirtualKeyCodes.VK_RSHIFT, true),
-				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_E, false),
-				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_E, true),
-				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_L, false),
-				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_L, true),
-				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_L, false),
-				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_L, true),
-				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_O, false),
-				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_O, true),
+				new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.VK_RSHIFT, false),
+				new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_H, false),
+				new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_H, true),
+				new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.VK_RSHIFT, true),
+				new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_E, false),
+				new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_E, true),
+				new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_L, false),
+				new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_L, true),
+				new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_L, false),
+				new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_L, true),
+				new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_O, false),
+				new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_O, true),
 				new MouseClickAction(null, MouseButtonType.Right, new System.Drawing.Point(1, 2), false),
 			};
 			var scriptBuilder = new ScriptBuilder(actions, settingsServiceMock.Object);
@@ -179,25 +179,25 @@ namespace UsAcRe.Tests.ScriptTests {
 		[Test]
 		public void CombineTextTypingActions_With_Error_In_Seq_Test() {
 			var actions = new ActionsList() {
-				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_T, false),
-				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_T, true),
-				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_E, false),
-				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_E, true),
-				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_S, false),
-				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_S, true),
-				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_T, false),
-				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_T, true),
+				new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_T, false),
+				new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_T, true),
+				new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_E, false),
+				new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_E, true),
+				new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_S, false),
+				new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_S, true),
+				new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_T, false),
+				new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_T, true),
 				new MouseClickAction(null, MouseButtonType.Right, new System.Drawing.Point(1, 2), false),
-				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_H, false),
-				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_H, true),
-				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_E, false),
-				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_E, true),
-				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_L, false),
-				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_L, true),
-				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_L, false),
-				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_L, true),
-				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_O, false),
-				//new KeybdAction(WindowsSystem.VirtualKeyCodes.K_O, true),
+				new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_H, false),
+				new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_H, true),
+				new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_E, false),
+				new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_E, true),
+				new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_L, false),
+				new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_L, true),
+				new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_L, false),
+				new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_L, true),
+				new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_O, false),
+				//new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_O, true),
 			};
 			var scriptBuilder = new ScriptBuilder(actions, settingsServiceMock.Object);
 			scriptBuilder.CombineTextTypingActions();
@@ -211,8 +211,8 @@ namespace UsAcRe.Tests.ScriptTests {
 		public void CombineTextTypingActions_Seq_For_One_Key_Is_Skipped_Test() {
 			var actions = new ActionsList() {
 				new MouseClickAction(null, MouseButtonType.Right, new System.Drawing.Point(1, 2), false),
-				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_H, false),
-				new KeybdAction(WindowsSystem.VirtualKeyCodes.K_H, true),
+				new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_H, false),
+				new KeybdAction(Core.WindowsSystem.VirtualKeyCodes.K_H, true),
 			};
 			var scriptBuilder = new ScriptBuilder(actions, settingsServiceMock.Object);
 			scriptBuilder.CombineTextTypingActions();

@@ -111,6 +111,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\UsAcRe.Core\UsAcRe.Core.csproj">
+      <Project>{397f80c0-e494-44ad-9996-d3b248dc41de}</Project>
+      <Name>UsAcRe.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\UsAcRe\UsAcRe.csproj">
       <Project>{3dfbccac-5b3a-46cb-95b5-1685b4aa03c3}</Project>
       <Name>UsAcRe</Name>

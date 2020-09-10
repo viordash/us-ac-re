@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using UsAcRe.Actions;
+using UsAcRe.Core.WindowsSystem;
 using UsAcRe.MouseProcess;
 using UsAcRe.UIAutomationElement;
-using UsAcRe.WindowsSystem;
 
 namespace UsAcRe.Tests.ActionsTests {
 	[TestFixture]

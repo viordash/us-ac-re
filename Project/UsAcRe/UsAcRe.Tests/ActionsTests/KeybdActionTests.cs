@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 using UsAcRe.Actions;
-using UsAcRe.WindowsSystem;
+using UsAcRe.Core.WindowsSystem;
 
 namespace UsAcRe.Tests.ActionsTests {
 	[TestFixture]
