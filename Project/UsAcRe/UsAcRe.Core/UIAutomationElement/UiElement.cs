@@ -3,9 +3,9 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Automation;
 using System.Xml.Serialization;
-using UsAcRe.Helpers;
+using UsAcRe.Core.Helpers;
 
-namespace UsAcRe.UIAutomationElement {
+namespace UsAcRe.Core.UIAutomationElement {
 	[Serializable]
 	public class UiElement {
 		public int Index;

@@ -3,7 +3,8 @@ using System.CodeDom.Compiler;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using UsAcRe.Actions;
+using UsAcRe.Core.Actions;
+using UsAcRe.Core.Scripts;
 
 namespace UsAcRe.Scripts {
 	public class ScriptCompiler {
@@ -36,9 +37,9 @@ namespace UsAcRe.Scripts {
 		}
 
 		static async Task CreateAndInvoke(Assembly assembly) {
-			var instance = assembly.CreateInstance(ScriptBuilder.TestsNamespace + "." + ScriptBuilder.TestsClassName);
+			var instance = assembly.CreateInstance(ScriptConstants.TestsNamespace + "." + ScriptConstants.TestsClassName);
 			if(instance == null) {
-				throw new ApplicationException("There is no " + ScriptBuilder.TestsClassName + " class in the compiled Assembly");
+				throw new ApplicationException("There is no " + ScriptConstants.TestsClassName + " class in the compiled Assembly");
 			}
 			Type type = instance.GetType();
 			MethodInfo method = type.GetMethod(nameof(BaseAction.ExecuteAsync));

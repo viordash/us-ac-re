@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 
-namespace UsAcRe.Extensions {
+namespace UsAcRe.Core.Extensions {
 	public static class PointExtension {
 		public static bool WithBoundaries(this Point point, Point other, int tolerance) {
 			return Math.Abs(point.X - other.X) <= tolerance && Math.Abs(point.Y - other.Y) <= tolerance;

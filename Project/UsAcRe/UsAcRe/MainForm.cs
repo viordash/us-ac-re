@@ -3,15 +3,14 @@ using System.IO;
 using System.Windows.Forms;
 using CommonServiceLocator;
 using NLog.Windows.Forms;
-using UsAcRe.Actions;
+using UsAcRe.Core.Actions;
 using UsAcRe.Core.Services;
+using UsAcRe.Core.UIAutomationElement;
 using UsAcRe.Core.WindowsSystem;
 using UsAcRe.Helpers;
 using UsAcRe.Highlighter;
 using UsAcRe.Properties;
 using UsAcRe.Scripts;
-using UsAcRe.Services;
-using UsAcRe.UIAutomationElement;
 
 namespace UsAcRe {
 	public partial class MainForm : Form {
@@ -19,16 +18,18 @@ namespace UsAcRe {
 		ElementFromPoint elementFromPoint = null;
 		ElementHighlighter mouseClickBlocker = null;
 
-		ActionsContainer Actions = new ActionsContainer();
 
 		IAutomationElementService AutomationElementService { get { return ServiceLocator.Current.GetInstance<IAutomationElementService>(); } }
 		IWinApiService WinApiService { get { return ServiceLocator.Current.GetInstance<IWinApiService>(); } }
 		ITestsLaunchingService TestsLaunchingService { get { return ServiceLocator.Current.GetInstance<ITestsLaunchingService>(); } }
 		ISettingsService SettingsService { get { return ServiceLocator.Current.GetInstance<ISettingsService>(); } }
 
+		readonly ActionsContainer Actions;
+
 		public MainForm() {
 			InitializeComponent();
 			RichTextBoxTarget.ReInitializeAllTextboxes(this);
+			Actions = new ActionsContainer(SettingsService, new ScriptBuilder(SettingsService));
 		}
 
 		private void MainForm_Load(object sender, EventArgs e) {

@@ -4,13 +4,13 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows.Automation;
 using NGuard;
+using NLog;
 using UsAcRe.Core.Services;
 using UsAcRe.Core.WindowsSystem;
-using UsAcRe.Services;
 
-namespace UsAcRe.UIAutomationElement {
+namespace UsAcRe.Core.UIAutomationElement {
 	public class ElementFromPoint {
-		NLog.Logger logger = NLog.LogManager.GetLogger("UsAcRe.Trace");
+		private static readonly NLog.Logger logger = LogManager.GetCurrentClassLogger();
 
 		#region inner classes
 

@@ -3,26 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NGuard;
-using UsAcRe.Actions;
+using UsAcRe.Core.Actions;
 using UsAcRe.Core.Extensions;
-using UsAcRe.Services;
+using UsAcRe.Core.Scripts;
+using UsAcRe.Core.Services;
 
 namespace UsAcRe.Scripts {
-	public class ScriptBuilder {
-		public const string newLine = "\r\n";
-		public const string tab = "\t";
-		public const string TestsNamespace = "UsAcRe.TestsScripts";
-		public const string TestsClassName = "TestsScript";
-
-		readonly ActionsList actions;
+	public class ScriptBuilder : IScriptBuilder {
 		readonly ISettingsService settingsService;
 
-		public ScriptBuilder(
-			ActionsList actions,
-			ISettingsService settingsService) {
-			Guard.Requires(actions, nameof(actions));
+		public ScriptBuilder(ISettingsService settingsService) {
 			Guard.Requires(settingsService, nameof(settingsService));
-			this.actions = actions;
 			this.settingsService = settingsService;
 		}
 
@@ -49,7 +40,7 @@ namespace UsAcRe.Scripts {
 			}
 		}
 
-		public string CreateUsingsSection() {
+		internal string CreateUsingsSection(ActionsList actions) {
 			var actionsTypes = actions
 				.Select(x => x.GetType())
 				.Distinct();
@@ -77,65 +68,65 @@ namespace UsAcRe.Scripts {
 				.OrderBy(x => x)
 				.Select(x => string.Format("using {0};", x));
 
-			return string.Join(newLine, usings);
+			return string.Join(ScriptConstants.NewLine, usings);
 		}
 
-		public string CreateNamespaceSection(string code) {
-			return "namespace " + TestsNamespace + " {"
-				+ newLine
+		internal string CreateNamespaceSection(string code) {
+			return "namespace " + ScriptConstants.TestsNamespace + " {"
+				+ ScriptConstants.NewLine
 				+ code
-				+ newLine
+				+ ScriptConstants.NewLine
 				+ "}";
 		}
 
-		public string CreateClassSection(string code) {
-			return tab + "public class " + TestsClassName + " {"
-				+ newLine
+		internal string CreateClassSection(string code) {
+			return ScriptConstants.Tab + "public class " + ScriptConstants.TestsClassName + " {"
+				+ ScriptConstants.NewLine
 				+ code
-				+ newLine
-				+ tab + "}";
+				+ ScriptConstants.NewLine
+				+ ScriptConstants.Tab + "}";
 		}
 
-		public string CreateExecuteMethodSection(string code) {
-			return tab + tab
+		internal string CreateExecuteMethodSection(string code) {
+			return ScriptConstants.Tab + ScriptConstants.Tab
 				+ "public async Task " + nameof(BaseAction.ExecuteAsync) + "() {"
-				+ newLine
-				+ tab + tab + tab + "await ActionsExecutor.Perform"
-				+ newLine
+				+ ScriptConstants.NewLine
+				+ ScriptConstants.Tab + ScriptConstants.Tab + ScriptConstants.Tab + "await ActionsExecutor.Perform"
+				+ ScriptConstants.NewLine
 				+ code
-				+ newLine
-				+ tab + tab + "}";
+				+ ScriptConstants.NewLine
+				+ ScriptConstants.Tab + ScriptConstants.Tab + "}";
 		}
 
-		public string CreateExecuteMethodBody() {
+		internal string CreateExecuteMethodBody(ActionsList actions) {
 			var sb = new StringBuilder();
-			CombineTextTypingActions();
+			CombineTextTypingActions(actions);
 			var lastAction = actions.LastOrDefault();
 			foreach(var action in actions) {
 				var codeLines = ("." + action.ExecuteAsScriptSource())
 					.Split('\r', '\n')
 					.Where(x => !string.IsNullOrEmpty(x))
-					.Select(x => string.Format("{0}{0}{0}{0}{1}", tab, x));
+					.Select(x => string.Format("{0}{0}{0}{0}{1}", ScriptConstants.Tab, x));
 
-				var code = string.Join(newLine, codeLines);
+				var code = string.Join(ScriptConstants.NewLine, codeLines);
 
 				var lastItem = action == lastAction;
 				if(lastItem) {
 					sb.Append(code);
 				} else {
-					sb.AppendFormat("{0}{1}", code, newLine);
+					sb.AppendFormat("{0}{1}", code, ScriptConstants.NewLine);
 				}
 			}
 			sb.Append(";");
 			return sb.ToString();
 		}
 
-		public string Generate() {
-			var executeMethod = CreateExecuteMethodSection(CreateExecuteMethodBody());
+		public string Generate(ActionsList actions) {
+			var executeMethod = CreateExecuteMethodSection(CreateExecuteMethodBody(actions));
 			var classSection = CreateClassSection(executeMethod);
 
 			var sb = new StringBuilder();
-			sb.Append(CreateUsingsSection());
+			sb.Append(CreateUsingsSection(actions));
 			sb.AppendLine();
 			sb.AppendLine();
 			sb.Append(CreateNamespaceSection(classSection));
@@ -143,7 +134,7 @@ namespace UsAcRe.Scripts {
 			return sb.ToString();
 		}
 
-		internal void CombineTextTypingActions() {
+		internal void CombineTextTypingActions(ActionsList actions) {
 			var keysSeqList = new List<(int start, int end)>();
 			int? startKeysSeq = null;
 			KeybdAction prevKeybdAction = null;

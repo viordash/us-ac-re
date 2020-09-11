@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using CommonServiceLocator;
-using UsAcRe.Scripts;
-using UsAcRe.Services;
+using NGuard;
+using UsAcRe.Core.Scripts;
+using UsAcRe.Core.Services;
 
-namespace UsAcRe.Actions {
+namespace UsAcRe.Core.Actions {
 	public class ActionsList : List<BaseAction> {
 		public ActionsList(IEnumerable<BaseAction> acions) : this() {
 			AddRange(acions);
@@ -14,12 +14,19 @@ namespace UsAcRe.Actions {
 
 	public class ActionsContainer {
 		NLog.Logger logger = NLog.LogManager.GetLogger("UsAcRe.FormMain");
-		ISettingsService settingsService { get { return ServiceLocator.Current.GetInstance<ISettingsService>(); } }
+		readonly ISettingsService settingsService;
+		readonly IScriptBuilder scriptBuilder;
 
 		public string Name { get; set; }
 		public ActionsList Items;
 
-		public ActionsContainer() {
+		public ActionsContainer(
+			ISettingsService settingsService,
+			IScriptBuilder scriptBuilder) {
+			Guard.Requires(settingsService, nameof(settingsService));
+			Guard.Requires(scriptBuilder, nameof(scriptBuilder));
+			this.settingsService = settingsService;
+			this.scriptBuilder = scriptBuilder;
 			Items = new ActionsList();
 		}
 
@@ -29,8 +36,7 @@ namespace UsAcRe.Actions {
 		}
 
 		public void Store(string fileName) {
-			var scriptBuilder = new ScriptBuilder(Items, settingsService);
-			var script = scriptBuilder.Generate();
+			var script = scriptBuilder.Generate(Items);
 			File.WriteAllText(fileName, script);
 		}
 	}

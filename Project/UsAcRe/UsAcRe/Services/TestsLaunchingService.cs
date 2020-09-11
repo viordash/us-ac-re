@@ -1,21 +1,12 @@
 ﻿using System;
 using System.Threading;
 using NGuard;
-using UsAcRe.Actions;
+using UsAcRe.Core.Actions;
+using UsAcRe.Core.Services;
+using UsAcRe.Core.UIAutomationElement;
 using UsAcRe.Highlighter;
-using UsAcRe.UIAutomationElement;
 
 namespace UsAcRe.Services {
-	public interface ITestsLaunchingService {
-		CancellationToken GetCurrentCancellationToken();
-		void Start();
-		void Stop();
-		void OpenHighlighter(System.Windows.Rect boundingRectangle, string toolTip);
-		void OpenHighlighter(ElementFromPoint elementFromPoint);
-		void CloseHighlighter();
-		void Log(BaseAction baseAction);
-	}
-
 	public class TestsLaunchingService : ITestsLaunchingService {
 		protected NLog.Logger logger = NLog.LogManager.GetLogger("UsAcRe.FormMain");
 		readonly IWindowsFormsService windowsFormsService;

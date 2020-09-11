@@ -3,13 +3,12 @@ using System;
 using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
-using CommonServiceLocator;
 using NGuard;
+using UsAcRe.Core.Exceptions;
+using UsAcRe.Core.Extensions;
 using UsAcRe.Core.Services;
-using UsAcRe.Exceptions;
-using UsAcRe.Services;
 
-namespace UsAcRe.Actions {
+namespace UsAcRe.Core.Actions {
 
 	public abstract class BaseAction {
 		protected NLog.Logger logger = NLog.LogManager.GetLogger("UsAcRe.FormMain");
@@ -20,12 +19,17 @@ namespace UsAcRe.Actions {
 		protected readonly ISettingsService settingsService;
 		protected readonly CancellationToken cancellationToken;
 		protected readonly BaseAction prevAction;
+		protected IServiceProvider ServiceProvider { get; set; }
+
+		public BaseAction(IServiceProvider serviceProvider) {
+			ServiceProvider = serviceProvider;
+		}
 
 		public BaseAction(BaseAction prevAction)
-			: this(prevAction, ServiceLocator.Current.GetInstance<IAutomationElementService>(),
-				  ServiceLocator.Current.GetInstance<ITestsLaunchingService>(),
-				  ServiceLocator.Current.GetInstance<IWinApiService>(),
-				  ServiceLocator.Current.GetInstance<ISettingsService>()) { }
+			: this(prevAction, prevAction.ServiceProvider.GetInstance<IAutomationElementService>(),
+				  prevAction.ServiceProvider.GetInstance<ITestsLaunchingService>(),
+				  prevAction.ServiceProvider.GetInstance<IWinApiService>(),
+				  prevAction.ServiceProvider.GetInstance<ISettingsService>()) { }
 
 		public BaseAction(
 			BaseAction prevAction,

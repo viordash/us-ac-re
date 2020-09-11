@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UsAcRe.Helpers {
+namespace UsAcRe.Core.Helpers {
 	public class DimensionsHelper {
 		public static bool AreSizeEquals(System.Windows.Size size1, System.Windows.Size size2, double tolerance) {
 			if((size1.Height <= 0 || size1.Width <= 0)

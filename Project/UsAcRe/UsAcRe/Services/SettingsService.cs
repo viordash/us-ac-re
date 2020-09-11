@@ -1,12 +1,6 @@
-﻿namespace UsAcRe.Services {
+﻿using UsAcRe.Core.Services;
 
-	public interface ISettingsService {
-		int ClickPositionToleranceInPercent { get; }
-		bool AnalyzeTextTyping { get; }
-		bool CheckByValue { get; }
-		int ElementSearchNestingLevel { get; }
-	}
-
+namespace UsAcRe.Services {
 	public class SettingsService : ISettingsService {
 		int ISettingsService.ElementSearchNestingLevel {
 			get {

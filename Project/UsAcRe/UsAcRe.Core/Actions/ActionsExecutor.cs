@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using UsAcRe.Core.MouseProcess;
+using UsAcRe.Core.UIAutomationElement;
 using UsAcRe.Core.WindowsSystem;
-using UsAcRe.MouseProcess;
-using UsAcRe.UIAutomationElement;
 
-namespace UsAcRe.Actions {
+namespace UsAcRe.Core.Actions {
 	public static class ActionsExecutor {
 		public static Task<BaseAction> Perform {
 			get {

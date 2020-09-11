@@ -7,15 +7,14 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Automation;
 using NGuard;
-using UsAcRe.Core.Services;
-using UsAcRe.Exceptions;
-using UsAcRe.Extensions;
-using UsAcRe.Helpers;
-using UsAcRe.UIAutomationElement;
+using UsAcRe.Core.Exceptions;
+using UsAcRe.Core.Extensions;
+using UsAcRe.Core.Helpers;
+using UsAcRe.Core.UIAutomationElement;
 
-namespace UsAcRe.Services {
+namespace UsAcRe.Core.Services {
 	public interface IAutomationElementService {
-		UiElement FromPoint(System.Windows.Point pt);
+		UiElement FromPoint(Point pt);
 		UiElement FromHandle(IntPtr hwnd);
 		List<UiElement> FindAllValidElements(UiElement element, TreeScope scope);
 		UiElement GetParent(UiElement element);

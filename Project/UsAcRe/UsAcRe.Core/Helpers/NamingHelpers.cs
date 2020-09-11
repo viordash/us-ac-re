@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace UsAcRe.Helpers {
+namespace UsAcRe.Core.Helpers {
 	public class NamingHelpers {
 		public static string Escape(string name, int maxLen) {
 			if(string.IsNullOrEmpty(name)) {

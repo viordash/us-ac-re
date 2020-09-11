@@ -1,18 +1,15 @@
 ﻿using System.Drawing;
 using System.Threading.Tasks;
 using Microsoft.Test.Input;
-using UsAcRe.Exceptions;
-using UsAcRe.Extensions;
-using UsAcRe.MouseProcess;
+using UsAcRe.Core.Exceptions;
+using UsAcRe.Core.Extensions;
+using UsAcRe.Core.MouseProcess;
 
-namespace UsAcRe.Actions {
+namespace UsAcRe.Core.Actions {
 	public class MouseClickAction : BaseAction {
 		public MouseButtonType Button { get; set; }
 		public Point ClickedPoint { get; set; }
 		public bool DoubleClick { get; set; }
-
-		public MouseClickAction(MouseClickEventArgs args)
-			: this(null, args.Button, args.Coord, args.DoubleClick) { }
 
 		public MouseClickAction(BaseAction prevAction, MouseButtonType button, Point clickedPoint, bool doubleClick)
 			: base(prevAction) {
@@ -38,7 +35,7 @@ namespace UsAcRe.Actions {
 
 			if(prevAction is MouseClickAction prevMouseAction) {
 				if(prevMouseAction.ClickedPoint.WithBoundaries(clickedPoint, settingsService.ClickPositionToleranceInPercent)) {
-					await Task.Delay(MouseHook.MaxDoubleClickTime);
+					await Task.Delay(MouseProcessConstants.MaxDoubleClickTime);
 				}
 			}
 
@@ -55,7 +52,7 @@ namespace UsAcRe.Actions {
 			}
 
 			testsLaunchingService.CloseHighlighter();
-			MainForm.MoveOutFromPoint(clickedPoint.X, clickedPoint.Y);
+			//MainForm.MoveOutFromPoint(clickedPoint.X, clickedPoint.Y);
 			switch(Button) {
 				case MouseButtonType.Left:
 					Mouse_MoveTo(clickedPoint.X, clickedPoint.Y);

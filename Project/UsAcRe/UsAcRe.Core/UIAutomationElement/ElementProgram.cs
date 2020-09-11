@@ -1,4 +1,4 @@
-﻿namespace UsAcRe.UIAutomationElement {
+﻿namespace UsAcRe.Core.UIAutomationElement {
 	public class ElementProgram {
 		public int Index { get; set; }
 		public string FileName { get; set; }

@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Media;
-using UsAcRe.UIAutomationElement;
+using UsAcRe.Core.UIAutomationElement;
 
 namespace UsAcRe.Highlighter {
 	public class ElementHighlighter : IDisposable {

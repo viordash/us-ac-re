@@ -5,13 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Automation;
-using UsAcRe.Exceptions;
-using UsAcRe.Extensions;
-using UsAcRe.Helpers;
-using UsAcRe.MouseProcess;
-using UsAcRe.UIAutomationElement;
+using UsAcRe.Core.Exceptions;
+using UsAcRe.Core.Extensions;
+using UsAcRe.Core.Helpers;
+using UsAcRe.Core.MouseProcess;
+using UsAcRe.Core.UIAutomationElement;
 
-namespace UsAcRe.Actions {
+namespace UsAcRe.Core.Actions {
 	public class ElementMatchAction : BaseAction {
 		#region inner classes
 		class RequiredElement {
@@ -186,7 +186,7 @@ namespace UsAcRe.Actions {
 		}
 
 		UiElement SearchRequiredElement(UiElement searchedElement, List<UiElement> childs) {
-			foreach(var element in childs) {			
+			foreach(var element in childs) {
 				if(!AreUiElementsEquals(element, searchedElement, true)) {
 					continue;
 				}

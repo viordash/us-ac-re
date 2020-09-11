@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using UsAcRe.Exceptions;
-using UsAcRe.Helpers;
-using UsAcRe.Scripts;
-using UsAcRe.UIAutomationElement;
+using UsAcRe.Core.Exceptions;
+using UsAcRe.Core.Helpers;
+using UsAcRe.Core.Scripts;
+using UsAcRe.Core.UIAutomationElement;
 
-namespace UsAcRe.Extensions {
+namespace UsAcRe.Core.Extensions {
 	public static class ScriptSourceExtension {
 		public static string ForNew(this int val) {
 			return string.Format("{0}", val);
@@ -56,7 +56,7 @@ namespace UsAcRe.Extensions {
 			sb.AppendFormat("new List<{0}>() {{", type.GenericTypeArguments[0].Name);
 			sb.AppendLine();
 			foreach(var item in val.AsEnumerable()) {
-				sb.AppendFormat("{0}{1},{2}", ScriptBuilder.tab, item.ForNew(), ScriptBuilder.newLine);
+				sb.AppendFormat("{0}{1},{2}", ScriptConstants.Tab, item.ForNew(), ScriptConstants.NewLine);
 			}
 			sb.Append("}");
 			return sb.ToString();

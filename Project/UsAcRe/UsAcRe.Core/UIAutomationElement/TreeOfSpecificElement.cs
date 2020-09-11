@@ -3,7 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 
-namespace UsAcRe.UIAutomationElement {
+namespace UsAcRe.Core.UIAutomationElement {
 	[Serializable]
 	public class TreeOfSpecificUiElement : List<UiElement> {
 

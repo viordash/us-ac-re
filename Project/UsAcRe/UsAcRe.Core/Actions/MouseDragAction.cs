@@ -2,17 +2,15 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Test.Input;
-using UsAcRe.Exceptions;
-using UsAcRe.Extensions;
-using UsAcRe.MouseProcess;
+using UsAcRe.Core.Exceptions;
+using UsAcRe.Core.Extensions;
+using UsAcRe.Core.MouseProcess;
 
-namespace UsAcRe.Actions {
+namespace UsAcRe.Core.Actions {
 	public class MouseDragAction : BaseAction {
 		public MouseButtonType Button { get; set; }
 		public Point StartCoord { get; set; }
 		public Point EndCoord { get; set; }
-
-		public MouseDragAction(MouseDragEventArgs args) : this(null, args.Button, args.StartCoord, args.EndCoord) { }
 
 		public MouseDragAction(BaseAction prevAction, MouseButtonType button, Point startCoord, Point endCoord)
 			: base(prevAction) {
@@ -47,7 +45,7 @@ namespace UsAcRe.Actions {
 
 
 			testsLaunchingService.CloseHighlighter();
-			MainForm.MoveOutFromPoint(startCoord.X, startCoord.Y);
+			//MainForm.MoveOutFromPoint(startCoord.X, startCoord.Y);
 			switch(Button) {
 				case MouseButtonType.Left:
 					DragTo(MouseButton.Left, startCoord, endCoord);

@@ -1,4 +1,4 @@
-﻿namespace UsAcRe.MouseProcess {
+﻿namespace UsAcRe.Core.MouseProcess {
 	public enum MouseButtonType {
 		None,
 		Left,

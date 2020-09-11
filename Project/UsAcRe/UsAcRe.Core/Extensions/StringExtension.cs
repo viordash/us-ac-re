@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UsAcRe.Extensions {
+namespace UsAcRe.Core.Extensions {
 	public static class StringExtension {
 		public static string MaxLength(this string input, int length) {
 			if(string.IsNullOrEmpty(input)) {

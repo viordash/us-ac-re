@@ -1,4 +1,4 @@
-﻿namespace UsAcRe.Helpers {
+﻿namespace UsAcRe.Core.Helpers {
 	public class StringHelper {
 		public static bool ImplicitEquals(string text1, string text2) {
 			if(string.IsNullOrEmpty(text1)) {

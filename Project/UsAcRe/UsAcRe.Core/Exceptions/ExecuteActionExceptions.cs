@@ -1,8 +1,8 @@
 ﻿using System;
-using UsAcRe.Actions;
-using UsAcRe.UIAutomationElement;
+using UsAcRe.Core.Actions;
+using UsAcRe.Core.UIAutomationElement;
 
-namespace UsAcRe.Exceptions {
+namespace UsAcRe.Core.Exceptions {
 	public class ExecuteBaseActionException : Exception {
 		public ExecuteBaseActionException(string message) : base(message) { }
 		protected ExecuteBaseActionException(BaseAction baseAction, string targetName) : this(BuildMessage(baseAction, targetName)) { }

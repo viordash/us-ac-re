@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Test.Input;
-using UsAcRe.Helpers;
+using UsAcRe.Core.Helpers;
 
-namespace UsAcRe.Actions {
+namespace UsAcRe.Core.Actions {
 	public class TextTypingAction : BaseAction {
 		public string Text { get; set; }
 
