@@ -102,6 +102,8 @@
     <Compile Include="MouseProcess\MouseProcessConstants.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scripts\IScriptBuilder.cs" />
+    <Compile Include="Scripts\ScriptBuilder.cs" />
+    <Compile Include="Scripts\ScriptCompiler.cs" />
     <Compile Include="Scripts\ScriptConstants.cs" />
     <Compile Include="Services\AutomationElementService.cs" />
     <Compile Include="Services\ISettingsService.cs" />

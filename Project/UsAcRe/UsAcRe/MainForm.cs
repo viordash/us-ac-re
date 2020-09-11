@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using CommonServiceLocator;
 using NLog.Windows.Forms;
 using UsAcRe.Core.Actions;
+using UsAcRe.Core.Scripts;
 using UsAcRe.Core.Services;
 using UsAcRe.Core.UIAutomationElement;
 using UsAcRe.Core.WindowsSystem;
