@@ -1,11 +1,10 @@
 ﻿using System.Diagnostics;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using NUnit.Framework;
+using UsAcRe.Core.MouseProcess;
 using UsAcRe.Core.WindowsSystem;
-using UsAcRe.MouseProcess;
 
-namespace UsAcRe.Tests.MouseProcessTests {
+namespace UsAcRe.Core.Tests.MouseProcessTests {
 	[TestFixture]
 	public class MouseHoverTests {
 
@@ -26,7 +25,7 @@ namespace UsAcRe.Tests.MouseProcessTests {
 			WinAPI.POINT currPt;
 			WinAPI.POINT startPt;
 
-			WinAPI.SetCursorPos(Screen.PrimaryScreen.Bounds.Width / 2, Screen.PrimaryScreen.Bounds.Height / 2);
+			WinAPI.SetCursorPos(800 - 50, 600 - 50);
 
 			var stopwatch = Stopwatch.StartNew();
 			WinAPI.GetCursorPos(out startPt);

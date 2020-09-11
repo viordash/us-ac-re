@@ -3,12 +3,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
-using UsAcRe.Actions;
+using UsAcRe.Core.Actions;
+using UsAcRe.Core.MouseProcess;
+using UsAcRe.Core.UIAutomationElement;
 using UsAcRe.Core.WindowsSystem;
-using UsAcRe.MouseProcess;
-using UsAcRe.UIAutomationElement;
 
-namespace UsAcRe.Tests.ActionsTests {
+namespace UsAcRe.Core.Tests.ActionsTests {
 	[TestFixture]
 	public class ActionsExecutorTests : BaseActionTestable {
 		[SetUp]

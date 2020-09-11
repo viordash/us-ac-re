@@ -1,8 +1,8 @@
 ﻿using NUnit.Framework;
-using UsAcRe.Actions;
+using UsAcRe.Core.Actions;
 using UsAcRe.Core.WindowsSystem;
 
-namespace UsAcRe.Tests.ActionsTests {
+namespace UsAcRe.Core.Tests.ActionsTests {
 	[TestFixture]
 	public class KeybdActionTests : BaseActionTestable {
 

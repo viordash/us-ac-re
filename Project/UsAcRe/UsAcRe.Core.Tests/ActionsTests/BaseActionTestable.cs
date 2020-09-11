@@ -3,7 +3,7 @@ using CommonServiceLocator;
 using Moq;
 using UsAcRe.Core.Services;
 
-namespace UsAcRe.Tests.ActionsTests {
+namespace UsAcRe.Core.Tests.ActionsTests {
 	public class BaseActionTestable {
 		protected Mock<IServiceLocator> serviceLocatorMock;
 		protected Mock<IAutomationElementService> automationElementServiceMock;

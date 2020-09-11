@@ -4,12 +4,11 @@ using System.Windows.Automation;
 using Moq;
 using NUnit.Framework;
 using UsAcRe.Core.Services;
+using UsAcRe.Core.UIAutomationElement;
 using UsAcRe.Core.WindowsSystem;
-using UsAcRe.Services;
-using UsAcRe.UIAutomationElement;
-using static UsAcRe.UIAutomationElement.ElementFromPoint;
+using static UsAcRe.Core.UIAutomationElement.ElementFromPoint;
 
-namespace UsAcRe.Tests.UIAutomationElement {
+namespace UsAcRe.Core.Tests.UIAutomationElement {
 	[TestFixture]
 	public class ElementFromPointTests {
 		#region inner classes

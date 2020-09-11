@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
-using UsAcRe.Helpers;
+using UsAcRe.Core.Helpers;
 
-namespace UsAcRe.Tests.MouseProcessTests {
+namespace UsAcRe.Core.Tests.MouseProcessTests {
 	[TestFixture]
 	public class NamingHelpersTests {
 

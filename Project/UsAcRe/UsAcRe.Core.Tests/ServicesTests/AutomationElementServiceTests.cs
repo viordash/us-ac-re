@@ -4,10 +4,9 @@ using System.Windows.Automation;
 using Moq;
 using NUnit.Framework;
 using UsAcRe.Core.Services;
-using UsAcRe.Services;
-using UsAcRe.UIAutomationElement;
+using UsAcRe.Core.UIAutomationElement;
 
-namespace UsAcRe.Tests.ServicesTests {
+namespace UsAcRe.Core.Tests.ServicesTests {
 	[TestFixture]
 	public class AutomationElementServiceTests {
 
