@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using UsAcRe.Core.Actions;
 using UsAcRe.Core.UIAutomationElement;
 using UsAcRe.Core.WindowsSystem;
 using UsAcRe.Highlighter;
@@ -62,13 +63,13 @@ namespace UsAcRe {
 					return;
 				}
 				if(elementFromPoint != null) {
-					Actions.Add(new Core.Actions.ElementMatchAction(elementFromPoint));
+					Actions.Add(ElementMatchAction.CreateInstance(elementFromPoint));
 					CloseMouseClickBlocker();
 					TestsLaunchingService.CloseHighlighter();
 					elementFromPoint = null;
 				}
 
-				Actions.Add(new Core.Actions.MouseClickAction(null, args.Button, args.Coord, args.DoubleClick));
+				Actions.Add(MouseClickAction.CreateInstance(args.Button, args.Coord, args.DoubleClick));
 			}), e);
 		}
 
@@ -78,7 +79,7 @@ namespace UsAcRe {
 					return;
 				}
 				if(elementFromPoint != null) {
-					Actions.Add(new Core.Actions.ElementMatchAction(elementFromPoint));
+					Actions.Add(ElementMatchAction.CreateInstance(elementFromPoint));
 					CloseMouseClickBlocker();
 					TestsLaunchingService.CloseHighlighter();
 					elementFromPoint = null;
@@ -91,7 +92,7 @@ namespace UsAcRe {
 				if(IsRestrictedArea(args.StartCoord)) {
 					return;
 				}
-				Actions.Add(new Core.Actions.MouseDragAction(null, args.Button, args.StartCoord, args.EndCoord));
+				Actions.Add(MouseDragAction.CreateInstance(args.Button, args.StartCoord, args.EndCoord));
 			}), e);
 		}
 
@@ -152,7 +153,7 @@ namespace UsAcRe {
 				WinAPI.GetCursorPos(out pt);
 
 				if(!IsRestrictedArea(pt)) {
-					Actions.Add(new Core.Actions.KeybdAction(args.VKCode, e.IsUp));
+					Actions.Add(KeybdAction.CreateInstance(args.VKCode, e.IsUp));
 				}
 				CloseMouseClickBlocker();
 				TestsLaunchingService.CloseHighlighter();

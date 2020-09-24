@@ -179,7 +179,7 @@ namespace UsAcRe.Scripts {
 							sb.Append(value);
 						}
 					}
-					var textTypingAction = new TextTypingAction(sb.ToString());
+					var textTypingAction = TextTypingAction.CreateInstance(sb.ToString());
 					actions[keysSeq.start] = textTypingAction;
 					for(int i = keysSeq.start + 1; i <= keysSeq.end; i++) {
 						actions[i] = null;

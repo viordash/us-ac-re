@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.Test.Input;
 using UsAcRe.Core.Extensions;
+using UsAcRe.Core.Services;
 using UsAcRe.Core.WindowsSystem;
 
 namespace UsAcRe.Core.Actions {
@@ -9,13 +10,14 @@ namespace UsAcRe.Core.Actions {
 		public VirtualKeyCodes VKCode { get; set; }
 		public bool IsUp { get; set; }
 
+		public static KeybdAction CreateInstance(VirtualKeyCodes vKCode, bool isUp) {
+			var instance = CreateInstance<KeybdAction>();
+			instance.VKCode = vKCode;
+			instance.IsUp = isUp;
+			return instance;
+		}
 
-		public KeybdAction(VirtualKeyCodes vKCode, bool isUp)
-			: this(null, vKCode, isUp) { }
-
-		public KeybdAction(BaseAction prevAction, VirtualKeyCodes vKCode, bool isUp) : base(prevAction) {
-			VKCode = vKCode;
-			IsUp = isUp;
+		public KeybdAction(ITestsLaunchingService testsLaunchingService) : base(testsLaunchingService) {
 		}
 
 		protected override async ValueTask ExecuteCoreAsync() {
@@ -26,7 +28,7 @@ namespace UsAcRe.Core.Actions {
 			return string.Format("{0} Code:{0:D3}, Down:{2}, Up:{3}", nameof(KeybdAction), VKCode, IsUp ? "Up" : "  ", Convert.ToChar(VKCode));
 		}
 		public override string ExecuteAsScriptSource() {
-			return string.Format("{0}({1}, {2})", nameof(ActionsExecutor.Keyboard), VKCode.ForNew(), IsUp.ForNew());
+			return null;//string.Format("{0}({1}, {2})", nameof(ActionsExecutor.Keyboard), VKCode.ForNew(), IsUp.ForNew());
 		}
 
 		ValueTask DoKeyPress() {

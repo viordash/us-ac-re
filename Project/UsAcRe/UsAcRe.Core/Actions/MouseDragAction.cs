@@ -5,6 +5,7 @@ using Microsoft.Test.Input;
 using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Extensions;
 using UsAcRe.Core.MouseProcess;
+using UsAcRe.Core.Services;
 
 namespace UsAcRe.Core.Actions {
 	public class MouseDragAction : BaseAction {
@@ -12,11 +13,15 @@ namespace UsAcRe.Core.Actions {
 		public Point StartCoord { get; set; }
 		public Point EndCoord { get; set; }
 
-		public MouseDragAction(BaseAction prevAction, MouseButtonType button, Point startCoord, Point endCoord)
-			: base(prevAction) {
-			Button = button;
-			StartCoord = startCoord;
-			EndCoord = endCoord;
+		public static MouseDragAction CreateInstance(MouseButtonType button, Point startCoord, Point endCoord) {
+			var instance = CreateInstance<MouseDragAction>();
+			instance.Button = button;
+			instance.StartCoord = startCoord;
+			instance.EndCoord = endCoord;
+			return instance;
+		}
+
+		public MouseDragAction(ITestsLaunchingService testsLaunchingService) : base(testsLaunchingService) {
 		}
 
 		protected override async ValueTask ExecuteCoreAsync() {
@@ -27,7 +32,7 @@ namespace UsAcRe.Core.Actions {
 			return string.Format("{0} Button:{1}, Down:{2}, Up:{3}", nameof(MouseDragAction), Button, StartCoord, EndCoord);
 		}
 		public override string ExecuteAsScriptSource() {
-			return string.Format("{0}({1}, {2}, {3})", nameof(ActionsExecutor.MouseDrag), Button.ForNew(), StartCoord.ForNew(), EndCoord.ForNew());
+			return null;// string.Format("{0}({1}, {2}, {3})", nameof(ActionsExecutor.MouseDrag), Button.ForNew(), StartCoord.ForNew(), EndCoord.ForNew());
 
 		}
 
@@ -36,13 +41,12 @@ namespace UsAcRe.Core.Actions {
 			var startCoord = StartCoord;
 			var endCoord = EndCoord;
 
-			if(prevAction is ElementMatchAction elementMatchAction) {
+			if(testsLaunchingService.LastAction is ElementMatchAction elementMatchAction) {
 				if(elementMatchAction.OffsetPoint.HasValue) {
 					startCoord.Offset((int)elementMatchAction.OffsetPoint.Value.X, (int)elementMatchAction.OffsetPoint.Value.Y);
 					endCoord.Offset((int)elementMatchAction.OffsetPoint.Value.X, (int)elementMatchAction.OffsetPoint.Value.Y);
 				}
 			}
-
 
 			testsLaunchingService.CloseHighlighter();
 			//MainForm.MoveOutFromPoint(startCoord.X, startCoord.Y);

@@ -5,10 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Automation;
+using NGuard;
 using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Extensions;
 using UsAcRe.Core.Helpers;
 using UsAcRe.Core.MouseProcess;
+using UsAcRe.Core.Services;
 using UsAcRe.Core.UIAutomationElement;
 
 namespace UsAcRe.Core.Actions {
@@ -21,6 +23,16 @@ namespace UsAcRe.Core.Actions {
 		}
 		#endregion
 
+		public static ElementMatchAction CreateInstance(ElementFromPoint elementFromPoint) {
+			var instance = CreateInstance<ElementMatchAction>();
+
+			instance.Program = elementFromPoint.TreeOfSpecificUiElement.Program;
+			instance.SearchPath = elementFromPoint.TreeOfSpecificUiElement;
+			instance.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left;
+			instance.TimeoutMs = 20 * 1000;
+			instance.OffsetPoint = null;
+			return instance;
+		}
 
 		public ElementProgram Program { get; private set; }
 		public List<UiElement> SearchPath { get; private set; }
@@ -31,15 +43,17 @@ namespace UsAcRe.Core.Actions {
 
 		int stepWaitAppear;
 
-		public ElementMatchAction(ElementFromPoint elementFromPoint)
-			: this(null, elementFromPoint.TreeOfSpecificUiElement.Program, elementFromPoint.TreeOfSpecificUiElement) { }
+		readonly IAutomationElementService automationElementService;
+		readonly ISettingsService settingsService;
 
-		public ElementMatchAction(BaseAction prevAction, ElementProgram program, List<UiElement> searchPath, int timeoutMs = 20 * 1000) : base(prevAction) {
-			Program = program;
-			SearchPath = searchPath;
-			Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left;
-			TimeoutMs = timeoutMs;
-			OffsetPoint = null;
+		public ElementMatchAction(
+			IAutomationElementService automationElementService,
+			ISettingsService settingsService,
+			ITestsLaunchingService testsLaunchingService) : base(testsLaunchingService) {
+			Guard.Requires(automationElementService, nameof(automationElementService));
+			Guard.Requires(settingsService, nameof(settingsService));
+			this.automationElementService = automationElementService;
+			this.settingsService = settingsService;
 		}
 
 		protected override async ValueTask ExecuteCoreAsync() {
@@ -72,7 +86,7 @@ namespace UsAcRe.Core.Actions {
 			return sb.ToString();
 		}
 		public override string ExecuteAsScriptSource() {
-			return string.Format("{0}({1}, {2}, {3})", nameof(ActionsExecutor.ElementMatching), Program.ForNew(), SearchPath.ForNew(), TimeoutMs.ForNew());
+			return null;// string.Format("{0}({1}, {2}, {3})", nameof(ActionsExecutor.ElementMatching), Program.ForNew(), SearchPath.ForNew(), TimeoutMs.ForNew());
 		}
 
 		async Task WaitAppearElement(RequiredElement requiredElement) {

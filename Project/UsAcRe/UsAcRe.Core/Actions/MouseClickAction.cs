@@ -1,21 +1,34 @@
 ﻿using System.Drawing;
 using System.Threading.Tasks;
 using Microsoft.Test.Input;
+using NGuard;
 using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Extensions;
 using UsAcRe.Core.MouseProcess;
+using UsAcRe.Core.Services;
 
 namespace UsAcRe.Core.Actions {
 	public class MouseClickAction : BaseAction {
 		public MouseButtonType Button { get; set; }
 		public Point ClickedPoint { get; set; }
 		public bool DoubleClick { get; set; }
+		Point? Offset { get; set; } = null;
 
-		public MouseClickAction(BaseAction prevAction, MouseButtonType button, Point clickedPoint, bool doubleClick)
-			: base(prevAction) {
-			Button = button;
-			ClickedPoint = clickedPoint;
-			DoubleClick = doubleClick;
+		public static MouseClickAction CreateInstance(MouseButtonType button, Point clickedPoint, bool doubleClick) {
+			var instance = CreateInstance<MouseClickAction>();
+			instance.Button = button;
+			instance.ClickedPoint = clickedPoint;
+			instance.DoubleClick = doubleClick;
+			return instance;
+		}
+
+		readonly ISettingsService settingsService;
+
+		public MouseClickAction(
+			ISettingsService settingsService,
+			ITestsLaunchingService testsLaunchingService) : base(testsLaunchingService) {
+			Guard.Requires(settingsService, nameof(settingsService));
+			this.settingsService = settingsService;
 		}
 
 		protected override async ValueTask ExecuteCoreAsync() {
@@ -26,29 +39,27 @@ namespace UsAcRe.Core.Actions {
 			return string.Format("{0} Type:{1}, Down:{2}, DblClick:{3}", nameof(MouseClickAction), Button, ClickedPoint, DoubleClick);
 		}
 		public override string ExecuteAsScriptSource() {
-			return string.Format("{0}({1}, {2}, {3})", nameof(ActionsExecutor.MouseClick), Button.ForNew(), ClickedPoint.ForNew(), DoubleClick.ForNew());
+			return null;// string.Format("{0}({1}, {2}, {3})", nameof(ActionsExecutor.MouseClick), Button.ForNew(), ClickedPoint.ForNew(), DoubleClick.ForNew());
 		}
 
 		async ValueTask DoClick() {
 			await Task.Delay(20);
 			var clickedPoint = ClickedPoint;
 
-			if(prevAction is MouseClickAction prevMouseAction) {
+			if(testsLaunchingService.LastAction is MouseClickAction prevMouseAction) {
 				if(prevMouseAction.ClickedPoint.WithBoundaries(clickedPoint, settingsService.ClickPositionToleranceInPercent)) {
 					await Task.Delay(MouseProcessConstants.MaxDoubleClickTime);
 				}
 			}
 
-			var actionForDetermineClickPoint = prevAction;
-			while(actionForDetermineClickPoint is MouseClickAction prevMouseAct
-				&& clickedPoint.WithBoundaries(prevMouseAct.ClickedPoint, settingsService.ClickPositionToleranceInPercent)) {
-				actionForDetermineClickPoint = prevMouseAct.prevAction;
+			var actionForDetermineClickPoint = testsLaunchingService.LastAction;
+			if(actionForDetermineClickPoint is MouseClickAction prevMouseAct) {
+				Offset = prevMouseAct.Offset;
+			} else if(actionForDetermineClickPoint is ElementMatchAction elementMatchAction) {
+				Offset = new Point((int)elementMatchAction.OffsetPoint.Value.X, (int)elementMatchAction.OffsetPoint.Value.Y);
 			}
-
-			if(actionForDetermineClickPoint is ElementMatchAction elementMatchAction) {
-				if(elementMatchAction.OffsetPoint.HasValue) {
-					clickedPoint.Offset((int)elementMatchAction.OffsetPoint.Value.X, (int)elementMatchAction.OffsetPoint.Value.Y);
-				}
+			if(Offset.HasValue) {
+				clickedPoint.Offset(Offset.Value);
 			}
 
 			testsLaunchingService.CloseHighlighter();

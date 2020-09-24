@@ -13,6 +13,8 @@ namespace UsAcRe.Services {
 		CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
 		ElementHighlighter elementHighlighter = null;
 
+		public BaseAction LastAction { get; private set; } = null;
+
 		public TestsLaunchingService(IWindowsFormsService windowsFormsService) {
 			Guard.Requires(windowsFormsService, nameof(windowsFormsService));
 			this.windowsFormsService = windowsFormsService;
@@ -27,6 +29,7 @@ namespace UsAcRe.Services {
 		}
 
 		public void Start() {
+			LastAction = null;
 			if(cancelTokenSource != null) {
 				cancelTokenSource.Cancel();
 				cancelTokenSource.Dispose();
@@ -77,6 +80,7 @@ namespace UsAcRe.Services {
 
 		public void Log(BaseAction baseAction) {
 			logger.Info("\r\n {0}", baseAction.ExecuteAsScriptSource());
+			LastAction = baseAction;
 		}
 	}
 }

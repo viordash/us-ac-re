@@ -11,5 +11,6 @@ namespace UsAcRe.Core.Services {
 		void OpenHighlighter(ElementFromPoint elementFromPoint);
 		void CloseHighlighter();
 		void Log(BaseAction baseAction);
+		BaseAction LastAction { get; }
 	}
 }

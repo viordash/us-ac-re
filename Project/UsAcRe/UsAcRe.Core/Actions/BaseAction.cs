@@ -3,49 +3,26 @@ using System;
 using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
+using CommonServiceLocator;
 using NGuard;
 using UsAcRe.Core.Exceptions;
-using UsAcRe.Core.Extensions;
 using UsAcRe.Core.Services;
 
 namespace UsAcRe.Core.Actions {
-
 	public abstract class BaseAction {
 		protected NLog.Logger logger = NLog.LogManager.GetLogger("UsAcRe.FormMain");
 
-		protected readonly IAutomationElementService automationElementService;
-		protected readonly ITestsLaunchingService testsLaunchingService;
-		protected readonly IWinApiService winApiService;
-		protected readonly ISettingsService settingsService;
-		protected readonly CancellationToken cancellationToken;
-		protected readonly BaseAction prevAction;
-		protected IServiceProvider ServiceProvider { get; set; }
-
-		public BaseAction(IServiceProvider serviceProvider) {
-			ServiceProvider = serviceProvider;
+		protected static T CreateInstance<T>() where T : BaseAction {
+			return ServiceLocator.Current.GetInstance<T>();
 		}
 
-		public BaseAction(BaseAction prevAction)
-			: this(prevAction, prevAction.ServiceProvider.GetInstance<IAutomationElementService>(),
-				  prevAction.ServiceProvider.GetInstance<ITestsLaunchingService>(),
-				  prevAction.ServiceProvider.GetInstance<IWinApiService>(),
-				  prevAction.ServiceProvider.GetInstance<ISettingsService>()) { }
+		protected readonly ITestsLaunchingService testsLaunchingService;
+		protected readonly CancellationToken cancellationToken;
 
-		public BaseAction(
-			BaseAction prevAction,
-			IAutomationElementService automationElementService,
-			ITestsLaunchingService testsLaunchingService,
-			IWinApiService winApiService,
-			ISettingsService settingsService) {
-			Guard.Requires(automationElementService, nameof(automationElementService));
+		protected BaseAction(
+			ITestsLaunchingService testsLaunchingService) {
 			Guard.Requires(testsLaunchingService, nameof(testsLaunchingService));
-			Guard.Requires(winApiService, nameof(winApiService));
-			Guard.Requires(settingsService, nameof(settingsService));
-			this.prevAction = prevAction;
-			this.automationElementService = automationElementService;
 			this.testsLaunchingService = testsLaunchingService;
-			this.winApiService = winApiService;
-			this.settingsService = settingsService;
 			cancellationToken = testsLaunchingService.GetCurrentCancellationToken();
 		}
 
