@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Automation;
+using System.Windows.Forms;
 using NGuard;
 using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Extensions;
@@ -15,6 +16,9 @@ using UsAcRe.Core.UIAutomationElement;
 
 namespace UsAcRe.Core.Actions {
 	public class ElementMatchAction : BaseAction {
+		const int defaultTimeoutMs = 20 * 1000;
+		const AnchorStyles defaultAnchor = AnchorStyles.Top | AnchorStyles.Left;
+
 		#region inner classes
 		class RequiredElement {
 			public UiElement Element { get; set; }
@@ -23,37 +27,38 @@ namespace UsAcRe.Core.Actions {
 		}
 		#endregion
 
-		public static ElementMatchAction CreateInstance(ElementFromPoint elementFromPoint) {
+		public static ElementMatchAction Record(ElementFromPoint elementFromPoint) {
 			var instance = CreateInstance<ElementMatchAction>();
-
 			instance.Program = elementFromPoint.TreeOfSpecificUiElement.Program;
 			instance.SearchPath = elementFromPoint.TreeOfSpecificUiElement;
-			instance.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left;
-			instance.TimeoutMs = 20 * 1000;
-			instance.OffsetPoint = null;
 			return instance;
+		}
+
+		public static async Task Play(ElementProgram program, List<UiElement> searchPath, int timeoutMs = defaultTimeoutMs, AnchorStyles anchor = defaultAnchor) {
+			var instance = CreateInstance<ElementMatchAction>();
+			instance.Program = program;
+			instance.SearchPath = searchPath;
+			instance.Anchor = anchor;
+			instance.TimeoutMs = timeoutMs;
+			await instance.ExecuteAsync();
 		}
 
 		public ElementProgram Program { get; private set; }
 		public List<UiElement> SearchPath { get; private set; }
-		public System.Windows.Forms.AnchorStyles Anchor { get; private set; }
+		public AnchorStyles Anchor { get; private set; } = defaultAnchor;
 		public UiElement MatchedElement { get => SearchPath?[0]; }
-		public int TimeoutMs { get; private set; }
-		public System.Windows.Point? OffsetPoint { get; private set; }
-
+		public int TimeoutMs { get; private set; } = defaultTimeoutMs;
+		public System.Windows.Point? OffsetPoint { get; private set; } = null;
 		int stepWaitAppear;
 
 		readonly IAutomationElementService automationElementService;
-		readonly ISettingsService settingsService;
 
 		public ElementMatchAction(
 			IAutomationElementService automationElementService,
 			ISettingsService settingsService,
-			ITestsLaunchingService testsLaunchingService) : base(testsLaunchingService) {
+			ITestsLaunchingService testsLaunchingService) : base(settingsService, testsLaunchingService) {
 			Guard.Requires(automationElementService, nameof(automationElementService));
-			Guard.Requires(settingsService, nameof(settingsService));
 			this.automationElementService = automationElementService;
-			this.settingsService = settingsService;
 		}
 
 		protected override async ValueTask ExecuteCoreAsync() {
@@ -86,7 +91,16 @@ namespace UsAcRe.Core.Actions {
 			return sb.ToString();
 		}
 		public override string ExecuteAsScriptSource() {
-			return null;// string.Format("{0}({1}, {2}, {3})", nameof(ActionsExecutor.ElementMatching), Program.ForNew(), SearchPath.ForNew(), TimeoutMs.ForNew());
+			var sb = new StringBuilder();
+			sb.AppendFormat("await {0}.{1}({2}, {3}", nameof(ElementMatchAction), nameof(ElementMatchAction.Play), Program.ForNew(), SearchPath.ForNew());
+			if(TimeoutMs != defaultTimeoutMs) {
+				sb.AppendFormat(", {0}", TimeoutMs.ForNew());
+			}
+			if(Anchor != defaultAnchor) {
+				sb.AppendFormat(", {0}", Anchor.ForNew());
+			}
+			sb.Append(");");
+			return sb.ToString();
 		}
 
 		async Task WaitAppearElement(RequiredElement requiredElement) {

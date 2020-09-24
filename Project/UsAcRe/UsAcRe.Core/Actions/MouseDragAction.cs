@@ -13,7 +13,7 @@ namespace UsAcRe.Core.Actions {
 		public Point StartCoord { get; set; }
 		public Point EndCoord { get; set; }
 
-		public static MouseDragAction CreateInstance(MouseButtonType button, Point startCoord, Point endCoord) {
+		public static MouseDragAction Record(MouseButtonType button, Point startCoord, Point endCoord) {
 			var instance = CreateInstance<MouseDragAction>();
 			instance.Button = button;
 			instance.StartCoord = startCoord;
@@ -21,7 +21,17 @@ namespace UsAcRe.Core.Actions {
 			return instance;
 		}
 
-		public MouseDragAction(ITestsLaunchingService testsLaunchingService) : base(testsLaunchingService) {
+		public static async Task Play(MouseButtonType button, Point startCoord, Point endCoord) {
+			var instance = CreateInstance<MouseDragAction>();
+			instance.Button = button;
+			instance.StartCoord = startCoord;
+			instance.EndCoord = endCoord;
+			await instance.ExecuteAsync();
+		}
+
+		public MouseDragAction(
+			ISettingsService settingsService,
+			ITestsLaunchingService testsLaunchingService) : base(settingsService, testsLaunchingService) {
 		}
 
 		protected override async ValueTask ExecuteCoreAsync() {
@@ -32,7 +42,7 @@ namespace UsAcRe.Core.Actions {
 			return string.Format("{0} Button:{1}, Down:{2}, Up:{3}", nameof(MouseDragAction), Button, StartCoord, EndCoord);
 		}
 		public override string ExecuteAsScriptSource() {
-			return null;// string.Format("{0}({1}, {2}, {3})", nameof(ActionsExecutor.MouseDrag), Button.ForNew(), StartCoord.ForNew(), EndCoord.ForNew());
+			return string.Format("await {0}.{1}({2}, {3}, {4});", nameof(MouseDragAction), nameof(KeybdAction.Play), Button.ForNew(), StartCoord.ForNew(), EndCoord.ForNew());
 
 		}
 

@@ -63,13 +63,13 @@ namespace UsAcRe {
 					return;
 				}
 				if(elementFromPoint != null) {
-					Actions.Add(ElementMatchAction.CreateInstance(elementFromPoint));
+					Actions.Add(ElementMatchAction.Record(elementFromPoint));
 					CloseMouseClickBlocker();
 					TestsLaunchingService.CloseHighlighter();
 					elementFromPoint = null;
 				}
 
-				Actions.Add(MouseClickAction.CreateInstance(args.Button, args.Coord, args.DoubleClick));
+				Actions.Add(MouseClickAction.Record(args.Button, args.Coord, args.DoubleClick));
 			}), e);
 		}
 
@@ -79,7 +79,7 @@ namespace UsAcRe {
 					return;
 				}
 				if(elementFromPoint != null) {
-					Actions.Add(ElementMatchAction.CreateInstance(elementFromPoint));
+					Actions.Add(ElementMatchAction.Record(elementFromPoint));
 					CloseMouseClickBlocker();
 					TestsLaunchingService.CloseHighlighter();
 					elementFromPoint = null;
@@ -92,7 +92,7 @@ namespace UsAcRe {
 				if(IsRestrictedArea(args.StartCoord)) {
 					return;
 				}
-				Actions.Add(MouseDragAction.CreateInstance(args.Button, args.StartCoord, args.EndCoord));
+				Actions.Add(MouseDragAction.Record(args.Button, args.StartCoord, args.EndCoord));
 			}), e);
 		}
 
@@ -153,7 +153,7 @@ namespace UsAcRe {
 				WinAPI.GetCursorPos(out pt);
 
 				if(!IsRestrictedArea(pt)) {
-					Actions.Add(KeybdAction.CreateInstance(args.VKCode, e.IsUp));
+					Actions.Add(KeybdAction.Record(args.VKCode, e.IsUp));
 				}
 				CloseMouseClickBlocker();
 				TestsLaunchingService.CloseHighlighter();

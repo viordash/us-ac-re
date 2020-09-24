@@ -16,21 +16,24 @@ namespace UsAcRe.Core.Actions {
 			return ServiceLocator.Current.GetInstance<T>();
 		}
 
+		protected readonly ISettingsService settingsService;
 		protected readonly ITestsLaunchingService testsLaunchingService;
 		protected readonly CancellationToken cancellationToken;
 
 		protected BaseAction(
+			ISettingsService settingsService,
 			ITestsLaunchingService testsLaunchingService) {
+			Guard.Requires(settingsService, nameof(settingsService));
 			Guard.Requires(testsLaunchingService, nameof(testsLaunchingService));
+			this.settingsService = settingsService;
 			this.testsLaunchingService = testsLaunchingService;
 			cancellationToken = testsLaunchingService.GetCurrentCancellationToken();
 		}
 
 		public abstract string ExecuteAsScriptSource();
 
-		public async Task<BaseAction> ExecuteAsync() {
+		public async Task ExecuteAsync() {
 			await SafeActionAsync(ExecuteCoreAsync);
-			return this;
 		}
 
 		protected abstract ValueTask ExecuteCoreAsync();

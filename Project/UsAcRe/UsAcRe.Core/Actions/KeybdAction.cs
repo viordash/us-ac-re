@@ -10,14 +10,23 @@ namespace UsAcRe.Core.Actions {
 		public VirtualKeyCodes VKCode { get; set; }
 		public bool IsUp { get; set; }
 
-		public static KeybdAction CreateInstance(VirtualKeyCodes vKCode, bool isUp) {
+		public static KeybdAction Record(VirtualKeyCodes vKCode, bool isUp) {
 			var instance = CreateInstance<KeybdAction>();
 			instance.VKCode = vKCode;
 			instance.IsUp = isUp;
 			return instance;
 		}
 
-		public KeybdAction(ITestsLaunchingService testsLaunchingService) : base(testsLaunchingService) {
+		public static async Task Play(VirtualKeyCodes vKCode, bool isUp) {
+			var instance = CreateInstance<KeybdAction>();
+			instance.VKCode = vKCode;
+			instance.IsUp = isUp;
+			await instance.ExecuteAsync();
+		}
+
+		public KeybdAction(
+			ISettingsService settingsService,
+			ITestsLaunchingService testsLaunchingService) : base(settingsService, testsLaunchingService) {
 		}
 
 		protected override async ValueTask ExecuteCoreAsync() {
@@ -28,7 +37,7 @@ namespace UsAcRe.Core.Actions {
 			return string.Format("{0} Code:{0:D3}, Down:{2}, Up:{3}", nameof(KeybdAction), VKCode, IsUp ? "Up" : "  ", Convert.ToChar(VKCode));
 		}
 		public override string ExecuteAsScriptSource() {
-			return null;//string.Format("{0}({1}, {2})", nameof(ActionsExecutor.Keyboard), VKCode.ForNew(), IsUp.ForNew());
+			return string.Format("await {0}.{1}({1}, {2});", nameof(KeybdAction), nameof(KeybdAction.Play), VKCode.ForNew(), IsUp.ForNew());
 		}
 
 		ValueTask DoKeyPress() {

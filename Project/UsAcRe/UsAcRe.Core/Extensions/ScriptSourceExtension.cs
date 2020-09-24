@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Helpers;
 using UsAcRe.Core.Scripts;
@@ -60,6 +61,6 @@ namespace UsAcRe.Core.Extensions {
 			}
 			sb.Append("}");
 			return sb.ToString();
-		}
+		}		
 	}
 }

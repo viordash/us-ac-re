@@ -14,7 +14,7 @@ namespace UsAcRe.Core.Actions {
 		public bool DoubleClick { get; set; }
 		Point? Offset { get; set; } = null;
 
-		public static MouseClickAction CreateInstance(MouseButtonType button, Point clickedPoint, bool doubleClick) {
+		public static MouseClickAction Record(MouseButtonType button, Point clickedPoint, bool doubleClick) {
 			var instance = CreateInstance<MouseClickAction>();
 			instance.Button = button;
 			instance.ClickedPoint = clickedPoint;
@@ -22,13 +22,17 @@ namespace UsAcRe.Core.Actions {
 			return instance;
 		}
 
-		readonly ISettingsService settingsService;
+		public static async Task Play(MouseButtonType button, Point clickedPoint, bool doubleClick) {
+			var instance = CreateInstance<MouseClickAction>();
+			instance.Button = button;
+			instance.ClickedPoint = clickedPoint;
+			instance.DoubleClick = doubleClick;
+			await instance.ExecuteAsync();
+		}
 
 		public MouseClickAction(
 			ISettingsService settingsService,
-			ITestsLaunchingService testsLaunchingService) : base(testsLaunchingService) {
-			Guard.Requires(settingsService, nameof(settingsService));
-			this.settingsService = settingsService;
+			ITestsLaunchingService testsLaunchingService) : base(settingsService, testsLaunchingService) {
 		}
 
 		protected override async ValueTask ExecuteCoreAsync() {
@@ -39,7 +43,7 @@ namespace UsAcRe.Core.Actions {
 			return string.Format("{0} Type:{1}, Down:{2}, DblClick:{3}", nameof(MouseClickAction), Button, ClickedPoint, DoubleClick);
 		}
 		public override string ExecuteAsScriptSource() {
-			return null;// string.Format("{0}({1}, {2}, {3})", nameof(ActionsExecutor.MouseClick), Button.ForNew(), ClickedPoint.ForNew(), DoubleClick.ForNew());
+			return string.Format("await {0}.{1}({2}, {3}, {4});", nameof(MouseClickAction), nameof(MouseClickAction.Play), Button.ForNew(), ClickedPoint.ForNew(), DoubleClick.ForNew());
 		}
 
 		async ValueTask DoClick() {

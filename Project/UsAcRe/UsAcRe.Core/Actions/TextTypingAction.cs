@@ -7,13 +7,21 @@ namespace UsAcRe.Core.Actions {
 	public class TextTypingAction : BaseAction {
 		public string Text { get; set; }
 
-		public static TextTypingAction CreateInstance(string text) {
+		public static TextTypingAction Record(string text) {
 			var instance = CreateInstance<TextTypingAction>();
 			instance.Text = text;
 			return instance;
 		}
 
-		public TextTypingAction(ITestsLaunchingService testsLaunchingService) : base(testsLaunchingService) {
+		public static async Task Play(string text) {
+			var instance = CreateInstance<TextTypingAction>();
+			instance.Text = text;
+			await instance.ExecuteAsync();
+		}
+
+		public TextTypingAction(
+			ISettingsService settingsService,
+			ITestsLaunchingService testsLaunchingService) : base(settingsService, testsLaunchingService) {
 		}
 
 		protected override ValueTask ExecuteCoreAsync() {
@@ -25,7 +33,7 @@ namespace UsAcRe.Core.Actions {
 			return string.Format("{0} Text:{0}", nameof(TextTypingAction), NamingHelpers.Escape(Text, int.MaxValue));
 		}
 		public override string ExecuteAsScriptSource() {
-			return null;//string.Format("{0}(\"{1}\")", nameof(ActionsExecutor.TextType), NamingHelpers.Escape(Text, int.MaxValue));
+			return string.Format("await {0}.{1}(\"{2}\");", nameof(TextTypingAction), nameof(TextTypingAction.Play), NamingHelpers.Escape(Text, int.MaxValue));
 		}
 
 
