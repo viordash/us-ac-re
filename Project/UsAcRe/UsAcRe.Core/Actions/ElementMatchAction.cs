@@ -27,10 +27,10 @@ namespace UsAcRe.Core.Actions {
 		}
 		#endregion
 
-		public static ElementMatchAction Record(ElementFromPoint elementFromPoint) {
+		public static ElementMatchAction Record(ElementProgram program, List<UiElement> searchPath) {
 			var instance = CreateInstance<ElementMatchAction>();
-			instance.Program = elementFromPoint.TreeOfSpecificUiElement.Program;
-			instance.SearchPath = elementFromPoint.TreeOfSpecificUiElement;
+			instance.Program = program;
+			instance.SearchPath = searchPath;
 			return instance;
 		}
 

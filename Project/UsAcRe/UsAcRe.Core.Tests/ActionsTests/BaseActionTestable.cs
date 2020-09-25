@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using CommonServiceLocator;
 using Moq;
+using UsAcRe.Core.Actions;
 using UsAcRe.Core.Services;
 
 namespace UsAcRe.Core.Tests.ActionsTests {
@@ -48,6 +49,30 @@ namespace UsAcRe.Core.Tests.ActionsTests {
 				.Setup(x => x.GetCurrentCancellationToken())
 				.Returns(() => {
 					return new CancellationToken(true);
+				});
+
+			serviceLocatorMock
+				.Setup(x => x.GetInstance<KeybdAction>())
+				.Returns(() => {
+					return new KeybdAction(settingsServiceMock.Object, testsLaunchingServiceMock.Object);
+				});
+
+			serviceLocatorMock
+				.Setup(x => x.GetInstance<MouseClickAction>())
+				.Returns(() => {
+					return new MouseClickAction(settingsServiceMock.Object, testsLaunchingServiceMock.Object);
+				});
+
+			serviceLocatorMock
+				.Setup(x => x.GetInstance<TextTypingAction>())
+				.Returns(() => {
+					return new TextTypingAction(settingsServiceMock.Object, testsLaunchingServiceMock.Object);
+				});
+
+			serviceLocatorMock
+				.Setup(x => x.GetInstance<ElementMatchAction>())
+				.Returns(() => {
+					return new ElementMatchAction(automationElementServiceMock.Object, settingsServiceMock.Object, testsLaunchingServiceMock.Object);
 				});
 
 			ServiceLocator.SetLocatorProvider(() => serviceLocatorMock.Object);

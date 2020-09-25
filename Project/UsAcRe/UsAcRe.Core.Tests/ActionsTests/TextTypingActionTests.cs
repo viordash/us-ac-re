@@ -17,9 +17,9 @@ namespace UsAcRe.Core.Tests.ActionsTests {
 
 		[Test]
 		public void ExecuteAsScriptSource_Test() {
-			var action = new TextTypingAction("\t\tHello world \r\n \"test\"");
+			var action = TextTypingAction.Record("\t\tHello world \r\n \"test\"");
 			var sourcePresentation = action.ExecuteAsScriptSource();
-			Assert.AreEqual(sourcePresentation, "TextType(\"\\t\\tHello world \\r\\n \\\"test\\\"\")");
+			Assert.AreEqual(sourcePresentation, "TextTypingAction.Play(\"\\t\\tHello world \\r\\n \\\"test\\\"\")");
 		}
 	}
 }

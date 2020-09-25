@@ -18,9 +18,9 @@ namespace UsAcRe.Core.Tests.ActionsTests {
 
 		[Test]
 		public void ExecuteAsScriptSource_Test() {
-			var action = new MouseClickAction(null, MouseButtonType.Left, new System.Drawing.Point(1, 2), false);
+			var action = MouseClickAction.Record(MouseButtonType.Left, new System.Drawing.Point(1, 2), false);
 			var sourcePresentation = action.ExecuteAsScriptSource();
-			Assert.AreEqual(sourcePresentation, "MouseClick(MouseButtonType.Left, new System.Drawing.Point(1, 2), false)");
+			Assert.AreEqual(sourcePresentation, "MouseClickAction.Play(MouseButtonType.Left, new System.Drawing.Point(1, 2), false)");
 		}
 	}
 }

@@ -43,7 +43,7 @@ namespace UsAcRe.Core.Actions {
 			return string.Format("{0} Type:{1}, Down:{2}, DblClick:{3}", nameof(MouseClickAction), Button, ClickedPoint, DoubleClick);
 		}
 		public override string ExecuteAsScriptSource() {
-			return string.Format("await {0}.{1}({2}, {3}, {4});", nameof(MouseClickAction), nameof(MouseClickAction.Play), Button.ForNew(), ClickedPoint.ForNew(), DoubleClick.ForNew());
+			return string.Format("{0}.{1}({2}, {3}, {4})", nameof(MouseClickAction), nameof(MouseClickAction.Play), Button.ForNew(), ClickedPoint.ForNew(), DoubleClick.ForNew());
 		}
 
 		async ValueTask DoClick() {

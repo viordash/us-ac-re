@@ -18,9 +18,9 @@ namespace UsAcRe.Core.Tests.ActionsTests {
 
 		[Test]
 		public void ExecuteAsScriptSource_Test() {
-			var action = new KeybdAction(VirtualKeyCodes.VK_CONTROL, false);
+			var action = KeybdAction.Record(VirtualKeyCodes.VK_CONTROL, false);
 			var sourcePresentation = action.ExecuteAsScriptSource();
-			Assert.AreEqual(sourcePresentation, "Keyboard(VirtualKeyCodes.VK_CONTROL, false)");
+			Assert.AreEqual(sourcePresentation, "KeybdAction.Play(VirtualKeyCodes.VK_CONTROL, false)");
 		}
 	}
 }

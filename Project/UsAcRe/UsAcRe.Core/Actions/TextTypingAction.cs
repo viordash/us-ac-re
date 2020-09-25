@@ -33,7 +33,7 @@ namespace UsAcRe.Core.Actions {
 			return string.Format("{0} Text:{0}", nameof(TextTypingAction), NamingHelpers.Escape(Text, int.MaxValue));
 		}
 		public override string ExecuteAsScriptSource() {
-			return string.Format("await {0}.{1}(\"{2}\");", nameof(TextTypingAction), nameof(TextTypingAction.Play), NamingHelpers.Escape(Text, int.MaxValue));
+			return string.Format("{0}.{1}(\"{2}\")", nameof(TextTypingAction), nameof(TextTypingAction.Play), NamingHelpers.Escape(Text, int.MaxValue));
 		}
 
 

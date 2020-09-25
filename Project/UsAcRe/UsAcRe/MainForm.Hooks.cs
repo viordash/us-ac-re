@@ -63,12 +63,11 @@ namespace UsAcRe {
 					return;
 				}
 				if(elementFromPoint != null) {
-					Actions.Add(ElementMatchAction.Record(elementFromPoint));
+					Actions.Add(ElementMatchAction.Record(elementFromPoint.TreeOfSpecificUiElement.Program, elementFromPoint.TreeOfSpecificUiElement));
 					CloseMouseClickBlocker();
 					TestsLaunchingService.CloseHighlighter();
 					elementFromPoint = null;
 				}
-
 				Actions.Add(MouseClickAction.Record(args.Button, args.Coord, args.DoubleClick));
 			}), e);
 		}
@@ -79,7 +78,7 @@ namespace UsAcRe {
 					return;
 				}
 				if(elementFromPoint != null) {
-					Actions.Add(ElementMatchAction.Record(elementFromPoint));
+					Actions.Add(ElementMatchAction.Record(elementFromPoint.TreeOfSpecificUiElement.Program, elementFromPoint.TreeOfSpecificUiElement));
 					CloseMouseClickBlocker();
 					TestsLaunchingService.CloseHighlighter();
 					elementFromPoint = null;

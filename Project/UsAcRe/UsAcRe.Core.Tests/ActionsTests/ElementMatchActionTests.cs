@@ -26,33 +26,33 @@ namespace UsAcRe.Core.Tests.ActionsTests {
 
 		[Test]
 		public void ToString_Test() {
-			var action = new ElementMatchAction(null, new ElementProgram(0, "notepad.exe"), new List<UiElement>() {
+			var action = ElementMatchAction.Record(new ElementProgram(0, "notepad.exe"), new List<UiElement>() {
 				new UiElement(4, "value1", "name1", "className1", "automationId1", ControlType.Button.Id, Rect.Empty),
 				new UiElement(3, "value2", "name2", "className2", "automationId2", ControlType.CheckBox.Id, Rect.Empty),
 				new UiElement(1, "value3", "name3", "className3", "automationId3", ControlType.ComboBox.Id, Rect.Empty),
-			}, 1000);
+			});
 			var str = action.ToString();
 			Assert.IsNotEmpty(str);
 		}
 
 		[Test]
 		public void ExecuteAsScriptSource_Test() {
-			var action = new ElementMatchAction(null, new ElementProgram(19, "notepad.exe"), new List<UiElement>() {
+			var action = ElementMatchAction.Record(new ElementProgram(19, "notepad.exe"), new List<UiElement>() {
 				new UiElement(4, "value1", "name1", "className1", "automationId1", ControlType.Button.Id, new Rect(1, 2, 3, 4)),
 				new UiElement(3, "value2", "name2", "className2", "automationId2", ControlType.CheckBox.Id, new Rect()),
 				new UiElement(1, "value3", "name3", "className3", "automationId3", ControlType.ComboBox.Id, new Rect(9, 10, 11, 12)),
-			}, 1000);
+			});
 			var sourcePresentation = action.ExecuteAsScriptSource();
 			Assert.IsNotEmpty(sourcePresentation);
 		}
 
 		[Test]
 		public void ExecuteAsScriptSource_When_SearchPath_Is_Inherited_Test() {
-			var action = new ElementMatchAction(null, new ElementProgram(19, "notepad.exe"), new TreeOfSpecificUiElement() {
+			var action = ElementMatchAction.Record(new ElementProgram(19, "notepad.exe"), new TreeOfSpecificUiElement() {
 				new UiElement(4, "value1", "name1", "className1", "automationId1", ControlType.Button.Id, new Rect(1, 2, 3, 4)),
 				new UiElement(3, "value2", "name2", "className2", "automationId2", ControlType.CheckBox.Id, new Rect()),
 				new UiElement(1, "value3", "name3", "className3", "automationId3", ControlType.ComboBox.Id, new Rect(9, 10, 11, 12)),
-			}, 1000);
+			});
 			var sourcePresentation = action.ExecuteAsScriptSource();
 			Assert.IsNotEmpty(sourcePresentation);
 		}
@@ -66,12 +66,12 @@ namespace UsAcRe.Core.Tests.ActionsTests {
 					return cancellationToken;
 				});
 
-			var action = new ElementMatchAction(null, new ElementProgram(19, "notepad.exe"), new TreeOfSpecificUiElement() {
+			var task = ElementMatchAction.Play(new ElementProgram(19, "notepad.exe"), new TreeOfSpecificUiElement() {
 				new UiElement(4, "value1", "name1", "className1", "automationId1", ControlType.Button.Id, new Rect(1, 2, 3, 4)),
 			}, 100);
 
 			var stopwatch = Stopwatch.StartNew();
-			Assert.ThrowsAsync<TestFailedExeption>(async () => await action.ExecuteAsync());
+			Assert.ThrowsAsync<TestFailedExeption>(async () => await task);
 			var elapsed = stopwatch.Elapsed.TotalMilliseconds;
 			Assert.That(elapsed, Is.GreaterThan(100));
 		}
@@ -87,7 +87,7 @@ namespace UsAcRe.Core.Tests.ActionsTests {
 					return cancellationToken;
 				});
 
-			var action = new ElementMatchAction(null, new ElementProgram(42, "notepad.exe"), new TreeOfSpecificUiElement() {
+			var task = ElementMatchAction.Play(new ElementProgram(42, "notepad.exe"), new TreeOfSpecificUiElement() {
 				new UiElement(4, "value1", "name1", "className1", "automationId1", ControlType.Button.Id, new Rect(1, 2, 3, 4)),
 			}, 500);
 
@@ -97,7 +97,7 @@ namespace UsAcRe.Core.Tests.ActionsTests {
 				Thread.Sleep(150);
 				cancelTokenSource.Cancel();
 			},
-			async () => await action.ExecuteAsync()
+			async () => await task
 			);
 
 			var elapsed = stopwatch.Elapsed.TotalMilliseconds;
