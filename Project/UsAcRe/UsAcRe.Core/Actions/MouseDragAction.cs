@@ -42,7 +42,7 @@ namespace UsAcRe.Core.Actions {
 			return string.Format("{0} Button:{1}, Down:{2}, Up:{3}", nameof(MouseDragAction), Button, StartCoord, EndCoord);
 		}
 		public override string ExecuteAsScriptSource() {
-			return string.Format("await {0}.{1}({2}, {3}, {4});", nameof(MouseDragAction), nameof(KeybdAction.Play), Button.ForNew(), StartCoord.ForNew(), EndCoord.ForNew());
+			return string.Format("{0}.{1}({2}, {3}, {4})", nameof(MouseDragAction), nameof(KeybdAction.Play), Button.ForNew(), StartCoord.ForNew(), EndCoord.ForNew());
 
 		}
 

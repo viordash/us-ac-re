@@ -64,6 +64,12 @@ namespace UsAcRe.Core.Tests.ActionsTests {
 				});
 
 			serviceLocatorMock
+				.Setup(x => x.GetInstance<MouseDragAction>())
+				.Returns(() => {
+					return new MouseDragAction(settingsServiceMock.Object, testsLaunchingServiceMock.Object);
+				});
+
+			serviceLocatorMock
 				.Setup(x => x.GetInstance<TextTypingAction>())
 				.Returns(() => {
 					return new TextTypingAction(settingsServiceMock.Object, testsLaunchingServiceMock.Object);
