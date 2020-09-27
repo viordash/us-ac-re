@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using NGuard;
 using UsAcRe.Core.Actions;
+using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Extensions;
 using UsAcRe.Core.Scripts;
 using UsAcRe.Core.Services;
@@ -17,7 +19,7 @@ namespace UsAcRe.Scripts {
 			this.settingsService = settingsService;
 		}
 
-		static void ObtainCtorArgumentsTypes(Type type, List<Type> ctorArgsTypes) {
+		static void ObtainCtorArgumentsTypes(Type type, List<Type> types) {
 			var ctors = type.GetConstructors();
 			var ctorsArgs = ctors
 				.Select(x => x.GetParameters())
@@ -28,15 +30,36 @@ namespace UsAcRe.Scripts {
 				.Where(x => x.GenericTypeArguments.Length > 0)
 				.SelectMany(x => x.GenericTypeArguments);
 
-			var types = ctorsArgs
+			var combineTypes = ctorsArgs
 				.Concat(genericArgs)
-				.Where(x => !ctorArgsTypes.Contains(x))
+				.Where(x => !types.Contains(x))
 				.ToList();
 
-			ctorArgsTypes.AddRange(types);
+			types.AddRange(combineTypes);
 
-			foreach(var argType in types) {
-				ObtainCtorArgumentsTypes(argType, ctorArgsTypes);
+			foreach(var argType in combineTypes) {
+				ObtainCtorArgumentsTypes(argType, types);
+			}
+		}
+
+		static void ObtainMethodArgumentsTypes(MethodInfo methodInfo, List<Type> types) {
+			var parameters = methodInfo.GetParameters();
+			var parametersTypes = parameters
+				.Select(x => x.ParameterType);
+
+			var genericTypes = parametersTypes
+				.Where(x => x.GenericTypeArguments.Length > 0)
+				.SelectMany(x => x.GenericTypeArguments);
+
+			var combineTypes = parametersTypes
+				.Concat(genericTypes)
+				.Where(x => !types.Contains(x))
+				.ToList();
+
+			types.AddRange(combineTypes);
+
+			foreach(var argType in combineTypes) {
+				ObtainCtorArgumentsTypes(argType, types);
 			}
 		}
 
@@ -48,6 +71,14 @@ namespace UsAcRe.Scripts {
 			var types = new List<Type>();
 			foreach(var item in actionsTypes) {
 				ObtainCtorArgumentsTypes(item, types);
+			}
+
+			foreach(var action in actions) {
+				var methodRecord = action.GetType().GetMethod("Record");
+				if(methodRecord == null) {
+					throw new ScriptComposeException();
+				}
+				ObtainMethodArgumentsTypes(methodRecord, types);
 			}
 
 			var method = typeof(BaseAction).GetMethod(nameof(BaseAction.ExecuteAsync));
@@ -91,8 +122,6 @@ namespace UsAcRe.Scripts {
 			return ScriptConstants.Tab + ScriptConstants.Tab
 				+ "public async Task " + nameof(BaseAction.ExecuteAsync) + "() {"
 				+ ScriptConstants.NewLine
-				+ ScriptConstants.Tab + ScriptConstants.Tab + ScriptConstants.Tab + "await ActionsExecutor.Perform"
-				+ ScriptConstants.NewLine
 				+ code
 				+ ScriptConstants.NewLine
 				+ ScriptConstants.Tab + ScriptConstants.Tab + "}";
@@ -101,23 +130,16 @@ namespace UsAcRe.Scripts {
 		internal string CreateExecuteMethodBody(ActionsList actions) {
 			var sb = new StringBuilder();
 			CombineTextTypingActions(actions);
-			var lastAction = actions.LastOrDefault();
 			foreach(var action in actions) {
-				var codeLines = ("." + action.ExecuteAsScriptSource())
+				var codeLines = ("await " + action.ExecuteAsScriptSource())
 					.Split('\r', '\n')
 					.Where(x => !string.IsNullOrEmpty(x))
-					.Select(x => string.Format("{0}{0}{0}{0}{1}", ScriptConstants.Tab, x));
+					.Select(x => string.Format("{0}{0}{0}{1}", ScriptConstants.Tab, x));
 
 				var code = string.Join(ScriptConstants.NewLine, codeLines);
 
-				var lastItem = action == lastAction;
-				if(lastItem) {
-					sb.Append(code);
-				} else {
-					sb.AppendFormat("{0}{1}", code, ScriptConstants.NewLine);
-				}
+				sb.AppendFormat("{0};{1}", code, ScriptConstants.NewLine);
 			}
-			sb.Append(";");
 			return sb.ToString();
 		}
 

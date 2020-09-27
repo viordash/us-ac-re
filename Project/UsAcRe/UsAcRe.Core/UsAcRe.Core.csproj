@@ -87,7 +87,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actions\ActionsContainer.cs" />
-    <Compile Include="Actions\ActionsExecutor.cs" />
     <Compile Include="Actions\BaseAction.cs" />
     <Compile Include="Actions\ElementMatchAction.cs" />
     <Compile Include="Actions\KeybdAction.cs" />

@@ -90,7 +90,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActionsTests\ActionsExecutorTests.cs" />
     <Compile Include="ActionsTests\BaseActionTestable.cs" />
     <Compile Include="ActionsTests\ElementMatchActionTests.cs" />
     <Compile Include="ActionsTests\KeybdActionTests.cs" />

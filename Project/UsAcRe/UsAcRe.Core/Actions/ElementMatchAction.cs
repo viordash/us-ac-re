@@ -45,9 +45,9 @@ namespace UsAcRe.Core.Actions {
 
 		public ElementProgram Program { get; private set; }
 		public List<UiElement> SearchPath { get; private set; }
-		public AnchorStyles Anchor { get; private set; } = defaultAnchor;
+		public AnchorStyles Anchor { get; set; } = defaultAnchor;
 		public UiElement MatchedElement { get => SearchPath?[0]; }
-		public int TimeoutMs { get; private set; } = defaultTimeoutMs;
+		public int TimeoutMs { get; set; } = defaultTimeoutMs;
 		public System.Windows.Point? OffsetPoint { get; private set; } = null;
 		int stepWaitAppear;
 
@@ -92,14 +92,14 @@ namespace UsAcRe.Core.Actions {
 		}
 		public override string ExecuteAsScriptSource() {
 			var sb = new StringBuilder();
-			sb.AppendFormat("await {0}.{1}({2}, {3}", nameof(ElementMatchAction), nameof(ElementMatchAction.Play), Program.ForNew(), SearchPath.ForNew());
+			sb.AppendFormat("{0}.{1}({2}, {3}", nameof(ElementMatchAction), nameof(ElementMatchAction.Play), Program.ForNew(), SearchPath.ForNew());
 			if(TimeoutMs != defaultTimeoutMs) {
 				sb.AppendFormat(", {0}", TimeoutMs.ForNew());
 			}
 			if(Anchor != defaultAnchor) {
 				sb.AppendFormat(", {0}", Anchor.ForNew());
 			}
-			sb.Append(");");
+			sb.Append(")");
 			return sb.ToString();
 		}
 
