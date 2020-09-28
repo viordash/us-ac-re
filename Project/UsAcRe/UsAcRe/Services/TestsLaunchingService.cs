@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using NGuard;
 using UsAcRe.Core.Actions;
@@ -13,7 +15,15 @@ namespace UsAcRe.Services {
 		CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
 		ElementHighlighter elementHighlighter = null;
 
-		public BaseAction LastAction { get; private set; } = null;
+		public List<BaseAction> executedActions = new List<BaseAction>();
+		public BaseAction LastAction {
+			get {
+				return executedActions
+					.Reverse<BaseAction>()
+					.Skip(1)
+					.FirstOrDefault();
+			}
+		}
 
 		public TestsLaunchingService(IWindowsFormsService windowsFormsService) {
 			Guard.Requires(windowsFormsService, nameof(windowsFormsService));
@@ -29,7 +39,6 @@ namespace UsAcRe.Services {
 		}
 
 		public void Start() {
-			LastAction = null;
 			if(cancelTokenSource != null) {
 				cancelTokenSource.Cancel();
 				cancelTokenSource.Dispose();
@@ -80,7 +89,7 @@ namespace UsAcRe.Services {
 
 		public void Log(BaseAction baseAction) {
 			logger.Info("\r\n {0}", baseAction.ExecuteAsScriptSource());
-			LastAction = baseAction;
+			executedActions.Add(baseAction);
 		}
 	}
 }
