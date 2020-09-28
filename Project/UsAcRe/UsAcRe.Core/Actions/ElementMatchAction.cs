@@ -164,7 +164,6 @@ namespace UsAcRe.Core.Actions {
 		RequiredElement GetElement() {
 			UiElement rootElement;
 			if(System.IO.Path.GetFileName(Program.FileName).ToLower() == "explorer.exe") {
-				var desktop = automationElementService.GetDesktop();
 				rootElement = GetRootElementFromDesktop();
 			} else {
 				rootElement = automationElementService.GetRootElement(Program);
