@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using UsAcRe.Core.WindowsSystem;
 
 namespace UsAcRe.Core.Services {
@@ -13,6 +14,7 @@ namespace UsAcRe.Core.Services {
 		IntPtr RealChildWindowFromPoint(IntPtr hWndParent, WinAPI.POINT pt);
 		bool ScreenToClient(IntPtr hWnd, ref WinAPI.POINT point);
 		bool SetForegroundWindow(IntPtr hWnd);
+		IntPtr GetWindowHandle(int dwProcessId);
 	}
 
 	public class WinApiService : IWinApiService {
@@ -70,6 +72,38 @@ namespace UsAcRe.Core.Services {
 
 		public bool SetForegroundWindow(IntPtr hWnd) {
 			return WinAPI.SetForegroundWindow(hWnd);
+		}
+
+		public IntPtr GetWindowHandle(int dwProcessId) {
+			try {
+				IntPtr prevWindow = IntPtr.Zero;
+
+				while(true) {
+					var desktopWindow = WinAPI.GetDesktopWindow();
+					if(desktopWindow == IntPtr.Zero) {
+						break;
+					}
+
+					var nextWindow = WinAPI.FindWindowEx(desktopWindow, prevWindow, null, null);
+					if(nextWindow == IntPtr.Zero) {
+						break;
+					}
+
+					uint procId = 0;
+					WinAPI.GetWindowThreadProcessId(nextWindow, out procId);
+
+					if(procId == dwProcessId) {
+						var windowText = new StringBuilder();
+						if(WinAPI.IsWindowVisible(nextWindow)
+							&& !WinAPI.IsIconic(nextWindow)
+							&& WinAPI.GetWindowText(nextWindow, windowText, 4096) != 0
+							&& WinAPI.GetParent(nextWindow) == IntPtr.Zero)
+							return nextWindow;
+					}
+					prevWindow = nextWindow;
+				}
+			} catch { }
+			return IntPtr.Zero;
 		}
 	}
 }
