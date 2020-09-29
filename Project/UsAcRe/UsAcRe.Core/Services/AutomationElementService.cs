@@ -26,11 +26,12 @@ namespace UsAcRe.Core.Services {
 		string BuildFriendlyInfo(AutomationElement element);
 		void RetrieveElementValue(UiElement element);
 		ElementProgram GetProgram(UiElement element);
-		UiElement GetRootElement(ElementProgram program);
+		UiElement GetRootElement(ElementProgram program, bool windowHandleFromWinApi);
 		bool TryGetClickablePoint(UiElement element, out Point pt);
 	}
 
 	public class AutomationElementService : IAutomationElementService {
+		protected NLog.Logger logger = NLog.LogManager.GetLogger("UsAcRe.Trace");
 		readonly IWinApiService winApiService;
 		readonly ISettingsService settingsService;
 
@@ -226,7 +227,7 @@ namespace UsAcRe.Core.Services {
 			return null;
 		}
 
-		public UiElement GetRootElement(ElementProgram program) {
+		public UiElement GetRootElement(ElementProgram program, bool windowHandleFromWinApi) {
 			var processes = Process.GetProcesses()
 				.Where(x => x.MainWindowHandle != IntPtr.Zero)
 				.Where(x => SafeGetProcessFileName(x) == program.FileName)
@@ -236,8 +237,14 @@ namespace UsAcRe.Core.Services {
 				throw new TargetProgramNotFoundExeption(program);
 			}
 			var process = processes[program.Index];
-			var element = AutomationElement.FromHandle(process.MainWindowHandle);
-			return ToUiElement(element);
+			if(!process.WaitForInputIdle(100)) {
+				logger.Warn("WaitForInputIdle timeout '{0}'", program.ToString());
+				return null;
+			}
+			var hwnd = !windowHandleFromWinApi
+				? process.MainWindowHandle
+				: winApiService.GetWindowHandle(process.Id);
+			return ToUiElement(AutomationElement.FromHandle(hwnd));
 		}
 
 		public bool TryGetClickablePoint(UiElement element, out Point pt) {
