@@ -161,21 +161,31 @@ namespace UsAcRe.Core.Actions {
 			return rootElement;
 		}
 
-		RequiredElement GetElement() {
+		UiElement GetRootElement(bool windowHandleFromWinApi) {
 			UiElement rootElement;
 			if(System.IO.Path.GetFileName(Program.FileName).ToLower() == "explorer.exe") {
 				rootElement = GetRootElementFromDesktop();
 			} else {
-				rootElement = automationElementService.GetRootElement(Program);
+				rootElement = automationElementService.GetRootElement(Program, windowHandleFromWinApi);
 			}
+			return rootElement;
+		}
 
+		RequiredElement GetElement() {
+			var parentEquivalentInSearchPath = SearchPath[SearchPath.Count - 1];
+			var rootElement = GetRootElement(false);
 			if(rootElement == null) {
 				return null;
 			}
 
-			var parentEquivalentInSearchPath = SearchPath[SearchPath.Count - 1];
 			if(!AreUiElementsEquals(rootElement, parentEquivalentInSearchPath, false)) {
-				return null;
+				rootElement = GetRootElement(true);
+				if(rootElement == null) {
+					return null;
+				}
+				if(!AreUiElementsEquals(rootElement, parentEquivalentInSearchPath, false)) {
+					return null;
+				}
 			}
 
 			var requiredElement = new RequiredElement() {
