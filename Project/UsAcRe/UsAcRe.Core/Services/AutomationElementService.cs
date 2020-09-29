@@ -234,7 +234,8 @@ namespace UsAcRe.Core.Services {
 				.OrderBy(x => x.StartTime)
 				.ToList();
 			if(processes.Count <= program.Index) {
-				throw new TargetProgramNotFoundExeption(program);
+				logger.Warn("TargetProgramNotFoundExeption '{0}'", program.ToString());
+				return null;
 			}
 			var process = processes[program.Index];
 			if(!process.WaitForInputIdle(100)) {
