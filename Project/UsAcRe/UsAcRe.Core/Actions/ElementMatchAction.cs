@@ -17,7 +17,7 @@ using UsAcRe.Core.UIAutomationElement;
 namespace UsAcRe.Core.Actions {
 	public class ElementMatchAction : BaseAction {
 		const int defaultTimeoutMs = 20 * 1000;
-		const AnchorStyles defaultAnchor = AnchorStyles.Top | AnchorStyles.Left;
+		public const AnchorStyles defaultAnchor = AnchorStyles.Top | AnchorStyles.Left;
 
 		#region inner classes
 		class RequiredElement {
@@ -178,12 +178,29 @@ namespace UsAcRe.Core.Actions {
 				return null;
 			}
 
-			if(!AreUiElementsEquals(rootElement, parentEquivalentInSearchPath, false)) {
+			if(!automationElementService.Compare(rootElement, parentEquivalentInSearchPath, new ElementCompareParameters() {
+				AutomationElementInternal = false,
+				Anchor = defaultAnchor,
+				CompareLocation = false,
+				CompareSizes = false,
+				NameIsMatchCase = true,
+				NameIsMatchWholeWord = true,
+				CheckByValue = false
+			})) {
+				logger.Debug("attempt to retrieve the rootElement with help of window handle from WinApi");
 				rootElement = GetRootElement(true);
 				if(rootElement == null) {
 					return null;
 				}
-				if(!AreUiElementsEquals(rootElement, parentEquivalentInSearchPath, false)) {
+				if(!automationElementService.Compare(rootElement, parentEquivalentInSearchPath, new ElementCompareParameters() {
+					AutomationElementInternal = false,
+					Anchor = defaultAnchor,
+					CompareLocation = false,
+					CompareSizes = false,
+					NameIsMatchCase = true,
+					NameIsMatchWholeWord = true,
+					CheckByValue = false
+				})) {
 					return null;
 				}
 			}
@@ -199,6 +216,8 @@ namespace UsAcRe.Core.Actions {
 				requiredElement.ParentEquivalentInSearchPath = parentEquivalentInSearchPath;
 				parentEquivalentInSearchPath = element;
 
+				//logger.Debug(" ---    search element {0}", element);
+
 				requiredElement.Element = SearchRequiredElement(element, childs);
 				if(requiredElement.Element == null) {
 					break;
@@ -208,27 +227,24 @@ namespace UsAcRe.Core.Actions {
 			return requiredElement;
 		}
 
-		bool AreUiElementsEquals(UiElement element1, UiElement element2, bool compareSizes) {
-			bool isTargetedElementWithPresentedValue = element1 == SearchPath[0];
-			if(element1.ControlTypeId != element2.ControlTypeId
-				|| !TextMatched(element1.Name, element2.Name)
-				|| !StringEquals(element1.ClassName, element2.ClassName)
-				|| !StringEquals(element1.AutomationId, element2.AutomationId)
-				|| (isTargetedElementWithPresentedValue && !AreValueEquals(element1, element2))
-				|| (compareSizes && !DimensionsHelper.AreSizeEquals(element1.BoundingRectangle.Size, element2.BoundingRectangle.Size,
-					settingsService.ClickPositionToleranceInPercent))) {
-				return false;
-			}
-			return true;
-		}
-
 		UiElement SearchRequiredElement(UiElement searchedElement, List<UiElement> childs) {
+			bool isTargetedElementWithPresentedValue = searchedElement == SearchPath[0];
 			foreach(var element in childs) {
-				if(!AreUiElementsEquals(element, searchedElement, true)) {
+				if(!automationElementService.Compare(element, searchedElement, new ElementCompareParameters() {
+					AutomationElementInternal = false,
+					Anchor = defaultAnchor,
+					CompareLocation = true,
+					LocationToleranceInPercent = settingsService.ClickPositionToleranceInPercent,
+					CompareSizes = true,
+					SizeToleranceInPercent = settingsService.ClickPositionToleranceInPercent,
+					NameIsMatchCase = true,
+					NameIsMatchWholeWord = true,
+					CheckByValue = settingsService.CheckByValue && isTargetedElementWithPresentedValue
+				})) {
 					continue;
 				}
 				if(searchedElement.Index > 0) {
-					var similars = childs.Where(x => automationElementService.ElementsIsSimilar(x, element));
+					var similars = childs.Where(x => automationElementService.CompareInSiblings(x, element, ElementCompareParameters.ForSimilars()));
 					return similars.ElementAt(searchedElement.Index);
 				} else {
 					return element;
@@ -244,31 +260,6 @@ namespace UsAcRe.Core.Actions {
 			} else {
 				return automationElementService.FindAllValidElements(element, TreeScope.Children);
 			}
-		}
-
-		bool TextMatched(string text, string sSearchTerm) {
-			bool isMatchCase = true;//			IsMatchCase();
-			bool isMatchWholeWord = true;//			IsMatchWholeWord() || string.IsNullOrEmpty(text);
-			if(StringEquals(text, sSearchTerm)) {
-				return true;
-			}
-			if(string.IsNullOrEmpty(text) || string.IsNullOrEmpty(sSearchTerm)) {
-				return false;
-			}
-			if(text.Equals(sSearchTerm, StringComparison.OrdinalIgnoreCase)) {
-				return true;
-			}
-			if(isMatchWholeWord || string.IsNullOrEmpty(sSearchTerm)) {
-				return false;
-			}
-			var comparisonType = isMatchCase ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
-			if(!isMatchWholeWord && sSearchTerm.IndexOf(text, comparisonType) >= 0) {
-				return true;
-			}
-			if(!isMatchWholeWord && text.IndexOf(sSearchTerm, comparisonType) >= 0) {
-				return true;
-			}
-			return false;
 		}
 
 		bool AreValueEquals(UiElement element1, UiElement element2) {

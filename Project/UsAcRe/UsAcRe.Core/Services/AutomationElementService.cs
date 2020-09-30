@@ -21,8 +21,8 @@ namespace UsAcRe.Core.Services {
 		UiElement GetDesktop();
 		IntPtr GetNativeWindowHandle(UiElement element);
 
-		bool Compare(UiElement left, UiElement right);
-		bool ElementsIsSimilar(UiElement expected, UiElement actual);
+		bool CompareInSiblings(UiElement left, UiElement right, ElementCompareParameters parameters);
+		bool Compare(UiElement left, UiElement right, ElementCompareParameters parameters);
 		string BuildFriendlyInfo(AutomationElement element);
 		void RetrieveElementValue(UiElement element);
 		ElementProgram GetProgram(UiElement element);
@@ -90,32 +90,84 @@ namespace UsAcRe.Core.Services {
 				element.Current.ClassName, element.Current.ControlType.ProgrammaticName);
 		}
 
-		public bool Compare(UiElement left, UiElement right) {
-			return Compare(left, right, 0);
+
+		public bool CompareInSiblings(UiElement left, UiElement right, ElementCompareParameters parameters) {
+			return Compare(left, right, int.MaxValue, parameters, false);
 		}
 
-		bool Compare(UiElement left, UiElement right, int nestedLevel) {
+		public bool Compare(UiElement left, UiElement right, ElementCompareParameters parameters) {
+			return Compare(left, right, int.MaxValue, parameters, true);
+		}
+
+		bool CompareValue(UiElement left, UiElement right) {
+			bool leftEmpty = string.IsNullOrEmpty(left.Value);
+			bool rightEmpty = string.IsNullOrEmpty(right.Value);
+			if(leftEmpty && rightEmpty) {
+				return true;
+			}
+			if(leftEmpty) {
+				RetrieveElementValue(left);
+			}
+			if(rightEmpty) {
+				RetrieveElementValue(right);
+			}
+			return StringHelper.ImplicitEquals(left.Value, right.Value);
+		}
+
+		bool Compare(UiElement left, UiElement right, int nestedLevel, ElementCompareParameters parameters, bool logging) {
 			if(object.Equals(left, null)) {
 				return (object.Equals(right, null));
 			}
 			if(object.Equals(right, null)) {
 				return false;
 			}
-
-			if(left.BoundingRectangle != right.BoundingRectangle) {
-				return false;
-			}
-
+			//logger.Debug("Compare ({0}) ({1})", left, right);
 			if(left.ControlTypeId != right.ControlTypeId) {
+				if(logging) {
+					logger.Debug("left.ControlTypeId != right.ControlTypeId ({0}) != ({1})", left.ControlTypeId, right.ControlTypeId);
+				}
 				return false;
 			}
 
 			if(!StringHelper.ImplicitEquals(left.Name, right.Name)) {
+				if(logging) {
+					logger.Debug("left.Name != right.Name ({0}) != ({1})", left.Name, right.Name);
+				}
 				return false;
 			}
 
-			if(!StringHelper.ImplicitEquals(left.Value, right.Value)) {
+			if(!StringHelper.ImplicitEquals(left.AutomationId, right.AutomationId)) {
+				if(logging) {
+					logger.Debug("left.AutomationId != right.AutomationId ({0}) != ({1})", left.AutomationId, right.AutomationId);
+				}
 				return false;
+			}
+
+			if(parameters.CompareLocation
+				&& !DimensionsHelper.AreLocationEquals(left.BoundingRectangle.Location, right.BoundingRectangle.Location, parameters.LocationToleranceInPercent)) {
+				if(logging) {
+					logger.Debug("DimensionsHelper.AreLocationEquals ({0}) != ({1}), {2}%", left.BoundingRectangle.Location, right.BoundingRectangle.Location, parameters.LocationToleranceInPercent);
+				}
+				return false;
+			}
+
+			if(parameters.CompareSizes
+				&& !DimensionsHelper.AreSizeEquals(left.BoundingRectangle.Size, right.BoundingRectangle.Size, parameters.SizeToleranceInPercent)) {
+				if(logging) {
+					logger.Debug("DimensionsHelper.AreSizeEquals ({0}) != ({1}), {2}%", left.BoundingRectangle.Size, right.BoundingRectangle.Size, parameters.SizeToleranceInPercent);
+				}
+				return false;
+			}
+
+			if(parameters.CheckByValue && !CompareValue(left, right)) {
+				if(logging) {
+					logger.Debug("left.Value != right.Value ({0}) != ({1})", left.Value, right.Value);
+				}
+				return false;
+			}
+
+			if(!parameters.AutomationElementInternal) {
+				return true;
 			}
 
 			bool leftAutomationElementEmpty = !TryGetAutomationElement(left, out AutomationElement leftAutomationElement);
@@ -127,18 +179,19 @@ namespace UsAcRe.Core.Services {
 				return false;
 			}
 
-
-			if(!StringHelper.ImplicitEquals(leftAutomationElement.Current.AutomationId, rightAutomationElement.Current.AutomationId)) {
-				return false;
-			}
-
 			var leftRuntimeId = leftAutomationElement.GetRuntimeId();
 			var rightRuntimeId = rightAutomationElement.GetRuntimeId();
 			if(!leftRuntimeId.SequenceEqual(rightRuntimeId)) {
+				if(logging) {
+					logger.Debug("left.GetRuntimeId() != right.GetRuntimeId() ({0}) != ({1})", string.Join(", ", leftRuntimeId), string.Join(", ", rightRuntimeId));
+				}
 				return false;
 			}
 
 			if(!StringHelper.ImplicitEquals(leftAutomationElement.Current.ProviderDescription, rightAutomationElement.Current.ProviderDescription)) {
+				if(logging) {
+					logger.Debug("left.ProviderDescription != right.ProviderDescription ({0}) != ({1})", leftAutomationElement.Current.ProviderDescription, rightAutomationElement.Current.ProviderDescription);
+				}
 				return false;
 			}
 
@@ -147,14 +200,7 @@ namespace UsAcRe.Core.Services {
 			}
 			var leftParent = TreeWalker.RawViewWalker.GetParent(leftAutomationElement);
 			var rightParent = TreeWalker.RawViewWalker.GetParent(rightAutomationElement);
-			return Compare(ToUiElement(leftParent), ToUiElement(rightParent), nestedLevel + 1);
-		}
-
-		public bool ElementsIsSimilar(UiElement expected, UiElement actual) {
-			return expected.ControlTypeId == actual.ControlTypeId
-				&& expected.Name == actual.Name
-				&& expected.AutomationId == actual.AutomationId
-				&& expected.Value == actual.Value;
+			return Compare(ToUiElement(leftParent), ToUiElement(rightParent), nestedLevel + 1, parameters, logging);
 		}
 
 		UiElement ToUiElement(AutomationElement element) {

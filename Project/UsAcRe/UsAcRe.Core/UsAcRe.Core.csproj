@@ -111,6 +111,7 @@
     <Compile Include="Scripts\ScriptCompiler.cs" />
     <Compile Include="Scripts\ScriptConstants.cs" />
     <Compile Include="Services\AutomationElementService.cs" />
+    <Compile Include="Services\ElementCompareParameters.cs" />
     <Compile Include="Services\ISettingsService.cs" />
     <Compile Include="Services\ITestsLaunchingService.cs" />
     <Compile Include="Services\WinApiService.cs" />

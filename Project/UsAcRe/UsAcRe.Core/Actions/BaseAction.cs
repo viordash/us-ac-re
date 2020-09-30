@@ -10,7 +10,7 @@ using UsAcRe.Core.Services;
 
 namespace UsAcRe.Core.Actions {
 	public abstract class BaseAction {
-		protected NLog.Logger logger = NLog.LogManager.GetLogger("UsAcRe.FormMain");
+		protected NLog.Logger logger = NLog.LogManager.GetLogger("UsAcRe.Trace");
 
 		protected static T CreateInstance<T>() where T : BaseAction {
 			return ServiceLocator.Current.GetInstance<T>();
