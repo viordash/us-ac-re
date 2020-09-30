@@ -92,7 +92,7 @@ namespace UsAcRe.Core.Services {
 					WinAPI.GetWindowThreadProcessId(nextWindow, out procId);
 
 					if(procId == dwProcessId) {
-						var windowText = new StringBuilder();
+						var windowText = new StringBuilder(4096 + 1);
 						if(WinAPI.IsWindowVisible(nextWindow)
 							&& !WinAPI.IsIconic(nextWindow)
 							&& WinAPI.GetWindowText(nextWindow, windowText, 4096) != 0
