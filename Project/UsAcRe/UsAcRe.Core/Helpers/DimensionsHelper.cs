@@ -9,11 +9,11 @@ namespace UsAcRe.Core.Helpers {
 				return true;
 			} else if(tolerance > 0) {
 				tolerance = 100 / tolerance;
-				xTolerance = Math.Max((int)point1.X, point2.X) / tolerance;
-				yTolerance = Math.Max((int)point1.Y, point2.Y) / tolerance;
+				xTolerance = Math.Abs(Math.Max(point1.X, point2.X)) / tolerance;
+				yTolerance = Math.Abs(Math.Max(point1.Y, point2.Y)) / tolerance;
 			}
-			return Math.Abs((int)point1.X - point2.X) <= xTolerance
-				&& Math.Abs((int)point1.Y - point2.Y) <= yTolerance;
+			return Math.Abs(point1.X - point2.X) <= xTolerance
+				&& Math.Abs(point1.Y - point2.Y) <= yTolerance;
 		}
 
 		public static bool AreSizeEquals(System.Windows.Size size1, System.Windows.Size size2, double tolerance) {
@@ -27,11 +27,11 @@ namespace UsAcRe.Core.Helpers {
 				return true;
 			} else if(tolerance > 0) {
 				tolerance = 100 / tolerance;
-				heightTolerance = Math.Max((int)size1.Height, size2.Height) / tolerance;
-				widthTolerance = Math.Max((int)size1.Width, size2.Width) / tolerance;
+				heightTolerance = Math.Abs(Math.Max(size1.Height, size2.Height)) / tolerance;
+				widthTolerance = Math.Abs(Math.Max(size1.Width, size2.Width)) / tolerance;
 			}
-			return Math.Abs((int)size1.Height - size2.Height) <= heightTolerance
-				&& Math.Abs((int)size1.Width - size2.Width) <= widthTolerance;
+			return Math.Abs(size1.Height - size2.Height) <= heightTolerance
+				&& Math.Abs(size1.Width - size2.Width) <= widthTolerance;
 		}
 	}
 }
