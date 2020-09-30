@@ -24,7 +24,7 @@ namespace UsAcRe.Core.Tests.UIAutomationElement {
 				this.predefinedElements = predefinedElements;
 			}
 
-			public TreeElement PublicSortElementsByPointProximity(List<TreeElement> elements) {
+			public UiElement PublicSortElementsByPointProximity(List<TreeElement> elements) {
 				return SortElementsByPointProximity(elements, IntPtr.Zero);
 			}
 
@@ -151,7 +151,7 @@ namespace UsAcRe.Core.Tests.UIAutomationElement {
 			}));
 
 			var sortedElements = testable.PublicSortElementsByPointProximity(elements);
-			Assert.That(sortedElements.Element.Name, Is.EqualTo("Button2"));
+			Assert.That(sortedElements.Name, Is.EqualTo("Button2"));
 		}
 	}
 }

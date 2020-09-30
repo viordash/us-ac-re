@@ -34,7 +34,7 @@ namespace UsAcRe.Core.Tests.ServicesTests {
 
 			try {
 				var elementProgram = new ElementProgram(1, "notepad.exe");
-				var rootElement = testable.GetRootElement(elementProgram);
+				var rootElement = testable.GetRootElement(elementProgram, false);
 				Assert.NotNull(rootElement);
 				var automationElement = rootElement.AutomationElementObj as AutomationElement;
 				Assert.NotNull(automationElement);
