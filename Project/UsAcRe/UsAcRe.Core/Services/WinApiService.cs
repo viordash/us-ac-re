@@ -77,13 +77,12 @@ namespace UsAcRe.Core.Services {
 		public IntPtr GetWindowHandle(int dwProcessId) {
 			try {
 				IntPtr prevWindow = IntPtr.Zero;
+				var desktopWindow = WinAPI.GetDesktopWindow();
+				if(desktopWindow == IntPtr.Zero) {
+					return IntPtr.Zero;
+				}
 
 				while(true) {
-					var desktopWindow = WinAPI.GetDesktopWindow();
-					if(desktopWindow == IntPtr.Zero) {
-						break;
-					}
-
 					var nextWindow = WinAPI.FindWindowEx(desktopWindow, prevWindow, null, null);
 					if(nextWindow == IntPtr.Zero) {
 						break;
