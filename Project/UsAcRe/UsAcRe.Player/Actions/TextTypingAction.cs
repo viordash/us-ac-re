@@ -1,9 +1,10 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Test.Input;
+using UsAcRe.Core.Actions;
 using UsAcRe.Core.Helpers;
 using UsAcRe.Core.Services;
 
-namespace UsAcRe.Core.Actions {
+namespace UsAcRe.Player.Actions {
 	public class TextTypingAction : BaseAction {
 		public string Text { get; set; }
 

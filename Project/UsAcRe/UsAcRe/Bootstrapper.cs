@@ -4,6 +4,7 @@ using Unity.Lifetime;
 using Unity.ServiceLocation;
 using UsAcRe.Core.Actions;
 using UsAcRe.Core.Services;
+using UsAcRe.Player.Actions;
 using UsAcRe.Services;
 
 namespace UsAcRe {

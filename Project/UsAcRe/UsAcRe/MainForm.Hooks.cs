@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Windows.Forms;
-using UsAcRe.Core.Actions;
 using UsAcRe.Core.WindowsSystem;
 using UsAcRe.Highlighter;
 using UsAcRe.KeyboardProcess;
 using UsAcRe.MouseProcess;
+using UsAcRe.Player.Actions;
 using UsAcRe.Recorder.UIAutomationElement;
 
 namespace UsAcRe {

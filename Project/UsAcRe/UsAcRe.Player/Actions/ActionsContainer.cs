@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using NGuard;
+using UsAcRe.Core.Actions;
 using UsAcRe.Core.Scripts;
 using UsAcRe.Core.Services;
+using UsAcRe.Player.Scripts;
 
-namespace UsAcRe.Core.Actions {
+namespace UsAcRe.Player.Actions {
 	public class ActionsList : List<BaseAction> {
 		public ActionsList(IEnumerable<BaseAction> acions) : this() {
 			AddRange(acions);

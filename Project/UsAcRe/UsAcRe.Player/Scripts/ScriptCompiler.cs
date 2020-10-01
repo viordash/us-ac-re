@@ -4,8 +4,9 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using UsAcRe.Core.Actions;
+using UsAcRe.Core.Scripts;
 
-namespace UsAcRe.Core.Scripts {
+namespace UsAcRe.Player.Scripts {
 	public class ScriptCompiler {
 		static NLog.Logger logger = NLog.LogManager.GetLogger("UsAcRe.FormMain");
 

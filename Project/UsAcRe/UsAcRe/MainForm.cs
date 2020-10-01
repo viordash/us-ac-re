@@ -3,16 +3,15 @@ using System.IO;
 using System.Windows.Forms;
 using CommonServiceLocator;
 using NLog.Windows.Forms;
-using UsAcRe.Core.Actions;
 using UsAcRe.Core.Exceptions;
-using UsAcRe.Core.Scripts;
 using UsAcRe.Core.Services;
 using UsAcRe.Core.WindowsSystem;
 using UsAcRe.Helpers;
 using UsAcRe.Highlighter;
+using UsAcRe.Player.Actions;
+using UsAcRe.Player.Scripts;
 using UsAcRe.Properties;
 using UsAcRe.Recorder.UIAutomationElement;
-using UsAcRe.Scripts;
 
 namespace UsAcRe {
 	public partial class MainForm : Form {

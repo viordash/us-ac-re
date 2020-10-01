@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Test.Input;
+using UsAcRe.Core.Actions;
 using UsAcRe.Core.Extensions;
 using UsAcRe.Core.Services;
 using UsAcRe.Core.WindowsSystem;
 
-namespace UsAcRe.Core.Actions {
+namespace UsAcRe.Player.Actions {
 	public class KeybdAction : BaseAction {
 		public VirtualKeyCodes VKCode { get; set; }
 		public bool IsUp { get; set; }

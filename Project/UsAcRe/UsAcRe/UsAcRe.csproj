@@ -184,6 +184,10 @@
       <Project>{397f80c0-e494-44ad-9996-d3b248dc41de}</Project>
       <Name>UsAcRe.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\UsAcRe.Player\UsAcRe.Player.csproj">
+      <Project>{ffbbbc59-d383-4299-961a-c86e63c189a5}</Project>
+      <Name>UsAcRe.Player</Name>
+    </ProjectReference>
     <ProjectReference Include="..\UsAcRe.Recorder\UsAcRe.Recorder.csproj">
       <Project>{b866346f-5aad-44f2-b8ce-fff948420d58}</Project>
       <Name>UsAcRe.Recorder</Name>

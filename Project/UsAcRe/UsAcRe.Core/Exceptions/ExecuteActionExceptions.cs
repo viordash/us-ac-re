@@ -18,13 +18,12 @@ namespace UsAcRe.Core.Exceptions {
 	}
 
 	public class MinorException : ExecuteBaseActionException {
-		public MinorException(MouseClickAction mouseAction, string targetName) : base(mouseAction, targetName) { }
+		public MinorException(BaseAction baseAction, string targetName) : base(baseAction, targetName) { }
 		public MinorException(BaseAction baseAction) : base(baseAction) { }
 	}
 
 	public class SevereException : ExecuteBaseActionException {
-		public SevereException(MouseClickAction mouseAction, string targetName) : base(mouseAction, targetName) { }
-		public SevereException(MouseDragAction mouseAction, string targetName) : base(mouseAction, targetName) { }
+		public SevereException(BaseAction baseAction, string targetName) : base(baseAction, targetName) { }
 		public SevereException(BaseAction baseAction) : base(baseAction) { }
 	}
 

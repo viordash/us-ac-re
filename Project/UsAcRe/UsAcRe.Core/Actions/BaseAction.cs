@@ -3,6 +3,7 @@ using System;
 using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using CommonServiceLocator;
 using NGuard;
 using UsAcRe.Core.Exceptions;
@@ -10,6 +11,9 @@ using UsAcRe.Core.Services;
 
 namespace UsAcRe.Core.Actions {
 	public abstract class BaseAction {
+		public const int defaultTimeoutMs = 20 * 1000;
+		public const AnchorStyles defaultAnchor = AnchorStyles.Top | AnchorStyles.Left;
+
 		protected NLog.Logger logger = NLog.LogManager.GetLogger("UsAcRe.Trace");
 
 		protected static T CreateInstance<T>() where T : BaseAction {

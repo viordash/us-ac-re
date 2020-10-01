@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -7,17 +6,15 @@ using System.Threading.Tasks;
 using System.Windows.Automation;
 using System.Windows.Forms;
 using NGuard;
+using UsAcRe.Core.Actions;
 using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Extensions;
-using UsAcRe.Core.Helpers;
 using UsAcRe.Core.MouseProcess;
 using UsAcRe.Core.Services;
 using UsAcRe.Core.UIAutomationElement;
 
-namespace UsAcRe.Core.Actions {
+namespace UsAcRe.Player.Actions {
 	public class ElementMatchAction : BaseAction {
-		const int defaultTimeoutMs = 20 * 1000;
-		public const AnchorStyles defaultAnchor = AnchorStyles.Top | AnchorStyles.Left;
 
 		#region inner classes
 		class RequiredElement {
