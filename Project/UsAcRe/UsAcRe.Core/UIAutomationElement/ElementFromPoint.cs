@@ -164,7 +164,9 @@ namespace UsAcRe.Core.UIAutomationElement {
 				}
 				if(targetedElement.Index < 0) {
 					Debug.WriteLine("negative Index {0}", targetedElement);
-					tree.Value[tree.Value.Count - 1] = parent;
+					if(tree.Value.Count >= 1) {
+						tree.Value[tree.Value.Count - 1] = parent;
+					}
 				} else {
 					tree.Value.Add(parent);
 				}
