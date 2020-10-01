@@ -233,8 +233,7 @@ namespace UsAcRe.Core.Actions {
 				if(!automationElementService.Compare(element, searchedElement, new ElementCompareParameters() {
 					AutomationElementInternal = false,
 					Anchor = defaultAnchor,
-					CompareLocation = true,
-					LocationToleranceInPercent = settingsService.ClickPositionToleranceInPercent,
+					CompareLocation = false,
 					CompareSizes = true,
 					SizeToleranceInPercent = settingsService.ClickPositionToleranceInPercent,
 					NameIsMatchCase = true,
