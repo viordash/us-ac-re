@@ -10,12 +10,12 @@ namespace UsAcRe.Core.Tests.MouseProcessTests {
 			var point1 = new System.Windows.Point(1226, -142);
 			var point2 = new System.Windows.Point(1226, -142);
 			var tolerance = 50.0;
-			Assert.That(DimensionsHelper.AreLocationEquals(point1, point2, tolerance));
+			Assert.That(DimensionsHelper.AreLocationEquals(point1, point2, tolerance, new System.Drawing.Rectangle(0, 0, 1000, 1000)));
 		}
 
 		[Test]
 		public void AreSizeEquals_Tests() {
-			var size1 = new System.Windows.Size (100, 142);
+			var size1 = new System.Windows.Size(100, 142);
 			var size2 = new System.Windows.Size(105, 152);
 			var tolerance = 50.0;
 			Assert.That(DimensionsHelper.AreSizeEquals(size1, size2, tolerance));

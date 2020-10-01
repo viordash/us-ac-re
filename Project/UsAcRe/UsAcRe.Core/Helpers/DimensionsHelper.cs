@@ -1,14 +1,16 @@
 ﻿using System;
+using System.Drawing;
 
 namespace UsAcRe.Core.Helpers {
 	public class DimensionsHelper {
-		public static bool AreLocationEquals(System.Windows.Point point1, System.Windows.Point point2, double tolerance) {
+		public static bool AreLocationEquals(System.Windows.Point point1, System.Windows.Point point2, double tolerance,
+			Rectangle workingArea) {
 			double xTolerance = 0;
 			double yTolerance = 0;
 			if(tolerance < 0) {
 				return true;
 			} else if(tolerance > 0) {
-				var screen = System.Windows.Forms.Screen.PrimaryScreen.WorkingArea;
+				var screen = workingArea;
 				tolerance = 100 / tolerance;
 				xTolerance = screen.Width / tolerance;
 				yTolerance = screen.Height / tolerance;

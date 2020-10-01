@@ -136,7 +136,8 @@ namespace UsAcRe.Core.Services {
 			}
 
 			if(parameters.CompareLocation
-				&& !DimensionsHelper.AreLocationEquals(left.BoundingRectangle.Location, right.BoundingRectangle.Location, parameters.LocationToleranceInPercent)) {
+				&& !DimensionsHelper.AreLocationEquals(left.BoundingRectangle.Location, right.BoundingRectangle.Location, parameters.LocationToleranceInPercent,
+					System.Windows.Forms.Screen.PrimaryScreen.WorkingArea)) {
 				message = string.Format("DimensionsHelper.AreLocationEquals ({0}) != ({1}), {2}%", left.BoundingRectangle.Location, right.BoundingRectangle.Location, parameters.LocationToleranceInPercent);
 				return false;
 			}
