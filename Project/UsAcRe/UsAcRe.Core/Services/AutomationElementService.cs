@@ -57,10 +57,7 @@ namespace UsAcRe.Core.Services {
 				return null;
 			}
 
-			var rect = new Rect(0, 0, 0, 0);
-			var condBoundingRectangle = new PropertyCondition(AutomationElement.BoundingRectangleProperty, rect);
-			var condOffscreen = new PropertyCondition(AutomationElement.IsOffscreenProperty, false);
-			var cond = new AndCondition(new NotCondition(condBoundingRectangle), condOffscreen);
+			var cond = Condition.TrueCondition;
 			return automationElement.FindAll(scope, cond)
 				.OfType<AutomationElement>()
 				.Select(x => ToUiElement(x))
@@ -96,7 +93,7 @@ namespace UsAcRe.Core.Services {
 		}
 
 		public bool Compare(UiElement left, UiElement right, ElementCompareParameters parameters) {
-			return Compare(left, right, int.MaxValue, parameters, true);
+			return Compare(left, right, int.MaxValue, parameters, false);
 		}
 
 		bool CompareValue(UiElement left, UiElement right) {
