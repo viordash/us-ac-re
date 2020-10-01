@@ -8,9 +8,10 @@ namespace UsAcRe.Core.Helpers {
 			if(tolerance < 0) {
 				return true;
 			} else if(tolerance > 0) {
+				var screen = System.Windows.Forms.Screen.PrimaryScreen.WorkingArea;
 				tolerance = 100 / tolerance;
-				xTolerance = Math.Abs(Math.Max(point1.X, point2.X)) / tolerance;
-				yTolerance = Math.Abs(Math.Max(point1.Y, point2.Y)) / tolerance;
+				xTolerance = screen.Width / tolerance;
+				yTolerance = screen.Height / tolerance;
 			}
 			return Math.Abs(point1.X - point2.X) <= xTolerance
 				&& Math.Abs(point1.Y - point2.Y) <= yTolerance;
