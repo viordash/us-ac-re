@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsAcRe.Core", "UsAcRe.Core\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsAcRe.Core.Tests", "UsAcRe.Core.Tests\UsAcRe.Core.Tests.csproj", "{2EBC8EF3-82CF-4B51-949F-E10D70761210}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsAcRe.Recorder", "UsAcRe.Recorder\UsAcRe.Recorder.csproj", "{B866346F-5AAD-44F2-B8CE-FFF948420D58}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsAcRe.Recorder.Tests", "UsAcRe.Recorder.Tests\UsAcRe.Recorder.Tests.csproj", "{C78C1017-BA18-418A-B330-8EB3E58604B1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{2EBC8EF3-82CF-4B51-949F-E10D70761210}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2EBC8EF3-82CF-4B51-949F-E10D70761210}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2EBC8EF3-82CF-4B51-949F-E10D70761210}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B866346F-5AAD-44F2-B8CE-FFF948420D58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B866346F-5AAD-44F2-B8CE-FFF948420D58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B866346F-5AAD-44F2-B8CE-FFF948420D58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B866346F-5AAD-44F2-B8CE-FFF948420D58}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C78C1017-BA18-418A-B330-8EB3E58604B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C78C1017-BA18-418A-B330-8EB3E58604B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C78C1017-BA18-418A-B330-8EB3E58604B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C78C1017-BA18-418A-B330-8EB3E58604B1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

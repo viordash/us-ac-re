@@ -7,11 +7,11 @@ using UsAcRe.Core.Actions;
 using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Scripts;
 using UsAcRe.Core.Services;
-using UsAcRe.Core.UIAutomationElement;
 using UsAcRe.Core.WindowsSystem;
 using UsAcRe.Helpers;
 using UsAcRe.Highlighter;
 using UsAcRe.Properties;
+using UsAcRe.Recorder.UIAutomationElement;
 using UsAcRe.Scripts;
 
 namespace UsAcRe {

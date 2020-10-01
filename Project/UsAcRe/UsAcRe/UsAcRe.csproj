@@ -184,6 +184,10 @@
       <Project>{397f80c0-e494-44ad-9996-d3b248dc41de}</Project>
       <Name>UsAcRe.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\UsAcRe.Recorder\UsAcRe.Recorder.csproj">
+      <Project>{b866346f-5aad-44f2-b8ce-fff948420d58}</Project>
+      <Name>UsAcRe.Recorder</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Exceptions\" />

@@ -116,9 +116,7 @@
     <Compile Include="Services\ISettingsService.cs" />
     <Compile Include="Services\ITestsLaunchingService.cs" />
     <Compile Include="Services\WinApiService.cs" />
-    <Compile Include="UIAutomationElement\ElementFromPoint.cs" />
     <Compile Include="UIAutomationElement\ElementProgram.cs" />
-    <Compile Include="UIAutomationElement\TreeOfSpecificElement.cs" />
     <Compile Include="UIAutomationElement\UiElement.cs" />
     <Compile Include="WindowsSystem\VirtualKeyCodes.cs" />
     <Compile Include="WindowsSystem\WinAPI.cs" />

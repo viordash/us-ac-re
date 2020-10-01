@@ -7,9 +7,10 @@ using NGuard;
 using NLog;
 using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Services;
+using UsAcRe.Core.UIAutomationElement;
 using UsAcRe.Core.WindowsSystem;
 
-namespace UsAcRe.Core.UIAutomationElement {
+namespace UsAcRe.Recorder.UIAutomationElement {
 	public class ElementFromPoint {
 		private static readonly NLog.Logger logger = LogManager.GetCurrentClassLogger();
 

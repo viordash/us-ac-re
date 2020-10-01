@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Windows.Forms;
 using UsAcRe.Core.Actions;
-using UsAcRe.Core.UIAutomationElement;
 using UsAcRe.Core.WindowsSystem;
 using UsAcRe.Highlighter;
 using UsAcRe.KeyboardProcess;
 using UsAcRe.MouseProcess;
+using UsAcRe.Recorder.UIAutomationElement;
 
 namespace UsAcRe {
 	public partial class MainForm : Form {
@@ -105,7 +105,7 @@ namespace UsAcRe {
 				if(args.Stopped && !IsRestrictedArea(args.Coord)) {
 					ShowMouseClickBlocker(args.Coord);
 					elementFromPoint = new ElementFromPoint(AutomationElementService, WinApiService, args.Coord, true);
-					TestsLaunchingService.OpenHighlighter(elementFromPoint);
+					TestsLaunchingService.HighlightElement(elementFromPoint.TreeOfSpecificUiElement.BoundingRectangle);
 					CloseMouseClickBlocker();
 					//logger.Info("elementFromPoint {0}", elementFromPoint == null);
 				} else {

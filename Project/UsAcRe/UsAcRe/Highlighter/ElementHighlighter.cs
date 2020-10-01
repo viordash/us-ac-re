@@ -2,7 +2,6 @@
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Media;
-using UsAcRe.Core.UIAutomationElement;
 
 namespace UsAcRe.Highlighter {
 	public class ElementHighlighter : IDisposable {
@@ -12,10 +11,6 @@ namespace UsAcRe.Highlighter {
 
 		WpfElementBounding wpfElementBounding;
 		WpfElementToolTip wpfElementToolTip;
-
-		public ElementHighlighter(ElementFromPoint elementFromPoint)
-			: this(elementFromPoint.TreeOfSpecificUiElement.BoundingRectangle, null, 1, 0.6, Colors.Yellow, Colors.Red) {
-		}
 
 		public ElementHighlighter(Rect boundingRectangle, string toolTip)
 			: this(boundingRectangle, toolTip, 2, 0.6, Colors.Black, Colors.Orange) {

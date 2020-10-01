@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Windows.Media;
 using NGuard;
 using UsAcRe.Core.Actions;
 using UsAcRe.Core.Services;
@@ -63,11 +64,11 @@ namespace UsAcRe.Services {
 			}));
 		}
 
-		public void OpenHighlighter(ElementFromPoint elementFromPoint) {
+		public void HighlightElement(System.Windows.Rect boundingRectangle) {
 			windowsFormsService.GetMainForm().BeginInvoke((Action)(() => {
 				CloseHighlighterInternal();
-				if(!elementFromPoint.TreeOfSpecificUiElement.BoundingRectangle.IsEmpty) {
-					elementHighlighter = new ElementHighlighter(elementFromPoint);
+				if(!boundingRectangle.IsEmpty) {
+					elementHighlighter = new ElementHighlighter(boundingRectangle, null, 1, 0.6, Colors.Yellow, Colors.Red);
 					elementHighlighter.StartHighlighting();
 				}
 			}));
