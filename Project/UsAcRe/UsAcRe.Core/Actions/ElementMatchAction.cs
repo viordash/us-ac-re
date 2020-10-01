@@ -244,8 +244,12 @@ namespace UsAcRe.Core.Actions {
 					continue;
 				}
 				if(searchedElement.Index > 0) {
-					var similars = childs.Where(x => automationElementService.CompareInSiblings(x, element, ElementCompareParameters.ForSimilars()));
-					return similars.ElementAt(searchedElement.Index);
+					var similars = childs
+						.Where(x => automationElementService.CompareInSiblings(x, element, ElementCompareParameters.ForSimilars()))
+						.ToList();
+					if(similars.Count > searchedElement.Index) {
+						return similars[searchedElement.Index];
+					}
 				} else {
 					return element;
 				}
