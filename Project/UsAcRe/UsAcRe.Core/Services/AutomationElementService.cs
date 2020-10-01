@@ -21,8 +21,8 @@ namespace UsAcRe.Core.Services {
 		UiElement GetDesktop();
 		IntPtr GetNativeWindowHandle(UiElement element);
 
-		bool CompareInSiblings(UiElement left, UiElement right, ElementCompareParameters parameters);
-		bool Compare(UiElement left, UiElement right, ElementCompareParameters parameters);
+		bool CompareInSiblings(UiElement left, UiElement right, ElementCompareParameters parameters, out string message);
+		bool Compare(UiElement left, UiElement right, ElementCompareParameters parameters, out string message);
 		string BuildFriendlyInfo(AutomationElement element);
 		void RetrieveElementValue(UiElement element);
 		ElementProgram GetProgram(UiElement element);
@@ -88,12 +88,12 @@ namespace UsAcRe.Core.Services {
 		}
 
 
-		public bool CompareInSiblings(UiElement left, UiElement right, ElementCompareParameters parameters) {
-			return Compare(left, right, int.MaxValue, parameters, false);
+		public bool CompareInSiblings(UiElement left, UiElement right, ElementCompareParameters parameters, out string message) {
+			return Compare(left, right, int.MaxValue, parameters, out message);
 		}
 
-		public bool Compare(UiElement left, UiElement right, ElementCompareParameters parameters) {
-			return Compare(left, right, int.MaxValue, parameters, false);
+		public bool Compare(UiElement left, UiElement right, ElementCompareParameters parameters, out string message) {
+			return Compare(left, right, int.MaxValue, parameters, out message);
 		}
 
 		bool CompareValue(UiElement left, UiElement right) {
@@ -111,7 +111,8 @@ namespace UsAcRe.Core.Services {
 			return StringHelper.ImplicitEquals(left.Value, right.Value);
 		}
 
-		bool Compare(UiElement left, UiElement right, int nestedLevel, ElementCompareParameters parameters, bool logging) {
+		bool Compare(UiElement left, UiElement right, int nestedLevel, ElementCompareParameters parameters, out string message) {
+			message = null;
 			if(object.Equals(left, null)) {
 				return (object.Equals(right, null));
 			}
@@ -120,46 +121,34 @@ namespace UsAcRe.Core.Services {
 			}
 			//logger.Debug("Compare ({0}) ({1})", left, right);
 			if(left.ControlTypeId != right.ControlTypeId) {
-				if(logging) {
-					logger.Debug("left.ControlTypeId != right.ControlTypeId ({0}) != ({1})", left.ControlTypeId, right.ControlTypeId);
-				}
+				message = string.Format("left.ControlTypeId != right.ControlTypeId ({0}) != ({1})", left.ControlTypeId, right.ControlTypeId);
 				return false;
 			}
 
 			if(!StringHelper.ImplicitEquals(left.Name, right.Name)) {
-				if(logging) {
-					logger.Debug("left.Name != right.Name ({0}) != ({1})", left.Name, right.Name);
-				}
+				message = string.Format("left.Name != right.Name ({0}) != ({1})", left.Name, right.Name);
 				return false;
 			}
 
 			if(!StringHelper.ImplicitEquals(left.AutomationId, right.AutomationId)) {
-				if(logging) {
-					logger.Debug("left.AutomationId != right.AutomationId ({0}) != ({1})", left.AutomationId, right.AutomationId);
-				}
+				message = string.Format("left.AutomationId != right.AutomationId ({0}) != ({1})", left.AutomationId, right.AutomationId);
 				return false;
 			}
 
 			if(parameters.CompareLocation
 				&& !DimensionsHelper.AreLocationEquals(left.BoundingRectangle.Location, right.BoundingRectangle.Location, parameters.LocationToleranceInPercent)) {
-				if(logging) {
-					logger.Debug("DimensionsHelper.AreLocationEquals ({0}) != ({1}), {2}%", left.BoundingRectangle.Location, right.BoundingRectangle.Location, parameters.LocationToleranceInPercent);
-				}
+				message = string.Format("DimensionsHelper.AreLocationEquals ({0}) != ({1}), {2}%", left.BoundingRectangle.Location, right.BoundingRectangle.Location, parameters.LocationToleranceInPercent);
 				return false;
 			}
 
 			if(parameters.CompareSizes
 				&& !DimensionsHelper.AreSizeEquals(left.BoundingRectangle.Size, right.BoundingRectangle.Size, parameters.SizeToleranceInPercent)) {
-				if(logging) {
-					logger.Debug("DimensionsHelper.AreSizeEquals ({0}) != ({1}), {2}%", left.BoundingRectangle.Size, right.BoundingRectangle.Size, parameters.SizeToleranceInPercent);
-				}
+				message = string.Format("DimensionsHelper.AreSizeEquals ({0}) != ({1}), {2}%", left.BoundingRectangle.Size, right.BoundingRectangle.Size, parameters.SizeToleranceInPercent);
 				return false;
 			}
 
 			if(parameters.CheckByValue && !CompareValue(left, right)) {
-				if(logging) {
-					logger.Debug("left.Value != right.Value ({0}) != ({1})", left.Value, right.Value);
-				}
+				message = string.Format("left.Value != right.Value ({0}) != ({1})", left.Value, right.Value);
 				return false;
 			}
 
@@ -179,16 +168,12 @@ namespace UsAcRe.Core.Services {
 			var leftRuntimeId = leftAutomationElement.GetRuntimeId();
 			var rightRuntimeId = rightAutomationElement.GetRuntimeId();
 			if(!leftRuntimeId.SequenceEqual(rightRuntimeId)) {
-				if(logging) {
-					logger.Debug("left.GetRuntimeId() != right.GetRuntimeId() ({0}) != ({1})", string.Join(", ", leftRuntimeId), string.Join(", ", rightRuntimeId));
-				}
+				message = string.Format("left.GetRuntimeId() != right.GetRuntimeId() ({0}) != ({1})", string.Join(", ", leftRuntimeId), string.Join(", ", rightRuntimeId));
 				return false;
 			}
 
 			if(!StringHelper.ImplicitEquals(leftAutomationElement.Current.ProviderDescription, rightAutomationElement.Current.ProviderDescription)) {
-				if(logging) {
-					logger.Debug("left.ProviderDescription != right.ProviderDescription ({0}) != ({1})", leftAutomationElement.Current.ProviderDescription, rightAutomationElement.Current.ProviderDescription);
-				}
+				message = string.Format("left.ProviderDescription != right.ProviderDescription ({0}) != ({1})", leftAutomationElement.Current.ProviderDescription, rightAutomationElement.Current.ProviderDescription);
 				return false;
 			}
 
@@ -197,7 +182,7 @@ namespace UsAcRe.Core.Services {
 			}
 			var leftParent = TreeWalker.RawViewWalker.GetParent(leftAutomationElement);
 			var rightParent = TreeWalker.RawViewWalker.GetParent(rightAutomationElement);
-			return Compare(ToUiElement(leftParent), ToUiElement(rightParent), nestedLevel + 1, parameters, logging);
+			return Compare(ToUiElement(leftParent), ToUiElement(rightParent), nestedLevel + 1, parameters, out message);
 		}
 
 		UiElement ToUiElement(AutomationElement element) {

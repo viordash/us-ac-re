@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using CommonServiceLocator;
 using NLog.Windows.Forms;
 using UsAcRe.Core.Actions;
+using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Scripts;
 using UsAcRe.Core.Services;
 using UsAcRe.Core.UIAutomationElement;
@@ -109,8 +110,13 @@ namespace UsAcRe {
 			txtLog.Text = sourceCode;
 			TestsLaunchingService.Start();
 			StartKeyboardHooks();
-			await ScriptCompiler.RunTest(sourceCode);
-			TestsLaunchingService.Stop();
+			try {
+				await ScriptCompiler.RunTest(sourceCode);
+				TestsLaunchingService.Stop();
+			} catch(TestFailedExeption ex) {
+				logger.Error(ex.Message);
+				throw;
+			}
 		}
 	}
 }

@@ -99,9 +99,9 @@ namespace UsAcRe.Core.UIAutomationElement {
 			var desktopChildren = GetChildren(desktop);
 
 			rootElement.Index = 0;
-			var similars = desktopChildren.Where(x => automationElementService.CompareInSiblings(x, rootElement, ElementCompareParameters.ForSimilars()));
+			var similars = desktopChildren.Where(x => automationElementService.CompareInSiblings(x, rootElement, ElementCompareParameters.ForSimilars(), out string message));
 			for(int i = 0; i < similars.Count(); i++) {
-				if(automationElementService.Compare(rootElement, similars.ElementAt(i), ElementCompareParameters.ForExact())) {
+				if(automationElementService.Compare(rootElement, similars.ElementAt(i), ElementCompareParameters.ForExact(), out string message)) {
 					rootElement.Index = i;
 					break;
 				}
@@ -115,7 +115,7 @@ namespace UsAcRe.Core.UIAutomationElement {
 				var elements = new List<TreeElement>();
 
 				var rootParent = automationElementService.GetParent(rootElement);
-				while(rootParent != null && !automationElementService.Compare(rootParent, desktop, ElementCompareParameters.ForExact())) {
+				while(rootParent != null && !automationElementService.Compare(rootParent, desktop, ElementCompareParameters.ForExact(), out string message)) {
 					BreakOperationsIfCoordChanged();
 					var childElements = GetChildren(rootParent);
 					var elementsUnderPoint = childElements
@@ -154,11 +154,11 @@ namespace UsAcRe.Core.UIAutomationElement {
 
 			var childElements = GetChildren(parent);
 			var similars = childElements
-				.Where(x => automationElementService.CompareInSiblings(x, targetedElement, ElementCompareParameters.ForSimilars()))
+				.Where(x => automationElementService.CompareInSiblings(x, targetedElement, ElementCompareParameters.ForSimilars(), out string message))
 				.ToList();
 
 			for(int i = 0; i < similars.Count; i++) {
-				if(automationElementService.Compare(targetedElement, similars[i], ElementCompareParameters.ForExact())) {
+				if(automationElementService.Compare(targetedElement, similars[i], ElementCompareParameters.ForExact(), out string message)) {
 					targetedElement.Index = i;
 					return parent;
 				}
@@ -176,7 +176,7 @@ namespace UsAcRe.Core.UIAutomationElement {
 					throw new RetrieveElementExceptions($"Not found ancestor for {targetedElement}");
 				}
 
-				if(automationElementService.Compare(parent, desktop, ElementCompareParameters.ForExact())) {
+				if(automationElementService.Compare(parent, desktop, ElementCompareParameters.ForExact(), out string message)) {
 					return tree;
 				}
 				tree.Add(parent);

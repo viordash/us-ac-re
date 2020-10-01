@@ -16,6 +16,9 @@ namespace UsAcRe.Core.Actions {
 			return ServiceLocator.Current.GetInstance<T>();
 		}
 
+
+		public string FailMessage { get; set; } = null;
+
 		protected readonly ISettingsService settingsService;
 		protected readonly ITestsLaunchingService testsLaunchingService;
 		protected readonly CancellationToken cancellationToken;

@@ -178,6 +178,7 @@ namespace UsAcRe.Core.Actions {
 				return null;
 			}
 
+			string compareMessage;
 			if(!automationElementService.Compare(rootElement, parentEquivalentInSearchPath, new ElementCompareParameters() {
 				AutomationElementInternal = false,
 				Anchor = defaultAnchor,
@@ -186,7 +187,8 @@ namespace UsAcRe.Core.Actions {
 				NameIsMatchCase = true,
 				NameIsMatchWholeWord = true,
 				CheckByValue = false
-			})) {
+			}, out compareMessage)) {
+				FailMessage = compareMessage;
 				logger.Debug("attempt to retrieve the rootElement with help of window handle from WinApi");
 				rootElement = GetRootElement(true);
 				if(rootElement == null) {
@@ -200,7 +202,8 @@ namespace UsAcRe.Core.Actions {
 					NameIsMatchCase = true,
 					NameIsMatchWholeWord = true,
 					CheckByValue = false
-				})) {
+				}, out compareMessage)) {
+					FailMessage = compareMessage;
 					return null;
 				}
 			}
@@ -229,6 +232,7 @@ namespace UsAcRe.Core.Actions {
 
 		UiElement SearchRequiredElement(UiElement searchedElement, List<UiElement> childs) {
 			bool isTargetedElementWithPresentedValue = searchedElement == SearchPath[0];
+			string compareMessage;
 			foreach(var element in childs) {
 				if(!automationElementService.Compare(element, searchedElement, new ElementCompareParameters() {
 					AutomationElementInternal = false,
@@ -239,12 +243,13 @@ namespace UsAcRe.Core.Actions {
 					NameIsMatchCase = true,
 					NameIsMatchWholeWord = true,
 					CheckByValue = settingsService.CheckByValue && isTargetedElementWithPresentedValue
-				})) {
+				}, out compareMessage)) {
+					FailMessage = compareMessage;
 					continue;
 				}
 				if(searchedElement.Index > 0) {
 					var similars = childs
-						.Where(x => automationElementService.CompareInSiblings(x, element, ElementCompareParameters.ForSimilars()))
+						.Where(x => automationElementService.CompareInSiblings(x, element, ElementCompareParameters.ForSimilars(), out string message))
 						.ToList();
 					if(similars.Count > searchedElement.Index) {
 						return similars[searchedElement.Index];
