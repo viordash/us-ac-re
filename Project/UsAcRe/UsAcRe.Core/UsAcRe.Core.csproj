@@ -93,6 +93,7 @@
     <Compile Include="Actions\MouseClickAction.cs" />
     <Compile Include="Actions\MouseDragAction.cs" />
     <Compile Include="Actions\TextTypingAction.cs" />
+    <Compile Include="Exceptions\RetrieveElementExceptions.cs" />
     <Compile Include="Exceptions\ExecuteActionExceptions.cs" />
     <Compile Include="Extensions\PointExtension.cs" />
     <Compile Include="Extensions\ScriptSourceExtension.cs" />

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Automation;
 using NGuard;
 using NLog;
+using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Services;
 using UsAcRe.Core.WindowsSystem;
 
@@ -132,8 +133,8 @@ namespace UsAcRe.Core.UIAutomationElement {
 				if(targetedElement != null) {
 					Debug.WriteLine($"targetedElement: {targetedElement}");
 					var tree = BuildElementTree(targetedElement, desktop);
-					TreeOfSpecificUiElement.Add(tree.Key);
-					TreeOfSpecificUiElement.AddRange(tree.Value);
+					TreeOfSpecificUiElement.Add(targetedElement);
+					TreeOfSpecificUiElement.AddRange(tree);
 				}
 			} catch(Exception ex) {
 				if(ex is OperationCanceledException) {
@@ -142,38 +143,45 @@ namespace UsAcRe.Core.UIAutomationElement {
 			}
 		}
 
-		KeyValuePair<UiElement, List<UiElement>> BuildElementTree(UiElement targetedElement, UiElement desktop) {
-			var tree = new KeyValuePair<UiElement, List<UiElement>>(targetedElement, new List<UiElement>());
+		UiElement GetAncestor(UiElement targetedElement, UiElement startingPoint, UiElement desktop) {
+			BreakOperationsIfCoordChanged();
+			Debug.WriteLine($"GetAncestor targeted: {targetedElement}, strtPnt: {startingPoint}");
+			var parent = automationElementService.GetParent(startingPoint);
+			if(parent == null) {
+				return null;
+			}
+			Debug.WriteLine($"GetAncestor, parent: {parent}");
 
-			UiElement parent;
-			while((parent = automationElementService.GetParent(targetedElement)) != null
-				&& !automationElementService.Compare(parent, desktop, ElementCompareParameters.ForExact())) {
-				BreakOperationsIfCoordChanged();
+			var childElements = GetChildren(parent);
+			var similars = childElements
+				.Where(x => automationElementService.CompareInSiblings(x, targetedElement, ElementCompareParameters.ForSimilars()))
+				.ToList();
 
-				var childElements = GetChildren(parent);
-				var similars = childElements
-					.Where(x => automationElementService.CompareInSiblings(x, targetedElement, ElementCompareParameters.ForSimilars()))
-					.ToList();
-
-				for(int i = 0; i < similars.Count; i++) {
-					if(automationElementService.Compare(targetedElement, similars[i], ElementCompareParameters.ForExact())) {
-						targetedElement.Index = i;
-						break;
-					}
-					Debug.WriteLine($"similars: {similars[i]}");
+			for(int i = 0; i < similars.Count; i++) {
+				if(automationElementService.Compare(targetedElement, similars[i], ElementCompareParameters.ForExact())) {
+					targetedElement.Index = i;
+					return parent;
 				}
-				if(targetedElement.Index < 0) {
-					Debug.WriteLine("negative Index {0}", targetedElement);
-					if(tree.Value.Count >= 1) {
-						tree.Value[tree.Value.Count - 1] = parent;
-					}
-				} else {
-					tree.Value.Add(parent);
+				Debug.WriteLine($"similars: {similars[i]}");
+			}
+			Debug.WriteLine($"GetAncestor, Parent not found: {targetedElement}");
+			return GetAncestor(targetedElement, parent, desktop);
+		}
+
+		List<UiElement> BuildElementTree(UiElement targetedElement, UiElement desktop) {
+			var tree = new List<UiElement>();
+			while(true) {
+				var parent = GetAncestor(targetedElement, targetedElement, desktop);
+				if(parent == null) {
+					throw new RetrieveElementExceptions($"Not found ancestor for {targetedElement}");
 				}
-				Debug.WriteLine($"tree parent: {parent}");
+
+				if(automationElementService.Compare(parent, desktop, ElementCompareParameters.ForExact())) {
+					return tree;
+				}
+				tree.Add(parent);
 				targetedElement = parent;
 			}
-			return tree;
 		}
 
 		protected UiElement SortElementsByPointProximity(IEnumerable<TreeElement> elements, IntPtr rootWindow) {
