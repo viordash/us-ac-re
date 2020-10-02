@@ -36,3 +36,5 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyFileVersion("1.0.0.0")]
 
 [assembly: InternalsVisibleTo("UsAcRe.Core.Tests")]
+[assembly: InternalsVisibleTo("UsAcRe.Player.Tests")]
+[assembly: InternalsVisibleTo("UsAcRe.Recorder.Tests")]
