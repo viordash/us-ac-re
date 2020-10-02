@@ -6,7 +6,6 @@ using System.Windows.Media;
 using NGuard;
 using UsAcRe.Core.Actions;
 using UsAcRe.Core.Services;
-using UsAcRe.Core.UIAutomationElement;
 using UsAcRe.Highlighter;
 
 namespace UsAcRe.Services {
@@ -16,11 +15,11 @@ namespace UsAcRe.Services {
 		CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
 		ElementHighlighter elementHighlighter = null;
 
-		public List<BaseAction> executedActions = new List<BaseAction>();
-		public BaseAction LastAction {
+		public List<ITestAction> executedActions = new List<ITestAction>();
+		public ITestAction LastAction {
 			get {
 				return executedActions
-					.Reverse<BaseAction>()
+					.Reverse<ITestAction>()
 					.Skip(1)
 					.FirstOrDefault();
 			}
@@ -88,9 +87,9 @@ namespace UsAcRe.Services {
 			}));
 		}
 
-		public void Log(BaseAction baseAction) {
-			logger.Info("\r\n {0}", baseAction.ExecuteAsScriptSource());
-			executedActions.Add(baseAction);
+		public void Log(ITestAction testAction) {
+			logger.Info("\r\n {0}", testAction.ExecuteAsScriptSource());
+			executedActions.Add(testAction);
 		}
 	}
 }

@@ -16,7 +16,7 @@ namespace UsAcRe.Core.Services {
 		public static ElementCompareParameters ForExact() {
 			return new ElementCompareParameters() {
 				AutomationElementInternal = true,
-				Anchor = BaseAction.defaultAnchor,
+				Anchor = TestActionConstants.defaultAnchor,
 				CompareLocation = true,
 				LocationToleranceInPercent = 0,
 				CompareSizes = true,
@@ -30,7 +30,7 @@ namespace UsAcRe.Core.Services {
 		public static ElementCompareParameters ForSimilars() {
 			return new ElementCompareParameters() {
 				AutomationElementInternal = false,
-				Anchor = BaseAction.defaultAnchor,
+				Anchor = TestActionConstants.defaultAnchor,
 				CompareLocation = false,
 				LocationToleranceInPercent = 0,
 				CompareSizes = false,

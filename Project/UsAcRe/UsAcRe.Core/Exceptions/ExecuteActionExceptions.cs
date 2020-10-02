@@ -5,26 +5,26 @@ using UsAcRe.Core.UIAutomationElement;
 namespace UsAcRe.Core.Exceptions {
 	public class ExecuteBaseActionException : Exception {
 		public ExecuteBaseActionException(string message) : base(message) { }
-		protected ExecuteBaseActionException(BaseAction baseAction, string targetName) : this(BuildMessage(baseAction, targetName)) { }
-		protected ExecuteBaseActionException(BaseAction baseAction) : this(BuildMessage(baseAction)) { }
+		protected ExecuteBaseActionException(ITestAction testAction, string targetName) : this(BuildMessage(testAction, targetName)) { }
+		protected ExecuteBaseActionException(ITestAction testAction) : this(BuildMessage(testAction)) { }
 
-		static string BuildMessage(BaseAction baseAction) {
-			return string.Format("{0} \r\n {1}", baseAction.FailMessage, baseAction.ToString());
+		static string BuildMessage(ITestAction testAction) {
+			return string.Format("{0} \r\n {1}", testAction.FailMessage, testAction.ToString());
 		}
 
-		static string BuildMessage(BaseAction baseAction, string targetName) {
-			return string.Format("{0} \r\n {1} ({2})", baseAction.FailMessage, baseAction.ToString(), targetName);
+		static string BuildMessage(ITestAction testAction, string targetName) {
+			return string.Format("{0} \r\n {1} ({2})", testAction.FailMessage, testAction.ToString(), targetName);
 		}
 	}
 
 	public class MinorException : ExecuteBaseActionException {
-		public MinorException(BaseAction baseAction, string targetName) : base(baseAction, targetName) { }
-		public MinorException(BaseAction baseAction) : base(baseAction) { }
+		public MinorException(ITestAction testAction, string targetName) : base(testAction, targetName) { }
+		public MinorException(ITestAction testAction) : base(testAction) { }
 	}
 
 	public class SevereException : ExecuteBaseActionException {
-		public SevereException(BaseAction baseAction, string targetName) : base(baseAction, targetName) { }
-		public SevereException(BaseAction baseAction) : base(baseAction) { }
+		public SevereException(ITestAction testAction, string targetName) : base(testAction, targetName) { }
+		public SevereException(ITestAction testAction) : base(testAction) { }
 	}
 
 	public class ScriptComposeException : ExecuteBaseActionException {
@@ -37,6 +37,6 @@ namespace UsAcRe.Core.Exceptions {
 	}
 
 	public class TestFailedExeption : ExecuteBaseActionException {
-		public TestFailedExeption(BaseAction baseAction) : base(baseAction) { }
+		public TestFailedExeption(ITestAction testAction) : base(testAction) { }
 	}
 }

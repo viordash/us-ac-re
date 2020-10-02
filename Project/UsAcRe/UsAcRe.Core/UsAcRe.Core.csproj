@@ -83,7 +83,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Actions\BaseAction.cs" />
+    <Compile Include="Actions\ITestAction.cs" />
+    <Compile Include="Actions\TestActionConstants.cs" />
     <Compile Include="Exceptions\RetrieveElementExceptions.cs" />
     <Compile Include="Exceptions\ExecuteActionExceptions.cs" />
     <Compile Include="Extensions\PointExtension.cs" />

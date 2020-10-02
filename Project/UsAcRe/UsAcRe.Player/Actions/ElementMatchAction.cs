@@ -31,7 +31,8 @@ namespace UsAcRe.Player.Actions {
 			return instance;
 		}
 
-		public static async Task Play(ElementProgram program, List<UiElement> searchPath, int timeoutMs = defaultTimeoutMs, AnchorStyles anchor = defaultAnchor) {
+		public static async Task Play(ElementProgram program, List<UiElement> searchPath, int timeoutMs = TestActionConstants.defaultTimeoutMs,
+					AnchorStyles anchor = TestActionConstants.defaultAnchor) {
 			var instance = CreateInstance<ElementMatchAction>();
 			instance.Program = program;
 			instance.SearchPath = searchPath;
@@ -42,9 +43,9 @@ namespace UsAcRe.Player.Actions {
 
 		public ElementProgram Program { get; private set; }
 		public List<UiElement> SearchPath { get; private set; }
-		public AnchorStyles Anchor { get; set; } = defaultAnchor;
+		public AnchorStyles Anchor { get; set; } = TestActionConstants.defaultAnchor;
 		public UiElement MatchedElement { get => SearchPath?[0]; }
-		public int TimeoutMs { get; set; } = defaultTimeoutMs;
+		public int TimeoutMs { get; set; } = TestActionConstants.defaultTimeoutMs;
 		public System.Windows.Point? OffsetPoint { get; private set; } = null;
 		int stepWaitAppear;
 
@@ -90,10 +91,10 @@ namespace UsAcRe.Player.Actions {
 		public override string ExecuteAsScriptSource() {
 			var sb = new StringBuilder();
 			sb.AppendFormat("{0}.{1}({2}, {3}", nameof(ElementMatchAction), nameof(ElementMatchAction.Play), Program.ForNew(), SearchPath.ForNew());
-			if(TimeoutMs != defaultTimeoutMs) {
+			if(TimeoutMs != TestActionConstants.defaultTimeoutMs) {
 				sb.AppendFormat(", {0}", TimeoutMs.ForNew());
 			}
-			if(Anchor != defaultAnchor) {
+			if(Anchor != TestActionConstants.defaultAnchor) {
 				sb.AppendFormat(", {0}", Anchor.ForNew());
 			}
 			sb.Append(")");
@@ -178,7 +179,7 @@ namespace UsAcRe.Player.Actions {
 			string compareMessage;
 			if(!automationElementService.Compare(rootElement, parentEquivalentInSearchPath, new ElementCompareParameters() {
 				AutomationElementInternal = false,
-				Anchor = defaultAnchor,
+				Anchor = TestActionConstants.defaultAnchor,
 				CompareLocation = false,
 				CompareSizes = false,
 				NameIsMatchCase = true,
@@ -193,7 +194,7 @@ namespace UsAcRe.Player.Actions {
 				}
 				if(!automationElementService.Compare(rootElement, parentEquivalentInSearchPath, new ElementCompareParameters() {
 					AutomationElementInternal = false,
-					Anchor = defaultAnchor,
+					Anchor = TestActionConstants.defaultAnchor,
 					CompareLocation = false,
 					CompareSizes = false,
 					NameIsMatchCase = true,
@@ -233,7 +234,7 @@ namespace UsAcRe.Player.Actions {
 			foreach(var element in childs) {
 				if(!automationElementService.Compare(element, searchedElement, new ElementCompareParameters() {
 					AutomationElementInternal = false,
-					Anchor = defaultAnchor,
+					Anchor = TestActionConstants.defaultAnchor,
 					CompareLocation = false,
 					CompareSizes = true,
 					SizeToleranceInPercent = settingsService.ClickPositionToleranceInPercent,
