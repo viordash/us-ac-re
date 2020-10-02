@@ -95,7 +95,6 @@
     <Compile Include="Helpers\NamingHelpers.cs" />
     <Compile Include="Helpers\StringHelper.cs" />
     <Compile Include="MouseProcess\MouseButtonType.cs" />
-    <Compile Include="MouseProcess\MouseHover.cs" />
     <Compile Include="MouseProcess\MouseProcessConstants.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scripts\ScriptConstants.cs" />

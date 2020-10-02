@@ -9,9 +9,9 @@ using NGuard;
 using UsAcRe.Core.Actions;
 using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Extensions;
-using UsAcRe.Core.MouseProcess;
 using UsAcRe.Core.Services;
 using UsAcRe.Core.UIAutomationElement;
+using UsAcRe.Player.MouseProcess;
 
 namespace UsAcRe.Player.Actions {
 	public class ElementMatchAction : BaseAction {

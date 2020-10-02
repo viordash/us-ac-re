@@ -87,6 +87,7 @@
     <Compile Include="Actions\MouseClickAction.cs" />
     <Compile Include="Actions\MouseDragAction.cs" />
     <Compile Include="Actions\TextTypingAction.cs" />
+    <Compile Include="MouseProcess\MouseHover.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scripts\IScriptBuilder.cs" />
     <Compile Include="Scripts\ScriptBuilder.cs" />
