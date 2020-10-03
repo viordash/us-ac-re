@@ -1,0 +1,73 @@
+﻿<Window x:Class="UsAcRe.Recorder.UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:UsAcRe.Recorder.UI"
+        xmlns:models="clr-namespace:UsAcRe.Recorder.UI.Models"
+        mc:Ignorable="d"
+        Height="200" Width="250"
+        AllowsTransparency="True" 
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        Background="Transparent"
+        MouseLeftButtonDown="Window_MouseLeftButtonDown">
+
+    <Window.Resources>
+        <Style TargetType="Grid">
+            <Style.Setters>
+                <Setter Property="Opacity" Value="0.8" />
+                <Setter Property="Background" Value="LightBlue" />
+            </Style.Setters>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Opacity" Value="1" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid >
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+
+        <Menu x:Name="mainMenu" VerticalAlignment="Top" Grid.Row="0" Grid.ColumnSpan="3">
+            <Menu.Resources>
+                <Style TargetType="MenuItem">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsSeparator}" Value="True">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate>
+                                        <Separator/>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Menu.Resources>
+            <Menu.ItemTemplate>
+                <HierarchicalDataTemplate ItemsSource="{Binding Nodes}">
+                    <TextBlock Text="{Binding Header}">
+                        <TextBlock.InputBindings>
+                            <MouseBinding Command="{Binding Command}" MouseAction="LeftClick" />
+                        </TextBlock.InputBindings>
+                    </TextBlock>
+                </HierarchicalDataTemplate>
+            </Menu.ItemTemplate>
+        </Menu>
+
+        <Button x:Name="closeButton" Grid.Column="1" Grid.Row="1" Content="Закрыть" Command="ApplicationCommands.Close"
+                Width="80" Height="30" Background="LightPink" />
+    </Grid>
+</Window>
