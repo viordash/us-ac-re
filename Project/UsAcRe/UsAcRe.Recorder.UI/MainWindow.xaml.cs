@@ -14,7 +14,13 @@ namespace UsAcRe.Recorder.UI {
 			InitializeComponent();
 
 			MainMenuModel = new MainMenuModel();
-			MainMenuModel.AssignControl(mainMenu, this);
+
+			miNewProject.CommandBindings.Add(new CommandBinding(UICommands.NewProject, OnCommand_NewProject));
+			miOpenProject.CommandBindings.Add(new CommandBinding(UICommands.OpenProject, OnCommand_OpenProject));
+			miExit.CommandBindings.Add(new CommandBinding(UICommands.Exit, OnCommand_Exit));
+			miStartStop.CommandBindings.Add(new CommandBinding(UICommands.StartStop, OnCommand_StartStop));
+			miActions.ItemsSource = MainMenuModel.Items;
+			MainMenuModel.AssignControl(miActions, this);
 		}
 
 		private void CommandBinding_Executed(object sender, ExecutedRoutedEventArgs e) {

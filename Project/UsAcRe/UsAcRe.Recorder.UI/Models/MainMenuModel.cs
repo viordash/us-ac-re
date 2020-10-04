@@ -4,10 +4,18 @@ using System.Windows.Input;
 
 namespace UsAcRe.Recorder.UI.Models {
 	public class MainMenuItem {
-		public string Header { get; set; }
+		public string Header { get; private set; }
 		public bool IsSeparator { get; set; }
-		public ICommand Command { get; set; }
+		public ICommand Command { get; private set; }
+		public object CommandParameter { get; private set; }
 		public ObservableCollection<MainMenuItem> Nodes { get; set; }
+
+		public MainMenuItem(string header, ICommand command = null, object parameter = null, ObservableCollection<MainMenuItem> nodes = null) {
+			Header = header;
+			Command = command;
+			CommandParameter = parameter;
+			Nodes = nodes;
+		}
 	}
 
 	public class MainMenuModel {
@@ -15,38 +23,34 @@ namespace UsAcRe.Recorder.UI.Models {
 
 		public MainMenuModel() {
 			Items = new ObservableCollection<MainMenuItem>() {
-				new MainMenuItem() {
-					Header = "File",
-					Nodes = new ObservableCollection<MainMenuItem>() {
-						new MainMenuItem() { Header = "New Project", Command = UICommands.NewProject },
-						new MainMenuItem() { Header = "Open Project", Command = UICommands.OpenProject },
-						new MainMenuItem() { IsSeparator = true },
-						new MainMenuItem() { Header = "Exit", Command = UICommands.Exit }
-					}
-				},
-				new MainMenuItem() { Header = "Start", Command = UICommands.StartStop },
+				new MainMenuItem(header: "Add pause",
+					nodes: new ObservableCollection<MainMenuItem>() {
+						new MainMenuItem( header: "0.5 sec", command: ActionsCommands.Pause, parameter:500 ),
+						new MainMenuItem( header: "1 sec", command: ActionsCommands.Pause, parameter:1000 ),
+						new MainMenuItem( header: "2 sec", command: ActionsCommands.Pause, parameter:2000 ),
+						new MainMenuItem( header: "5 sec", command: ActionsCommands.Pause, parameter:5000 ),
+						new MainMenuItem( header: "10 sec", command: ActionsCommands.Pause, parameter:10000 ),
+					}),
 			};
 		}
 
-
-
-		void Assign(Menu menu, ObservableCollection<MainMenuItem> nodes, MainWindow mainWindow) {
+		void Assign(MenuItem menuItem, ObservableCollection<MainMenuItem> nodes, MainWindow mainWindow) {
 			foreach(var item in nodes) {
 				if(item.Command != null) {
 					var commandBinding = new CommandBinding();
 					commandBinding.Command = item.Command;
-					UICommands.AssignCommand(commandBinding, mainWindow);
-					menu.CommandBindings.Add(commandBinding);
+					ActionsCommands.AssignCommand(commandBinding, mainWindow);
+					menuItem.CommandBindings.Add(commandBinding);
 				}
 				if(item.Nodes?.Count > 0) {
-					Assign(menu, item.Nodes, mainWindow);
+					Assign(menuItem, item.Nodes, mainWindow);
 				}
 			}
 		}
 
-		public void AssignControl(Menu menu, MainWindow mainWindow) {
-			Assign(menu, Items, mainWindow);
-			menu.ItemsSource = Items;
+		public void AssignControl(MenuItem menuItem, MainWindow mainWindow) {
+			Assign(menuItem, Items, mainWindow);
+			menuItem.ItemsSource = Items;
 		}
 	}
 }

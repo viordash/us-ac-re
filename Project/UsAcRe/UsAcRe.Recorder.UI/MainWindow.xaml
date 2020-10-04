@@ -39,33 +39,41 @@
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
+        <Menu x:Name="mainMenu"  VerticalAlignment="Top" Grid.Row="0" Grid.ColumnSpan="3">
+            <MenuItem Header="File">
+                <MenuItem x:Name="miNewProject" Header="New Project" Command="local:UICommands.NewProject"></MenuItem>
+                <MenuItem x:Name="miOpenProject" Header="Open Project" Command="local:UICommands.OpenProject"></MenuItem>
+                <Separator />
+                <MenuItem x:Name="miExit" Header="Exit" Command="local:UICommands.Exit"></MenuItem>
+            </MenuItem>
+            <MenuItem x:Name="miStartStop" Header="Start" Command="local:UICommands.StartStop"></MenuItem>
+            <MenuItem x:Name="miActions" Header="Actions" >
 
-        <Menu x:Name="mainMenu" VerticalAlignment="Top" Grid.Row="0" Grid.ColumnSpan="3">
-            <Menu.Resources>
-                <Style TargetType="MenuItem">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsSeparator}" Value="True">
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate>
-                                        <Separator/>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Menu.Resources>
-            <Menu.ItemTemplate>
-                <HierarchicalDataTemplate ItemsSource="{Binding Nodes}">
-                    <TextBlock Text="{Binding Header}">
-                        <TextBlock.InputBindings>
-                            <MouseBinding Command="{Binding Command}" MouseAction="LeftClick" />
-                        </TextBlock.InputBindings>
-                    </TextBlock>
-                </HierarchicalDataTemplate>
-            </Menu.ItemTemplate>
+                <MenuItem.Resources>
+                    <Style TargetType="{x:Type MenuItem}">
+                        <Setter Property="Header" Value="{Binding Header}" />
+                        <Setter Property="Command" Value="{Binding Command}" />
+                        <Setter Property="CommandParameter" Value="{Binding CommandParameter}" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsSeparator}" Value="True">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type MenuItem}">
+                                            <Separator />
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+
+                    <HierarchicalDataTemplate DataType="{x:Type models:MainMenuItem}"
+                                  ItemsSource="{Binding Nodes}" />
+                </MenuItem.Resources>
+
+            </MenuItem>
         </Menu>
+
 
         <Button x:Name="closeButton" Grid.Column="1" Grid.Row="1" Content="Закрыть" Command="ApplicationCommands.Close"
                 Width="80" Height="30" Background="LightPink" />

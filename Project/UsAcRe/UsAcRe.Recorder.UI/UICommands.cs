@@ -6,14 +6,12 @@ namespace UsAcRe.Recorder.UI {
 		public static RoutedCommand OpenProject { get; }
 		public static RoutedCommand Exit { get; }
 		public static RoutedCommand StartStop { get; }
-		public static RoutedCommand SelectAction { get; }
 
 		static UICommands() {
 			NewProject = new RoutedCommand("NewProject", typeof(MainWindow));
 			OpenProject = new RoutedCommand("OpenProject", typeof(MainWindow));
 			Exit = new RoutedCommand("Exit", typeof(MainWindow));
 			StartStop = new RoutedCommand("StartStop", typeof(MainWindow));
-			SelectAction = new RoutedCommand("SelectAction", typeof(MainWindow));
 		}
 
 		public static void AssignCommand(CommandBinding commandBinding, MainWindow mainWindow) {
@@ -31,10 +29,6 @@ namespace UsAcRe.Recorder.UI {
 			}
 			if(commandBinding.Command == StartStop) {
 				commandBinding.Executed += mainWindow.OnCommand_StartStop;
-				return;
-			}
-			if(commandBinding.Command == SelectAction) {
-				commandBinding.Executed += mainWindow.OnCommand_SelectAction;
 				return;
 			}
 		}
