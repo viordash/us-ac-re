@@ -109,10 +109,6 @@
       <DependentUpon>MouseClickBlocker.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helpers\FormsHelper.cs" />
-    <Compile Include="Highlighter\ElementHighlighter.cs" />
-    <Compile Include="Highlighter\WpfElementToolTip.xaml.cs">
-      <DependentUpon>WpfElementToolTip.xaml</DependentUpon>
-    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -129,9 +125,6 @@
     <Compile Include="Services\SettingsService.cs" />
     <Compile Include="Services\TestsLaunchingService.cs" />
     <Compile Include="Services\WindowsFormsService.cs" />
-    <Compile Include="Highlighter\WpfElementBounding.xaml.cs">
-      <DependentUpon>WpfElementBounding.xaml</DependentUpon>
-    </Compile>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -167,19 +160,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Highlighter\WpfElementToolTip.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Highlighter\WpfElementBounding.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\UsAcRe.Core.UI\UsAcRe.Core.UI.csproj">
+      <Project>{07e1b9cb-7400-4cdb-b286-466bf400f370}</Project>
+      <Name>UsAcRe.Core.UI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\UsAcRe.Core\UsAcRe.Core.csproj">
       <Project>{397f80c0-e494-44ad-9996-d3b248dc41de}</Project>
       <Name>UsAcRe.Core</Name>

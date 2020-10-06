@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsAcRe.Recorder.UI", "UsAcR
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{3A1DDD3F-11CC-470A-BD2B-D9854D300681}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsAcRe.Core.UI", "UsAcRe.Core.UI\UsAcRe.Core.UI.csproj", "{07E1B9CB-7400-4CDB-B286-466BF400F370}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -65,6 +67,10 @@ Global
 		{759F5619-9AB4-4344-BC4D-C95461139825}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{759F5619-9AB4-4344-BC4D-C95461139825}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{759F5619-9AB4-4344-BC4D-C95461139825}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07E1B9CB-7400-4CDB-B286-466BF400F370}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07E1B9CB-7400-4CDB-B286-466BF400F370}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07E1B9CB-7400-4CDB-B286-466BF400F370}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07E1B9CB-7400-4CDB-B286-466BF400F370}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

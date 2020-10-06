@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Media;
 
-namespace UsAcRe.Highlighter {
+namespace UsAcRe.Core.UI.Highlighter {
 	public class ElementHighlighter : IDisposable {
 		NLog.Logger logger = NLog.LogManager.GetLogger("UsAcRe.Trace");
 

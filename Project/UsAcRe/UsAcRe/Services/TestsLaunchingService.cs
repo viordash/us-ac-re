@@ -6,7 +6,7 @@ using System.Windows.Media;
 using NGuard;
 using UsAcRe.Core.Actions;
 using UsAcRe.Core.Services;
-using UsAcRe.Highlighter;
+using UsAcRe.Core.UI.Highlighter;
 
 namespace UsAcRe.Services {
 	public class TestsLaunchingService : ITestsLaunchingService {

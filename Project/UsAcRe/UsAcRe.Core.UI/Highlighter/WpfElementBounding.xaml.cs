@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Media;
 
-namespace UsAcRe {
+namespace UsAcRe.Core.UI.Highlighter {
 	/// <summary>
 	/// Interaction logic for WpfElementBounding.xaml
 	/// </summary>
