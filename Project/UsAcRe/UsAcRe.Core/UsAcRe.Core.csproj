@@ -104,6 +104,7 @@
     <Compile Include="Services\ISettingsService.cs" />
     <Compile Include="Services\ITestsLaunchingService.cs" />
     <Compile Include="Services\WinApiService.cs" />
+    <Compile Include="Services\IWindowsFormsService.cs" />
     <Compile Include="UIAutomationElement\ElementProgram.cs" />
     <Compile Include="UIAutomationElement\UiElement.cs" />
     <Compile Include="WindowsSystem\VirtualKeyCodes.cs" />

@@ -8,7 +8,7 @@ using UsAcRe.Core.Actions;
 using UsAcRe.Core.Services;
 using UsAcRe.Core.UI.Highlighter;
 
-namespace UsAcRe.Services {
+namespace UsAcRe.Core.UI.Services {
 	public class TestsLaunchingService : ITestsLaunchingService {
 		protected NLog.Logger logger = NLog.LogManager.GetLogger("UsAcRe.FormMain");
 		readonly IWindowsFormsService windowsFormsService;
@@ -54,7 +54,7 @@ namespace UsAcRe.Services {
 		}
 
 		public void OpenHighlighter(System.Windows.Rect boundingRectangle, string toolTip) {
-			windowsFormsService.GetMainForm().BeginInvoke((Action)(() => {
+			windowsFormsService.BeginInvoke((Action)(() => {
 				CloseHighlighterInternal();
 				if(!boundingRectangle.IsEmpty) {
 					elementHighlighter = new ElementHighlighter(boundingRectangle, toolTip);
@@ -64,7 +64,7 @@ namespace UsAcRe.Services {
 		}
 
 		public void HighlightElement(System.Windows.Rect boundingRectangle) {
-			windowsFormsService.GetMainForm().BeginInvoke((Action)(() => {
+			windowsFormsService.BeginInvoke((Action)(() => {
 				CloseHighlighterInternal();
 				if(!boundingRectangle.IsEmpty) {
 					elementHighlighter = new ElementHighlighter(boundingRectangle, null, 1, 0.6, Colors.Yellow, Colors.Red);
@@ -82,7 +82,7 @@ namespace UsAcRe.Services {
 		}
 
 		public void CloseHighlighter() {
-			windowsFormsService.GetMainForm()?.BeginInvoke((Action)(() => {
+			windowsFormsService.BeginInvoke((Action)(() => {
 				CloseHighlighterInternal();
 			}));
 		}

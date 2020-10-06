@@ -7,7 +7,7 @@ using UsAcRe.Core.Extensions;
 using UsAcRe.Core.MouseProcess;
 using UsAcRe.Core.WindowsSystem;
 
-namespace UsAcRe.MouseProcess {
+namespace UsAcRe.Recorder.MouseProcess {
 	public delegate void MouseStartDragEventHandler(object sender, MouseStartDragEventArgs args);
 	public class MouseStartDragEventArgs : EventArgs {
 		public Point Coord { get; set; }

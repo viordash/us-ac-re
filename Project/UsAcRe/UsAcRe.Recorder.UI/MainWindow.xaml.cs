@@ -54,6 +54,7 @@ namespace UsAcRe.Recorder.UI {
 
 		internal void OnCommand_SelectAction(object sender, ExecutedRoutedEventArgs e) {
 			Debug.WriteLine("OnCommand_SelectAction {0} {1}", sender, e);
+			//this.Dispatcher
 		}
 	}
 

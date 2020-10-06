@@ -2,9 +2,9 @@
 using System.Windows.Forms;
 using UsAcRe.Core.UI.Highlighter;
 using UsAcRe.Core.WindowsSystem;
-using UsAcRe.KeyboardProcess;
-using UsAcRe.MouseProcess;
 using UsAcRe.Player.Actions;
+using UsAcRe.Recorder.KeyboardProcess;
+using UsAcRe.Recorder.MouseProcess;
 using UsAcRe.Recorder.UIAutomationElement;
 
 namespace UsAcRe {
