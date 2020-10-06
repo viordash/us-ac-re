@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Automation;
 using NUnit.Framework;
+using UsAcRe.Core.Actions;
 using UsAcRe.Core.MouseProcess;
 using UsAcRe.Core.UIAutomationElement;
 using UsAcRe.Core.WindowsSystem;

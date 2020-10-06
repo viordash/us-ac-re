@@ -1,6 +1,5 @@
 ﻿using System.Threading;
 using UsAcRe.Core.Actions;
-using UsAcRe.Core.UIAutomationElement;
 
 namespace UsAcRe.Core.Services {
 	public interface ITestsLaunchingService {
@@ -10,7 +9,7 @@ namespace UsAcRe.Core.Services {
 		void OpenHighlighter(System.Windows.Rect boundingRectangle, string toolTip);
 		void HighlightElement(System.Windows.Rect boundingRectangle);
 		void CloseHighlighter();
-		void Log(ITestAction baseAction);
-		ITestAction LastAction { get; }
+		void Log(BaseAction baseAction);
+		BaseAction LastAction { get; }
 	}
 }

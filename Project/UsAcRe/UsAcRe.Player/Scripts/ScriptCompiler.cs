@@ -42,7 +42,7 @@ namespace UsAcRe.Player.Scripts {
 				throw new ApplicationException("There is no " + ScriptConstants.TestsClassName + " class in the compiled Assembly");
 			}
 			Type type = instance.GetType();
-			MethodInfo method = type.GetMethod(nameof(ITestAction.ExecuteAsync));
+			MethodInfo method = type.GetMethod(nameof(BaseAction.ExecuteAsync));
 			if(method == null) {
 				throw new ApplicationException("There is no TestsScript.Execute method in the compiled class");
 			}

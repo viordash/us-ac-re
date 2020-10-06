@@ -1,6 +1,6 @@
-﻿using UsAcRe.Player.Actions;
+﻿using UsAcRe.Core.Actions;
 
-namespace UsAcRe.Player.Scripts {
+namespace UsAcRe.Core.Scripts {
 	public interface IScriptBuilder {
 		string Generate(ActionsList actions);
 	}

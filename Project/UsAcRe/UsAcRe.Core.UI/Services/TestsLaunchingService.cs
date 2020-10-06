@@ -15,11 +15,11 @@ namespace UsAcRe.Core.UI.Services {
 		CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
 		ElementHighlighter elementHighlighter = null;
 
-		public List<ITestAction> executedActions = new List<ITestAction>();
-		public ITestAction LastAction {
+		public List<BaseAction> executedActions = new List<BaseAction>();
+		public BaseAction LastAction {
 			get {
 				return executedActions
-					.Reverse<ITestAction>()
+					.Reverse<BaseAction>()
 					.Skip(1)
 					.FirstOrDefault();
 			}
@@ -87,7 +87,7 @@ namespace UsAcRe.Core.UI.Services {
 			}));
 		}
 
-		public void Log(ITestAction testAction) {
+		public void Log(BaseAction testAction) {
 			logger.Info("\r\n {0}", testAction.ExecuteAsScriptSource());
 			executedActions.Add(testAction);
 		}

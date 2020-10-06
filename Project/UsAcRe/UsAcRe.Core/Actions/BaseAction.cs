@@ -5,12 +5,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using CommonServiceLocator;
 using NGuard;
-using UsAcRe.Core.Actions;
 using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Services;
 
-namespace UsAcRe.Player.Actions {
-	public abstract class BaseAction : ITestAction {
+namespace UsAcRe.Core.Actions {
+	public abstract class BaseAction {
 		protected NLog.Logger logger = NLog.LogManager.GetLogger("UsAcRe.Trace");
 
 		protected static T CreateInstance<T>() where T : BaseAction {
