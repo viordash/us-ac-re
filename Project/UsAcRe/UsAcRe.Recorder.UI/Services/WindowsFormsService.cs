@@ -2,7 +2,6 @@
 
 using System;
 using System.Windows;
-using System.Windows.Threading;
 using UsAcRe.Core.Services;
 
 namespace UsAcRe.Services {

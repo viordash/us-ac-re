@@ -1,9 +1,15 @@
 ﻿using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
+using CommonServiceLocator;
+using UsAcRe.Core.Scripts;
+using UsAcRe.Core.Services;
 using UsAcRe.Core.UI.Helpers;
+using UsAcRe.Core.UI.Highlighter;
+using UsAcRe.Player.Actions;
 using UsAcRe.Recorder.UI.Models;
 using UsAcRe.Recorder.UI.Properties;
+using UsAcRe.Recorder.UIAutomationElement;
 
 namespace UsAcRe.Recorder.UI {
 	/// <summary>
@@ -11,11 +17,21 @@ namespace UsAcRe.Recorder.UI {
 	/// </summary>
 	public partial class MainWindow : Window {
 		readonly MainMenuModel MainMenuModel;
+		readonly ActionsContainer Actions;
+
+		ElementFromPoint elementFromPoint = null;
+		ElementHighlighter mouseClickBlocker = null;
+
+		IAutomationElementService AutomationElementService { get { return ServiceLocator.Current.GetInstance<IAutomationElementService>(); } }
+		IWinApiService WinApiService { get { return ServiceLocator.Current.GetInstance<IWinApiService>(); } }
+		ITestsLaunchingService TestsLaunchingService { get { return ServiceLocator.Current.GetInstance<ITestsLaunchingService>(); } }
+		ISettingsService SettingsService { get { return ServiceLocator.Current.GetInstance<ISettingsService>(); } }
 
 		public MainWindow() {
 			InitializeComponent();
 
 			MainMenuModel = new MainMenuModel();
+			Actions = new ActionsContainer(SettingsService, new ScriptBuilder(SettingsService));
 
 			miNewProject.CommandBindings.Add(new CommandBinding(UICommands.NewProject, OnCommand_NewProject));
 			miOpenProject.CommandBindings.Add(new CommandBinding(UICommands.OpenProject, OnCommand_OpenProject));
@@ -32,7 +48,7 @@ namespace UsAcRe.Recorder.UI {
 
 		private void Window_Closed(object sender, System.EventArgs e) {
 			Settings.Default.MainFormLocation = new System.Drawing.Point((int)Left, (int)Top);
-			Settings.Default.MainFormSize = new System.Drawing.Size((int)Width, (int)Height);
+			Settings.Default.MainFormSize = Bounds.Size;
 			Settings.Default.Save();
 		}
 
@@ -63,6 +79,12 @@ namespace UsAcRe.Recorder.UI {
 
 		internal void OnCommand_StartStop(object sender, ExecutedRoutedEventArgs e) {
 			Debug.WriteLine("OnCommand_StartStop {0} {1}", sender, e);
+			if(miStartStop.IsChecked) {
+				Actions.Items.Clear();
+				StartHooks();
+			} else {
+				StopHooks();
+			}
 		}
 
 		internal void OnCommand_SelectAction(object sender, ExecutedRoutedEventArgs e) {

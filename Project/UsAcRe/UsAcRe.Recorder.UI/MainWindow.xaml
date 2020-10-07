@@ -34,7 +34,6 @@
         <Grid.RowDefinitions>
             <RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
@@ -49,7 +48,7 @@
                 <Separator />
                 <MenuItem x:Name="miExit" Header="Exit" Command="local:UICommands.Exit"></MenuItem>
             </MenuItem>
-            <MenuItem x:Name="miStartStop" Header="Start" Command="local:UICommands.StartStop"></MenuItem>
+            <MenuItem x:Name="miStartStop" Header="Start" Command="local:UICommands.StartStop" IsCheckable="True"></MenuItem>
             <MenuItem x:Name="miActions" Header="Actions" >
 
                 <MenuItem.Resources>
@@ -76,9 +75,5 @@
 
             </MenuItem>
         </Menu>
-
-
-        <Button x:Name="closeButton" Grid.Column="1" Grid.Row="1" Content="Закрыть" Command="ApplicationCommands.Close"
-                Width="80" Height="30" Background="LightPink" />
     </Grid>
 </Window>
