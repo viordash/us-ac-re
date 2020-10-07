@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -24,10 +25,12 @@ namespace UsAcRe.Recorder.UI {
 			miExit.CommandBindings.Add(new CommandBinding(UICommands.Exit, (s, e) => OnExitCommand?.Invoke(s, e)));
 			miStartStop.CommandBindings.Add(new CommandBinding(UICommands.StartStop, (s, e) => OnStartStopCommand?.Invoke(s, e)));
 			miActions.ItemsSource = MainMenuModel.Items;
+			if(!DesignerProperties.GetIsInDesignMode(this)) {
+				MainMenuModel.AssignControl(miActions, (MainWindow)Application.Current.MainWindow);
+			}
 		}
 
 		private void mainMenu_Loaded(object sender, RoutedEventArgs e) {
-			MainMenuModel.AssignControl(miActions, (MainWindow)Application.Current.MainWindow);
 		}
 	}
 }
