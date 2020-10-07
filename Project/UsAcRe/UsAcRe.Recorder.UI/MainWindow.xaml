@@ -32,16 +32,14 @@
 
     <Grid >
         <Grid.RowDefinitions>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Menu x:Name="mainMenu"  VerticalAlignment="Top" Grid.Row="0" Grid.ColumnSpan="3">
+        <Menu x:Name="mainMenu"  VerticalAlignment="Top" Grid.Row="0">
             <MenuItem Header="File">
                 <MenuItem x:Name="miNewProject" Header="New Project" Command="local:UICommands.NewProject"></MenuItem>
                 <MenuItem x:Name="miOpenProject" Header="Open Project" Command="local:UICommands.OpenProject"></MenuItem>
@@ -50,7 +48,6 @@
             </MenuItem>
             <MenuItem x:Name="miStartStop" Header="Start" Command="local:UICommands.StartStop" IsCheckable="True"></MenuItem>
             <MenuItem x:Name="miActions" Header="Actions" >
-
                 <MenuItem.Resources>
                     <Style TargetType="{x:Type MenuItem}">
                         <Setter Property="Header" Value="{Binding Header}" />
@@ -68,11 +65,9 @@
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
-
                     <HierarchicalDataTemplate DataType="{x:Type models:MainMenuItem}"
                                   ItemsSource="{Binding Nodes}" />
                 </MenuItem.Resources>
-
             </MenuItem>
         </Menu>
     </Grid>
