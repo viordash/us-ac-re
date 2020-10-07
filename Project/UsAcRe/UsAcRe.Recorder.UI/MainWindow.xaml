@@ -11,7 +11,7 @@
         WindowStyle="None"
         ResizeMode="NoResize"
         Background="Transparent"
-        MouseLeftButtonDown="Window_MouseLeftButtonDown">
+        MouseLeftButtonDown="Window_MouseLeftButtonDown" Initialized="Window_Initialized" Closed="Window_Closed">
 
     <Window.Resources>
         <Style TargetType="Grid">

@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
+using UsAcRe.Core.UI.Helpers;
 using UsAcRe.Recorder.UI.Models;
+using UsAcRe.Recorder.UI.Properties;
 
 namespace UsAcRe.Recorder.UI {
 	/// <summary>
@@ -21,6 +23,18 @@ namespace UsAcRe.Recorder.UI {
 			miStartStop.CommandBindings.Add(new CommandBinding(UICommands.StartStop, OnCommand_StartStop));
 			miActions.ItemsSource = MainMenuModel.Items;
 			MainMenuModel.AssignControl(miActions, this);
+
+		}
+
+		private void Window_Initialized(object sender, System.EventArgs e) {
+			WindowsHelper.LoadLocation(Settings.Default.MainFormLocation, this);
+			WindowsHelper.LoadSize(Settings.Default.MainFormSize, this);
+		}
+
+		private void Window_Closed(object sender, System.EventArgs e) {
+			Settings.Default.MainFormLocation = new System.Drawing.Point((int)Left, (int)Top);
+			Settings.Default.MainFormSize = new System.Drawing.Size((int)Width, (int)Height);
+			Settings.Default.Save();
 		}
 
 		private void CommandBinding_Executed(object sender, ExecutedRoutedEventArgs e) {

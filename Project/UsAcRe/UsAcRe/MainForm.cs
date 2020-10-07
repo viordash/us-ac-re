@@ -5,9 +5,9 @@ using CommonServiceLocator;
 using NLog.Windows.Forms;
 using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Services;
+using UsAcRe.Core.UI.Helpers;
 using UsAcRe.Core.UI.Highlighter;
 using UsAcRe.Core.WindowsSystem;
-using UsAcRe.Helpers;
 using UsAcRe.Player.Actions;
 using UsAcRe.Player.Scripts;
 using UsAcRe.Properties;
@@ -18,7 +18,6 @@ namespace UsAcRe {
 		NLog.Logger logger;
 		ElementFromPoint elementFromPoint = null;
 		ElementHighlighter mouseClickBlocker = null;
-
 
 		IAutomationElementService AutomationElementService { get { return ServiceLocator.Current.GetInstance<IAutomationElementService>(); } }
 		IWinApiService WinApiService { get { return ServiceLocator.Current.GetInstance<IWinApiService>(); } }
@@ -39,7 +38,6 @@ namespace UsAcRe {
 			}
 			FormsHelper.LoadLocation(Settings.Default.MainFormLocation, this);
 			FormsHelper.LoadSize(Settings.Default.MainFormSize, this);
-
 		}
 
 		private void MainForm_FormClosed(object sender, FormClosedEventArgs e) {

@@ -65,6 +65,8 @@
     <Compile Include="ClickBlocker\MouseClickBlocker.xaml.cs">
       <DependentUpon>MouseClickBlocker.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\WindowsHelper.cs" />
+    <Compile Include="Helpers\FormsHelper.cs" />
     <Compile Include="Highlighter\ElementHighlighter.cs" />
     <Compile Include="Highlighter\WpfElementBounding.xaml.cs">
       <DependentUpon>WpfElementBounding.xaml</DependentUpon>
