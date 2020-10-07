@@ -42,5 +42,26 @@
 
         <uc:MainMenu x:Name="MainMenu" Grid.Row="0" OnNewProjectCommand="OnCommand_NewProject" OnOpenProjectCommand="OnCommand_OpenProject" OnExitCommand="OnCommand_Exit" OnStartStopCommand="OnCommand_StartStop"/>
 
+        <ListView Name="actionList" Grid.Row="1"  FontSize="9" SelectionMode="Extended">
+            <ListView.View>
+                <GridView>
+                    <GridView.ColumnHeaderContainerStyle>
+                        <Style TargetType="GridViewColumnHeader">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </Style>
+                    </GridView.ColumnHeaderContainerStyle>
+
+                    <GridViewColumn Width="25">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="models:ActionsListItem">
+                                <Border ToolTip="{Binding Code}" BorderThickness="1" Width="12" Height="12" CornerRadius="6" Background="{Binding BackgroundColor}"></Border>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=Action}" Width="Auto">Action</GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
     </Grid>
 </Window>

@@ -39,6 +39,9 @@
     <Reference Include="CommonServiceLocator, Version=2.0.5.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <HintPath>..\packages\CommonServiceLocator.2.0.5\lib\net46\CommonServiceLocator.dll</HintPath>
     </Reference>
+    <Reference Include="NGuard, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NGuard.3.0.0\lib\net40\NGuard.dll</HintPath>
+    </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.7.5\lib\net45\NLog.dll</HintPath>
     </Reference>
@@ -90,6 +93,7 @@
     <Compile Include="ActionsCommands.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="MainWindow.Hooks.cs" />
+    <Compile Include="Models\ActionsListModel.cs" />
     <Compile Include="Services\SettingsService.cs" />
     <Compile Include="Services\WindowsFormsService.cs" />
     <Compile Include="UICommands.cs" />

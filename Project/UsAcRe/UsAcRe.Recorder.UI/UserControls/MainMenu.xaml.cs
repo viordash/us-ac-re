@@ -29,8 +29,5 @@ namespace UsAcRe.Recorder.UI {
 				MainMenuModel.AssignControl(miActions, (MainWindow)Application.Current.MainWindow);
 			}
 		}
-
-		private void mainMenu_Loaded(object sender, RoutedEventArgs e) {
-		}
 	}
 }

@@ -1,11 +1,16 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using CommonServiceLocator;
+using UsAcRe.Core.Actions;
+using UsAcRe.Core.MouseProcess;
 using UsAcRe.Core.Scripts;
 using UsAcRe.Core.Services;
 using UsAcRe.Core.UI.Helpers;
 using UsAcRe.Core.UI.Highlighter;
+using UsAcRe.Core.UIAutomationElement;
 using UsAcRe.Player.Actions;
 using UsAcRe.Recorder.UI.Models;
 using UsAcRe.Recorder.UI.Properties;
@@ -16,7 +21,7 @@ namespace UsAcRe.Recorder.UI {
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
 	public partial class MainWindow : Window {
-		readonly ActionsContainer Actions;
+		readonly ActionsListModel Actions;
 
 		ElementFromPoint elementFromPoint = null;
 		ElementHighlighter mouseClickBlocker = null;
@@ -28,7 +33,10 @@ namespace UsAcRe.Recorder.UI {
 
 		public MainWindow() {
 			InitializeComponent();
-			Actions = new ActionsContainer(SettingsService, new ScriptBuilder(SettingsService));
+			if(!DesignerProperties.GetIsInDesignMode(this)) {
+				Actions = new ActionsListModel(SettingsService, new ScriptBuilder(SettingsService));
+				actionList.ItemsSource = Actions.Items;
+			}
 		}
 
 		private void Window_Initialized(object sender, System.EventArgs e) {
