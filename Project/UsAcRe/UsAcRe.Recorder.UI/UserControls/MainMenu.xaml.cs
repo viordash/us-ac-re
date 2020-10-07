@@ -19,29 +19,15 @@ namespace UsAcRe.Recorder.UI {
 		public MainMenu() {
 			InitializeComponent();
 			MainMenuModel = new MainMenuModel();
-			miNewProject.CommandBindings.Add(new CommandBinding(UICommands.NewProject, OnCommand_NewProject));
-			miOpenProject.CommandBindings.Add(new CommandBinding(UICommands.OpenProject, OnCommand_OpenProject));
-			miExit.CommandBindings.Add(new CommandBinding(UICommands.Exit, OnCommand_Exit));
-			miStartStop.CommandBindings.Add(new CommandBinding(UICommands.StartStop, OnCommand_StartStop));
-
+			miNewProject.CommandBindings.Add(new CommandBinding(UICommands.NewProject, (s, e) => OnNewProjectCommand?.Invoke(s, e)));
+			miOpenProject.CommandBindings.Add(new CommandBinding(UICommands.OpenProject, (s, e) => OnOpenProjectCommand?.Invoke(s, e)));
+			miExit.CommandBindings.Add(new CommandBinding(UICommands.Exit, (s, e) => OnExitCommand?.Invoke(s, e)));
+			miStartStop.CommandBindings.Add(new CommandBinding(UICommands.StartStop, (s, e) => OnStartStopCommand?.Invoke(s, e)));
 			miActions.ItemsSource = MainMenuModel.Items;
+		}
+
+		private void mainMenu_Loaded(object sender, RoutedEventArgs e) {
 			MainMenuModel.AssignControl(miActions, (MainWindow)Application.Current.MainWindow);
-		}
-
-		internal void OnCommand_NewProject(object sender, ExecutedRoutedEventArgs e) {
-			OnNewProjectCommand?.Invoke(sender, e);
-		}
-
-		internal void OnCommand_OpenProject(object sender, ExecutedRoutedEventArgs e) {
-			OnOpenProjectCommand?.Invoke(sender, e);
-		}
-
-		internal void OnCommand_Exit(object sender, ExecutedRoutedEventArgs e) {
-			OnExitCommand?.Invoke(sender, e);
-		}
-
-		internal void OnCommand_StartStop(object sender, ExecutedRoutedEventArgs e) {
-			OnStartStopCommand?.Invoke(sender, e);
 		}
 	}
 }

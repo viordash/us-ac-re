@@ -69,7 +69,7 @@ namespace UsAcRe.Recorder.UI {
 
 		internal void OnCommand_StartStop(object sender, ExecutedRoutedEventArgs e) {
 			Debug.WriteLine("OnCommand_StartStop {0} {1}", sender, e);
-			if(mainMenu.miStartStop.IsChecked) {
+			if(MainMenu.miStartStop.IsChecked) {
 				Actions.Items.Clear();
 				StartHooks();
 			} else {

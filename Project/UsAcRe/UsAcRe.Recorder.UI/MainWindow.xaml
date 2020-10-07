@@ -40,7 +40,7 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <uc:MainMenu x:Name="mainMenu" Grid.Row="0" OnNewProjectCommand="OnCommand_NewProject" OnOpenProjectCommand="OnCommand_OpenProject" OnExitCommand="OnCommand_Exit" OnStartStopCommand="OnCommand_StartStop"/>
+        <uc:MainMenu x:Name="MainMenu" Grid.Row="0" OnNewProjectCommand="OnCommand_NewProject" OnOpenProjectCommand="OnCommand_OpenProject" OnExitCommand="OnCommand_Exit" OnStartStopCommand="OnCommand_StartStop"/>
 
     </Grid>
 </Window>
