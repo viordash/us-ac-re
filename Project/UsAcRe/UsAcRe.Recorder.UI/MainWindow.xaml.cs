@@ -10,7 +10,7 @@ namespace UsAcRe.Recorder.UI {
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
 	public partial class MainWindow : Window {
-		MainMenuModel MainMenuModel;
+		readonly MainMenuModel MainMenuModel;
 
 		public MainWindow() {
 			InitializeComponent();
@@ -23,7 +23,6 @@ namespace UsAcRe.Recorder.UI {
 			miStartStop.CommandBindings.Add(new CommandBinding(UICommands.StartStop, OnCommand_StartStop));
 			miActions.ItemsSource = MainMenuModel.Items;
 			MainMenuModel.AssignControl(miActions, this);
-
 		}
 
 		private void Window_Initialized(object sender, System.EventArgs e) {
@@ -68,7 +67,6 @@ namespace UsAcRe.Recorder.UI {
 
 		internal void OnCommand_SelectAction(object sender, ExecutedRoutedEventArgs e) {
 			Debug.WriteLine("OnCommand_SelectAction {0} {1}", sender, e);
-			//this.Dispatcher
 		}
 	}
 

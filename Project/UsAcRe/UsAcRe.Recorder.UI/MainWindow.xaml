@@ -7,11 +7,14 @@
         xmlns:models="clr-namespace:UsAcRe.Recorder.UI.Models"
         mc:Ignorable="d"
         Height="200" Width="250"
+        MinHeight="100" MinWidth="150"
         AllowsTransparency="True" 
         WindowStyle="None"
-        ResizeMode="NoResize"
-        Background="Transparent"
-        MouseLeftButtonDown="Window_MouseLeftButtonDown" Initialized="Window_Initialized" Closed="Window_Closed">
+        ResizeMode="CanResizeWithGrip"
+        Background="Transparent"        
+        MouseLeftButtonDown="Window_MouseLeftButtonDown" 
+        Initialized="Window_Initialized"
+        Closed="Window_Closed">
 
     <Window.Resources>
         <Style TargetType="Grid">
