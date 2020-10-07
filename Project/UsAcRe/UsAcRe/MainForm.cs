@@ -4,12 +4,12 @@ using System.Windows.Forms;
 using CommonServiceLocator;
 using NLog.Windows.Forms;
 using UsAcRe.Core.Exceptions;
+using UsAcRe.Core.Scripts;
 using UsAcRe.Core.Services;
 using UsAcRe.Core.UI.Helpers;
 using UsAcRe.Core.UI.Highlighter;
 using UsAcRe.Core.WindowsSystem;
 using UsAcRe.Player.Actions;
-using UsAcRe.Player.Scripts;
 using UsAcRe.Properties;
 using UsAcRe.Recorder.UIAutomationElement;
 

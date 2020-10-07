@@ -7,11 +7,9 @@ using NGuard;
 using UsAcRe.Core.Actions;
 using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Extensions;
-using UsAcRe.Core.Scripts;
 using UsAcRe.Core.Services;
-using UsAcRe.Player.Actions;
 
-namespace UsAcRe.Player.Scripts {
+namespace UsAcRe.Core.Scripts {
 	public class ScriptBuilder : IScriptBuilder {
 		readonly ISettingsService settingsService;
 

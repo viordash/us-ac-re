@@ -3,12 +3,12 @@ using System.Windows.Automation;
 using NUnit.Framework;
 using UsAcRe.Core.Actions;
 using UsAcRe.Core.MouseProcess;
+using UsAcRe.Core.Scripts;
 using UsAcRe.Core.Tests.ActionsTests;
 using UsAcRe.Core.UIAutomationElement;
 using UsAcRe.Core.WindowsSystem;
-using UsAcRe.Player.Scripts;
 
-namespace UsAcRe.Player.Tests.ScriptTests {
+namespace UsAcRe.Core.Tests.ScriptTests {
 	[TestFixture]
 	public class ScriptBuilderTests : Testable {
 		[SetUp]
