@@ -8,7 +8,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="250">
 
-    <ListView x:FieldModifier="public" Name="List" FontSize="9" SelectionMode="Extended">
+    <ListView x:FieldModifier="public" Name="ListActions" FontSize="9" SelectionMode="Extended" >
         <ListView.View>
             <GridView>
                 <GridView.ColumnHeaderContainerStyle>

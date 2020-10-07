@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.Collections.Specialized;
+using System.Windows.Controls;
 
 namespace UsAcRe.Recorder.UI {
 	/// <summary>
@@ -8,6 +9,14 @@ namespace UsAcRe.Recorder.UI {
 
 		public ActionsListView() {
 			InitializeComponent();
+			((INotifyCollectionChanged)ListActions.Items).CollectionChanged += ListView_CollectionChanged;
+		}
+
+		private void ListView_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
+			if(e.Action == NotifyCollectionChangedAction.Add) {
+				ListActions.SelectedIndex = ListActions.Items.Count - 1;
+				ListActions.ScrollIntoView(ListActions.SelectedItem);
+			}
 		}
 	}
 }

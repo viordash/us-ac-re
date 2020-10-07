@@ -35,7 +35,7 @@ namespace UsAcRe.Recorder.UI {
 			InitializeComponent();
 			if(!DesignerProperties.GetIsInDesignMode(this)) {
 				Actions = new ActionsListModel(SettingsService, new ScriptBuilder(SettingsService));
-				ActionsList.List.ItemsSource = Actions.Items;
+				ActionsList.ListActions.ItemsSource = Actions.Items;
 
 				//Actions.Add(ElementMatchAction.Record(
 				//	new ElementProgram(0, "notepad++.exe"), new List<UiElement>() {
@@ -81,7 +81,6 @@ namespace UsAcRe.Recorder.UI {
 		}
 
 		private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
-			Debug.WriteLine("Window_MouseLeftButtonDown {0} {1}", sender, e);
 			this.DragMove();
 		}
 
@@ -98,7 +97,6 @@ namespace UsAcRe.Recorder.UI {
 		}
 
 		internal void OnCommand_StartStop(object sender, ExecutedRoutedEventArgs e) {
-			Debug.WriteLine("OnCommand_StartStop {0} {1}", sender, e);
 			if(MainMenu.miStartStop.IsChecked) {
 				Actions.Items.Clear();
 				StartHooks();
