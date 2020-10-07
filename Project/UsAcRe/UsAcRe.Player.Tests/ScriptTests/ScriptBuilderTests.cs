@@ -57,7 +57,6 @@ namespace UsAcRe.Player.Tests.ScriptTests {
 
 		[Test]
 		public void CreateNamespaceSection_Test() {
-			var actions = new ActionsList() { };
 			var scriptBuilder = new ScriptBuilder(settingsServiceMock.Object);
 			var code = scriptBuilder.CreateNamespaceSection("//something");
 			Assert.IsNotEmpty(code);
@@ -67,7 +66,6 @@ namespace UsAcRe.Player.Tests.ScriptTests {
 
 		[Test]
 		public void CreateClassSection_Test() {
-			var actions = new ActionsList() { };
 			var scriptBuilder = new ScriptBuilder(settingsServiceMock.Object);
 			var code = scriptBuilder.CreateClassSection("//something");
 			Assert.IsNotEmpty(code);
@@ -77,7 +75,6 @@ namespace UsAcRe.Player.Tests.ScriptTests {
 
 		[Test]
 		public void CreateExecuteMethodSection_Test() {
-			var actions = new ActionsList() { };
 			var scriptBuilder = new ScriptBuilder(settingsServiceMock.Object);
 			var code = scriptBuilder.CreateExecuteMethodSection("//something");
 			Assert.IsNotEmpty(code);

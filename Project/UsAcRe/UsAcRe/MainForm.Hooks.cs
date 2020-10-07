@@ -148,8 +148,7 @@ namespace UsAcRe {
 					elementFromPoint = null;
 				}
 
-				WinAPI.POINT pt;
-				WinAPI.GetCursorPos(out pt);
+				WinAPI.GetCursorPos(out WinAPI.POINT pt);
 
 				if(!IsRestrictedArea(pt)) {
 					Actions.Add(KeybdAction.Record(args.VKCode, e.IsUp));

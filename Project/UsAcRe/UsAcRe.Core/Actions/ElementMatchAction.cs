@@ -138,14 +138,14 @@ namespace UsAcRe.Core.Actions {
 			var offsetHeight = currentSize.Height - originalSize.Height;
 
 			if(Anchor.HasFlag(System.Windows.Forms.AnchorStyles.Left) && Anchor.HasFlag(System.Windows.Forms.AnchorStyles.Right)) {
-				point.X = point.X - (offsetWidth / 2);
+				point.X -= (offsetWidth / 2);
 			} else if(Anchor.HasFlag(System.Windows.Forms.AnchorStyles.Right)) {
-				point.X = point.X - offsetWidth;
+				point.X -= offsetWidth;
 			}
 			if(Anchor.HasFlag(System.Windows.Forms.AnchorStyles.Top) && Anchor.HasFlag(System.Windows.Forms.AnchorStyles.Bottom)) {
-				point.Y = point.Y - (offsetHeight / 2);
+				point.Y -= (offsetHeight / 2);
 			} else if(Anchor.HasFlag(System.Windows.Forms.AnchorStyles.Bottom)) {
-				point.Y = point.Y - offsetHeight;
+				point.Y -= offsetHeight;
 			}
 			return point;
 		}
@@ -175,7 +175,6 @@ namespace UsAcRe.Core.Actions {
 				return null;
 			}
 
-			string compareMessage;
 			if(!automationElementService.Compare(rootElement, parentEquivalentInSearchPath, new ElementCompareParameters() {
 				AutomationElementInternal = false,
 				Anchor = TestActionConstants.defaultAnchor,
@@ -184,7 +183,7 @@ namespace UsAcRe.Core.Actions {
 				NameIsMatchCase = true,
 				NameIsMatchWholeWord = true,
 				CheckByValue = false
-			}, out compareMessage)) {
+			}, out string compareMessage)) {
 				FailMessage = compareMessage;
 				logger.Debug("attempt to retrieve the rootElement with help of window handle from WinApi");
 				rootElement = GetRootElement(true);
@@ -229,7 +228,6 @@ namespace UsAcRe.Core.Actions {
 
 		UiElement SearchRequiredElement(UiElement searchedElement, List<UiElement> childs) {
 			bool isTargetedElementWithPresentedValue = searchedElement == SearchPath[0];
-			string compareMessage;
 			foreach(var element in childs) {
 				if(!automationElementService.Compare(element, searchedElement, new ElementCompareParameters() {
 					AutomationElementInternal = false,
@@ -240,7 +238,7 @@ namespace UsAcRe.Core.Actions {
 					NameIsMatchCase = true,
 					NameIsMatchWholeWord = true,
 					CheckByValue = settingsService.CheckByValue && isTargetedElementWithPresentedValue
-				}, out compareMessage)) {
+				}, out string compareMessage)) {
 					FailMessage = compareMessage;
 					continue;
 				}

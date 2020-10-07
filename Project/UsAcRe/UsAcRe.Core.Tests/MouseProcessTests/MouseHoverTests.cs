@@ -22,13 +22,11 @@ namespace UsAcRe.Core.Tests.MouseProcessTests {
 		[Test]
 		public async Task Perform_Test() {
 			int step = 0;
-			WinAPI.POINT currPt;
-			WinAPI.POINT startPt;
 
 			WinAPI.SetCursorPos(800 - 50, 600 - 50);
 
 			var stopwatch = Stopwatch.StartNew();
-			WinAPI.GetCursorPos(out startPt);
+			WinAPI.GetCursorPos(out WinAPI.POINT startPt);
 			for(int i = 0; i < 4; i++) {
 				var point = new System.Windows.Point(startPt.x, startPt.y);
 				await MouseHover.Perform(point, step, 1);
@@ -38,7 +36,7 @@ namespace UsAcRe.Core.Tests.MouseProcessTests {
 			var elapsed = stopwatch.Elapsed.TotalMilliseconds;
 			Assert.That(elapsed, Is.GreaterThan(4 * 10));
 
-			WinAPI.GetCursorPos(out currPt);
+			WinAPI.GetCursorPos(out WinAPI.POINT currPt);
 			Assert.That(currPt.x, Is.InRange(startPt.x - 64, startPt.x + 64));
 			Assert.That(currPt.y, Is.InRange(startPt.y - 64, startPt.y + 64));
 		}

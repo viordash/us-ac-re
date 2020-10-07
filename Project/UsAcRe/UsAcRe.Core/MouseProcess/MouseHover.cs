@@ -18,32 +18,32 @@ namespace UsAcRe.Core.MouseProcess {
 			for(int beamNumb = 0; beamNumb < beamCount; beamNumb++) {
 				switch(beamNumb) {
 					case 0:
-						x = x + shiftPos;
+						x += shiftPos;
 						break;
 					case 1:
-						x = x + shiftPos;
-						y = y + shiftPos;
+						x += shiftPos;
+						y += shiftPos;
 						break;
 					case 2:
-						y = y + shiftPos;
+						y += shiftPos;
 						break;
 					case 3:
-						x = x - shiftPos;
-						y = y + shiftPos;
+						x -= shiftPos;
+						y += shiftPos;
 						break;
 					case 4:
-						x = x - shiftPos;
+						x -= shiftPos;
 						break;
 					case 5:
-						x = x - shiftPos;
-						y = y - shiftPos;
+						x -= shiftPos;
+						y -= shiftPos;
 						break;
 					case 6:
-						y = y - shiftPos;
+						y -= shiftPos;
 						break;
 					case 7:
-						x = x + shiftPos;
-						y = y - shiftPos;
+						x += shiftPos;
+						y -= shiftPos;
 						break;
 				}
 				prev = await SmoothMove(prev, new System.Windows.Point(x, y), delay, 8);

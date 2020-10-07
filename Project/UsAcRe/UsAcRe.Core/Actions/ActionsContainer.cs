@@ -6,8 +6,7 @@ using UsAcRe.Core.Services;
 
 namespace UsAcRe.Player.Actions {
 	public class ActionsContainer {
-		NLog.Logger logger = NLog.LogManager.GetLogger("UsAcRe.FormMain");
-		readonly ISettingsService settingsService;
+		readonly NLog.Logger logger = NLog.LogManager.GetLogger("UsAcRe.FormMain");
 		readonly IScriptBuilder scriptBuilder;
 
 		public string Name { get; set; }
@@ -18,7 +17,6 @@ namespace UsAcRe.Player.Actions {
 			IScriptBuilder scriptBuilder) {
 			Guard.Requires(settingsService, nameof(settingsService));
 			Guard.Requires(scriptBuilder, nameof(scriptBuilder));
-			this.settingsService = settingsService;
 			this.scriptBuilder = scriptBuilder;
 			Items = new ActionsList();
 		}

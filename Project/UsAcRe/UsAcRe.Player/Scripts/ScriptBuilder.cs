@@ -183,13 +183,13 @@ namespace UsAcRe.Player.Scripts {
 				keysSeqList.Add((startKeysSeq.Value, prevIndex));
 			}
 
-			foreach(var keysSeq in keysSeqList) {
-				var size = (keysSeq.end - keysSeq.start) + 1;
+			foreach(var (start, end) in keysSeqList) {
+				var size = (end - start) + 1;
 				if(size <= 2) {
 					continue;
 				}
 				var keysActions = actions
-					.Skip(keysSeq.start)
+					.Skip(start)
 					.Take(size)
 					.OfType<KeybdAction>()
 					.Where(x => x.IsUp)
@@ -203,8 +203,8 @@ namespace UsAcRe.Player.Scripts {
 						}
 					}
 					var textTypingAction = TextTypingAction.Record(sb.ToString());
-					actions[keysSeq.start] = textTypingAction;
-					for(int i = keysSeq.start + 1; i <= keysSeq.end; i++) {
+					actions[start] = textTypingAction;
+					for(int i = start + 1; i <= end; i++) {
 						actions[i] = null;
 					}
 				}
