@@ -11,7 +11,7 @@ using UsAcRe.Core.UIAutomationElement;
 
 namespace UsAcRe.Core.Tests.ActionsTests {
 	[TestFixture]
-	public class ElementMatchActionTests : BaseActionTestable {
+	public class ElementMatchActionTests : Testable {
 
 		[SetUp]
 		public override void Setup() {

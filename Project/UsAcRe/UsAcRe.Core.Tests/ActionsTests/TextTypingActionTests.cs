@@ -1,9 +1,9 @@
 ﻿using NUnit.Framework;
-using UsAcRe.Player.Actions;
+using UsAcRe.Core.Actions;
 
 namespace UsAcRe.Core.Tests.ActionsTests {
 	[TestFixture]
-	public class TextTypingActionTests : BaseActionTestable {
+	public class TextTypingActionTests : Testable {
 
 		[SetUp]
 		public override void Setup() {

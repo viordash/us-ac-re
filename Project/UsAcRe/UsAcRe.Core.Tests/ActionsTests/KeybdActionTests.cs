@@ -4,7 +4,7 @@ using UsAcRe.Core.WindowsSystem;
 
 namespace UsAcRe.Core.Tests.ActionsTests {
 	[TestFixture]
-	public class KeybdActionTests : BaseActionTestable {
+	public class KeybdActionTests : Testable {
 
 		[SetUp]
 		public override void Setup() {

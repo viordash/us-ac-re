@@ -4,7 +4,7 @@ using UsAcRe.Core.MouseProcess;
 
 namespace UsAcRe.Core.Tests.ActionsTests {
 	[TestFixture]
-	public class MouseDragActionTests : BaseActionTestable {
+	public class MouseDragActionTests : Testable {
 
 		[SetUp]
 		public override void Setup() {

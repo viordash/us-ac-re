@@ -3,10 +3,9 @@ using CommonServiceLocator;
 using Moq;
 using UsAcRe.Core.Actions;
 using UsAcRe.Core.Services;
-using UsAcRe.Player.Actions;
 
 namespace UsAcRe.Core.Tests.ActionsTests {
-	public class BaseActionTestable {
+	public class Testable {
 		protected Mock<IServiceLocator> serviceLocatorMock;
 		protected Mock<IAutomationElementService> automationElementServiceMock;
 		protected Mock<IWinApiService> winApiServiceMock;

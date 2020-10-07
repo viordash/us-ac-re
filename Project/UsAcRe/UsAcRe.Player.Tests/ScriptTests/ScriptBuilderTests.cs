@@ -6,12 +6,11 @@ using UsAcRe.Core.MouseProcess;
 using UsAcRe.Core.Tests.ActionsTests;
 using UsAcRe.Core.UIAutomationElement;
 using UsAcRe.Core.WindowsSystem;
-using UsAcRe.Player.Actions;
 using UsAcRe.Player.Scripts;
 
 namespace UsAcRe.Player.Tests.ScriptTests {
 	[TestFixture]
-	public class ScriptBuilderTests : BaseActionTestable {
+	public class ScriptBuilderTests : Testable {
 		[SetUp]
 		public override void Setup() {
 			base.Setup();
