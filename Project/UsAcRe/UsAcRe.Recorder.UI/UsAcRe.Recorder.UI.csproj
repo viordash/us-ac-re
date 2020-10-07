@@ -97,6 +97,9 @@
     <Compile Include="Services\SettingsService.cs" />
     <Compile Include="Services\WindowsFormsService.cs" />
     <Compile Include="UICommands.cs" />
+    <Compile Include="UserControls\ActionsListView.xaml.cs">
+      <DependentUpon>ActionsListView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\MainMenu.xaml.cs">
       <DependentUpon>MainMenu.xaml</DependentUpon>
     </Compile>
@@ -112,6 +115,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="UserControls\ActionsListView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserControls\MainMenu.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

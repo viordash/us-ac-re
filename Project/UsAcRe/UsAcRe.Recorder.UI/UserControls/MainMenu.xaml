@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:UsAcRe.Recorder.UI"
              xmlns:models="clr-namespace:UsAcRe.Recorder.UI.Models"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="200" d:DesignWidth="200">
     <Menu x:Name="mainMenu"  VerticalAlignment="Top">
         <MenuItem Header="File">
             <MenuItem x:Name="miNewProject" Header="New Project" Command="local:UICommands.NewProject"></MenuItem>
