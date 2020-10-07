@@ -16,7 +16,6 @@ namespace UsAcRe.Recorder.UI {
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
 	public partial class MainWindow : Window {
-		readonly MainMenuModel MainMenuModel;
 		readonly ActionsContainer Actions;
 
 		ElementFromPoint elementFromPoint = null;
@@ -29,16 +28,7 @@ namespace UsAcRe.Recorder.UI {
 
 		public MainWindow() {
 			InitializeComponent();
-
-			MainMenuModel = new MainMenuModel();
 			Actions = new ActionsContainer(SettingsService, new ScriptBuilder(SettingsService));
-
-			miNewProject.CommandBindings.Add(new CommandBinding(UICommands.NewProject, OnCommand_NewProject));
-			miOpenProject.CommandBindings.Add(new CommandBinding(UICommands.OpenProject, OnCommand_OpenProject));
-			miExit.CommandBindings.Add(new CommandBinding(UICommands.Exit, OnCommand_Exit));
-			miStartStop.CommandBindings.Add(new CommandBinding(UICommands.StartStop, OnCommand_StartStop));
-			miActions.ItemsSource = MainMenuModel.Items;
-			MainMenuModel.AssignControl(miActions, this);
 		}
 
 		private void Window_Initialized(object sender, System.EventArgs e) {
@@ -79,7 +69,7 @@ namespace UsAcRe.Recorder.UI {
 
 		internal void OnCommand_StartStop(object sender, ExecutedRoutedEventArgs e) {
 			Debug.WriteLine("OnCommand_StartStop {0} {1}", sender, e);
-			if(miStartStop.IsChecked) {
+			if(mainMenu.miStartStop.IsChecked) {
 				Actions.Items.Clear();
 				StartHooks();
 			} else {
@@ -89,6 +79,10 @@ namespace UsAcRe.Recorder.UI {
 
 		internal void OnCommand_SelectAction(object sender, ExecutedRoutedEventArgs e) {
 			Debug.WriteLine("OnCommand_SelectAction {0} {1}", sender, e);
+		}
+
+		private void MainMenu_OnNewProjectCommand(object sender, ExecutedRoutedEventArgs e) {
+
 		}
 	}
 

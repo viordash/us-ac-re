@@ -49,8 +49,8 @@ namespace UsAcRe.Recorder.UI {
 			MouseHook.Stop();
 
 			StopKeyboadHooks();
-			if(miStartStop.IsChecked) {
-				miStartStop.IsChecked = false;
+			if(mainMenu.miStartStop.IsChecked) {
+				mainMenu.miStartStop.IsChecked = false;
 			}
 		}
 
@@ -134,7 +134,7 @@ namespace UsAcRe.Recorder.UI {
 		}
 
 		void KeyboardEvent(object sender, RawKeyEventArgs e) {
-			if(!miStartStop.IsChecked) {
+			if(!mainMenu.miStartStop.IsChecked) {
 				if(e.VKCode == KeyboardHook.KeyStartStop) {
 					TestsLaunchingService.Stop();
 				}
