@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Automation;
 using NUnit.Framework;
+using UsAcRe.Core.Actions;
 using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.UIAutomationElement;
-using UsAcRe.Player.Actions;
 
-namespace UsAcRe.Player.Tests.ActionsTests {
+namespace UsAcRe.Core.Tests.ActionsTests {
 	[TestFixture]
 	public class ElementMatchActionTests : BaseActionTestable {
 

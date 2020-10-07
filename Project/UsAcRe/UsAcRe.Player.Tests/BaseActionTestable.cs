@@ -1,10 +1,11 @@
 ﻿using System.Threading;
 using CommonServiceLocator;
 using Moq;
+using UsAcRe.Core.Actions;
 using UsAcRe.Core.Services;
 using UsAcRe.Player.Actions;
 
-namespace UsAcRe.Player.Tests.ActionsTests {
+namespace UsAcRe.Core.Tests.ActionsTests {
 	public class BaseActionTestable {
 		protected Mock<IServiceLocator> serviceLocatorMock;
 		protected Mock<IAutomationElementService> automationElementServiceMock;

@@ -1,10 +1,9 @@
 ﻿using NUnit.Framework;
-using UsAcRe.Core.WindowsSystem;
 using UsAcRe.Player.Actions;
 
-namespace UsAcRe.Player.Tests.ActionsTests {
+namespace UsAcRe.Core.Tests.ActionsTests {
 	[TestFixture]
-	public class KeybdActionTests : BaseActionTestable {
+	public class TextTypingActionTests : BaseActionTestable {
 
 		[SetUp]
 		public override void Setup() {
@@ -18,9 +17,9 @@ namespace UsAcRe.Player.Tests.ActionsTests {
 
 		[Test]
 		public void ExecuteAsScriptSource_Test() {
-			var action = KeybdAction.Record(VirtualKeyCodes.VK_CONTROL, false);
+			var action = TextTypingAction.Record("\t\tHello world \r\n \"test\"");
 			var sourcePresentation = action.ExecuteAsScriptSource();
-			Assert.AreEqual(sourcePresentation, "KeybdAction.Play(VirtualKeyCodes.VK_CONTROL, false)");
+			Assert.AreEqual(sourcePresentation, "TextTypingAction.Play(\"\\t\\tHello world \\r\\n \\\"test\\\"\")");
 		}
 	}
 }

@@ -1,10 +1,10 @@
 ﻿using System.Diagnostics;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using UsAcRe.Core.MouseProcess;
 using UsAcRe.Core.WindowsSystem;
-using UsAcRe.Player.MouseProcess;
 
-namespace UsAcRe.Player.Tests.MouseProcessTests {
+namespace UsAcRe.Core.Tests.MouseProcessTests {
 	[TestFixture]
 	public class MouseHoverTests {
 

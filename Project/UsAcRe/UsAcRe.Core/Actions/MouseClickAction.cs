@@ -8,7 +8,7 @@ using UsAcRe.Core.Extensions;
 using UsAcRe.Core.MouseProcess;
 using UsAcRe.Core.Services;
 
-namespace UsAcRe.Player.Actions {
+namespace UsAcRe.Core.Actions {
 	public class MouseClickAction : BaseAction {
 		public MouseButtonType Button { get; set; }
 		public Point ClickedPoint { get; set; }

@@ -3,11 +3,11 @@ using System.Windows.Automation;
 using NUnit.Framework;
 using UsAcRe.Core.Actions;
 using UsAcRe.Core.MouseProcess;
+using UsAcRe.Core.Tests.ActionsTests;
 using UsAcRe.Core.UIAutomationElement;
 using UsAcRe.Core.WindowsSystem;
 using UsAcRe.Player.Actions;
 using UsAcRe.Player.Scripts;
-using UsAcRe.Player.Tests.ActionsTests;
 
 namespace UsAcRe.Player.Tests.ScriptTests {
 	[TestFixture]
@@ -49,7 +49,7 @@ namespace UsAcRe.Player.Tests.ScriptTests {
 			Assert.That(usings, Does.Contain("using System.Text;"));
 			Assert.That(usings, Does.Contain("using System.Threading.Tasks;"));
 			Assert.That(usings, Does.Contain("using System.Windows;"));
-			Assert.That(usings, Does.Contain("using UsAcRe.Player.Actions;"));
+			Assert.That(usings, Does.Contain("using UsAcRe.Core.Actions;"));
 			Assert.That(usings, Does.Contain("using UsAcRe.Core.MouseProcess;"));
 			Assert.That(usings, Does.Contain("using UsAcRe.Core.Services;"));
 			Assert.That(usings, Does.Contain("using UsAcRe.Core.UIAutomationElement;"));

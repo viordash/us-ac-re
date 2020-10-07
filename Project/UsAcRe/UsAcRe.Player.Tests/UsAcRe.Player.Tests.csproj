@@ -84,13 +84,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActionsTests\BaseActionTestable.cs" />
-    <Compile Include="ActionsTests\ElementMatchActionTests.cs" />
-    <Compile Include="ActionsTests\KeybdActionTests.cs" />
-    <Compile Include="ActionsTests\MouseActionTests.cs" />
-    <Compile Include="ActionsTests\MouseDragActionTests.cs" />
-    <Compile Include="ActionsTests\TextTypingActionTests.cs" />
-    <Compile Include="MouseProcessTests\MouseHoverTests.cs" />
+    <Compile Include="BaseActionTestable.cs" />
     <Compile Include="ScriptTests\ScriptBuilderTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

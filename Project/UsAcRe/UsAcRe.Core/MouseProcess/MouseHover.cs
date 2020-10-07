@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Test.Input;
 
-namespace UsAcRe.Player.MouseProcess {
+namespace UsAcRe.Core.MouseProcess {
 	public class MouseHover {
 		const int beamCount = 8;
 		const int beamLengthStep = 1;

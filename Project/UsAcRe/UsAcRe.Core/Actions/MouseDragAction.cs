@@ -8,7 +8,7 @@ using UsAcRe.Core.Extensions;
 using UsAcRe.Core.MouseProcess;
 using UsAcRe.Core.Services;
 
-namespace UsAcRe.Player.Actions {
+namespace UsAcRe.Core.Actions {
 	public class MouseDragAction : BaseAction {
 		public MouseButtonType Button { get; set; }
 		public Point StartCoord { get; set; }

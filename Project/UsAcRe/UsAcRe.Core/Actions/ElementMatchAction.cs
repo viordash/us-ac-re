@@ -6,14 +6,13 @@ using System.Threading.Tasks;
 using System.Windows.Automation;
 using System.Windows.Forms;
 using NGuard;
-using UsAcRe.Core.Actions;
 using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Extensions;
+using UsAcRe.Core.MouseProcess;
 using UsAcRe.Core.Services;
 using UsAcRe.Core.UIAutomationElement;
-using UsAcRe.Player.MouseProcess;
 
-namespace UsAcRe.Player.Actions {
+namespace UsAcRe.Core.Actions {
 	public class ElementMatchAction : BaseAction {
 
 		#region inner classes

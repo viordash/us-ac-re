@@ -1,8 +1,8 @@
 ﻿using NUnit.Framework;
+using UsAcRe.Core.Actions;
 using UsAcRe.Core.MouseProcess;
-using UsAcRe.Player.Actions;
 
-namespace UsAcRe.Player.Tests.ActionsTests {
+namespace UsAcRe.Core.Tests.ActionsTests {
 	[TestFixture]
 	public class MouseDragActionTests : BaseActionTestable {
 
