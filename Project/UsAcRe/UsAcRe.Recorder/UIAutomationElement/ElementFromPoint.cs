@@ -134,7 +134,6 @@ namespace UsAcRe.Recorder.UIAutomationElement {
 				if(targetedElement != null) {
 					Debug.WriteLine($"targetedElement: {targetedElement}");
 					var tree = BuildElementTree(targetedElement, desktop);
-					TreeOfSpecificUiElement.Add(targetedElement);
 					TreeOfSpecificUiElement.AddRange(tree);
 				}
 			} catch(Exception ex) {
@@ -144,8 +143,9 @@ namespace UsAcRe.Recorder.UIAutomationElement {
 			}
 		}
 
-		UiElement GetAncestor(UiElement targetedElement, UiElement startingPoint, UiElement desktop) {
+		UiElement GetAncestor(UiElement targetedElement, UiElement startingPoint) {
 			BreakOperationsIfCoordChanged();
+			Debug.WriteLine("                        ----  ");
 			Debug.WriteLine($"GetAncestor targeted: {targetedElement}, strtPnt: {startingPoint}");
 			var parent = automationElementService.GetParent(startingPoint);
 			if(parent == null) {
@@ -166,15 +166,28 @@ namespace UsAcRe.Recorder.UIAutomationElement {
 				Debug.WriteLine($"similars: {similars[i]}");
 			}
 			Debug.WriteLine($"GetAncestor, Parent not found: {targetedElement}");
-			return GetAncestor(targetedElement, parent, desktop);
+			return GetAncestor(targetedElement, parent);
 		}
 
 		List<UiElement> BuildElementTree(UiElement targetedElement, UiElement desktop) {
 			var tree = new List<UiElement>();
+			tree.Add(targetedElement);
 			while(true) {
-				var parent = GetAncestor(targetedElement, targetedElement, desktop);
+				var parent = GetAncestor(targetedElement, targetedElement);
 				if(parent == null) {
-					throw new RetrieveElementExceptions($"Not found ancestor for {targetedElement}");
+					bool attemptToSearchElementInAncestor = tree.Count >= 2;
+					if(attemptToSearchElementInAncestor) {
+						targetedElement = tree[tree.Count - 2];
+						var startingPoint = tree[tree.Count - 1];
+						parent = GetAncestor(targetedElement, startingPoint);
+						if(parent != null) {
+							tree.Remove(startingPoint);
+						}
+					}
+
+					if(parent == null) {
+						throw new RetrieveElementExceptions($"Not found ancestor for {targetedElement}");
+					}
 				}
 
 				if(automationElementService.Compare(parent, desktop, ElementCompareParameters.ForExact(), out string message)) {
