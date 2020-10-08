@@ -9,6 +9,7 @@ using UsAcRe.Core.Actions;
 using UsAcRe.Core.Scripts;
 using UsAcRe.Core.Services;
 using UsAcRe.Core.UI.Actions;
+using UsAcRe.Core.UI.Services;
 
 namespace UsAcRe.Recorder.UI.Models {
 	public class ActionsListItem {
@@ -26,16 +27,18 @@ namespace UsAcRe.Recorder.UI.Models {
 	public class ActionsListModel {
 		readonly NLog.Logger logger = NLog.LogManager.GetLogger("UsAcRe.FormMain");
 		readonly IScriptBuilder scriptBuilder;
+		readonly IFileService fileService;
 
 		public string Name { get; set; }
 		public ObservableCollection<ActionsListItem> Items;
 
 		public ActionsListModel(
-			ISettingsService settingsService,
-			IScriptBuilder scriptBuilder) {
-			Guard.Requires(settingsService, nameof(settingsService));
+			IScriptBuilder scriptBuilder,
+			IFileService fileService) {
 			Guard.Requires(scriptBuilder, nameof(scriptBuilder));
+			Guard.Requires(fileService, nameof(fileService));
 			this.scriptBuilder = scriptBuilder;
+			this.fileService = fileService;
 			Items = new ObservableCollection<ActionsListItem>();
 		}
 
@@ -47,7 +50,7 @@ namespace UsAcRe.Recorder.UI.Models {
 		public void Store(string fileName) {
 			var actionsList = new ActionsList(Items.Select(x => x.Action));
 			var script = scriptBuilder.Generate(actionsList);
-			File.WriteAllText(fileName, script);
+			fileService.WriteAllText(fileName, script);
 		}
 	}
 

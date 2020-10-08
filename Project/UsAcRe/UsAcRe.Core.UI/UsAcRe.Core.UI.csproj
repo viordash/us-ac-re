@@ -66,6 +66,7 @@
     <Compile Include="ClickBlocker\MouseClickBlocker.xaml.cs">
       <DependentUpon>MouseClickBlocker.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Constants.cs" />
     <Compile Include="Helpers\WindowsHelper.cs" />
     <Compile Include="Helpers\FormsHelper.cs" />
     <Compile Include="Highlighter\ElementHighlighter.cs" />
@@ -76,6 +77,8 @@
       <DependentUpon>WpfElementToolTip.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\DialogService.cs" />
+    <Compile Include="Services\FileService.cs" />
     <Compile Include="Services\TestsLaunchingService.cs" />
   </ItemGroup>
   <ItemGroup>

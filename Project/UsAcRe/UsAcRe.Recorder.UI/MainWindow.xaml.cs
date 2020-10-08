@@ -5,8 +5,10 @@ using System.Windows.Input;
 using CommonServiceLocator;
 using UsAcRe.Core.Scripts;
 using UsAcRe.Core.Services;
+using UsAcRe.Core.UI;
 using UsAcRe.Core.UI.Helpers;
 using UsAcRe.Core.UI.Highlighter;
+using UsAcRe.Core.UI.Services;
 using UsAcRe.Core.UIAutomationElement;
 using UsAcRe.Recorder.UI.Models;
 using UsAcRe.Recorder.UI.Properties;
@@ -25,11 +27,13 @@ namespace UsAcRe.Recorder.UI {
 		IWinApiService WinApiService { get { return ServiceLocator.Current.GetInstance<IWinApiService>(); } }
 		ITestsLaunchingService TestsLaunchingService { get { return ServiceLocator.Current.GetInstance<ITestsLaunchingService>(); } }
 		ISettingsService SettingsService { get { return ServiceLocator.Current.GetInstance<ISettingsService>(); } }
+		IDialogService DialogService { get { return ServiceLocator.Current.GetInstance<IDialogService>(); } }
+		IFileService FileService { get { return ServiceLocator.Current.GetInstance<IFileService>(); } }
 
 		public MainWindow() {
 			InitializeComponent();
 			if(!DesignerProperties.GetIsInDesignMode(this)) {
-				Actions = new ActionsListModel(SettingsService, new ScriptBuilder(SettingsService));
+				Actions = new ActionsListModel(new ScriptBuilder(SettingsService), FileService);
 				ActionsList.ListActions.ItemsSource = Actions.Items;
 				Actions.Items.CollectionChanged += (s, e) => MainMenu.SaveEnable = Actions.Items.Count > 0;
 			}
@@ -55,15 +59,17 @@ namespace UsAcRe.Recorder.UI {
 		}
 
 		internal void OnCommand_NewProject(object sender, ExecutedRoutedEventArgs e) {
-			Debug.WriteLine("OnCommand_NewProject {0} {1}", sender, e);
+			if(DialogService.Confirmation("Create new project?", "Confirm", MessageBoxButton.OKCancel) != MessageBoxResult.OK) {
+				return;
+			}
 		}
 
 		internal void OnCommand_OpenProject(object sender, ExecutedRoutedEventArgs e) {
-			Debug.WriteLine("OnCommand_OpenProject {0} {1}", sender, e);
+			DialogService.OpenFileDialog(Constants.TestsFileFilter);
 		}
 
 		internal void OnCommand_SaveProject(object sender, ExecutedRoutedEventArgs e) {
-			Debug.WriteLine("OnCommand_SaveProject {0} {1}", sender, e);
+			DialogService.SaveFileDialog(Constants.TestsFileFilter);
 		}
 
 		internal void OnCommand_Exit(object sender, ExecutedRoutedEventArgs e) {
