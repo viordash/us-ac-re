@@ -65,11 +65,21 @@ namespace UsAcRe.Recorder.UI {
 		}
 
 		internal void OnCommand_OpenProject(object sender, ExecutedRoutedEventArgs e) {
-			DialogService.OpenFileDialog(Constants.TestsFileFilter);
+			var fileName = DialogService.OpenFileDialog(Constants.TestsFileFilter);
+
+			if(string.IsNullOrEmpty(fileName)) {
+				return;
+			}
+			var sourceCode = FileService.ReadAllText(fileName);
+
 		}
 
 		internal void OnCommand_SaveProject(object sender, ExecutedRoutedEventArgs e) {
-			DialogService.SaveFileDialog(Constants.TestsFileFilter);
+			var fileName = DialogService.SaveFileDialog(Constants.TestsFileFilter);
+			if(string.IsNullOrEmpty(fileName)) {
+				return;
+			}
+			Actions.Store(fileName);
 		}
 
 		internal void OnCommand_Exit(object sender, ExecutedRoutedEventArgs e) {
