@@ -31,28 +31,6 @@ namespace UsAcRe.Recorder.UI {
 			if(!DesignerProperties.GetIsInDesignMode(this)) {
 				Actions = new ActionsListModel(SettingsService, new ScriptBuilder(SettingsService));
 				ActionsList.ListActions.ItemsSource = Actions.Items;
-
-				//Actions.Add(ElementMatchAction.Record(
-				//	new ElementProgram(0, "notepad++.exe"), new List<UiElement>() {
-				//		new UiElement(0, "", "Context", "#32768", "", 50009, new System.Windows.Rect(1537, 173, 243, 422)),
-				//	}));
-
-				//Actions.Add(ElementMatchAction.Record(
-				//	new ElementProgram(0, "notepad++.exe"), new List<UiElement>() {
-				//	new UiElement(0, "", "New", "", "", 50000, new System.Windows.Rect(1427, 107, 23, 22)),
-				//	new UiElement(0, "", "", "ToolbarWindow32", "", 50021, new System.Windows.Rect(1427, 107, 855, 25)),
-				//	new UiElement(0, "", "", "ReBarWindow32", "", 50033, new System.Windows.Rect(1425, 107, 857, 25)),
-				//	new UiElement(0, "", "*new 1 - Notepad++", "Notepad++", "", 50032, new System.Windows.Rect(1417, 56, 873, 428)),
-				//}));
-
-				//Actions.Add(MouseClickAction.Record(MouseButtonType.Right, new System.Drawing.Point(1537, 173), false));
-
-				//Actions.Add(ElementMatchAction.Record(
-				//	new ElementProgram(0, "notepad++.exe"), new List<UiElement>() {
-				//		new UiElement(0, "", "Context", "#32768", "", 50009, new System.Windows.Rect(1537, 173, 243, 422)),
-				//	}));
-
-				//Actions.Add(MouseClickAction.Record(MouseButtonType.Left, new System.Drawing.Point(2258, 76), false));
 			}
 		}
 
@@ -65,10 +43,6 @@ namespace UsAcRe.Recorder.UI {
 			Settings.Default.MainFormLocation = new System.Drawing.Point((int)Left, (int)Top);
 			Settings.Default.MainFormSize = Bounds.Size;
 			Settings.Default.Save();
-		}
-
-		private void CommandBinding_Executed(object sender, ExecutedRoutedEventArgs e) {
-
 		}
 
 		private void closeButton_Click(object sender, RoutedEventArgs e) {
