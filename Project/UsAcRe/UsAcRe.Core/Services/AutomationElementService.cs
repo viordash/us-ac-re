@@ -173,11 +173,6 @@ namespace UsAcRe.Core.Services {
 				return false;
 			}
 
-			if(!StringHelper.ImplicitEquals(leftAutomationElement.Current.ProviderDescription, rightAutomationElement.Current.ProviderDescription)) {
-				message = string.Format("left.ProviderDescription != right.ProviderDescription ({0}) != ({1})", leftAutomationElement.Current.ProviderDescription, rightAutomationElement.Current.ProviderDescription);
-				return false;
-			}
-
 			if(nestedLevel > settingsService.ElementSearchNestingLevel) {
 				return true;
 			}
