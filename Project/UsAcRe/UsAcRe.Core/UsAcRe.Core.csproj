@@ -102,7 +102,9 @@
     <Compile Include="Helpers\DimensionsHelper.cs" />
     <Compile Include="Helpers\NamingHelpers.cs" />
     <Compile Include="Helpers\StringHelper.cs" />
+    <Compile Include="KeyboardProcess\KeyboardHook.cs" />
     <Compile Include="MouseProcess\MouseButtonType.cs" />
+    <Compile Include="MouseProcess\MouseHook.cs" />
     <Compile Include="MouseProcess\MouseHover.cs" />
     <Compile Include="MouseProcess\MouseProcessConstants.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -116,7 +118,9 @@
     <Compile Include="Services\ITestsLaunchingService.cs" />
     <Compile Include="Services\WinApiService.cs" />
     <Compile Include="Services\IWindowsFormsService.cs" />
+    <Compile Include="UIAutomationElement\ElementFromPoint.cs" />
     <Compile Include="UIAutomationElement\ElementProgram.cs" />
+    <Compile Include="UIAutomationElement\TreeOfSpecificElement.cs" />
     <Compile Include="UIAutomationElement\UiElement.cs" />
     <Compile Include="WindowsSystem\VirtualKeyCodes.cs" />
     <Compile Include="WindowsSystem\WinAPI.cs" />

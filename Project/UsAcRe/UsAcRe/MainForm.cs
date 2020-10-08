@@ -8,10 +8,10 @@ using UsAcRe.Core.Scripts;
 using UsAcRe.Core.Services;
 using UsAcRe.Core.UI.Helpers;
 using UsAcRe.Core.UI.Highlighter;
+using UsAcRe.Core.UIAutomationElement;
 using UsAcRe.Core.WindowsSystem;
 using UsAcRe.Player.Actions;
 using UsAcRe.Properties;
-using UsAcRe.Recorder.UIAutomationElement;
 
 namespace UsAcRe {
 	public partial class MainForm : Form {

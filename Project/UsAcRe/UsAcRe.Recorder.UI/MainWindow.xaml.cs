@@ -1,20 +1,15 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using CommonServiceLocator;
-using UsAcRe.Core.Actions;
-using UsAcRe.Core.MouseProcess;
 using UsAcRe.Core.Scripts;
 using UsAcRe.Core.Services;
 using UsAcRe.Core.UI.Helpers;
 using UsAcRe.Core.UI.Highlighter;
 using UsAcRe.Core.UIAutomationElement;
-using UsAcRe.Player.Actions;
 using UsAcRe.Recorder.UI.Models;
 using UsAcRe.Recorder.UI.Properties;
-using UsAcRe.Recorder.UIAutomationElement;
 
 namespace UsAcRe.Recorder.UI {
 	/// <summary>

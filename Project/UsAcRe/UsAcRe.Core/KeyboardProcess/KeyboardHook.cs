@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using UsAcRe.Core.WindowsSystem;
 
-namespace UsAcRe.Recorder.KeyboardProcess {
+namespace UsAcRe.Core.KeyboardProcess {
 	public delegate void RawKeyEventHandler(object sender, RawKeyEventArgs args);
 	public class RawKeyEventArgs : EventArgs {
 		public VirtualKeyCodes VKCode;

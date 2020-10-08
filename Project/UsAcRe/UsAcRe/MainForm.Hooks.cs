@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Windows.Forms;
 using UsAcRe.Core.Actions;
+using UsAcRe.Core.KeyboardProcess;
+using UsAcRe.Core.MouseProcess;
 using UsAcRe.Core.UI.Highlighter;
+using UsAcRe.Core.UIAutomationElement;
 using UsAcRe.Core.WindowsSystem;
-using UsAcRe.Recorder.KeyboardProcess;
-using UsAcRe.Recorder.MouseProcess;
-using UsAcRe.Recorder.UIAutomationElement;
 
 namespace UsAcRe {
 	public partial class MainForm : Form {

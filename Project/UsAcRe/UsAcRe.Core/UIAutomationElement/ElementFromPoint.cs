@@ -10,7 +10,7 @@ using UsAcRe.Core.Services;
 using UsAcRe.Core.UIAutomationElement;
 using UsAcRe.Core.WindowsSystem;
 
-namespace UsAcRe.Recorder.UIAutomationElement {
+namespace UsAcRe.Core.UIAutomationElement {
 	public class ElementFromPoint {
 		private static readonly NLog.Logger logger = LogManager.GetCurrentClassLogger();
 

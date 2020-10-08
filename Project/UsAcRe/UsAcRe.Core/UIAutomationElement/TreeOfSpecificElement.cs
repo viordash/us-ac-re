@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using UsAcRe.Core.UIAutomationElement;
 
-namespace UsAcRe.Recorder.UIAutomationElement {
+namespace UsAcRe.Core.UIAutomationElement {
 	public class TreeOfSpecificUiElement : List<UiElement> {
 		public ElementProgram Program { get; set; }
 

@@ -6,10 +6,9 @@ using NUnit.Framework;
 using UsAcRe.Core.Services;
 using UsAcRe.Core.UIAutomationElement;
 using UsAcRe.Core.WindowsSystem;
-using UsAcRe.Recorder.UIAutomationElement;
-using static UsAcRe.Recorder.UIAutomationElement.ElementFromPoint;
+using static UsAcRe.Core.UIAutomationElement.ElementFromPoint;
 
-namespace UsAcRe.Recorder.Tests.UIAutomationElement {
+namespace UsAcRe.Core.Tests.UIAutomationElement {
 	[TestFixture]
 	public class ElementFromPointTests {
 		#region inner classes
