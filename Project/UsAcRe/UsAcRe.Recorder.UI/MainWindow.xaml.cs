@@ -31,6 +31,7 @@ namespace UsAcRe.Recorder.UI {
 			if(!DesignerProperties.GetIsInDesignMode(this)) {
 				Actions = new ActionsListModel(SettingsService, new ScriptBuilder(SettingsService));
 				ActionsList.ListActions.ItemsSource = Actions.Items;
+				Actions.Items.CollectionChanged += (s, e) => MainMenu.SaveEnable = Actions.Items.Count > 0;
 			}
 		}
 
@@ -59,6 +60,10 @@ namespace UsAcRe.Recorder.UI {
 
 		internal void OnCommand_OpenProject(object sender, ExecutedRoutedEventArgs e) {
 			Debug.WriteLine("OnCommand_OpenProject {0} {1}", sender, e);
+		}
+
+		internal void OnCommand_SaveProject(object sender, ExecutedRoutedEventArgs e) {
+			Debug.WriteLine("OnCommand_SaveProject {0} {1}", sender, e);
 		}
 
 		internal void OnCommand_Exit(object sender, ExecutedRoutedEventArgs e) {

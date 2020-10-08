@@ -41,7 +41,12 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <uc:MainMenu x:Name="MainMenu" Grid.Row="0" OnNewProjectCommand="OnCommand_NewProject" OnOpenProjectCommand="OnCommand_OpenProject" OnExitCommand="OnCommand_Exit" OnStartStopCommand="OnCommand_StartStop"/>
+        <uc:MainMenu x:Name="MainMenu" Grid.Row="0" 
+                     OnNewProjectCommand="OnCommand_NewProject" 
+                     OnOpenProjectCommand="OnCommand_OpenProject"                      
+                     OnSaveProjectCommand="OnCommand_SaveProject" 
+                     OnExitCommand="OnCommand_Exit" 
+                     OnStartStopCommand="OnCommand_StartStop"/>
 
         <uc:ActionsListView x:Name="ActionsList" Grid.Row="1" />      
     </Grid>
