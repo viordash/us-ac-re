@@ -13,6 +13,7 @@
         WindowStyle="None"
         ResizeMode="CanResizeWithGrip"
         Background="Transparent"        
+        Topmost="True"
         MouseLeftButtonDown="Window_MouseLeftButtonDown" 
         Initialized="Window_Initialized"
         Closed="Window_Closed">
