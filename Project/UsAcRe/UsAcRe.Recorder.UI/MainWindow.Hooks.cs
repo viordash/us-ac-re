@@ -55,10 +55,10 @@ namespace UsAcRe.Recorder.UI {
 		}
 
 		bool IsRestrictedArea(System.Drawing.Point point) {
-			return Bounds.Contains(point);
+			return IsMouseOver;
 		}
 		bool IsRestrictedArea(WinAPI.POINT coord) {
-			return Bounds.Contains(coord.x, coord.y);
+			return IsMouseOver;
 		}
 
 		void MouseClickHook(object sender, MouseClickEventArgs e) {
