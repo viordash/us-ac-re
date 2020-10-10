@@ -1,13 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Windows.Media;
 using NGuard;
 using UsAcRe.Core.Actions;
 using UsAcRe.Core.Scripts;
-using UsAcRe.Core.Services;
 using UsAcRe.Core.UI.Actions;
 using UsAcRe.Core.UI.Services;
 
