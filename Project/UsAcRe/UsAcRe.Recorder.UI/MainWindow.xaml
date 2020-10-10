@@ -22,7 +22,7 @@
         <Style TargetType="Grid">
             <Style.Setters>
                 <Setter Property="Opacity" Value="0.8" />
-                <Setter Property="Background" Value="LightBlue" />
+                <Setter Property="Background" Value="LightSteelBlue" />
             </Style.Setters>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
@@ -32,24 +32,25 @@
         </Style>
     </Window.Resources>
 
-    <Border BorderThickness="1">
+    <Border BorderThickness="1" BorderBrush="DarkGoldenrod">
         <Grid >
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <uc:MainMenu x:Name="MainMenu" Grid.Row="0" 
+            <uc:MainMenu x:Name="MainMenu" Grid.Row="0" Grid.Column="0"
                      OnNewProjectCommand="OnCommand_NewProject" 
                      OnOpenProjectCommand="OnCommand_OpenProject"                      
                      OnSaveProjectCommand="OnCommand_SaveProject" 
                      OnExitCommand="OnCommand_Exit" 
                      OnStartStopCommand="OnCommand_StartStop"/>
 
-            <uc:ActionsListView x:Name="ActionsList" Grid.Row="1" />
+            <uc:ActionsListView x:Name="ActionsList" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"/>
         </Grid>
     </Border>
 </Window>
