@@ -35,7 +35,7 @@ namespace UsAcRe.Core.Actions {
 		}
 
 		public override string ToString() {
-			return string.Format("{0} Code:{0:D3}, Down:{2}, Up:{3}", nameof(KeybdAction), VKCode, IsUp ? "Up" : "  ", Convert.ToChar(VKCode));
+			return string.Format("{0} Code:{1}, Down:{2}, Up:{3}", nameof(KeybdAction), VKCode, IsUp ? "Up" : "  ", Convert.ToChar(VKCode));
 		}
 		public override string ExecuteAsScriptSource() {
 			return string.Format("{0}.{1}({2}, {3})", nameof(KeybdAction), nameof(KeybdAction.Play), VKCode.ForNew(), IsUp.ForNew());
