@@ -10,6 +10,7 @@ namespace UsAcRe.Core.UI.Actions {
 			{ typeof(TextTypingAction), System.Drawing.Color.LightSeaGreen},
 			{ typeof(MouseClickAction), System.Drawing.Color.LightBlue},
 			{ typeof(MouseDragAction), System.Drawing.Color.LightCyan},
+			{ typeof(DelayAction), System.Drawing.Color.AliceBlue},
 		};
 	}
 }

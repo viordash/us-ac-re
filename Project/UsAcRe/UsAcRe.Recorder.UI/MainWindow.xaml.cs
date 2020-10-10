@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using CommonServiceLocator;
+using UsAcRe.Core.Actions;
 using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Scripts;
 using UsAcRe.Core.Services;
@@ -106,6 +107,9 @@ namespace UsAcRe.Recorder.UI {
 
 		internal void OnCommand_SelectAction(object sender, ExecutedRoutedEventArgs e) {
 			Debug.WriteLine("OnCommand_SelectAction {0} {1}", sender, e);
+			if (e.Command == ActionsCommands.Pause && e.Parameter is int milliseconds) {
+				Actions.Add(DelayAction.Record(milliseconds));
+			}
 		}
 
 		private void MainMenu_OnNewProjectCommand(object sender, ExecutedRoutedEventArgs e) {

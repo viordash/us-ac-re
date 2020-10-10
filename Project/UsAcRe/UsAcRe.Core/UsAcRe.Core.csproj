@@ -87,6 +87,7 @@
     <Compile Include="Actions\ActionsList.cs" />
     <Compile Include="Actions\BaseAction.cs" />
     <Compile Include="Actions\ElementMatchAction.cs" />
+    <Compile Include="Actions\DelayAction.cs" />
     <Compile Include="Actions\KeybdAction.cs" />
     <Compile Include="Actions\MouseClickAction.cs" />
     <Compile Include="Actions\MouseDragAction.cs" />

@@ -25,6 +25,7 @@ namespace UsAcRe {
 			container.RegisterType<MouseClickAction, MouseClickAction>(new TransientLifetimeManager());
 			container.RegisterType<MouseDragAction, MouseDragAction>(new TransientLifetimeManager());
 			container.RegisterType<TextTypingAction, TextTypingAction>(new TransientLifetimeManager());
+			container.RegisterType<DelayAction, DelayAction>(new TransientLifetimeManager());
 
 			var serviceLocator = new UnityServiceLocator(container);
 			ServiceLocator.SetLocatorProvider(() => serviceLocator);    // Warning: do NOT remove serviceLocator local variable, do not inline "new UnityServiceLocator"!
