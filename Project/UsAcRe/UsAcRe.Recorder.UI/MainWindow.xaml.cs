@@ -98,7 +98,6 @@ namespace UsAcRe.Recorder.UI {
 
 		internal void OnCommand_StartStop(object sender, ExecutedRoutedEventArgs e) {
 			if(MainMenu.miStartStop.IsChecked) {
-				Actions.Clear();
 				StartHooks();
 			} else {
 				StopHooks();
