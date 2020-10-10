@@ -32,22 +32,24 @@
         </Style>
     </Window.Resources>
 
-    <Grid >
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+    <Border BorderThickness="1">
+        <Grid >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-        <uc:MainMenu x:Name="MainMenu" Grid.Row="0" 
+            <uc:MainMenu x:Name="MainMenu" Grid.Row="0" 
                      OnNewProjectCommand="OnCommand_NewProject" 
                      OnOpenProjectCommand="OnCommand_OpenProject"                      
                      OnSaveProjectCommand="OnCommand_SaveProject" 
                      OnExitCommand="OnCommand_Exit" 
                      OnStartStopCommand="OnCommand_StartStop"/>
 
-        <uc:ActionsListView x:Name="ActionsList" Grid.Row="1" />      
-    </Grid>
+            <uc:ActionsListView x:Name="ActionsList" Grid.Row="1" />
+        </Grid>
+    </Border>
 </Window>
