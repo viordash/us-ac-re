@@ -8,25 +8,36 @@
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="250">
 
-    <ListView x:FieldModifier="public" Name="ListActions" FontSize="9" SelectionMode="Extended" >
-        <ListView.View>
-            <GridView>
-                <GridView.ColumnHeaderContainerStyle>
-                    <Style TargetType="GridViewColumnHeader">
-                        <Setter Property="Visibility" Value="Collapsed" />
-                    </Style>
-                </GridView.ColumnHeaderContainerStyle>
+    <Grid >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="16"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
 
-                <GridViewColumn Width="25">
-                    <GridViewColumn.CellTemplate>
-                        <DataTemplate DataType="models:ActionsListItem">
-                            <Border ToolTip="{Binding Code}" BorderThickness="1" Width="12" Height="12" CornerRadius="6" Background="{Binding BackgroundColor}"></Border>
-                        </DataTemplate>
-                    </GridViewColumn.CellTemplate>
-                </GridViewColumn>
+        <ListView x:FieldModifier="public" Name="ListActions" Grid.Row="0" FontSize="9" SelectionMode="Extended" SelectionChanged="ListActions_SelectionChanged" >
+            <ListView.View>
+                <GridView>
+                    <GridView.ColumnHeaderContainerStyle>
+                        <Style TargetType="GridViewColumnHeader">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </Style>
+                    </GridView.ColumnHeaderContainerStyle>
 
-                <GridViewColumn DisplayMemberBinding="{Binding Action}" Width="Auto">Action</GridViewColumn>
-            </GridView>
-        </ListView.View>
-    </ListView>
+                    <GridViewColumn Width="25">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="models:ActionsListItem">
+                                <Border ToolTip="{Binding Code}" BorderThickness="1" Width="12" Height="12" CornerRadius="6" Background="{Binding BackgroundColor}"></Border>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn DisplayMemberBinding="{Binding Action}" Width="Auto">Action</GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <TextBlock x:Name="lbFooter" Grid.Row="1" FontSize="9" FontWeight="Bold" Background="Transparent"/>
+    </Grid>
 </UserControl>
