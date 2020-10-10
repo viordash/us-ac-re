@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using UsAcRe.Core.Actions;
 
 namespace UsAcRe.Core.Services {
@@ -11,6 +12,7 @@ namespace UsAcRe.Core.Services {
 		void CloseHighlighter();
 		void Log(BaseAction baseAction);
 		BaseAction LastAction { get; }
+		IEnumerable<BaseAction> ExecutedActions { get; }
 		bool IsDryRunMode { get; }
 	}
 }

@@ -47,10 +47,20 @@ namespace UsAcRe.Recorder.UI.Models {
 			logger.Info("{0}", actionInfo.ExecuteAsScriptSource());
 		}
 
+		public void AddRange(IEnumerable<BaseAction> actions) {
+			foreach(var actionInfo in actions) {
+				Add(actionInfo);
+			}
+		}
+
 		public void Store(string fileName) {
 			var actionsList = new ActionsList(Items.Select(x => x.Action));
 			var script = scriptBuilder.Generate(actionsList);
 			fileService.WriteAllText(fileName, script);
+		}
+
+		public void Clear() {
+			Items.Clear();
 		}
 	}
 

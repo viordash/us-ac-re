@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using CommonServiceLocator;
+using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Scripts;
 using UsAcRe.Core.Services;
 using UsAcRe.Core.UI;
@@ -62,16 +63,25 @@ namespace UsAcRe.Recorder.UI {
 			if(DialogService.Confirmation("Create new project?", "Confirm", MessageBoxButton.OKCancel) != MessageBoxResult.OK) {
 				return;
 			}
+			Actions.Clear();
 		}
 
-		internal void OnCommand_OpenProject(object sender, ExecutedRoutedEventArgs e) {
+		internal async void OnCommand_OpenProject(object sender, ExecutedRoutedEventArgs e) {
 			var fileName = DialogService.OpenFileDialog(Constants.TestsFileFilter);
 
 			if(string.IsNullOrEmpty(fileName)) {
 				return;
 			}
 			var sourceCode = FileService.ReadAllText(fileName);
-
+			TestsLaunchingService.Start(true);
+			try {
+				await ScriptCompiler.RunTest(sourceCode);
+				TestsLaunchingService.Stop();
+				Actions.AddRange(TestsLaunchingService.ExecutedActions);
+			} catch(TestFailedExeption ex) {
+				logger.Error(ex.Message);
+				throw;
+			}
 		}
 
 		internal void OnCommand_SaveProject(object sender, ExecutedRoutedEventArgs e) {
@@ -88,7 +98,7 @@ namespace UsAcRe.Recorder.UI {
 
 		internal void OnCommand_StartStop(object sender, ExecutedRoutedEventArgs e) {
 			if(MainMenu.miStartStop.IsChecked) {
-				Actions.Items.Clear();
+				Actions.Clear();
 				StartHooks();
 			} else {
 				StopHooks();
