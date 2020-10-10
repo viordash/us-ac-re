@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
@@ -63,7 +64,10 @@ namespace UsAcRe.Core.Actions {
 			stepWaitAppear = 0;
 			OffsetPoint = null;
 			var stopwatch = Stopwatch.StartNew();
-			while(!cancellationToken.IsCancellationRequested && stopwatch.Elapsed.TotalMilliseconds < TimeoutMs) {
+			while(stopwatch.Elapsed.TotalMilliseconds < TimeoutMs) {
+				if(cancellationToken.IsCancellationRequested) {
+					throw new OperationCanceledException(this.ToString());
+				}
 				var requiredElement = GetElement();
 				if(requiredElement?.Element != null) {
 					testsLaunchingService.OpenHighlighter(requiredElement.Element.BoundingRectangle, null);

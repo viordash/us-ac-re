@@ -45,10 +45,12 @@ namespace UsAcRe.Core.Actions {
 			try {
 				testsLaunchingService.Log(this);
 				if(cancellationToken.IsCancellationRequested) {
-					return;
+					throw new OperationCanceledException(this.ToString());
 				}
 				await action();
 			} catch(TestFailedExeption) {
+				throw;
+			} catch(OperationCanceledException) {
 				throw;
 			} catch(Exception ex) {
 				if(ex is Win32Exception exception && (uint)exception.ErrorCode == 0x80004005) {
