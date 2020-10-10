@@ -12,9 +12,8 @@ namespace UsAcRe.Core.UI.Services {
 	public class TestsLaunchingService : ITestsLaunchingService {
 		protected NLog.Logger logger = NLog.LogManager.GetLogger("UsAcRe.FormMain");
 		readonly IWindowsFormsService windowsFormsService;
-		CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
+		CancellationTokenSource cancelTokenSource = null;
 		ElementHighlighter elementHighlighter = null;
-
 		public List<BaseAction> executedActions = new List<BaseAction>();
 		public BaseAction LastAction {
 			get {
@@ -25,10 +24,11 @@ namespace UsAcRe.Core.UI.Services {
 			}
 		}
 
+		public bool IsDryRunMode { get; private set; } = false;
+
 		public TestsLaunchingService(IWindowsFormsService windowsFormsService) {
 			Guard.Requires(windowsFormsService, nameof(windowsFormsService));
 			this.windowsFormsService = windowsFormsService;
-			cancelTokenSource = null;
 		}
 
 		public CancellationToken GetCurrentCancellationToken() {
@@ -38,7 +38,8 @@ namespace UsAcRe.Core.UI.Services {
 			return cancelTokenSource.Token;
 		}
 
-		public void Start() {
+		public void Start(bool isDryRunMode) {
+			IsDryRunMode = isDryRunMode;
 			if(cancelTokenSource != null) {
 				cancelTokenSource.Cancel();
 				cancelTokenSource.Dispose();

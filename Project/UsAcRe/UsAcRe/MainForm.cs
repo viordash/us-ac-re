@@ -105,7 +105,7 @@ namespace UsAcRe {
 			var sourceCode = File.ReadAllText(openFileDialog1.FileName);
 			txtLog.Clear();
 			txtLog.Text = sourceCode;
-			TestsLaunchingService.Start();
+			TestsLaunchingService.Start(false);
 			StartKeyboardHooks();
 			try {
 				await ScriptCompiler.RunTest(sourceCode);

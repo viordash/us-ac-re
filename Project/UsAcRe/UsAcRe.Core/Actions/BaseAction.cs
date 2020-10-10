@@ -43,9 +43,12 @@ namespace UsAcRe.Core.Actions {
 
 		protected async Task SafeActionAsync(Func<ValueTask> action) {
 			try {
-				testsLaunchingService.Log(this);
 				if(cancellationToken.IsCancellationRequested) {
 					throw new OperationCanceledException(this.ToString());
+				}
+				testsLaunchingService.Log(this);
+				if(testsLaunchingService.IsDryRunMode) {
+					return;
 				}
 				await action();
 			} catch(TestFailedExeption) {
