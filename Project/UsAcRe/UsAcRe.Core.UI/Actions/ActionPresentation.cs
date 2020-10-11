@@ -5,7 +5,7 @@ using UsAcRe.Core.Actions;
 namespace UsAcRe.Core.UI.Actions {
 	public class ActionPresentation {
 		public static Dictionary<Type, System.Drawing.Color> BackgroundColor = new Dictionary<Type, System.Drawing.Color>() {
-			{ typeof(ElementMatchAction), System.Drawing.Color.LightCoral},
+			{ typeof(ElementMatchAction), System.Drawing.Color.DarkOrange},
 			{ typeof(KeybdAction), System.Drawing.Color.LightGreen},
 			{ typeof(TextTypingAction), System.Drawing.Color.LightSeaGreen},
 			{ typeof(MouseClickAction), System.Drawing.Color.LightBlue},
