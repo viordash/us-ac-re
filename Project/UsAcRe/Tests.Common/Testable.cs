@@ -95,6 +95,12 @@ namespace UsAcRe.Core.Tests.ActionsTests {
 					return new DelayAction(settingsServiceMock.Object, testsLaunchingServiceMock.Object, fileServiceMock.Object);
 				});
 
+			serviceLocatorMock
+				.Setup(x => x.GetInstance<ActionSet>())
+				.Returns(() => {
+					return new ActionSet(settingsServiceMock.Object, testsLaunchingServiceMock.Object, fileServiceMock.Object);
+				});
+
 			ServiceLocator.SetLocatorProvider(() => serviceLocatorMock.Object);
 		}
 

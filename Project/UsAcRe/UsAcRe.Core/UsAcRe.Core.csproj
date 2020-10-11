@@ -86,6 +86,7 @@
     <Compile Include="Actions\ActionsContainer.cs" />
     <Compile Include="Actions\ActionsList.cs" />
     <Compile Include="Actions\BaseAction.cs" />
+    <Compile Include="Actions\ActionSet.cs" />
     <Compile Include="Actions\ElementMatchAction.cs" />
     <Compile Include="Actions\DelayAction.cs" />
     <Compile Include="Actions\KeybdAction.cs" />
