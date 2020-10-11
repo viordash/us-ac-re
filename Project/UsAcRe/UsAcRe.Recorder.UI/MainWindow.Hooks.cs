@@ -39,6 +39,7 @@ namespace UsAcRe.Recorder.UI {
 			StartKeyboardHooks();
 			ActionsList.IsEnabled = false;
 			this.ResizeMode = ResizeMode.NoResize;
+			MainMenu.IsStopped = false;
 		}
 
 		void StopHooks() {
@@ -56,6 +57,7 @@ namespace UsAcRe.Recorder.UI {
 			}
 			ActionsList.IsEnabled = true;
 			this.ResizeMode = ResizeMode.CanResizeWithGrip;
+			MainMenu.IsStopped = true;
 		}
 
 		bool IsRestrictedArea(System.Drawing.Point point) {

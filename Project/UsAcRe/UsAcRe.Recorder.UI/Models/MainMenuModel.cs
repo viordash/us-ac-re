@@ -5,10 +5,11 @@ using System.Windows.Input;
 namespace UsAcRe.Recorder.UI.Models {
 	public class MainMenuItem {
 		public string Header { get; private set; }
-		public bool IsSeparator { get; set; }
+		public bool IsSeparator { get; set; } = false;
 		public ICommand Command { get; private set; }
 		public object CommandParameter { get; private set; }
 		public ObservableCollection<MainMenuItem> Nodes { get; set; }
+		public bool EnableOnStopped { get; set; } = false;
 
 		public MainMenuItem(string header, ICommand command = null, object parameter = null, ObservableCollection<MainMenuItem> nodes = null) {
 			Header = header;
@@ -34,7 +35,9 @@ namespace UsAcRe.Recorder.UI.Models {
 				new MainMenuItem( "" ) {
 					IsSeparator = true
 				},
-				new MainMenuItem( header: "Include actions", command: ActionsCommands.IncludeSet ),
+				new MainMenuItem( header: "Include actions", command: ActionsCommands.IncludeSet ) {
+					EnableOnStopped = true
+				},
 			};
 		}
 

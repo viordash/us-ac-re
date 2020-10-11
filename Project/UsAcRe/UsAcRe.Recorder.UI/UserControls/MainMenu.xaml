@@ -6,7 +6,8 @@
              xmlns:local="clr-namespace:UsAcRe.Recorder.UI"
              xmlns:models="clr-namespace:UsAcRe.Recorder.UI.Models"
              mc:Ignorable="d" 
-             d:DesignHeight="200" d:DesignWidth="200">
+             d:DesignHeight="200" d:DesignWidth="200"
+             x:Name="ucMainMenu">
     <Menu x:Name="mainMenu"  VerticalAlignment="Top" FontSize="10" Background="LightSteelBlue">
         <MenuItem Header="File">
             <MenuItem x:Name="miNewProject" Header="New Project" Command="local:UICommands.NewProject"></MenuItem>
@@ -31,6 +32,10 @@
                                     </ControlTemplate>
                                 </Setter.Value>
                             </Setter>
+                        </DataTrigger>
+
+                        <DataTrigger Binding="{Binding EnableOnStopped}" Value="True">
+                            <Setter Property="IsEnabled" Value="{Binding ElementName=ucMainMenu, Path=IsStopped}"/>
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>

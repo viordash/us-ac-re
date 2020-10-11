@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -11,6 +12,14 @@ namespace UsAcRe.Recorder.UI {
 	/// </summary>
 	public partial class MainMenu : UserControl {
 		readonly MainMenuModel MainMenuModel;
+
+		public static readonly DependencyProperty IsStoppedProperty =
+			DependencyProperty.Register(nameof(IsStopped), typeof(bool), typeof(MainMenu), new PropertyMetadata(true));
+
+		public bool IsStopped {
+			get { return (bool)GetValue(IsStoppedProperty); }
+			set { SetValue(IsStoppedProperty, value); }
+		}
 
 		public event ExecutedRoutedEventHandler OnNewProjectCommand;
 		public event ExecutedRoutedEventHandler OnOpenProjectCommand;
