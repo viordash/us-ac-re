@@ -12,26 +12,12 @@
         AllowsTransparency="True" 
         WindowStyle="None"
         ResizeMode="CanResizeWithGrip"
-        Background="Transparent"        
+        Background="LightSteelBlue"        
         Topmost="True"
         Title="UsAcRe.Recorder.UI"
         MouseLeftButtonDown="Window_MouseLeftButtonDown" 
         Initialized="Window_Initialized"
         Closed="Window_Closed">
-
-    <Window.Resources>
-        <Style TargetType="Grid">
-            <Style.Setters>
-                <Setter Property="Opacity" Value="0.8" />
-                <Setter Property="Background" Value="LightSteelBlue" />
-            </Style.Setters>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Opacity" Value="1" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-    </Window.Resources>
 
     <Border BorderThickness="1" BorderBrush="DarkGoldenrod">
         <Grid >
