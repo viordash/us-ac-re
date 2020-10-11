@@ -22,14 +22,18 @@ namespace UsAcRe.Core.Actions {
 		protected readonly ISettingsService settingsService;
 		protected readonly ITestsLaunchingService testsLaunchingService;
 		protected readonly CancellationToken cancellationToken;
+		protected readonly IFileService fileService;
 
 		protected BaseAction(
 			ISettingsService settingsService,
-			ITestsLaunchingService testsLaunchingService) {
+			ITestsLaunchingService testsLaunchingService,
+			IFileService fileService) {
 			Guard.Requires(settingsService, nameof(settingsService));
 			Guard.Requires(testsLaunchingService, nameof(testsLaunchingService));
+			Guard.Requires(fileService, nameof(fileService));
 			this.settingsService = settingsService;
 			this.testsLaunchingService = testsLaunchingService;
+			this.fileService = fileService;
 			cancellationToken = testsLaunchingService.GetCurrentCancellationToken();
 		}
 

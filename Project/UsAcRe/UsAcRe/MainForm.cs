@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Windows.Forms;
 using CommonServiceLocator;
 using NLog.Windows.Forms;
@@ -23,13 +22,14 @@ namespace UsAcRe {
 		IWinApiService WinApiService { get { return ServiceLocator.Current.GetInstance<IWinApiService>(); } }
 		ITestsLaunchingService TestsLaunchingService { get { return ServiceLocator.Current.GetInstance<ITestsLaunchingService>(); } }
 		ISettingsService SettingsService { get { return ServiceLocator.Current.GetInstance<ISettingsService>(); } }
+		IFileService FileService { get { return ServiceLocator.Current.GetInstance<IFileService>(); } }
 
 		readonly ActionsContainer Actions;
 
 		public MainForm() {
 			InitializeComponent();
 			RichTextBoxTarget.ReInitializeAllTextboxes(this);
-			Actions = new ActionsContainer(SettingsService, new ScriptBuilder(SettingsService));
+			Actions = new ActionsContainer(SettingsService, new ScriptBuilder(SettingsService), FileService);
 		}
 
 		private void MainForm_Load(object sender, EventArgs e) {
@@ -102,7 +102,7 @@ namespace UsAcRe {
 			if(openFileDialog1.ShowDialog() != DialogResult.OK) {
 				return;
 			}
-			var sourceCode = File.ReadAllText(openFileDialog1.FileName);
+			var sourceCode = FileService.ReadAllText(openFileDialog1.FileName);
 			txtLog.Clear();
 			txtLog.Text = sourceCode;
 			TestsLaunchingService.Start(false);

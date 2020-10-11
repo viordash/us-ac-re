@@ -11,6 +11,7 @@ namespace UsAcRe.Core.Tests.ActionsTests {
 		protected Mock<IWinApiService> winApiServiceMock;
 		protected Mock<ITestsLaunchingService> testsLaunchingServiceMock;
 		protected Mock<ISettingsService> settingsServiceMock;
+		protected Mock<IFileService> fileServiceMock;
 
 		public virtual void Setup() {
 
@@ -19,6 +20,7 @@ namespace UsAcRe.Core.Tests.ActionsTests {
 			winApiServiceMock = new Mock<IWinApiService>();
 			testsLaunchingServiceMock = new Mock<ITestsLaunchingService>();
 			settingsServiceMock = new Mock<ISettingsService>();
+			fileServiceMock = new Mock<IFileService>();
 
 			serviceLocatorMock
 				.Setup(x => x.GetInstance<IAutomationElementService>())
@@ -44,6 +46,12 @@ namespace UsAcRe.Core.Tests.ActionsTests {
 					return settingsServiceMock.Object;
 				});
 
+			serviceLocatorMock
+				.Setup(x => x.GetInstance<IFileService>())
+				.Returns(() => {
+					return fileServiceMock.Object;
+				});
+
 
 			testsLaunchingServiceMock
 				.Setup(x => x.GetCurrentCancellationToken())
@@ -54,37 +62,37 @@ namespace UsAcRe.Core.Tests.ActionsTests {
 			serviceLocatorMock
 				.Setup(x => x.GetInstance<KeybdAction>())
 				.Returns(() => {
-					return new KeybdAction(settingsServiceMock.Object, testsLaunchingServiceMock.Object);
+					return new KeybdAction(settingsServiceMock.Object, testsLaunchingServiceMock.Object, fileServiceMock.Object);
 				});
 
 			serviceLocatorMock
 				.Setup(x => x.GetInstance<MouseClickAction>())
 				.Returns(() => {
-					return new MouseClickAction(settingsServiceMock.Object, testsLaunchingServiceMock.Object);
+					return new MouseClickAction(settingsServiceMock.Object, testsLaunchingServiceMock.Object, fileServiceMock.Object);
 				});
 
 			serviceLocatorMock
 				.Setup(x => x.GetInstance<MouseDragAction>())
 				.Returns(() => {
-					return new MouseDragAction(settingsServiceMock.Object, testsLaunchingServiceMock.Object);
+					return new MouseDragAction(settingsServiceMock.Object, testsLaunchingServiceMock.Object, fileServiceMock.Object);
 				});
 
 			serviceLocatorMock
 				.Setup(x => x.GetInstance<TextTypingAction>())
 				.Returns(() => {
-					return new TextTypingAction(settingsServiceMock.Object, testsLaunchingServiceMock.Object);
+					return new TextTypingAction(settingsServiceMock.Object, testsLaunchingServiceMock.Object, fileServiceMock.Object);
 				});
 
 			serviceLocatorMock
 				.Setup(x => x.GetInstance<ElementMatchAction>())
 				.Returns(() => {
-					return new ElementMatchAction(automationElementServiceMock.Object, settingsServiceMock.Object, testsLaunchingServiceMock.Object);
+					return new ElementMatchAction(automationElementServiceMock.Object, settingsServiceMock.Object, testsLaunchingServiceMock.Object, fileServiceMock.Object);
 				});
 
 			serviceLocatorMock
 				.Setup(x => x.GetInstance<DelayAction>())
 				.Returns(() => {
-					return new DelayAction(settingsServiceMock.Object, testsLaunchingServiceMock.Object);
+					return new DelayAction(settingsServiceMock.Object, testsLaunchingServiceMock.Object, fileServiceMock.Object);
 				});
 
 			ServiceLocator.SetLocatorProvider(() => serviceLocatorMock.Object);

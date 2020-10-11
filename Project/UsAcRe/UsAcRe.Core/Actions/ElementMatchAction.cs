@@ -55,7 +55,8 @@ namespace UsAcRe.Core.Actions {
 		public ElementMatchAction(
 			IAutomationElementService automationElementService,
 			ISettingsService settingsService,
-			ITestsLaunchingService testsLaunchingService) : base(settingsService, testsLaunchingService) {
+			ITestsLaunchingService testsLaunchingService,
+			IFileService fileService) : base(settingsService, testsLaunchingService, fileService) {
 			Guard.Requires(automationElementService, nameof(automationElementService));
 			this.automationElementService = automationElementService;
 		}

@@ -1,5 +1,4 @@
-﻿using System.IO;
-using NGuard;
+﻿using NGuard;
 using UsAcRe.Core.Actions;
 using UsAcRe.Core.Scripts;
 using UsAcRe.Core.Services;
@@ -8,16 +7,20 @@ namespace UsAcRe.Player.Actions {
 	public class ActionsContainer {
 		readonly NLog.Logger logger = NLog.LogManager.GetLogger("UsAcRe.FormMain");
 		readonly IScriptBuilder scriptBuilder;
+		readonly IFileService fileService;
 
 		public string Name { get; set; }
 		public ActionsList Items;
 
 		public ActionsContainer(
 			ISettingsService settingsService,
-			IScriptBuilder scriptBuilder) {
+			IScriptBuilder scriptBuilder,
+			IFileService fileService) {
 			Guard.Requires(settingsService, nameof(settingsService));
 			Guard.Requires(scriptBuilder, nameof(scriptBuilder));
+			Guard.Requires(fileService, nameof(fileService));
 			this.scriptBuilder = scriptBuilder;
+			this.fileService = fileService;
 			Items = new ActionsList();
 		}
 
@@ -28,7 +31,7 @@ namespace UsAcRe.Player.Actions {
 
 		public void Store(string fileName) {
 			var script = scriptBuilder.Generate(Items);
-			File.WriteAllText(fileName, script);
+			fileService.WriteAllText(fileName, script);
 		}
 	}
 }

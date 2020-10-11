@@ -19,6 +19,7 @@ namespace UsAcRe {
 			container.RegisterType<ITestsLaunchingService, TestsLaunchingService>(new ContainerControlledLifetimeManager());
 			container.RegisterType<IWindowsFormsService, WindowsFormsService>(new ContainerControlledLifetimeManager());
 			container.RegisterType<ISettingsService, SettingsService>(new ContainerControlledLifetimeManager());
+			container.RegisterType<IFileService, FileService>(new ContainerControlledLifetimeManager());
 
 			container.RegisterType<ElementMatchAction, ElementMatchAction>(new TransientLifetimeManager());
 			container.RegisterType<KeybdAction, KeybdAction>(new TransientLifetimeManager());

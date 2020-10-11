@@ -21,7 +21,8 @@ namespace UsAcRe.Core.Actions {
 
 		public TextTypingAction(
 			ISettingsService settingsService,
-			ITestsLaunchingService testsLaunchingService) : base(settingsService, testsLaunchingService) {
+			ITestsLaunchingService testsLaunchingService,
+			IFileService fileService) : base(settingsService, testsLaunchingService, fileService) {
 		}
 
 		protected override ValueTask ExecuteCoreAsync() {

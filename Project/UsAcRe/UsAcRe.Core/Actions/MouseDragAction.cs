@@ -31,7 +31,8 @@ namespace UsAcRe.Core.Actions {
 
 		public MouseDragAction(
 			ISettingsService settingsService,
-			ITestsLaunchingService testsLaunchingService) : base(settingsService, testsLaunchingService) {
+			ITestsLaunchingService testsLaunchingService,
+			IFileService fileService) : base(settingsService, testsLaunchingService, fileService) {
 		}
 
 		protected override async ValueTask ExecuteCoreAsync() {

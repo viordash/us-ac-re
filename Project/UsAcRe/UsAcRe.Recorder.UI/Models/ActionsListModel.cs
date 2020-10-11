@@ -5,6 +5,7 @@ using System.Windows.Media;
 using NGuard;
 using UsAcRe.Core.Actions;
 using UsAcRe.Core.Scripts;
+using UsAcRe.Core.Services;
 using UsAcRe.Core.UI.Actions;
 using UsAcRe.Core.UI.Services;
 
