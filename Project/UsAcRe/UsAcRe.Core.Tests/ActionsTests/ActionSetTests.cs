@@ -22,7 +22,7 @@ namespace UsAcRe.Core.Tests.ActionsTests {
 		public void ExecuteAsScriptSource_Test() {
 			var action = ActionSet.Record("test.scrcs");
 			var sourcePresentation = action.ExecuteAsScriptSource();
-			Assert.AreEqual(sourcePresentation, "ActionSet.Play(\"test.scrcs\")");
+			Assert.AreEqual(sourcePresentation, "ActionSet.Play(@\"test.scrcs\")");
 		}
 
 		[Test]

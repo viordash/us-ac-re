@@ -33,7 +33,7 @@ namespace UsAcRe.Core.Actions {
 			return string.Format("{0} SourceCode: '{1}'", nameof(ActionSet), SourceCodeFileName);
 		}
 		public override string ExecuteAsScriptSource() {
-			return string.Format("{0}.{1}(\"{2}\")", nameof(ActionSet), nameof(ActionSet.Play), SourceCodeFileName);
+			return string.Format("{0}.{1}(@\"{2}\")", nameof(ActionSet), nameof(ActionSet.Play), SourceCodeFileName);
 		}
 
 		protected override async ValueTask ExecuteCoreAsync() {
