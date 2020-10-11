@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Specialized;
-using System.Globalization;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 
 namespace UsAcRe.Recorder.UI {
 	/// <summary>
@@ -21,6 +18,7 @@ namespace UsAcRe.Recorder.UI {
 			if(e.Action == NotifyCollectionChangedAction.Add) {
 				ListActions.SelectedIndex = ListActions.Items.Count - 1;
 				ListActions.ScrollIntoView(ListActions.SelectedItem);
+				ColumnAutoWidth();
 			}
 			ShowFooter();
 		}
@@ -31,6 +29,11 @@ namespace UsAcRe.Recorder.UI {
 
 		private void ListActions_SelectionChanged(object sender, SelectionChangedEventArgs e) {
 			ShowFooter();
+		}
+
+		void ColumnAutoWidth() {
+			ActionDataColumn.Width = ActionDataColumn.ActualWidth;
+			ActionDataColumn.Width = Double.NaN;
 		}
 	}
 }

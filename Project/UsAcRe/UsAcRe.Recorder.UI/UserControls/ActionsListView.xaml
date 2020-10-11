@@ -34,7 +34,7 @@
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
 
-                    <GridViewColumn DisplayMemberBinding="{Binding Action}" Width="Auto">Action</GridViewColumn>
+                    <GridViewColumn x:Name="ActionDataColumn" DisplayMemberBinding="{Binding Action}" Width="Auto">Action</GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>
