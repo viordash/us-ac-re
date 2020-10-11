@@ -22,8 +22,8 @@ namespace UsAcRe {
 			container.RegisterType<ISettingsService, SettingsService>(new ContainerControlledLifetimeManager());
 			container.RegisterType<IFileService, FileService>(new ContainerControlledLifetimeManager());
 
-			container.RegisterType<IScriptBuilder, ScriptBuilder>(new ContainerControlledLifetimeManager());
-			container.RegisterType<IScriptCompiler, ScriptCompiler>(new ContainerControlledLifetimeManager());
+			container.RegisterType<IScriptBuilder, ScriptBuilder>(new TransientLifetimeManager());
+			container.RegisterType<IScriptCompiler, ScriptCompiler>(new TransientLifetimeManager());
 
 			container.RegisterType<ElementMatchAction, ElementMatchAction>(new TransientLifetimeManager());
 			container.RegisterType<KeybdAction, KeybdAction>(new TransientLifetimeManager());

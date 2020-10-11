@@ -3,6 +3,7 @@ using Unity;
 using Unity.Lifetime;
 using Unity.ServiceLocation;
 using UsAcRe.Core.Actions;
+using UsAcRe.Core.Scripts;
 using UsAcRe.Core.Services;
 using UsAcRe.Core.UI.Services;
 using UsAcRe.Services;
@@ -20,6 +21,9 @@ namespace UsAcRe.Recorder.UI {
 			container.RegisterType<ISettingsService, SettingsService>(new ContainerControlledLifetimeManager());
 			container.RegisterType<IDialogService, DialogService>(new ContainerControlledLifetimeManager());
 			container.RegisterType<IFileService, FileService>(new ContainerControlledLifetimeManager());
+
+			container.RegisterType<IScriptBuilder, ScriptBuilder>(new TransientLifetimeManager());
+			container.RegisterType<IScriptCompiler, ScriptCompiler>(new TransientLifetimeManager());
 
 			container.RegisterType<ElementMatchAction, ElementMatchAction>(new TransientLifetimeManager());
 			container.RegisterType<KeybdAction, KeybdAction>(new TransientLifetimeManager());
