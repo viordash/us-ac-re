@@ -31,6 +31,10 @@ namespace UsAcRe.Recorder.UI.Models {
 						new MainMenuItem( header: "5 sec", command: ActionsCommands.Pause, parameter:5000 ),
 						new MainMenuItem( header: "10 sec", command: ActionsCommands.Pause, parameter:10000 ),
 					}),
+				new MainMenuItem( "" ) {
+					IsSeparator = true
+				},
+				new MainMenuItem( header: "Include actions", command: ActionsCommands.IncludeSet ),
 			};
 		}
 

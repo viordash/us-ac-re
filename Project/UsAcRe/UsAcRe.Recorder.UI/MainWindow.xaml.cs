@@ -111,6 +111,15 @@ namespace UsAcRe.Recorder.UI {
 			Debug.WriteLine("OnCommand_SelectAction {0} {1}", sender, e);
 			if(e.Command == ActionsCommands.Pause && e.Parameter is int milliseconds) {
 				Actions.Add(DelayAction.Record(milliseconds));
+				return;
+			}
+			if(e.Command == ActionsCommands.IncludeSet) {
+				var fileName = DialogService.OpenFileDialog(Constants.TestsFileFilter);
+				if(string.IsNullOrEmpty(fileName)) {
+					return;
+				}
+				Actions.Add(ActionSet.Record(fileName));
+				return;
 			}
 		}
 	}
