@@ -41,13 +41,17 @@ namespace UsAcRe.Core.Actions {
 
 		protected abstract ValueTask ExecuteCoreAsync();
 
-		protected async Task SafeActionAsync(Func<ValueTask> action) {
+		protected virtual bool CanExecute() {
+			return !testsLaunchingService.IsDryRunMode;
+		}
+
+		async Task SafeActionAsync(Func<ValueTask> action) {
 			try {
 				if(cancellationToken.IsCancellationRequested) {
 					throw new OperationCanceledException(this.ToString());
 				}
 				testsLaunchingService.Log(this);
-				if(testsLaunchingService.IsDryRunMode) {
+				if(!CanExecute()) {
 					return;
 				}
 				await action();

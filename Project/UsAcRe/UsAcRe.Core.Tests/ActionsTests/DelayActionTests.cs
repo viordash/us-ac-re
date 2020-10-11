@@ -5,7 +5,7 @@ using UsAcRe.Core.Actions;
 
 namespace UsAcRe.Core.Tests.ActionsTests {
 	[TestFixture]
-	public class TextTypingActionTests : Testable {
+	public class DelayActionTests : Testable {
 
 		[SetUp]
 		public override void Setup() {
@@ -19,9 +19,9 @@ namespace UsAcRe.Core.Tests.ActionsTests {
 
 		[Test]
 		public void ExecuteAsScriptSource_Test() {
-			var action = TextTypingAction.Record("\t\tHello world \r\n \"test\"");
+			var action = DelayAction.Record(19);
 			var sourcePresentation = action.ExecuteAsScriptSource();
-			Assert.AreEqual(sourcePresentation, "TextTypingAction.Play(\"\\t\\tHello world \\r\\n \\\"test\\\"\")");
+			Assert.AreEqual(sourcePresentation, "DelayAction.Play(19)");
 		}
 
 		[Test]
@@ -39,7 +39,7 @@ namespace UsAcRe.Core.Tests.ActionsTests {
 					return true;
 				});
 
-			await TextTypingAction.Play("1234");
+			await DelayAction.Play(42);
 			testsLaunchingServiceMock.VerifyAll();
 		}
 	}

@@ -104,6 +104,7 @@
     <Compile Include="ActionsTests\KeybdActionTests.cs" />
     <Compile Include="ActionsTests\MouseActionTests.cs" />
     <Compile Include="ActionsTests\MouseDragActionTests.cs" />
+    <Compile Include="ActionsTests\DelayActionTests.cs" />
     <Compile Include="ActionsTests\TextTypingActionTests.cs" />
     <Compile Include="ExtensionsTests\VirtualKeyCodesExtensionsTests.cs" />
     <Compile Include="HelpersTests\DimensionsHelperTests.cs" />

@@ -77,7 +77,7 @@ namespace UsAcRe.Core.Tests.ActionsTests {
 		}
 
 		[Test]
-		public void ExecuteAsync_CanceleationToken_Test() {
+		public void ExecuteAsync_CancellationToken_Test() {
 			var cancelTokenSource = new CancellationTokenSource();
 			var cancellationToken = cancelTokenSource.Token;
 
@@ -102,6 +102,32 @@ namespace UsAcRe.Core.Tests.ActionsTests {
 
 			var elapsed = stopwatch.Elapsed.TotalMilliseconds;
 			Assert.That(elapsed, Is.LessThan(500 - 1));
+		}
+
+		[Test]
+		public async Task Execute_With_DryMode_Test() {
+			var cancellationToken = new CancellationToken(false);
+			testsLaunchingServiceMock
+				.Setup(x => x.GetCurrentCancellationToken())
+				.Returns(() => {
+					return cancellationToken;
+				});
+
+			testsLaunchingServiceMock
+				.SetupGet(x => x.IsDryRunMode)
+				.Returns(() => {
+					return true;
+				});
+
+			var stopwatch = Stopwatch.StartNew();
+			await ElementMatchAction.Play(new ElementProgram(42, "notepad.exe"), new List<UiElement>() {
+				new UiElement(4, "value1", "name1", "className1", "automationId1", ControlType.Button.Id, new Rect(1, 2, 3, 4)),
+			}, 1000);
+
+
+			var elapsed = stopwatch.Elapsed.TotalMilliseconds;
+			Assert.That(elapsed, Is.LessThan(1000 - 1));
+			testsLaunchingServiceMock.VerifyAll();
 		}
 
 	}
