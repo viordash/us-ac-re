@@ -11,6 +11,7 @@ namespace UsAcRe.Core.UI.Actions {
 			{ typeof(MouseClickAction), System.Drawing.Color.LightBlue},
 			{ typeof(MouseDragAction), System.Drawing.Color.LightCyan},
 			{ typeof(DelayAction), System.Drawing.Color.AliceBlue},
+			{ typeof(ActionSet), System.Drawing.Color.LightCoral},
 		};
 	}
 }
