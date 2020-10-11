@@ -1,9 +1,11 @@
 ﻿using System.Threading.Tasks;
+using NGuard;
 using UsAcRe.Core.Scripts;
 using UsAcRe.Core.Services;
 
 namespace UsAcRe.Core.Actions {
 	public class ActionSet : BaseAction {
+		readonly IScriptCompiler scriptCompiler;
 		public string SourceCodeFileName { get; private set; }
 
 		public static ActionSet Record(string sourceCodeFileName) {
@@ -19,9 +21,12 @@ namespace UsAcRe.Core.Actions {
 		}
 
 		public ActionSet(
+			IScriptCompiler scriptCompiler,
 			ISettingsService settingsService,
 			ITestsLaunchingService testsLaunchingService,
 			IFileService fileService) : base(settingsService, testsLaunchingService, fileService) {
+			Guard.Requires(scriptCompiler, nameof(scriptCompiler));
+			this.scriptCompiler = scriptCompiler;
 		}
 
 		public override string ToString() {
@@ -33,7 +38,7 @@ namespace UsAcRe.Core.Actions {
 
 		protected override async ValueTask ExecuteCoreAsync() {
 			var sourceCode = fileService.ReadAllText(SourceCodeFileName);
-			await ScriptCompiler.RunTest(sourceCode);
+			await scriptCompiler.RunTest(sourceCode);
 		}
 
 		protected override bool CanExecute() {

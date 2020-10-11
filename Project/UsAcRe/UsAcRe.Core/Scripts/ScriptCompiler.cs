@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UsAcRe.Core.Actions;
 
 namespace UsAcRe.Core.Scripts {
-	public class ScriptCompiler {
+	public class ScriptCompiler : IScriptCompiler {
 		static NLog.Logger logger = NLog.LogManager.GetLogger("UsAcRe.FormMain");
 
 		static Assembly PrepareAssembly(string sourceCode) {
@@ -48,7 +48,7 @@ namespace UsAcRe.Core.Scripts {
 			await (Task)method.Invoke(instance, null);
 		}
 
-		public async static Task RunTest(string sourceCode) {
+		public async Task RunTest(string sourceCode) {
 			var assembly = PrepareAssembly(sourceCode);
 			await CreateAndInvoke(assembly);
 		}

@@ -2,6 +2,7 @@
 using CommonServiceLocator;
 using Moq;
 using UsAcRe.Core.Actions;
+using UsAcRe.Core.Scripts;
 using UsAcRe.Core.Services;
 
 namespace UsAcRe.Core.Tests.ActionsTests {
@@ -12,15 +13,18 @@ namespace UsAcRe.Core.Tests.ActionsTests {
 		protected Mock<ITestsLaunchingService> testsLaunchingServiceMock;
 		protected Mock<ISettingsService> settingsServiceMock;
 		protected Mock<IFileService> fileServiceMock;
+		protected Mock<IScriptBuilder> scriptBuilderMock;
+		protected Mock<IScriptCompiler> scriptCompilerMock;
 
 		public virtual void Setup() {
-
 			serviceLocatorMock = new Mock<IServiceLocator>();
 			automationElementServiceMock = new Mock<IAutomationElementService>();
 			winApiServiceMock = new Mock<IWinApiService>();
 			testsLaunchingServiceMock = new Mock<ITestsLaunchingService>();
 			settingsServiceMock = new Mock<ISettingsService>();
 			fileServiceMock = new Mock<IFileService>();
+			scriptBuilderMock = new Mock<IScriptBuilder>();
+			scriptCompilerMock = new Mock<IScriptCompiler>();
 
 			serviceLocatorMock
 				.Setup(x => x.GetInstance<IAutomationElementService>())
@@ -50,6 +54,18 @@ namespace UsAcRe.Core.Tests.ActionsTests {
 				.Setup(x => x.GetInstance<IFileService>())
 				.Returns(() => {
 					return fileServiceMock.Object;
+				});
+
+			serviceLocatorMock
+				.Setup(x => x.GetInstance<IScriptBuilder>())
+				.Returns(() => {
+					return scriptBuilderMock.Object;
+				});
+
+			serviceLocatorMock
+				.Setup(x => x.GetInstance<IScriptCompiler>())
+				.Returns(() => {
+					return scriptCompilerMock.Object;
 				});
 
 
@@ -98,7 +114,7 @@ namespace UsAcRe.Core.Tests.ActionsTests {
 			serviceLocatorMock
 				.Setup(x => x.GetInstance<ActionSet>())
 				.Returns(() => {
-					return new ActionSet(settingsServiceMock.Object, testsLaunchingServiceMock.Object, fileServiceMock.Object);
+					return new ActionSet(scriptCompilerMock.Object, settingsServiceMock.Object, testsLaunchingServiceMock.Object, fileServiceMock.Object);
 				});
 
 			ServiceLocator.SetLocatorProvider(() => serviceLocatorMock.Object);

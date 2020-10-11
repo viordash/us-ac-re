@@ -110,6 +110,7 @@
     <Compile Include="MouseProcess\MouseHover.cs" />
     <Compile Include="MouseProcess\MouseProcessConstants.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scripts\IScriptCompiler.cs" />
     <Compile Include="Scripts\IScriptBuilder.cs" />
     <Compile Include="Scripts\ScriptBuilder.cs" />
     <Compile Include="Scripts\ScriptCompiler.cs" />

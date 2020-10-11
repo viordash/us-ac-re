@@ -23,13 +23,15 @@ namespace UsAcRe {
 		ITestsLaunchingService TestsLaunchingService { get { return ServiceLocator.Current.GetInstance<ITestsLaunchingService>(); } }
 		ISettingsService SettingsService { get { return ServiceLocator.Current.GetInstance<ISettingsService>(); } }
 		IFileService FileService { get { return ServiceLocator.Current.GetInstance<IFileService>(); } }
+		IScriptBuilder ScriptBuilder { get { return ServiceLocator.Current.GetInstance<IScriptBuilder>(); } }
+		IScriptCompiler ScriptCompiler { get { return ServiceLocator.Current.GetInstance<IScriptCompiler>(); } }
 
 		readonly ActionsContainer Actions;
 
 		public MainForm() {
 			InitializeComponent();
 			RichTextBoxTarget.ReInitializeAllTextboxes(this);
-			Actions = new ActionsContainer(SettingsService, new ScriptBuilder(SettingsService), FileService);
+			Actions = new ActionsContainer(SettingsService, ScriptBuilder, FileService);
 		}
 
 		private void MainForm_Load(object sender, EventArgs e) {

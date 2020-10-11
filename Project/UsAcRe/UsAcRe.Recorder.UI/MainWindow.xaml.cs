@@ -31,11 +31,13 @@ namespace UsAcRe.Recorder.UI {
 		ISettingsService SettingsService { get { return ServiceLocator.Current.GetInstance<ISettingsService>(); } }
 		IDialogService DialogService { get { return ServiceLocator.Current.GetInstance<IDialogService>(); } }
 		IFileService FileService { get { return ServiceLocator.Current.GetInstance<IFileService>(); } }
+		IScriptBuilder ScriptBuilder { get { return ServiceLocator.Current.GetInstance<IScriptBuilder>(); } }
+		IScriptCompiler ScriptCompiler { get { return ServiceLocator.Current.GetInstance<IScriptCompiler>(); } }
 
 		public MainWindow() {
 			InitializeComponent();
 			if(!DesignerProperties.GetIsInDesignMode(this)) {
-				Actions = new ActionsListModel(new ScriptBuilder(SettingsService), FileService);
+				Actions = new ActionsListModel(ScriptBuilder, FileService);
 				ActionsList.ListActions.ItemsSource = Actions.Items;
 				Actions.Items.CollectionChanged += (s, e) => MainMenu.SaveEnable = Actions.Items.Count > 0;
 			}

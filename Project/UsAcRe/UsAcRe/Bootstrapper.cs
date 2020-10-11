@@ -3,6 +3,7 @@ using Unity;
 using Unity.Lifetime;
 using Unity.ServiceLocation;
 using UsAcRe.Core.Actions;
+using UsAcRe.Core.Scripts;
 using UsAcRe.Core.Services;
 using UsAcRe.Core.UI.Services;
 using UsAcRe.Player.Actions;
@@ -20,6 +21,9 @@ namespace UsAcRe {
 			container.RegisterType<IWindowsFormsService, WindowsFormsService>(new ContainerControlledLifetimeManager());
 			container.RegisterType<ISettingsService, SettingsService>(new ContainerControlledLifetimeManager());
 			container.RegisterType<IFileService, FileService>(new ContainerControlledLifetimeManager());
+
+			container.RegisterType<IScriptBuilder, ScriptBuilder>(new ContainerControlledLifetimeManager());
+			container.RegisterType<IScriptCompiler, ScriptCompiler>(new ContainerControlledLifetimeManager());
 
 			container.RegisterType<ElementMatchAction, ElementMatchAction>(new TransientLifetimeManager());
 			container.RegisterType<KeybdAction, KeybdAction>(new TransientLifetimeManager());
