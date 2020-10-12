@@ -76,11 +76,11 @@ namespace UsAcRe.Recorder.UI {
 				return;
 			}
 			var sourceCode = FileService.ReadAllText(fileName);
-			TestsLaunchingService.Start(true);
 			try {
-				await ScriptCompiler.RunTest(sourceCode);
-				TestsLaunchingService.Stop();
-				Actions.AddRange(TestsLaunchingService.ExecutedActions);
+				using(TestsLaunchingService.Start(true)) {
+					await ScriptCompiler.RunTest(sourceCode);
+					Actions.AddRange(TestsLaunchingService.ExecutedActions);
+				}
 			} catch(TestFailedExeption ex) {
 				logger.Error(ex.Message);
 				throw;

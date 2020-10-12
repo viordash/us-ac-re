@@ -141,7 +141,7 @@ namespace UsAcRe.Recorder.UI {
 		void KeyboardEvent(object sender, RawKeyEventArgs e) {
 			if(!MainMenu.miStartStop.IsChecked) {
 				if(e.VKCode == KeyboardHook.KeyStartStop) {
-					TestsLaunchingService.Stop();
+					TestsLaunchingService.Break();
 				}
 				return;
 			}

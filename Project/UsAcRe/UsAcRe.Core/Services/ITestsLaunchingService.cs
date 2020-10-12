@@ -1,12 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using UsAcRe.Core.Actions;
 
 namespace UsAcRe.Core.Services {
 	public interface ITestsLaunchingService {
 		CancellationToken GetCurrentCancellationToken();
-		void Start(bool isDryRunMode);
-		void Stop();
+		IDisposable Start(bool isDryRunMode);
+		void Break();
 		void OpenHighlighter(System.Windows.Rect boundingRectangle, string toolTip);
 		void HighlightElement(System.Windows.Rect boundingRectangle);
 		void CloseHighlighter();

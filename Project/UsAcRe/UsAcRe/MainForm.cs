@@ -107,11 +107,11 @@ namespace UsAcRe {
 			var sourceCode = FileService.ReadAllText(openFileDialog1.FileName);
 			txtLog.Clear();
 			txtLog.Text = sourceCode;
-			TestsLaunchingService.Start(false);
 			StartKeyboardHooks();
 			try {
-				await ScriptCompiler.RunTest(sourceCode);
-				TestsLaunchingService.Stop();
+				using(TestsLaunchingService.Start(false)) {
+					await ScriptCompiler.RunTest(sourceCode);
+				}
 			} catch(TestFailedExeption ex) {
 				logger.Error(ex.Message);
 				throw;

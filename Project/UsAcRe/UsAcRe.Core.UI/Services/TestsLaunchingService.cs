@@ -41,7 +41,20 @@ namespace UsAcRe.Core.UI.Services {
 			return cancelTokenSource.Token;
 		}
 
-		public void Start(bool isDryRunMode) {
+		#region inner classes
+		class TestsRunningScope : IDisposable {
+			readonly Action closeAction;
+			public TestsRunningScope(Action closeAction) {
+				this.closeAction = closeAction;
+			}
+			public void Dispose() {
+				closeAction();
+			}
+		}
+		#endregion
+
+
+		public IDisposable Start(bool isDryRunMode) {
 			IsDryRunMode = isDryRunMode;
 			executedActions.Clear();
 			if(cancelTokenSource != null) {
@@ -49,9 +62,10 @@ namespace UsAcRe.Core.UI.Services {
 				cancelTokenSource.Dispose();
 			}
 			cancelTokenSource = new CancellationTokenSource();
+			return new TestsRunningScope(Break);
 		}
 
-		public void Stop() {
+		public void Break() {
 			if(cancelTokenSource != null) {
 				cancelTokenSource.Cancel();
 			}

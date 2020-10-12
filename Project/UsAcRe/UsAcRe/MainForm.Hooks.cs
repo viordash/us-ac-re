@@ -132,7 +132,7 @@ namespace UsAcRe {
 		void KeyboardEvent(object sender, RawKeyEventArgs e) {
 			if(!btnStart.Checked) {
 				if(e.VKCode == KeyboardHook.KeyStartStop) {
-					TestsLaunchingService.Stop();
+					TestsLaunchingService.Break();
 				}
 				return;
 			}
