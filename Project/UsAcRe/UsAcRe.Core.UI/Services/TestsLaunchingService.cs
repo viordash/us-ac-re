@@ -36,7 +36,7 @@ namespace UsAcRe.Core.UI.Services {
 
 		public CancellationToken GetCurrentCancellationToken() {
 			if(cancelTokenSource == null) {
-				return new CancellationToken(false);
+				throw new InvalidOperationException("CancellationToken not ready");
 			}
 			return cancelTokenSource.Token;
 		}

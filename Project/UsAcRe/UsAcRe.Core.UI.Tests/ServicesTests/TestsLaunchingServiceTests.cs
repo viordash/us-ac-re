@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using Moq;
 using NUnit.Framework;
 using UsAcRe.Core.Services;
@@ -29,7 +30,11 @@ namespace UsAcRe.Core.UI.Tests.ServicesTests {
 				Assert.That(cancellationToken.IsCancellationRequested, Is.False);
 			}
 			Assert.That(cancellationToken.IsCancellationRequested, Is.True);
+		}
 
+		[Test]
+		public void GetCurrentCancellationToken_Throws_Error_If_Not_Already_Started() {
+			Assert.Throws<InvalidOperationException>(() => testable.GetCurrentCancellationToken());
 		}
 	}
 }
