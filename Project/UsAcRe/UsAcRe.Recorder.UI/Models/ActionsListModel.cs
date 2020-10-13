@@ -59,9 +59,8 @@ namespace UsAcRe.Recorder.UI.Models {
 		}
 
 		public void AddRange(IEnumerable<BaseAction> actions) {
-			var actionItems = actions
-				.Select(x => new ActionsListItem(x))
-				.Concat(Items);
+			var actionItems = Items
+				.Concat(actions.Select(x => new ActionsListItem(x)));
 			Items = new ObservableCollection<ActionsListItem>(actionItems);
 			ActionsListChanged?.Invoke(this, new ActionsListChangedEventArgs(Items));
 			logger.Info("AddRange {0}", actions.Count());
