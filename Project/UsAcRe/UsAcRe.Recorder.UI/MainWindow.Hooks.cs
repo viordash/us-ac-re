@@ -24,6 +24,7 @@ namespace UsAcRe.Recorder.UI {
 			KeyboardHook.Stop();
 		}
 
+
 		void StartHooks() {
 			logger.Warn("Start");
 			MouseHook.Start();
@@ -40,11 +41,12 @@ namespace UsAcRe.Recorder.UI {
 			ActionsList.IsEnabled = false;
 			this.ResizeMode = ResizeMode.NoResize;
 			MainMenu.IsStopped = false;
+			TestsLaunchingService.Record();
 		}
 
 		void StopHooks() {
 			logger.Warn("Stop");
-			TestsLaunchingService.CloseHighlighter();
+			TestsLaunchingService.Stop();
 			MouseHook.OnMouseClick -= MouseClickHook;
 			MouseHook.OnMouseStartDrag -= MouseStartDragHook;
 			MouseHook.OnMouseDrag -= MouseDragHook;
@@ -141,7 +143,7 @@ namespace UsAcRe.Recorder.UI {
 		void KeyboardEvent(object sender, RawKeyEventArgs e) {
 			if(!MainMenu.miStartStop.IsChecked) {
 				if(e.VKCode == KeyboardHook.KeyStartStop) {
-					TestsLaunchingService.Break();
+					TestsLaunchingService.Stop();
 				}
 				return;
 			}

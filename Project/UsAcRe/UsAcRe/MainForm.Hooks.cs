@@ -33,11 +33,12 @@ namespace UsAcRe {
 			MouseHook.OnMouseMove += MouseMoveHook;
 
 			StartKeyboardHooks();
+			TestsLaunchingService.Record();
 		}
 
 		void StopHooks() {
 			logger.Warn("Stop");
-			TestsLaunchingService.CloseHighlighter();
+			TestsLaunchingService.Stop();
 			MouseHook.OnMouseClick -= MouseClickHook;
 			MouseHook.OnMouseStartDrag -= MouseStartDragHook;
 			MouseHook.OnMouseDrag -= MouseDragHook;
@@ -132,7 +133,7 @@ namespace UsAcRe {
 		void KeyboardEvent(object sender, RawKeyEventArgs e) {
 			if(!btnStart.Checked) {
 				if(e.VKCode == KeyboardHook.KeyStartStop) {
-					TestsLaunchingService.Break();
+					TestsLaunchingService.Stop();
 				}
 				return;
 			}

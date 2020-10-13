@@ -7,7 +7,8 @@ namespace UsAcRe.Core.Services {
 	public interface ITestsLaunchingService {
 		CancellationToken GetCurrentCancellationToken();
 		IDisposable Start(bool isDryRunMode);
-		void Break();
+		void Record();
+		void Stop();
 		void OpenHighlighter(System.Windows.Rect boundingRectangle, string toolTip);
 		void HighlightElement(System.Windows.Rect boundingRectangle);
 		void CloseHighlighter();
