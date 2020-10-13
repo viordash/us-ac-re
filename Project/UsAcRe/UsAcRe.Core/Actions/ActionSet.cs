@@ -1,4 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using NGuard;
 using UsAcRe.Core.Scripts;
 using UsAcRe.Core.Services;
@@ -7,6 +10,16 @@ namespace UsAcRe.Core.Actions {
 	public class ActionSet : BaseAction {
 		readonly IScriptCompiler scriptCompiler;
 		public string SourceCodeFileName { get; private set; }
+
+		int count = -1;
+		public int Count {
+			get {
+				if(count < 0) {
+					count = GetChildActionsCount();
+				}
+				return count;
+			}
+		}
 
 		public static ActionSet Record(string sourceCodeFileName) {
 			var instance = CreateInstance<ActionSet>();
@@ -30,7 +43,7 @@ namespace UsAcRe.Core.Actions {
 		}
 
 		public override string ToString() {
-			return string.Format("{0} SourceCode: '{1}'", nameof(ActionSet), SourceCodeFileName);
+			return string.Format("{0} SourceCode: '{1}', Count: {2}", nameof(ActionSet), SourceCodeFileName, Count);
 		}
 		public override string ExecuteAsScriptSource() {
 			return string.Format("{0}.{1}(@\"{2}\")", nameof(ActionSet), nameof(ActionSet.Play), SourceCodeFileName);
@@ -41,8 +54,12 @@ namespace UsAcRe.Core.Actions {
 			await scriptCompiler.RunTest(sourceCode);
 		}
 
-		protected override bool CanExecute() {
-			return true;
+		int GetChildActionsCount() {
+			var sourceCode = fileService.ReadAllText(SourceCodeFileName);
+			using(testsLaunchingService.Start(true)) {
+				scriptCompiler.RunTest(sourceCode).Wait();
+			}
+			return testsLaunchingService.ExecutedActions.Count();
 		}
 	}
 }

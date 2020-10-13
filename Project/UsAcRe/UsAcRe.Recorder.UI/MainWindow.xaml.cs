@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
@@ -38,8 +39,10 @@ namespace UsAcRe.Recorder.UI {
 			InitializeComponent();
 			if(!DesignerProperties.GetIsInDesignMode(this)) {
 				Actions = new ActionsListModel(ScriptBuilder, FileService);
-				ActionsList.ListActions.ItemsSource = Actions.Items;
-				Actions.Items.CollectionChanged += (s, e) => MainMenu.SaveEnable = Actions.Items.Count > 0;
+				Actions.ActionsListChanged += (s, e) => {
+					MainMenu.SaveEnable = e.Items.Count > 0;
+					ActionsList.ListActions.ItemsSource = e.Items;
+				};
 			}
 		}
 

@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Windows.Media;
 using NGuard;
@@ -22,13 +24,23 @@ namespace UsAcRe.Recorder.UI.Models {
 		}
 	}
 
+	public class ActionsListChangedEventArgs : EventArgs {
+		public ObservableCollection<ActionsListItem> Items { get; private set; }
+		public ActionsListChangedEventArgs(ObservableCollection<ActionsListItem> items) {
+			Items = items;
+		}
+	}
+
 	public class ActionsListModel {
 		readonly NLog.Logger logger = NLog.LogManager.GetLogger("UsAcRe.FormMain");
 		readonly IScriptBuilder scriptBuilder;
 		readonly IFileService fileService;
+		ObservableCollection<ActionsListItem> Items;
 
 		public string Name { get; set; }
-		public ObservableCollection<ActionsListItem> Items;
+
+		public delegate void ActionsListChangedEventHandler(object sender, ActionsListChangedEventArgs e);
+		public event ActionsListChangedEventHandler ActionsListChanged;
 
 		public ActionsListModel(
 			IScriptBuilder scriptBuilder,
@@ -42,13 +54,17 @@ namespace UsAcRe.Recorder.UI.Models {
 
 		public void Add(BaseAction actionInfo) {
 			Items.Add(new ActionsListItem(actionInfo));
+			ActionsListChanged?.Invoke(this, new ActionsListChangedEventArgs(Items));
 			logger.Info("{0}", actionInfo.ExecuteAsScriptSource());
 		}
 
 		public void AddRange(IEnumerable<BaseAction> actions) {
-			foreach(var actionInfo in actions) {
-				Add(actionInfo);
-			}
+			var actionItems = actions
+				.Select(x => new ActionsListItem(x))
+				.Concat(Items);
+			Items = new ObservableCollection<ActionsListItem>(actionItems);
+			ActionsListChanged?.Invoke(this, new ActionsListChangedEventArgs(Items));
+			logger.Info("AddRange {0}", actions.Count());
 		}
 
 		public void Store(string fileName) {
