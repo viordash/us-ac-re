@@ -58,6 +58,9 @@ namespace UsAcRe.Core.UI.Services {
 			IsDryRunMode = isDryRunMode;
 			executedActions.Clear();
 			if(cancelTokenSource != null) {
+				if(!cancelTokenSource.IsCancellationRequested) {
+					throw new InvalidOperationException("Testing already runned");
+				}
 				cancelTokenSource.Cancel();
 				cancelTokenSource.Dispose();
 			}
