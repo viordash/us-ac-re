@@ -8,13 +8,19 @@
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="200"
              x:Name="ucMainMenu">
+    <UserControl.Resources>
+        <Style x:Key="stActInStop" TargetType="{x:Type MenuItem}">
+            <Setter Property="IsEnabled" Value="{Binding  ElementName=ucMainMenu, Path=IsStopped}" />
+        </Style>
+    </UserControl.Resources>
+
     <Menu x:Name="mainMenu"  VerticalAlignment="Top" FontSize="10" Background="LightSteelBlue">
-        <MenuItem Header="File">
-            <MenuItem x:Name="miNewProject" Header="New Project" Command="local:UICommands.NewProject"></MenuItem>
-            <MenuItem x:Name="miOpenProject" Header="Open Project" Command="local:UICommands.OpenProject"></MenuItem>
-            <MenuItem x:Name="miSaveProject" Header="Save Project" Command="local:UICommands.SaveProject"></MenuItem>
+        <MenuItem Header="File"  Style="{StaticResource stActInStop}">
+            <MenuItem x:Name="miNewProject" Header="New Project" Command="local:UICommands.NewProject" Style="{StaticResource stActInStop}"></MenuItem>
+            <MenuItem x:Name="miOpenProject" Header="Open Project" Command="local:UICommands.OpenProject" Style="{StaticResource stActInStop}"></MenuItem>
+            <MenuItem x:Name="miSaveProject" Header="Save Project" Command="local:UICommands.SaveProject" Style="{StaticResource stActInStop}"></MenuItem>
             <Separator />
-            <MenuItem x:Name="miExit" Header="Exit" Command="local:UICommands.Exit"></MenuItem>
+            <MenuItem x:Name="miExit" Header="Exit" Command="local:UICommands.Exit" IsEnabled="{Binding  ElementName=ucMainMenu, Path=IsStopped}"></MenuItem>
         </MenuItem>
         <MenuItem x:FieldModifier="public" x:Name="miStartStop" Header="Start" Command="local:UICommands.StartStop" IsCheckable="True"></MenuItem>
         <MenuItem x:Name="miActions" Header="Actions" >
