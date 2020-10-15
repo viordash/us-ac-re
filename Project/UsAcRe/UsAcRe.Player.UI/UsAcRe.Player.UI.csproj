@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{759F5619-9AB4-4344-BC4D-C95461139825}</ProjectGuid>
+    <ProjectGuid>{04DE08A9-45FC-415A-A5A3-8A0A75E09B02}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>UsAcRe.Recorder.UI</RootNamespace>
-    <AssemblyName>UsAcRe.Recorder.UI</AssemblyName>
+    <RootNamespace>UsAcRe.Player.UI</RootNamespace>
+    <AssemblyName>UsAcRe.Player.UI</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -24,7 +24,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -54,7 +53,6 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.7.1\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
@@ -93,18 +91,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ActionsCommands.cs" />
-    <Compile Include="Bootstrapper.cs" />
-    <Compile Include="MainWindow.Hooks.cs" />
-    <Compile Include="Models\ActionsListModel.cs" />
     <Compile Include="Services\SettingsService.cs" />
-    <Compile Include="UICommands.cs" />
-    <Compile Include="UserControls\ActionsListView.xaml.cs">
-      <DependentUpon>ActionsListView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\MainMenu.xaml.cs">
-      <DependentUpon>MainMenu.xaml</DependentUpon>
-    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -113,21 +100,13 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Bootstrapper.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="UserControls\ActionsListView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UserControls\MainMenu.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\MainMenuModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -156,11 +135,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\UsAcRe.Core.UI\UsAcRe.Core.UI.csproj">
-      <Project>{07E1B9CB-7400-4CDB-B286-466BF400F370}</Project>
+      <Project>{07e1b9cb-7400-4cdb-b286-466bf400f370}</Project>
       <Name>UsAcRe.Core.UI</Name>
     </ProjectReference>
     <ProjectReference Include="..\UsAcRe.Core\UsAcRe.Core.csproj">
-      <Project>{397f80c0-e494-44ad-9996-d3b248dc41de}</Project>
+      <Project>{397F80C0-E494-44AD-9996-D3B248DC41DE}</Project>
       <Name>UsAcRe.Core</Name>
     </ProjectReference>
   </ItemGroup>

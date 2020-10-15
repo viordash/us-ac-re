@@ -80,6 +80,7 @@
     <Compile Include="Services\DialogService.cs" />
     <Compile Include="Services\FileService.cs" />
     <Compile Include="Services\TestsLaunchingService.cs" />
+    <Compile Include="Services\WindowsFormsService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="ClickBlocker\MouseClickBlocker.xaml">
