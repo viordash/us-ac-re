@@ -5,5 +5,4 @@ namespace UsAcRe.Player {
 		[Value(0, Required = true, HelpText = "Input filename.")]
 		public string Filename { get; set; }
 	}
-
 }
