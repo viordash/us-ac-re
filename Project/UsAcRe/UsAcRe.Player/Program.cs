@@ -7,6 +7,8 @@ namespace UsAcRe.Player {
 		static NLog.Logger logger = NLog.LogManager.GetLogger("UsAcRe.Player");
 
 		static void Main(string[] args) {
+			NLog.LogManager.Configuration.Variables["logDirectory"] = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs");
+
 			var parser = new Parser(with => with.HelpWriter = null);
 			var parserResult = parser.ParseArguments<Options>(args);
 			parserResult
