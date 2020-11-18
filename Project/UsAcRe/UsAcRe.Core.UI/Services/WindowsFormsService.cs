@@ -1,6 +1,4 @@
-﻿
-
-using System;
+﻿using System;
 using System.Windows;
 using UsAcRe.Core.Services;
 
@@ -14,6 +12,5 @@ namespace UsAcRe.Core.UI.Services {
 		public Window GetMainWindow() {
 			return Application.Current.MainWindow;
 		}
-
 	}
 }
