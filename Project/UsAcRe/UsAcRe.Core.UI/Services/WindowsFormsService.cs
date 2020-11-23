@@ -10,7 +10,7 @@ namespace UsAcRe.Core.UI.Services {
 		}
 
 		public Window GetMainWindow() {
-			return Application.Current.MainWindow;
+			return Application.Current?.MainWindow;
 		}
 	}
 }
