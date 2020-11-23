@@ -112,6 +112,7 @@
     <Compile Include="HelpersTests\NamingHelpersTests.cs" />
     <Compile Include="MouseProcessTests\MouseHoverTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScriptTests\ScriptCompilerTests.cs" />
     <Compile Include="ScriptTests\ScriptBuilderTests.cs" />
     <Compile Include="ServicesTests\AutomationElementServiceTests.cs" />
     <Compile Include="UIAutomationElement\ElementFromPointTests.cs" />

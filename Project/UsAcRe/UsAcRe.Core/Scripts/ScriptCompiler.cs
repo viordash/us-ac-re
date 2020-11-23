@@ -1,5 +1,6 @@
 ﻿using System;
 using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -8,6 +9,18 @@ using UsAcRe.Core.Actions;
 namespace UsAcRe.Core.Scripts {
 	public class ScriptCompiler : IScriptCompiler {
 		static NLog.Logger logger = NLog.LogManager.GetLogger("UsAcRe.FormMain");
+
+		static string GetypeAssemblyLocation<T>() {
+			return typeof(T).Assembly.Location;
+		}
+
+		internal static IEnumerable<string> GetMandatoryAssemblies() {
+			return new string[] {
+				GetypeAssemblyLocation<System.Windows.Forms.Form>(),
+				GetypeAssemblyLocation<System.Drawing.Point>(),
+				GetypeAssemblyLocation<UsAcRe.Core.Actions.BaseAction>()
+			};
+		}
 
 		static Assembly PrepareAssembly(string sourceCode) {
 			var codeProvider = CodeDomProvider.CreateProvider("CSharp");
@@ -18,10 +31,12 @@ namespace UsAcRe.Core.Scripts {
 			var assemblies = AppDomain.CurrentDomain
 							.GetAssemblies()
 							.Where(a => !a.IsDynamic)
-							.Select(a => a.Location);
+							.Select(a => a.Location)
+							.Concat(GetMandatoryAssemblies())
+							.Distinct();
 
 			compilerparams.ReferencedAssemblies.AddRange(assemblies.ToArray());
-			//compilerparams.ReferencedAssemblies.Add("System.Core.dll");
+
 
 			// Invoke compilation of the source file.
 			var compilerResults = codeProvider.CompileAssemblyFromSource(compilerparams, sourceCode);
