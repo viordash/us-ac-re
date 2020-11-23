@@ -36,7 +36,9 @@ namespace UsAcRe.Core.Tests.ActionsTests {
 
 			testsLaunchingServiceMock
 				.SetupGet(x => x.IsDryRunMode)
-				.Throws(new System.Exception());
+				.Returns(() => {
+					return false;
+				});
 
 			fileServiceMock
 				.Setup(x => x.ReadAllText(It.Is<string>(fn => fn == "\"test.scrcs\"")))
