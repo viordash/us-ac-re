@@ -84,7 +84,7 @@ namespace UsAcRe.Recorder.UI {
 					await ScriptCompiler.RunTest(sourceCode);
 					Actions.AddRange(TestsLaunchingService.ExecutedActions);
 				}
-			} catch(TestFailedExeption ex) {
+			} catch(TestFailedException ex) {
 				logger.Error(ex.Message);
 				throw;
 			}

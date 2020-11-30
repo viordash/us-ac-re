@@ -71,7 +71,7 @@ namespace UsAcRe.Core.Tests.ActionsTests {
 			}, 100);
 
 			var stopwatch = Stopwatch.StartNew();
-			Assert.ThrowsAsync<TestFailedExeption>(async () => await task);
+			Assert.ThrowsAsync<TestFailedException>(async () => await task);
 			var elapsed = stopwatch.Elapsed.TotalMilliseconds;
 			Assert.That(elapsed, Is.GreaterThan(100));
 		}

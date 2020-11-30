@@ -53,7 +53,7 @@ namespace UsAcRe.Core.UI.Services {
 		}
 		#endregion
 
-		void CreatCcancelTokenSource() {
+		void CreatCancelTokenSource() {
 			if(cancelTokenSource != null) {
 				if(!cancelTokenSource.IsCancellationRequested) {
 					throw new InvalidOperationException("Testing already runned");
@@ -67,12 +67,12 @@ namespace UsAcRe.Core.UI.Services {
 		public IDisposable Start(bool isDryRunMode) {
 			IsDryRunMode = isDryRunMode;
 			executedActions.Clear();
-			CreatCcancelTokenSource();
+			CreatCancelTokenSource();
 			return new TestsRunningScope(Stop);
 		}
 
 		public void Record() {
-			CreatCcancelTokenSource();
+			CreatCancelTokenSource();
 		}
 
 		public void Stop() {

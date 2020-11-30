@@ -32,11 +32,11 @@ namespace UsAcRe.Core.Exceptions {
 		public ScriptComposeException(string message) : base(message) { }
 	}
 
-	public class TargetProgramNotFoundExeption : ExecuteBaseActionException {
-		public TargetProgramNotFoundExeption(ElementProgram targetProgram) : base(string.Format("Target program {0} not found", targetProgram.ToString())) { }
+	public class TargetProgramNotFoundException : ExecuteBaseActionException {
+		public TargetProgramNotFoundException(ElementProgram targetProgram) : base(string.Format("Target program {0} not found", targetProgram.ToString())) { }
 	}
 
-	public class TestFailedExeption : ExecuteBaseActionException {
-		public TestFailedExeption(BaseAction baseAction) : base(baseAction) { }
+	public class TestFailedException : ExecuteBaseActionException {
+		public TestFailedException(BaseAction baseAction) : base(baseAction) { }
 	}
 }

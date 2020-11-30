@@ -112,7 +112,7 @@ namespace UsAcRe {
 				using(TestsLaunchingService.Start(false)) {
 					await ScriptCompiler.RunTest(sourceCode);
 				}
-			} catch(TestFailedExeption ex) {
+			} catch(TestFailedException ex) {
 				logger.Error(ex.Message);
 				throw;
 			}

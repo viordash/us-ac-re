@@ -80,7 +80,7 @@ namespace UsAcRe.Core.Actions {
 			}
 
 			if(!OffsetPoint.HasValue) {
-				throw new TestFailedExeption(this);
+				throw new TestFailedException(this);
 			}
 		}
 

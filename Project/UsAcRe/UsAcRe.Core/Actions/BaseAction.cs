@@ -55,7 +55,7 @@ namespace UsAcRe.Core.Actions {
 					return;
 				}
 				await action();
-			} catch(TestFailedExeption) {
+			} catch(TestFailedException) {
 				throw;
 			} catch(OperationCanceledException) {
 				throw;
