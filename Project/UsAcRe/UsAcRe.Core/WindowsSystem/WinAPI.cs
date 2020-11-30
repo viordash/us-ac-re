@@ -398,5 +398,27 @@ namespace UsAcRe.Core.WindowsSystem {
 		[DllImport("user32.dll")]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool IsIconic(IntPtr hWnd);
+
+		[Flags]
+		public enum KeyModifiers {
+			None = 0,
+			Alt = 1,
+			Control = 2,
+			Shift = 4,
+			// Either WINDOWS key was held down. These keys are labeled with the Windows logo.
+			// Keyboard shortcuts that involve the WINDOWS key are reserved for use by the
+			// operating system.
+			Windows = 8
+		}
+
+		[DllImport("user32", SetLastError = true)]
+		public static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
+		[DllImport("user32", SetLastError = true)]
+		public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+
+		[DllImport("kernel32", SetLastError = true)]
+		public static extern short GlobalAddAtom(string lpString);
+		[DllImport("kernel32", SetLastError = true)]
+		public static extern short GlobalDeleteAtom(short nAtom);
 	}
 }
