@@ -1,6 +1,6 @@
 ﻿using UsAcRe.Core.Services;
 
-namespace UsAcRe.Services {
+namespace UsAcRe.Player.Services {
 	public class SettingsService : ISettingsService {
 		int ISettingsService.ElementSearchNestingLevel {
 			get {

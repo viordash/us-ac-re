@@ -2,11 +2,11 @@
 using Unity;
 using Unity.Lifetime;
 using Unity.ServiceLocation;
-using UsAcRe.Core.Actions;
 using UsAcRe.Core.Scripts;
 using UsAcRe.Core.Services;
 using UsAcRe.Core.UI.Services;
-using UsAcRe.Services;
+using UsAcRe.Player.Services;
+using WindowsFormsService = UsAcRe.Player.Services.WindowsFormsService;
 
 namespace UsAcRe.Player {
 	public class Bootstrapper {
