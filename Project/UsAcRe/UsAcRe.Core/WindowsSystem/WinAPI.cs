@@ -66,6 +66,11 @@ namespace UsAcRe.Core.WindowsSystem {
 
 		public static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
 
+		public const int WM_SYSCOMMAND = 0x0112;
+		public const int SC_MINIMIZE = 0x0F020;
+		public const int SC_MAXIMIZE = 0xF030;
+		public const int SC_RESTORE = 0xF120;
+
 		[StructLayout(LayoutKind.Sequential)]
 		public struct KBDLLHOOKSTRUCT {
 			public uint vkCode;

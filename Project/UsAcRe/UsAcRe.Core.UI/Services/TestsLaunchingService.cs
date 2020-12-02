@@ -116,7 +116,7 @@ namespace UsAcRe.Core.UI.Services {
 			}));
 		}
 
-		public void Log(BaseAction testAction) {
+		public virtual void Log(BaseAction testAction) {
 			logger.Info("\r\n {0}", testAction.ExecuteAsScriptSource());
 			executedActions.Add(testAction);
 		}

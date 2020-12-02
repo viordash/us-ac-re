@@ -15,7 +15,7 @@ namespace UsAcRe.Player {
 			var container = new UnityContainer();
 			container.RegisterType<IAutomationElementService, AutomationElementService>(new ContainerControlledLifetimeManager());
 			container.RegisterType<IWinApiService, WinApiService>(new ContainerControlledLifetimeManager());
-			container.RegisterType<ITestsLaunchingService, TestsLaunchingService>(new ContainerControlledLifetimeManager());
+			container.RegisterType<ITestsLaunchingService, PlayerLaunchingService>(new ContainerControlledLifetimeManager());
 			container.RegisterType<IWindowsFormsService, WindowsFormsService>(new ContainerControlledLifetimeManager());
 			container.RegisterType<ISettingsService, SettingsService>(new ContainerControlledLifetimeManager());
 			container.RegisterType<IDialogService, DialogService>(new ContainerControlledLifetimeManager());

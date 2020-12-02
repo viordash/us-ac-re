@@ -71,7 +71,6 @@ namespace UsAcRe.Core.Actions {
 				}
 				var requiredElement = GetElement();
 				if(requiredElement?.Element != null) {
-					testsLaunchingService.OpenHighlighter(requiredElement.Element.BoundingRectangle, null);
 					OffsetPoint = GetClickablePointOffset(MatchedElement, requiredElement.Element);
 					MouseHover.MoveTo(requiredElement.Element.BoundingRectangle.Location);
 					break;
@@ -121,7 +120,8 @@ namespace UsAcRe.Core.Actions {
 			testsLaunchingService.CloseHighlighter();
 			await MouseHover.Perform(clickableRect.Location, stepWaitAppear, 10);
 			testsLaunchingService.OpenHighlighter(rect, MatchedElement.ToShortString());
-			await Task.Delay(200);
+			var period = Math.Min(200 + (stepWaitAppear * 100), 1000);
+			await Task.Delay(period);
 			stepWaitAppear++;
 		}
 
