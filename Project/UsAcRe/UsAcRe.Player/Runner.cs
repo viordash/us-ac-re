@@ -69,6 +69,7 @@ namespace UsAcRe.Player {
 		void ExecutionProgress(BaseAction testAction) {
 			executedActionsCount++;
 			Console.Title = $"{executedActionsCount} of {actionsCount}";
+			logger.Info("{0,5}|{1}", executedActionsCount, testAction.ToString());
 		}
 	}
 }

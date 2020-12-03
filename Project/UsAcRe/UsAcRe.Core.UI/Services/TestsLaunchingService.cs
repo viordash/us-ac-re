@@ -15,7 +15,7 @@ namespace UsAcRe.Core.UI.Services {
 		CancellationTokenSource cancelTokenSource = null;
 		ElementHighlighter elementHighlighter = null;
 
-		readonly List<BaseAction> executedActions;
+		protected readonly List<BaseAction> executedActions;
 		public IEnumerable<BaseAction> ExecutedActions { get { return executedActions; } }
 		public BaseAction LastAction {
 			get {

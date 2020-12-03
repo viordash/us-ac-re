@@ -20,7 +20,7 @@ namespace UsAcRe.Player.Services {
 		}
 
 		public override void Log(BaseAction testAction) {
-			base.Log(testAction);
+			executedActions.Add(testAction);
 			OnBeforeExecuteAction?.Invoke(this, new ExecuteActionEventArgs(testAction));
 		}
 	}
