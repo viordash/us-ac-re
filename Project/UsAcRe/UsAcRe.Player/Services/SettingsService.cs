@@ -25,5 +25,11 @@ namespace UsAcRe.Player.Services {
 				return true;
 			}
 		}
+
+		string ISettingsService.TestResultsPath {
+			get {
+				return ".\\TestResults";
+			}
+		}
 	}
 }

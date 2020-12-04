@@ -201,6 +201,12 @@ namespace UsAcRe.Core.WindowsSystem {
 			}
 		}
 
+		[StructLayout(LayoutKind.Sequential)]
+		public struct SIZE {
+			public int cx;
+			public int cy;
+		}
+
 		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
 		public static extern IntPtr WindowFromPoint(POINT point);
 
