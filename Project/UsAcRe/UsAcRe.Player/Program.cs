@@ -35,7 +35,7 @@ namespace UsAcRe.Player {
 			try {
 				await new Runner().Start(options.Filename);
 			} catch(Exception ex) {
-				logger.Error(ex);
+				logger.Error(ex.GetBaseException().Message);
 			}
 		}
 	}
