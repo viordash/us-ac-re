@@ -18,7 +18,8 @@ namespace UsAcRe.Recorder.UI {
 			container.RegisterType<IWinApiService, WinApiService>(new ContainerControlledLifetimeManager());
 			container.RegisterType<ITestsLaunchingService, TestsLaunchingService>(new ContainerControlledLifetimeManager());
 			container.RegisterType<IWindowsFormsService, WindowsFormsService>(new ContainerControlledLifetimeManager());
-			container.RegisterType<ISettingsService, SettingsService>(new ContainerControlledLifetimeManager());
+			container.RegisterType<IRecorderSettingsService, SettingsService>(new ContainerControlledLifetimeManager());
+			container.RegisterType<ISettingsService, IRecorderSettingsService>(new TransientLifetimeManager());
 			container.RegisterType<IDialogService, DialogService>(new ContainerControlledLifetimeManager());
 			container.RegisterType<IFileService, FileService>(new ContainerControlledLifetimeManager());
 

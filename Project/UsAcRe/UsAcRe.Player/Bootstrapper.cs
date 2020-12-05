@@ -17,7 +17,8 @@ namespace UsAcRe.Player {
 			container.RegisterType<IWinApiService, WinApiService>(new ContainerControlledLifetimeManager());
 			container.RegisterType<ITestsLaunchingService, PlayerLaunchingService>(new ContainerControlledLifetimeManager());
 			container.RegisterType<IWindowsFormsService, WindowsFormsService>(new ContainerControlledLifetimeManager());
-			container.RegisterType<ISettingsService, SettingsService>(new ContainerControlledLifetimeManager());
+			container.RegisterType<IPlayerSettingsService, SettingsService>(new ContainerControlledLifetimeManager());
+			container.RegisterType<ISettingsService, IPlayerSettingsService>(new TransientLifetimeManager());
 			container.RegisterType<IDialogService, DialogService>(new ContainerControlledLifetimeManager());
 			container.RegisterType<IFileService, FileService>(new ContainerControlledLifetimeManager());
 

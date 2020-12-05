@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
@@ -29,7 +28,6 @@ namespace UsAcRe.Recorder.UI {
 		IAutomationElementService AutomationElementService { get { return ServiceLocator.Current.GetInstance<IAutomationElementService>(); } }
 		IWinApiService WinApiService { get { return ServiceLocator.Current.GetInstance<IWinApiService>(); } }
 		ITestsLaunchingService TestsLaunchingService { get { return ServiceLocator.Current.GetInstance<ITestsLaunchingService>(); } }
-		ISettingsService SettingsService { get { return ServiceLocator.Current.GetInstance<ISettingsService>(); } }
 		IDialogService DialogService { get { return ServiceLocator.Current.GetInstance<IDialogService>(); } }
 		IFileService FileService { get { return ServiceLocator.Current.GetInstance<IFileService>(); } }
 		IScriptBuilder ScriptBuilder { get { return ServiceLocator.Current.GetInstance<IScriptBuilder>(); } }

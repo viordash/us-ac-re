@@ -39,7 +39,7 @@ namespace UsAcRe.Core.Tests.ScriptTests {
 				keybdActionDown,
 				keybdActionUp
 			};
-			var scriptBuilder = new ScriptBuilder(settingsServiceMock.Object);
+			var scriptBuilder = new ScriptBuilder();
 			var usings = scriptBuilder.CreateUsingsSection(actions);
 			Assert.IsNotEmpty(usings);
 			Assert.That(usings, Does.Contain("using System;"));
@@ -57,7 +57,7 @@ namespace UsAcRe.Core.Tests.ScriptTests {
 
 		[Test]
 		public void CreateNamespaceSection_Test() {
-			var scriptBuilder = new ScriptBuilder(settingsServiceMock.Object);
+			var scriptBuilder = new ScriptBuilder();
 			var code = scriptBuilder.CreateNamespaceSection("//something");
 			Assert.IsNotEmpty(code);
 			Assert.That(code, Does.StartWith("namespace UsAcRe.TestsScripts {"));
@@ -66,7 +66,7 @@ namespace UsAcRe.Core.Tests.ScriptTests {
 
 		[Test]
 		public void CreateClassSection_Test() {
-			var scriptBuilder = new ScriptBuilder(settingsServiceMock.Object);
+			var scriptBuilder = new ScriptBuilder();
 			var code = scriptBuilder.CreateClassSection("//something");
 			Assert.IsNotEmpty(code);
 			Assert.That(code, Does.StartWith("\tpublic class TestsScript {"));
@@ -75,7 +75,7 @@ namespace UsAcRe.Core.Tests.ScriptTests {
 
 		[Test]
 		public void CreateExecuteMethodSection_Test() {
-			var scriptBuilder = new ScriptBuilder(settingsServiceMock.Object);
+			var scriptBuilder = new ScriptBuilder();
 			var code = scriptBuilder.CreateExecuteMethodSection("//something");
 			Assert.IsNotEmpty(code);
 			Assert.That(code, Does.StartWith("\t\tpublic async Task ExecuteAsync() {"));
@@ -99,7 +99,7 @@ namespace UsAcRe.Core.Tests.ScriptTests {
 				keybdActionDown,
 				keybdActionUp
 			};
-			var scriptBuilder = new ScriptBuilder(settingsServiceMock.Object);
+			var scriptBuilder = new ScriptBuilder();
 			var code = scriptBuilder.CreateExecuteMethodBody(actions);
 			Assert.IsNotEmpty(code);
 			Assert.That(code, Does.StartWith(
@@ -128,7 +128,7 @@ namespace UsAcRe.Core.Tests.ScriptTests {
 				keybdActionDown,
 				elementMatchAction
 			};
-			var scriptBuilder = new ScriptBuilder(settingsServiceMock.Object);
+			var scriptBuilder = new ScriptBuilder();
 			var code = scriptBuilder.Generate(actions);
 			Assert.IsNotEmpty(code);
 			Assert.That(code, Does.Contain("using System.Drawing;"));
@@ -167,7 +167,7 @@ namespace UsAcRe.Core.Tests.ScriptTests {
 				KeybdAction.Record(Core.WindowsSystem.VirtualKeyCodes.K_O, true),
 				MouseClickAction.Record(MouseButtonType.Right, new System.Drawing.Point(1, 2), false),
 			};
-			var scriptBuilder = new ScriptBuilder(settingsServiceMock.Object);
+			var scriptBuilder = new ScriptBuilder();
 			scriptBuilder.CombineTextTypingActions(actions);
 
 			Assert.That(actions.Count, Is.EqualTo(14));
@@ -201,7 +201,7 @@ namespace UsAcRe.Core.Tests.ScriptTests {
 				KeybdAction.Record(Core.WindowsSystem.VirtualKeyCodes.K_O, false),
 				//KeybdAction.Record(Core.WindowsSystem.VirtualKeyCodes.K_O, true),
 			};
-			var scriptBuilder = new ScriptBuilder(settingsServiceMock.Object);
+			var scriptBuilder = new ScriptBuilder();
 			scriptBuilder.CombineTextTypingActions(actions);
 
 			Assert.That(actions.Count, Is.EqualTo(11));
@@ -216,7 +216,7 @@ namespace UsAcRe.Core.Tests.ScriptTests {
 				KeybdAction.Record(Core.WindowsSystem.VirtualKeyCodes.K_H, false),
 				KeybdAction.Record(Core.WindowsSystem.VirtualKeyCodes.K_H, true),
 			};
-			var scriptBuilder = new ScriptBuilder(settingsServiceMock.Object);
+			var scriptBuilder = new ScriptBuilder();
 			scriptBuilder.CombineTextTypingActions(actions);
 
 			Assert.That(actions.Count, Is.EqualTo(3));

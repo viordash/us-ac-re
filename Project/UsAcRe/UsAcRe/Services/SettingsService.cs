@@ -14,12 +14,6 @@ namespace UsAcRe.Services {
 			}
 		}
 
-		bool ISettingsService.AnalyzeTextTyping {
-			get {
-				return true;
-			}
-		}
-
 		bool ISettingsService.CheckByValue {
 			get {
 				return true;

@@ -3,6 +3,5 @@
 		int ClickPositionToleranceInPercent { get; }
 		bool CheckByValue { get; }
 		int ElementSearchNestingLevel { get; }
-		string TestResultsPath { get; }
 	}
 }

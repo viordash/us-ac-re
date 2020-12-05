@@ -1,26 +1,20 @@
 ﻿using UsAcRe.Core.Services;
 
 namespace UsAcRe.Services {
-	public class SettingsService : ISettingsService {
-		int ISettingsService.ElementSearchNestingLevel {
+	public class SettingsService : IRecorderSettingsService {
+		public int ElementSearchNestingLevel {
 			get {
 				return 5;
 			}
 		}
 
-		int ISettingsService.ClickPositionToleranceInPercent {
+		public int ClickPositionToleranceInPercent {
 			get {
 				return 50;//			Properties.Settings.Default.ClickPositionToleranceInPercent;
 			}
 		}
 
-		bool ISettingsService.AnalyzeTextTyping {
-			get {
-				return true;
-			}
-		}
-
-		bool ISettingsService.CheckByValue {
+		public bool CheckByValue {
 			get {
 				return true;
 			}

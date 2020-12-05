@@ -3,19 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using NGuard;
 using UsAcRe.Core.Actions;
 using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Extensions;
-using UsAcRe.Core.Services;
 
 namespace UsAcRe.Core.Scripts {
 	public class ScriptBuilder : IScriptBuilder {
-		readonly ISettingsService settingsService;
 
-		public ScriptBuilder(ISettingsService settingsService) {
-			Guard.Requires(settingsService, nameof(settingsService));
-			this.settingsService = settingsService;
+		public ScriptBuilder() {
 		}
 
 		static void ObtainCtorArgumentsTypes(Type type, List<Type> types) {

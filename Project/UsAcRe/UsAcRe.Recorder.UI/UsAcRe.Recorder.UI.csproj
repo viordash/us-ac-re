@@ -97,6 +97,7 @@
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="MainWindow.Hooks.cs" />
     <Compile Include="Models\ActionsListModel.cs" />
+    <Compile Include="Services\IRecorderSettingsService.cs" />
     <Compile Include="Services\SettingsService.cs" />
     <Compile Include="UICommands.cs" />
     <Compile Include="UserControls\ActionsListView.xaml.cs">

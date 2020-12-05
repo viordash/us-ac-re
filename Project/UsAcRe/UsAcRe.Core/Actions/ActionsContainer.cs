@@ -13,10 +13,8 @@ namespace UsAcRe.Player.Actions {
 		public ActionsList Items;
 
 		public ActionsContainer(
-			ISettingsService settingsService,
 			IScriptBuilder scriptBuilder,
 			IFileService fileService) {
-			Guard.Requires(settingsService, nameof(settingsService));
 			Guard.Requires(scriptBuilder, nameof(scriptBuilder));
 			Guard.Requires(fileService, nameof(fileService));
 			this.scriptBuilder = scriptBuilder;

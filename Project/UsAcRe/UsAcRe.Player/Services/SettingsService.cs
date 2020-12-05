@@ -1,32 +1,26 @@
 ﻿using UsAcRe.Core.Services;
 
 namespace UsAcRe.Player.Services {
-	public class SettingsService : ISettingsService {
-		int ISettingsService.ElementSearchNestingLevel {
+	public class SettingsService : IPlayerSettingsService {
+		public int ElementSearchNestingLevel {
 			get {
 				return 5;
 			}
 		}
 
-		int ISettingsService.ClickPositionToleranceInPercent {
+		public int ClickPositionToleranceInPercent {
 			get {
 				return 50;//			Properties.Settings.Default.ClickPositionToleranceInPercent;
 			}
 		}
 
-		bool ISettingsService.AnalyzeTextTyping {
+		public bool CheckByValue {
 			get {
 				return true;
 			}
 		}
 
-		bool ISettingsService.CheckByValue {
-			get {
-				return true;
-			}
-		}
-
-		string ISettingsService.TestResultsPath {
+		public string TestResultsPath {
 			get {
 				return ".\\TestResults";
 			}

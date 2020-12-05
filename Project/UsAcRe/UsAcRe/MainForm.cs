@@ -21,7 +21,6 @@ namespace UsAcRe {
 		IAutomationElementService AutomationElementService { get { return ServiceLocator.Current.GetInstance<IAutomationElementService>(); } }
 		IWinApiService WinApiService { get { return ServiceLocator.Current.GetInstance<IWinApiService>(); } }
 		ITestsLaunchingService TestsLaunchingService { get { return ServiceLocator.Current.GetInstance<ITestsLaunchingService>(); } }
-		ISettingsService SettingsService { get { return ServiceLocator.Current.GetInstance<ISettingsService>(); } }
 		IFileService FileService { get { return ServiceLocator.Current.GetInstance<IFileService>(); } }
 		IScriptBuilder ScriptBuilder { get { return ServiceLocator.Current.GetInstance<IScriptBuilder>(); } }
 		IScriptCompiler ScriptCompiler { get { return ServiceLocator.Current.GetInstance<IScriptCompiler>(); } }
@@ -31,7 +30,7 @@ namespace UsAcRe {
 		public MainForm() {
 			InitializeComponent();
 			RichTextBoxTarget.ReInitializeAllTextboxes(this);
-			Actions = new ActionsContainer(SettingsService, ScriptBuilder, FileService);
+			Actions = new ActionsContainer(ScriptBuilder, FileService);
 		}
 
 		private void MainForm_Load(object sender, EventArgs e) {
