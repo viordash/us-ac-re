@@ -102,7 +102,7 @@
     <Compile Include="Runner.cs" />
     <Compile Include="Screenshot.cs" />
     <Compile Include="Services\IPlayerSettingsService.cs" />
-    <Compile Include="Services\SettingsService.cs" />
+    <Compile Include="Services\PlayerSettingsService.cs" />
     <Compile Include="Services\PlayerLaunchingService.cs" />
     <Compile Include="Services\WindowsFormsService.cs" />
   </ItemGroup>

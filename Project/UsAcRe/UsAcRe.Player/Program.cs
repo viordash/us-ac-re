@@ -19,12 +19,17 @@ namespace UsAcRe.Player {
 				  var helpText = HelpText.AutoBuild(parserResult, h => {
 					  h.AutoHelp = false;
 					  h.AutoVersion = true;
+					  h.AdditionalNewLineAfterOption = false;
 					  return HelpText.DefaultParsingErrorsHandler(parserResult, h);
 				  }, e => e);
-				  logger.Warn(helpText);
+				  logger.Info(helpText);
+				  System.Environment.Exit(-1);
 			  })
 			  .WithParsedAsync(opt => {
-				  Bootstrapper.Initialize();
+				  logger.Info(HeadingInfo.Default);
+				  logger.Info(CopyrightInfo.Default);
+				  logger.Info(string.Join(", ", args));
+				  Bootstrapper.Initialize(opt);
 				  return Run(opt);
 			  });
 

@@ -238,9 +238,12 @@ namespace UsAcRe.Core.Actions {
 				if(!automationElementService.Compare(element, searchedElement, new ElementCompareParameters() {
 					AutomationElementInternal = false,
 					Anchor = TestActionConstants.defaultAnchor,
-					CompareLocation = false,
+					CompareLocation = settingsService.LocationToleranceInPercent.HasValue && settingsService.LocationToleranceInPercent.Value > 0,
 					CompareSizes = true,
 					SizeToleranceInPercent = settingsService.ClickPositionToleranceInPercent,
+					LocationToleranceInPercent = settingsService.LocationToleranceInPercent.HasValue
+						? settingsService.LocationToleranceInPercent.Value
+						: -1,
 					NameIsMatchCase = true,
 					NameIsMatchWholeWord = true,
 					CheckByValue = settingsService.CheckByValue && isTargetedElementWithPresentedValue

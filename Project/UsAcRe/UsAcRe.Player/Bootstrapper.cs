@@ -11,18 +11,19 @@ using WindowsFormsService = UsAcRe.Player.Services.WindowsFormsService;
 namespace UsAcRe.Player {
 	public class Bootstrapper {
 
-		public static UnityContainer Initialize() {
+		public static UnityContainer Initialize(Options options) {
 			var container = new UnityContainer();
 			container.RegisterType<IAutomationElementService, AutomationElementService>(new ContainerControlledLifetimeManager());
 			container.RegisterType<IWinApiService, WinApiService>(new ContainerControlledLifetimeManager());
 			container.RegisterType<ITestsLaunchingService, PlayerLaunchingService>(new ContainerControlledLifetimeManager());
 			container.RegisterType<IWindowsFormsService, WindowsFormsService>(new ContainerControlledLifetimeManager());
-			container.RegisterType<IPlayerSettingsService, SettingsService>(new ContainerControlledLifetimeManager());
 			container.RegisterType<ISettingsService, IPlayerSettingsService>(new TransientLifetimeManager());
 			container.RegisterType<IDialogService, DialogService>(new ContainerControlledLifetimeManager());
 			container.RegisterType<IFileService, FileService>(new ContainerControlledLifetimeManager());
 
 			container.RegisterType<IScriptCompiler, ScriptCompiler>(new TransientLifetimeManager());
+
+			container.RegisterInstance<IPlayerSettingsService>(new PlayerSettingsService(options), new ContainerControlledLifetimeManager());
 
 			var serviceLocator = new UnityServiceLocator(container);
 			ServiceLocator.SetLocatorProvider(() => serviceLocator);    // Warning: do NOT remove serviceLocator local variable, do not inline "new UnityServiceLocator"!
