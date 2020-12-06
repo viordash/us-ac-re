@@ -42,15 +42,15 @@ namespace UsAcRe.Player {
 					};
 				}
 
-				try {
-					using(TestsLaunchingService.Start(false)) {
+				using(TestsLaunchingService.Start(false)) {
+					try {
 						await ScriptCompiler.RunTest(sourceCode);
+					} catch(ExecuteBaseActionException) {
+						if(PlayerSettingsService.Screenshot) {
+							TakeScreenshot(filename);
+						}
+						throw;
 					}
-				} catch(ExecuteBaseActionException) {
-					if(PlayerSettingsService.Screenshot) {
-						TakeScreenshot(filename);
-					}
-					throw;
 				}
 			} finally {
 				Stop();
