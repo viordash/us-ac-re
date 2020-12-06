@@ -37,7 +37,11 @@ namespace UsAcRe.Core.Exceptions {
 	}
 
 	public class TestFailedException : ExecuteBaseActionException {
-		public TestFailedException(BaseAction baseAction) : base(baseAction) { }
+		readonly BaseAction action;
+		public BaseAction Action { get { return action; } }
+		public TestFailedException(BaseAction action) : base(action) {
+			this.action = action;
+		}
 	}
 
 	public class PlayerException : ExecuteBaseActionException {

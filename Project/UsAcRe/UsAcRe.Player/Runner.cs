@@ -30,6 +30,7 @@ namespace UsAcRe.Player {
 		public async Task Start(string filename) {
 			logger.Info("Runner.Start: {0}", filename);
 			var sourceCode = FileService.ReadAllText(filename);
+			var testCaseName = Path.GetFileNameWithoutExtension(filename);
 			var reporter = ReporterFactory.Create(PlayerSettingsService);
 			Start();
 			try {
@@ -40,27 +41,28 @@ namespace UsAcRe.Player {
 						await ScriptCompiler.RunTest(sourceCode);
 						actionsCount = TestsLaunchingService.ExecutedActions.Count();
 					}
-					testsLaunchingService.OnBeforeExecuteAction += (sender, arg) => {
-						ExecutionProgress(arg.Action);
-					};
 					testsLaunchingService.OnAfterExecuteAction += (sender, arg) => {
 						ExecutionProgress(arg.Action);
+						if(arg.Action is ElementMatchAction) {
+							reporter.Success(arg.Action.ShortDescription(), arg.Action.Duration);
+						}
 					};
 				}
-
 
 				using(TestsLaunchingService.Start(false)) {
 					try {
 						await ScriptCompiler.RunTest(sourceCode);
-					} catch(ExecuteBaseActionException) {
+					} catch(TestFailedException ex) {
+						reporter.Fail(ex.Action.ShortDescription(), ex.Action.Duration, ex);
 						if(PlayerSettingsService.Screenshot) {
-							TakeScreenshot(filename);
+							TakeScreenshot(testCaseName);
 						}
 						throw;
 					}
 				}
 			} finally {
 				Stop();
+				logger.Fatal(reporter.Generate(testCaseName));
 			}
 		}
 
@@ -89,8 +91,8 @@ namespace UsAcRe.Player {
 			logger.Info("{0,5}|{1}", executedActionsCount, testAction.ToString());
 		}
 
-		void TakeScreenshot(string testFilename) {
-			var screenshotFileName = string.Format("{0}_{1}", Path.GetFileNameWithoutExtension(testFilename), DateTime.Now.ToString("yyyyMMddHHmm"));
+		void TakeScreenshot(string testCaseName) {
+			var screenshotFileName = string.Format("{0}_{1}", testCaseName, DateTime.Now.ToString("yyyyMMddHHmm"));
 			var screenshotFileFullPath = Path.Combine(PlayerSettingsService.TestResultsPath, screenshotFileName);
 			Screenshot.MakePng(screenshotFileFullPath);
 			logger.Info("Screenshot saved to '{0}'", screenshotFileName);

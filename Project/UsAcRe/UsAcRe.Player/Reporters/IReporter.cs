@@ -1,7 +1,10 @@
 ﻿using System;
+using UsAcRe.Core.Exceptions;
 
 namespace UsAcRe.Player.Reporters {
 	public interface IReporter {
-		string Add(string testcase, Exception exception);
+		void Fail(string name, TimeSpan time, TestFailedException exception);
+		void Success(string name, TimeSpan time);
+		string Generate(string suiteName);
 	}
 }
