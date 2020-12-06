@@ -19,5 +19,8 @@ namespace UsAcRe.Player {
 
 		[Option("search-nesting-level", Required = false, HelpText = "element search nesting level", Default = 5)]
 		public int ElementSearchNestingLevel { get; set; }
+
+		[Option("screenshot", Required = false, HelpText = "take screenshot when test fails", Default = true)]
+		public bool Screenshot { get; set; }
 	}
 }

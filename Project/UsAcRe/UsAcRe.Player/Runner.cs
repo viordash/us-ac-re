@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CommonServiceLocator;
 using UsAcRe.Core.Actions;
+using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Scripts;
 using UsAcRe.Core.Services;
 using UsAcRe.Core.WindowsSystem;
@@ -21,6 +23,7 @@ namespace UsAcRe.Player {
 		ITestsLaunchingService TestsLaunchingService { get { return ServiceLocator.Current.GetInstance<ITestsLaunchingService>(); } }
 		IFileService FileService { get { return ServiceLocator.Current.GetInstance<IFileService>(); } }
 		IScriptCompiler ScriptCompiler { get { return ServiceLocator.Current.GetInstance<IScriptCompiler>(); } }
+		IPlayerSettingsService PlayerSettingsService { get { return ServiceLocator.Current.GetInstance<IPlayerSettingsService>(); } }
 
 		public async Task Start(string filename) {
 			logger.Info("Runner.Start: {0}", filename);
@@ -39,8 +42,15 @@ namespace UsAcRe.Player {
 					};
 				}
 
-				using(TestsLaunchingService.Start(false)) {
-					await ScriptCompiler.RunTest(sourceCode);
+				try {
+					using(TestsLaunchingService.Start(false)) {
+						await ScriptCompiler.RunTest(sourceCode);
+					}
+				} catch(ExecuteBaseActionException) {
+					if(PlayerSettingsService.Screenshot) {
+						TakeScreenshot(filename);
+					}
+					throw;
 				}
 			} finally {
 				Stop();
@@ -70,6 +80,13 @@ namespace UsAcRe.Player {
 			executedActionsCount++;
 			Console.Title = $"{executedActionsCount} of {actionsCount}";
 			logger.Info("{0,5}|{1}", executedActionsCount, testAction.ToString());
+		}
+
+		void TakeScreenshot(string testFilename) {
+			var screenshotFileName = string.Format("{0}_{1}", Path.GetFileNameWithoutExtension(testFilename), DateTime.Now.ToString("yyyyMMddHHmm"));
+			var screenshotFileFullPath = Path.Combine(PlayerSettingsService.TestResultsPath, screenshotFileName);
+			Screenshot.MakePng(screenshotFileFullPath);
+			logger.Info("Screenshot saved to '{0}'", screenshotFileName);
 		}
 	}
 }

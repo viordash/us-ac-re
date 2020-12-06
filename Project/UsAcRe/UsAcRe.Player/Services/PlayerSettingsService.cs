@@ -35,6 +35,12 @@
 			}
 		}
 
+		public bool Screenshot {
+			get {
+				return options.Screenshot;
+			}
+		}
+
 
 	}
 }
