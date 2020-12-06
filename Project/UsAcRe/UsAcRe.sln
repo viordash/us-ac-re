@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsAcRe.Core.UI.Tests", "UsA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsAcRe.Player", "UsAcRe.Player\UsAcRe.Player.csproj", "{5C8DC301-0218-4A7F-AF86-5BD62E0F7CE9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsAcRe.Player.Tests", "UsAcRe.Player.Tests\UsAcRe.Player.Tests.csproj", "{84D604D1-F576-4CF1-ADEE-FA32B2C61E5F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,10 @@ Global
 		{5C8DC301-0218-4A7F-AF86-5BD62E0F7CE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C8DC301-0218-4A7F-AF86-5BD62E0F7CE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5C8DC301-0218-4A7F-AF86-5BD62E0F7CE9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84D604D1-F576-4CF1-ADEE-FA32B2C61E5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84D604D1-F576-4CF1-ADEE-FA32B2C61E5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84D604D1-F576-4CF1-ADEE-FA32B2C61E5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84D604D1-F576-4CF1-ADEE-FA32B2C61E5F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -67,6 +73,7 @@ Global
 		{2EBC8EF3-82CF-4B51-949F-E10D70761210} = {3A1DDD3F-11CC-470A-BD2B-D9854D300681}
 		{1C4FC327-3DB4-47DF-9216-125037C538BA} = {3A1DDD3F-11CC-470A-BD2B-D9854D300681}
 		{E63C2577-89B8-4CC4-8C0F-BCFF6B1F9264} = {3A1DDD3F-11CC-470A-BD2B-D9854D300681}
+		{84D604D1-F576-4CF1-ADEE-FA32B2C61E5F} = {3A1DDD3F-11CC-470A-BD2B-D9854D300681}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5AEA1762-26D5-409F-8298-EB4C78FACCA6}
