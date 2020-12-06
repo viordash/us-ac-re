@@ -10,6 +10,7 @@ using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Scripts;
 using UsAcRe.Core.Services;
 using UsAcRe.Core.WindowsSystem;
+using UsAcRe.Player.Reporters;
 using UsAcRe.Player.Services;
 
 namespace UsAcRe.Player {
@@ -28,6 +29,7 @@ namespace UsAcRe.Player {
 		public async Task Start(string filename) {
 			logger.Info("Runner.Start: {0}", filename);
 			var sourceCode = FileService.ReadAllText(filename);
+			var reporter = ReporterFactory.Create(PlayerSettingsService);
 			Start();
 			try {
 				actionsCount = 0;
@@ -41,6 +43,7 @@ namespace UsAcRe.Player {
 						ExecutionProgress(arg.Action);
 					};
 				}
+
 
 				using(TestsLaunchingService.Start(false)) {
 					try {

@@ -12,7 +12,10 @@ namespace UsAcRe.Player {
 		static async Task Main(string[] args) {
 			NLog.LogManager.Configuration.Variables["logDirectory"] = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs");
 
-			var parser = new Parser(with => with.HelpWriter = null);
+			var parser = new Parser(with => {
+				with.HelpWriter = null;
+				with.CaseInsensitiveEnumValues = true;
+			});
 			var parserResult = parser.ParseArguments<Options>(args);
 
 			await parserResult

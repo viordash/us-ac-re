@@ -1,4 +1,5 @@
 ﻿using CommandLine;
+using UsAcRe.Player.Reporters;
 
 namespace UsAcRe.Player {
 	public class Options {
@@ -7,6 +8,9 @@ namespace UsAcRe.Player {
 
 		[Option('p', "results-path", Required = false, HelpText = "test results path", Default = ".\\Results")]
 		public string TestResultsPath { get; set; }
+
+		[Option('r', "reporter", Required = false, HelpText = "test report formats [xunit]", Default = ReporterType.xUnit)]
+		public ReporterType Reporter { get; set; }
 
 		[Option('v', "check-by-value", Required = false, HelpText = "check value when comparing", Default = true)]
 		public bool CheckByValue { get; set; }

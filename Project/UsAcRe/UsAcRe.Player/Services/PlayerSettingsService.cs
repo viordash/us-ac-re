@@ -1,4 +1,6 @@
-﻿namespace UsAcRe.Player.Services {
+﻿using UsAcRe.Player.Reporters;
+
+namespace UsAcRe.Player.Services {
 	public class PlayerSettingsService : IPlayerSettingsService {
 		readonly Options options;
 		public PlayerSettingsService(Options options) {
@@ -38,6 +40,12 @@
 		public bool Screenshot {
 			get {
 				return options.Screenshot;
+			}
+		}
+
+		public ReporterType Reporter {
+			get {
+				return options.Reporter;
 			}
 		}
 
