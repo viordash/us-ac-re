@@ -49,11 +49,12 @@ namespace UsAcRe.Core.Actions {
 				if(cancellationToken.IsCancellationRequested) {
 					throw new OperationCanceledException(this.ToString());
 				}
-				testsLaunchingService.Log(this);
+				testsLaunchingService.BeforeExecuteAction(this);
 				if(testsLaunchingService.IsDryRunMode) {
 					return;
 				}
 				await action();
+				testsLaunchingService.AfterExecuteAction(this);
 			} catch(TestFailedException) {
 				throw;
 			} catch(OperationCanceledException) {

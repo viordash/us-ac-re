@@ -12,9 +12,11 @@ namespace UsAcRe.Core.Services {
 		void OpenHighlighter(System.Windows.Rect boundingRectangle, string toolTip);
 		void HighlightElement(System.Windows.Rect boundingRectangle);
 		void CloseHighlighter();
-		void Log(BaseAction baseAction);
 		BaseAction LastAction { get; }
 		IEnumerable<BaseAction> ExecutedActions { get; }
 		bool IsDryRunMode { get; }
+
+		void BeforeExecuteAction(BaseAction testAction);
+		void AfterExecuteAction(BaseAction testAction);
 	}
 }

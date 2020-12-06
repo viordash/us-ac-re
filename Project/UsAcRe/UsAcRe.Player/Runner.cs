@@ -9,6 +9,7 @@ using UsAcRe.Core.Actions;
 using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Scripts;
 using UsAcRe.Core.Services;
+using UsAcRe.Core.UI.Services;
 using UsAcRe.Core.WindowsSystem;
 using UsAcRe.Player.Reporters;
 using UsAcRe.Player.Services;
@@ -34,12 +35,15 @@ namespace UsAcRe.Player {
 			try {
 				actionsCount = 0;
 				executedActionsCount = 0;
-				if(TestsLaunchingService is PlayerLaunchingService playerLaunchingService) {
+				if(TestsLaunchingService is TestsLaunchingService testsLaunchingService) {
 					using(TestsLaunchingService.Start(true)) {
 						await ScriptCompiler.RunTest(sourceCode);
 						actionsCount = TestsLaunchingService.ExecutedActions.Count();
 					}
-					playerLaunchingService.OnBeforeExecuteAction += (sender, arg) => {
+					testsLaunchingService.OnBeforeExecuteAction += (sender, arg) => {
+						ExecutionProgress(arg.Action);
+					};
+					testsLaunchingService.OnAfterExecuteAction += (sender, arg) => {
 						ExecutionProgress(arg.Action);
 					};
 				}

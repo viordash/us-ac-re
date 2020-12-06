@@ -9,11 +9,22 @@ using UsAcRe.Core.Services;
 using UsAcRe.Core.UI.Highlighter;
 
 namespace UsAcRe.Core.UI.Services {
+	public class ExecuteActionEventArgs : EventArgs {
+		public BaseAction Action { get; private set; }
+		public ExecuteActionEventArgs(BaseAction action) {
+			Action = action;
+		}
+	}
+
 	public class TestsLaunchingService : ITestsLaunchingService {
 		protected NLog.Logger logger = NLog.LogManager.GetLogger("UsAcRe.FormMain");
 		readonly IWindowsFormsService windowsFormsService;
 		CancellationTokenSource cancelTokenSource = null;
 		ElementHighlighter elementHighlighter = null;
+
+		public delegate void ExecuteActionEventHandler(object sender, ExecuteActionEventArgs e);
+		public event ExecuteActionEventHandler OnBeforeExecuteAction;
+		public event ExecuteActionEventHandler OnAfterExecuteAction;
 
 		protected readonly List<BaseAction> executedActions;
 		public IEnumerable<BaseAction> ExecutedActions { get { return executedActions; } }
@@ -116,9 +127,14 @@ namespace UsAcRe.Core.UI.Services {
 			}));
 		}
 
-		public virtual void Log(BaseAction testAction) {
+		public void BeforeExecuteAction(BaseAction testAction) {
 			logger.Info("\r\n {0}", testAction.ExecuteAsScriptSource());
 			executedActions.Add(testAction);
+			OnBeforeExecuteAction?.Invoke(this, new ExecuteActionEventArgs(testAction));
+		}
+
+		public void AfterExecuteAction(BaseAction testAction) {
+			OnAfterExecuteAction?.Invoke(this, new ExecuteActionEventArgs(testAction));
 		}
 	}
 }

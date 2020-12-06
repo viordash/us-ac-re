@@ -107,7 +107,6 @@
     <Compile Include="Services\IPlayerSettingsService.cs" />
     <Compile Include="Reporters\IReporter.cs" />
     <Compile Include="Services\PlayerSettingsService.cs" />
-    <Compile Include="Services\PlayerLaunchingService.cs" />
     <Compile Include="Services\WindowsFormsService.cs" />
   </ItemGroup>
   <ItemGroup>

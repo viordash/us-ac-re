@@ -10,12 +10,11 @@ using WindowsFormsService = UsAcRe.Player.Services.WindowsFormsService;
 
 namespace UsAcRe.Player {
 	public class Bootstrapper {
-
 		public static UnityContainer Initialize(Options options) {
 			var container = new UnityContainer();
 			container.RegisterType<IAutomationElementService, AutomationElementService>(new ContainerControlledLifetimeManager());
 			container.RegisterType<IWinApiService, WinApiService>(new ContainerControlledLifetimeManager());
-			container.RegisterType<ITestsLaunchingService, PlayerLaunchingService>(new ContainerControlledLifetimeManager());
+			container.RegisterType<ITestsLaunchingService, TestsLaunchingService>(new ContainerControlledLifetimeManager());
 			container.RegisterType<IWindowsFormsService, WindowsFormsService>(new ContainerControlledLifetimeManager());
 			container.RegisterType<ISettingsService, IPlayerSettingsService>(new TransientLifetimeManager());
 			container.RegisterType<IDialogService, DialogService>(new ContainerControlledLifetimeManager());
