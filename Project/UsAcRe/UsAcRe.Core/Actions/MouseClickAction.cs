@@ -46,6 +46,10 @@ namespace UsAcRe.Core.Actions {
 			return string.Format("{0}.{1}({2}, {3}, {4})", nameof(MouseClickAction), nameof(MouseClickAction.Play), Button.ForNew(), ClickedPoint.ForNew(), DoubleClick.ForNew());
 		}
 
+		public override string ShortDescription() {
+			return string.Format("MouseClick, Type:{0}, Down:{1}, DblClick:{2}", Button, ClickedPoint, DoubleClick);
+		}
+
 		async ValueTask DoClick() {
 			await Task.Delay(20);
 			var clickedPoint = ClickedPoint;

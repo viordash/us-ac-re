@@ -42,9 +42,13 @@ namespace UsAcRe.Core.Actions {
 		public override string ToString() {
 			return string.Format("{0} Button:{1}, Down:{2}, Up:{3}", nameof(MouseDragAction), Button, StartCoord, EndCoord);
 		}
+
 		public override string ExecuteAsScriptSource() {
 			return string.Format("{0}.{1}({2}, {3}, {4})", nameof(MouseDragAction), nameof(MouseDragAction.Play), Button.ForNew(), StartCoord.ForNew(), EndCoord.ForNew());
+		}
 
+		public override string ShortDescription() {
+			return string.Format("MouseDrag, Button:{0}, Down:{1}, Up:{2}", Button, StartCoord, EndCoord);
 		}
 
 		async ValueTask DoDrag() {

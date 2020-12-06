@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -103,6 +104,11 @@ namespace UsAcRe.Core.Actions {
 			}
 			sb.Append(")");
 			return sb.ToString();
+		}
+
+		public override string ShortDescription() {
+			var targetElem = SearchPath.LastOrDefault();
+			return string.Format("ElementMatch. '{0}' {1}", Path.GetFileNameWithoutExtension(Program.FileName), targetElem?.ToShortString());
 		}
 
 		async Task WaitAppearElement(RequiredElement requiredElement) {

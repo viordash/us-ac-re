@@ -45,8 +45,13 @@ namespace UsAcRe.Core.Actions {
 		public override string ToString() {
 			return string.Format("{0} SourceCode: '{1}', Count: {2}", nameof(ActionSet), SourceCodeFileName, Count);
 		}
+
 		public override string ExecuteAsScriptSource() {
 			return string.Format("{0}.{1}(@\"{2}\")", nameof(ActionSet), nameof(ActionSet.Play), SourceCodeFileName);
+		}
+
+		public override string ShortDescription() {
+			return ToString();
 		}
 
 		protected override async ValueTask ExecuteCoreAsync() {

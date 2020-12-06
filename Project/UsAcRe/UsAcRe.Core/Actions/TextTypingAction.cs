@@ -37,6 +37,9 @@ namespace UsAcRe.Core.Actions {
 			return string.Format("{0}.{1}(\"{2}\")", nameof(TextTypingAction), nameof(TextTypingAction.Play), NamingHelpers.Escape(Text, int.MaxValue));
 		}
 
+		public override string ShortDescription() {
+			return string.Format("TextTyping, Text:{0}", NamingHelpers.Escape(Text, 20));
+		}
 
 	}
 }

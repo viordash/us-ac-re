@@ -42,6 +42,10 @@ namespace UsAcRe.Core.Actions {
 			return string.Format("{0}.{1}({2}, {3})", nameof(KeybdAction), nameof(KeybdAction.Play), VKCode.ForNew(), IsUp.ForNew());
 		}
 
+		public override string ShortDescription() {
+			return string.Format("Keybd, Code:{0}", VKCode);
+		}
+
 		ValueTask DoKeyPress() {
 			if(!this.IsUp) {
 				Keyboard.Press((Key)this.VKCode);

@@ -40,6 +40,8 @@ namespace UsAcRe.Core.Actions {
 
 		public abstract string ExecuteAsScriptSource();
 
+		public abstract string ShortDescription();
+
 		public async Task ExecuteAsync() {
 			await SafeActionAsync(ExecuteCoreAsync);
 		}

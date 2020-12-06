@@ -34,6 +34,10 @@ namespace UsAcRe.Core.Actions {
 			return string.Format("{0}.{1}({2})", nameof(DelayAction), nameof(DelayAction.Play), Milliseconds);
 		}
 
+		public override string ShortDescription() {
+			return string.Format("Delay, s:{0:0.###}", Milliseconds);
+		}
+
 		async ValueTask DoDelay() {
 			await Task.Delay(Milliseconds);
 		}
