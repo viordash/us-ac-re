@@ -22,6 +22,10 @@ namespace UsAcRe.Core.Tests.ActionsTests {
 				throw new System.NotImplementedException();
 			}
 
+			public override string ShortDescription() {
+				throw new NotImplementedException();
+			}
+
 			protected override async ValueTask ExecuteCoreAsync() {
 				await action(this);
 			}

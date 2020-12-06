@@ -19,5 +19,11 @@ namespace UsAcRe.Services {
 				return true;
 			}
 		}
+
+		public int? LocationToleranceInPercent {
+			get {
+				return null;
+			}
+		}
 	}
 }

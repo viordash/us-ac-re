@@ -2,6 +2,12 @@
 
 namespace UsAcRe.Services {
 	public class SettingsService : ISettingsService {
+		public int? LocationToleranceInPercent {
+			get {
+				throw new System.NotImplementedException();
+			}
+		}
+
 		int ISettingsService.ElementSearchNestingLevel {
 			get {
 				return 5;
