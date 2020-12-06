@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using CommonServiceLocator;
@@ -17,6 +18,7 @@ namespace UsAcRe.Core.Actions {
 		}
 
 		public string FailMessage { get; set; } = null;
+		public TimeSpan Duration { get; set; } = TimeSpan.Zero;
 
 		protected readonly ISettingsService settingsService;
 		protected readonly ITestsLaunchingService testsLaunchingService;
@@ -45,6 +47,7 @@ namespace UsAcRe.Core.Actions {
 		protected abstract ValueTask ExecuteCoreAsync();
 
 		async Task SafeActionAsync(Func<ValueTask> action) {
+			var stopWatch = new Stopwatch();
 			try {
 				if(cancellationToken.IsCancellationRequested) {
 					throw new OperationCanceledException(this.ToString());
@@ -53,8 +56,13 @@ namespace UsAcRe.Core.Actions {
 				if(testsLaunchingService.IsDryRunMode) {
 					return;
 				}
-				await action();
-				testsLaunchingService.AfterExecuteAction(this);
+				stopWatch.Start();
+				try {
+					await action();
+				} finally {
+					stopWatch.Stop();
+					Duration = stopWatch.Elapsed;
+				}
 			} catch(TestFailedException) {
 				throw;
 			} catch(OperationCanceledException) {
@@ -66,7 +74,7 @@ namespace UsAcRe.Core.Actions {
 					throw new SevereException(this);
 				}
 			}
-
+			testsLaunchingService.AfterExecuteAction(this);
 		}
 	}
 }

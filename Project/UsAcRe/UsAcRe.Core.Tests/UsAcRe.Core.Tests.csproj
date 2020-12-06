@@ -101,6 +101,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActionsTests\ActionSetTests.cs" />
+    <Compile Include="ActionsTests\BaseActionTests.cs" />
     <Compile Include="ActionsTests\ElementMatchActionTests.cs" />
     <Compile Include="ActionsTests\KeybdActionTests.cs" />
     <Compile Include="ActionsTests\MouseActionTests.cs" />
