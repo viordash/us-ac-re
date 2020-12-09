@@ -57,12 +57,11 @@ namespace UsAcRe.Player {
 						if(PlayerSettingsService.Screenshot) {
 							TakeScreenshot(testCaseName);
 						}
-						throw;
 					}
 				}
 			} finally {
 				Stop();
-				logger.Fatal(reporter.Generate(testCaseName));
+				Console.WriteLine(reporter.Generate(testCaseName));
 			}
 		}
 

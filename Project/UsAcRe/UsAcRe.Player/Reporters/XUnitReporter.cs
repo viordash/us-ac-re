@@ -28,7 +28,6 @@ namespace UsAcRe.Player.Reporters {
 		}
 
 		public void Success(string name, TimeSpan time) {
-			logger.Warn("{0}|{1}", name, time.ToString());
 			testCases.Add(new TestCase() {
 				Name = name,
 				Time = time

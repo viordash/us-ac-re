@@ -3,7 +3,6 @@ using System.IO;
 using System.Threading.Tasks;
 using CommandLine;
 using CommandLine.Text;
-using UsAcRe.Core.Exceptions;
 
 namespace UsAcRe.Player {
 	class Program {
