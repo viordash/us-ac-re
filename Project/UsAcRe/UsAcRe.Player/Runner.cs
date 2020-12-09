@@ -61,6 +61,7 @@ namespace UsAcRe.Player {
 				}
 			} finally {
 				Stop();
+				Console.WriteLine();
 				Console.WriteLine(reporter.Generate(testCaseName));
 			}
 		}
@@ -88,6 +89,7 @@ namespace UsAcRe.Player {
 			executedActionsCount++;
 			Console.Title = $"{executedActionsCount} of {actionsCount}";
 			logger.Info("{0,5}|{1}", executedActionsCount, testAction.ToString());
+			Console.Write('.');
 		}
 
 		void TakeScreenshot(string testCaseName) {
