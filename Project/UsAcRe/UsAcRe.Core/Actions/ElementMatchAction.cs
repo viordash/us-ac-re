@@ -107,8 +107,8 @@ namespace UsAcRe.Core.Actions {
 		}
 
 		public override string ShortDescription() {
-			var targetElem = SearchPath.LastOrDefault();
-			return string.Format("ElementMatch. '{0}' {1}", Path.GetFileNameWithoutExtension(Program.FileName), targetElem?.ToShortString());
+			var targetElem = SearchPath.FirstOrDefault();
+			return string.Format("Element: '{0}' {1}", Path.GetFileNameWithoutExtension(Program.FileName), targetElem?.ToShortString());
 		}
 
 		async Task WaitAppearElement(RequiredElement requiredElement) {

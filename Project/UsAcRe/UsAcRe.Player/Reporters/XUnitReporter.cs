@@ -28,6 +28,7 @@ namespace UsAcRe.Player.Reporters {
 		}
 
 		public void Success(string name, TimeSpan time) {
+			logger.Trace("XUnitReporter: {0}, ({1})", name, time.TotalSeconds.ToString("0.###"));
 			testCases.Add(new TestCase() {
 				Name = name,
 				Time = time

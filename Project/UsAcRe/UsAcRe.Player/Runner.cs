@@ -62,7 +62,9 @@ namespace UsAcRe.Player {
 			} finally {
 				Stop();
 				Console.WriteLine();
-				Console.WriteLine(reporter.Generate(testCaseName));
+				var report = reporter.Generate(testCaseName);
+				Console.WriteLine(report);
+				logger.Info(report);
 			}
 		}
 
