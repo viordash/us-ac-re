@@ -95,7 +95,7 @@ namespace UsAcRe.Core.Actions {
 		}
 		public override string ExecuteAsScriptSource() {
 			var sb = new StringBuilder();
-			sb.AppendFormat("{0}.{1}({2}, {3}", nameof(ElementMatchAction), nameof(ElementMatchAction.Play), Program.ForNew(), SearchPath.ForNew());
+			sb.AppendFormat("{0}.{1}({2}, {3}", nameof(ElementMatchAction), nameof(ElementMatchAction.Play), Program?.ForNew(), SearchPath.ForNew());
 			if(TimeoutMs != TestActionConstants.defaultTimeoutMs) {
 				sb.AppendFormat(", {0}", TimeoutMs.ForNew());
 			}

@@ -226,35 +226,20 @@ namespace UsAcRe.Core.Services {
 
 			var selectedProcess = Process.GetProcessById(automationElement.Current.ProcessId);
 			var processes = Process.GetProcesses()
+				.Where(x => x.MainWindowHandle != IntPtr.Zero)
 				.Where(x => x.ProcessName == selectedProcess.ProcessName)
 				.OrderBy(x => x.StartTime)
-				.ToDictionary(x => x.Id, x => Path.GetFileName(x.MainModule.FileName));
-
-			var exePath = Path.GetFileName(selectedProcess.MainModule.FileName);
-			var singleFileProcesses = processes
-				.Where(x => x.Value == exePath)
 				.ToList();
-			var index = singleFileProcesses.FindIndex(x => x.Key == selectedProcess.Id);
+			var index = processes.FindIndex(x => x.Id == selectedProcess.Id);
 
-			var elementProgram = new ElementProgram(index, exePath);
+			var elementProgram = new ElementProgram(index, selectedProcess.ProcessName);
 			return elementProgram;
-		}
-
-		string SafeGetProcessFileName(Process process) {
-			try {
-				return Path.GetFileName(process.MainModule.FileName);
-			} catch(Win32Exception ex) {
-				if((uint)ex.ErrorCode != 0x80004005) {
-					throw;
-				}
-			}
-			return null;
 		}
 
 		public UiElement GetRootElement(ElementProgram program, bool windowHandleFromWinApi) {
 			var processes = Process.GetProcesses()
 				.Where(x => x.MainWindowHandle != IntPtr.Zero)
-				.Where(x => SafeGetProcessFileName(x) == program.FileName)
+				.Where(x => x.ProcessName == program.FileName)
 				.OrderBy(x => x.StartTime)
 				.ToList();
 			if(processes.Count <= program.Index) {
