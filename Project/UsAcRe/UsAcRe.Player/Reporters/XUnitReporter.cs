@@ -43,7 +43,7 @@ namespace UsAcRe.Player.Reporters {
 			if(testCase.Error != null) {
 				var xmlFailure = new XElement("failure", testCase.Error.GetBaseException().Message);
 				xmlFailure.Add(new XAttribute("type", testCase.Error.GetType().Name));
-				xmlFailure.Add(new XAttribute("message", testCase.Error.Action.FailMessage));
+				xmlFailure.Add(new XAttribute("message", testCase.Error.Action.FailMessage != null ? testCase.Error.Action.FailMessage() : string.Empty));
 				element.Add(xmlFailure);
 			}
 			return element;

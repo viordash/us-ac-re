@@ -1,4 +1,5 @@
-﻿using UsAcRe.Core.Exceptions;
+﻿using System;
+using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Extensions;
 using UsAcRe.Core.Helpers;
 using UsAcRe.Core.Services;
@@ -11,10 +12,11 @@ namespace UsAcRe.Core.UIAutomationElement {
 			Value = value;
 		}
 
-		public void Compare(AutomationIdField other, ElementCompareParameters parameters) {
+		public Func<string> Differences(AutomationIdField other, ElementCompareParameters parameters) {
 			if(!StringHelper.ImplicitEquals(Value, other.Value)) {
-				throw new ElementMismatchExceptions(string.Format("left.AutomationId != right.AutomationId ({0}) != ({1})", Value, other.Value));
+				return () => string.Format("left.AutomationId != right.AutomationId ({0}) != ({1})", Value, other.Value);
 			}
+			return null;
 		}
 
 		public override string ToString() {

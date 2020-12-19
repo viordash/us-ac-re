@@ -17,7 +17,7 @@ namespace UsAcRe.Core.Actions {
 			return ServiceLocator.Current.GetInstance<T>();
 		}
 
-		public string FailMessage { get; set; } = null;
+		public Func<string> FailMessage { get; set; } = null;
 		public TimeSpan Duration { get; set; } = TimeSpan.Zero;
 
 		protected readonly ISettingsService settingsService;

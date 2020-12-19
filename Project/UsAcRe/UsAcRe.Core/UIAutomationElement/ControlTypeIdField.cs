@@ -1,4 +1,5 @@
-﻿using System.Windows.Automation;
+﻿using System;
+using System.Windows.Automation;
 using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Extensions;
 using UsAcRe.Core.Services;
@@ -11,10 +12,11 @@ namespace UsAcRe.Core.UIAutomationElement {
 			Value = value;
 		}
 
-		public void Compare(ControlTypeIdField other, ElementCompareParameters parameters) {
+		public Func<string> Differences(ControlTypeIdField other, ElementCompareParameters parameters) {
 			if(Value != other.Value) {
-				throw new ElementMismatchExceptions(string.Format("left.ControlTypeId != right.ControlTypeId ({0}) != ({1})", Value, other.Value));
+				return () => string.Format("left.ControlTypeId != right.ControlTypeId ({0}) != ({1})", Value, other.Value);
 			}
+			return null;
 		}
 
 		public override string ToString() {

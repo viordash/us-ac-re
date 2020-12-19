@@ -94,7 +94,6 @@
     <Compile Include="Actions\MouseDragAction.cs" />
     <Compile Include="Actions\TestActionConstants.cs" />
     <Compile Include="Actions\TextTypingAction.cs" />
-    <Compile Include="Exceptions\ElementMismatchExceptions.cs" />
     <Compile Include="Exceptions\RetrieveElementExceptions.cs" />
     <Compile Include="Exceptions\ExecuteActionExceptions.cs" />
     <Compile Include="Extensions\PointExtension.cs" />

@@ -20,7 +20,7 @@ namespace UsAcRe.Core.Services {
 		IntPtr GetNativeWindowHandle(UiElement element);
 
 		bool Compare(UiElement left, UiElement right, ElementCompareParameters parameters);
-		void Matching(UiElement left, UiElement right, ElementCompareParameters parameters);
+		Func<string> ElementDifferences(UiElement left, UiElement right, ElementCompareParameters parameters);
 		string BuildFriendlyInfo(AutomationElement element);
 		void RetrieveElementValue(UiElement element);
 		ElementProgram GetProgram(UiElement element);
@@ -87,23 +87,14 @@ namespace UsAcRe.Core.Services {
 
 
 		public bool Compare(UiElement left, UiElement right, ElementCompareParameters parameters) {
-			try {
-				Matching(left, right, int.MaxValue, parameters);
-				return true;
-			} catch(ElementMismatchExceptions) {
-				return false;
-			}
+			return ElementDifferences(left, right, parameters) == null;
 		}
 
-		public void Matching(UiElement left, UiElement right, ElementCompareParameters parameters) {
-			Matching(left, right, int.MaxValue, parameters);
-		}
-
-		void CompareValue(UiElement left, UiElement right, ElementCompareParameters parameters) {
+		Func<string> CompareValue(UiElement left, UiElement right, ElementCompareParameters parameters) {
 			bool leftEmpty = string.IsNullOrEmpty(left.Value.Value);
 			bool rightEmpty = string.IsNullOrEmpty(right.Value.Value);
 			if(leftEmpty && rightEmpty) {
-				return;
+				return null;
 			}
 			if(leftEmpty) {
 				RetrieveElementValue(left);
@@ -111,50 +102,50 @@ namespace UsAcRe.Core.Services {
 			if(rightEmpty) {
 				RetrieveElementValue(right);
 			}
-			left.Value.Compare(right.Value, parameters);
+			return left.Value.Differences(right.Value, parameters);
 		}
 
-		void Matching(UiElement left, UiElement right, int nestedLevel, ElementCompareParameters parameters) {
+		public Func<string> ElementDifferences(UiElement left, UiElement right, ElementCompareParameters parameters) {
 			if(object.Equals(left, null) != object.Equals(right, null)) {
-				throw new ElementMismatchExceptions(string.Format("left or right is null"));
+				return () => string.Format("left or right is null");
 			}
 			if(object.Equals(right, null)) {
-				return;
+				return null;
 			}
 
-			left.ControlTypeId.Compare(right.ControlTypeId, parameters);
-			left.Name.Compare(right.Name, parameters);
-			left.AutomationId.Compare(right.AutomationId, parameters);
-			left.BoundingRectangle.Compare(right.BoundingRectangle, parameters);
+			var res = left.ControlTypeId.Differences(right.ControlTypeId, parameters)
+				?? left.Name.Differences(right.Name, parameters)
+				?? left.AutomationId.Differences(right.AutomationId, parameters)
+				?? left.BoundingRectangle.Differences(right.BoundingRectangle, parameters);
+			if(res != null) {
+				return res;
+			}
 
 			if(parameters.CheckByValue) {
-				CompareValue(left, right, parameters);
+				res = CompareValue(left, right, parameters);
+				if(res != null) {
+					return res;
+				}
 			}
 
 			if(!parameters.AutomationElementInternal) {
-				return;
+				return null;
 			}
 
 			bool leftAutomationElementEmpty = !TryGetAutomationElement(left, out AutomationElement leftAutomationElement);
 			bool rightAutomationElementEmpty = !TryGetAutomationElement(right, out AutomationElement rightAutomationElement);
 			if(leftAutomationElementEmpty != rightAutomationElementEmpty
 				&& (leftAutomationElementEmpty || rightAutomationElementEmpty)) {
-				throw new ElementMismatchExceptions(string.Format("left or right AutomationElement is empty"));
+				return () => string.Format("left or right AutomationElement is empty");
 			}
 
 			var leftRuntimeId = leftAutomationElement.GetRuntimeId();
 			var rightRuntimeId = rightAutomationElement.GetRuntimeId();
 			if(!leftRuntimeId.SequenceEqual(rightRuntimeId)) {
-				throw new ElementMismatchExceptions(string.Format("left.GetRuntimeId() != right.GetRuntimeId() ({0}) != ({1})",
-					string.Join(", ", leftRuntimeId), string.Join(", ", rightRuntimeId)));
+				return () => string.Format("left.GetRuntimeId() != right.GetRuntimeId() ({0}) != ({1})",
+					string.Join(", ", leftRuntimeId), string.Join(", ", rightRuntimeId));
 			}
-
-			if(nestedLevel > settingsService.ElementSearchNestingLevel) {
-				return;
-			}
-			var leftParent = TreeWalker.RawViewWalker.GetParent(leftAutomationElement);
-			var rightParent = TreeWalker.RawViewWalker.GetParent(rightAutomationElement);
-			Matching(ToUiElement(leftParent), ToUiElement(rightParent), nestedLevel + 1, parameters);
+			return null;
 		}
 
 		UiElement ToUiElement(AutomationElement element) {

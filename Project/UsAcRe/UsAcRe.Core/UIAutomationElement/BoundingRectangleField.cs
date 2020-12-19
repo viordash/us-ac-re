@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Extensions;
 using UsAcRe.Core.Helpers;
@@ -12,16 +13,17 @@ namespace UsAcRe.Core.UIAutomationElement {
 			Value = value;
 		}
 
-		public void Compare(BoundingRectangleField other, ElementCompareParameters parameters) {
+		public Func<string> Differences(BoundingRectangleField other, ElementCompareParameters parameters) {
 			if(parameters.CompareLocation && !DimensionsHelper.AreLocationEquals(Value.Location, other.Value.Location, parameters.LocationToleranceInPercent,
 					System.Windows.Forms.Screen.PrimaryScreen.WorkingArea)) {
-				throw new ElementMismatchExceptions(string.Format("left.Location != right.Location ({0}) != ({1}), tol:{2}%", Value.Location, other.Value.Location,
-						parameters.LocationToleranceInPercent));
+				return () => string.Format("left.Location != right.Location ({0}) != ({1}), tol:{2}%", Value.Location, other.Value.Location,
+						parameters.LocationToleranceInPercent);
 			}
 			if(parameters.CompareSizes && !DimensionsHelper.AreSizeEquals(Value.Size, other.Value.Size, parameters.SizeToleranceInPercent)) {
-				throw new ElementMismatchExceptions(string.Format("left.Size != right.Size ({0}) != ({1}), tol:{2}%", Value.Size, other.Value.Size,
-						parameters.SizeToleranceInPercent));
+				return () => string.Format("left.Size != right.Size ({0}) != ({1}), tol:{2}%", Value.Size, other.Value.Size,
+						parameters.SizeToleranceInPercent);
 			}
+			return null;
 		}
 
 		public override string ToString() {
