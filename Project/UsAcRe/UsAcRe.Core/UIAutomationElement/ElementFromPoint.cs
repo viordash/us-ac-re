@@ -265,7 +265,7 @@ namespace UsAcRe.Core.UIAutomationElement {
 		}
 
 		List<UiElement> GetChildren(UiElement element) {
-			var controlType = ControlType.LookupById(element.ControlTypeId);
+			var controlType = ControlType.LookupById(element.ControlTypeId.Value);
 			if(controlType == ControlType.Tree || controlType == ControlType.TreeItem) {
 				return automationElementService.FindAllValidElements(element, TreeScope.Descendants);
 			} else {

@@ -94,6 +94,7 @@
     <Compile Include="Actions\MouseDragAction.cs" />
     <Compile Include="Actions\TestActionConstants.cs" />
     <Compile Include="Actions\TextTypingAction.cs" />
+    <Compile Include="Exceptions\ElementMismatchExceptions.cs" />
     <Compile Include="Exceptions\RetrieveElementExceptions.cs" />
     <Compile Include="Exceptions\ExecuteActionExceptions.cs" />
     <Compile Include="Extensions\PointExtension.cs" />
@@ -122,8 +123,11 @@
     <Compile Include="Services\ITestsLaunchingService.cs" />
     <Compile Include="Services\WinApiService.cs" />
     <Compile Include="Services\IWindowsFormsService.cs" />
+    <Compile Include="UIAutomationElement\AutomationIdField.cs" />
+    <Compile Include="UIAutomationElement\ControlTypeIdField.cs" />
     <Compile Include="UIAutomationElement\ElementFromPoint.cs" />
     <Compile Include="UIAutomationElement\ElementProgram.cs" />
+    <Compile Include="UIAutomationElement\IElementField.cs" />
     <Compile Include="UIAutomationElement\TreeOfSpecificElement.cs" />
     <Compile Include="UIAutomationElement\UiElement.cs" />
     <Compile Include="WindowsSystem\VirtualKeyCodes.cs" />

@@ -119,21 +119,16 @@ namespace UsAcRe.Core.Services {
 			if(object.Equals(right, null)) {
 				return false;
 			}
-			//logger.Debug("Compare ({0}) ({1})", left, right);
-			if(left.ControlTypeId != right.ControlTypeId) {
-				message = string.Format("left.ControlTypeId != right.ControlTypeId ({0}) != ({1})", left.ControlTypeId, right.ControlTypeId);
-				return false;
-			}
+
+			left.ControlTypeId.Compare(right.ControlTypeId);
 
 			if(!StringHelper.ImplicitEquals(left.Name, right.Name)) {
 				message = string.Format("left.Name != right.Name ({0}) != ({1})", left.Name, right.Name);
 				return false;
 			}
 
-			if(!StringHelper.ImplicitEquals(left.AutomationId, right.AutomationId)) {
-				message = string.Format("left.AutomationId != right.AutomationId ({0}) != ({1})", left.AutomationId, right.AutomationId);
-				return false;
-			}
+			left.AutomationId.Compare(right.AutomationId);
+
 
 			if(parameters.CompareLocation
 				&& !DimensionsHelper.AreLocationEquals(left.BoundingRectangle.Location, right.BoundingRectangle.Location, parameters.LocationToleranceInPercent,
