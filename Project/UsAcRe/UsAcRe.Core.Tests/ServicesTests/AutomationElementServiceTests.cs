@@ -33,7 +33,7 @@ namespace UsAcRe.Core.Tests.ServicesTests {
 			Thread.Sleep(100);
 
 			try {
-				var elementProgram = new ElementProgram(1, "notepad.exe");
+				var elementProgram = new ElementProgram(1, "notepad");
 				var rootElement = testable.GetRootElement(elementProgram, false);
 				Assert.NotNull(rootElement);
 				var automationElement = rootElement.AutomationElementObj as AutomationElement;

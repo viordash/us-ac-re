@@ -151,7 +151,7 @@ namespace UsAcRe.Core.Tests.UIAutomationElement {
 			}));
 
 			var sortedElements = testable.PublicSortElementsByPointProximity(elements);
-			Assert.That(sortedElements.Name, Is.EqualTo("Button2"));
+			Assert.That(sortedElements.Name.Value, Is.EqualTo("Button2"));
 		}
 	}
 }
