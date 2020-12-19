@@ -279,15 +279,5 @@ namespace UsAcRe.Core.Actions {
 				return automationElementService.FindAllValidElements(element, TreeScope.Children);
 			}
 		}
-
-		bool AreValueEquals(UiElement element1, UiElement element2) {
-			return settingsService.CheckByValue
-				&& StringEquals(element1.Value, element2.Value);
-		}
-
-		bool StringEquals(string s1, string s2) {
-			return (string.IsNullOrEmpty(s1) && string.IsNullOrEmpty(s2))
-				|| s1 == s2;
-		}
 	}
 }
