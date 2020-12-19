@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Automation;
 using NGuard;
+using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Extensions;
 using UsAcRe.Core.Helpers;
 using UsAcRe.Core.UIAutomationElement;
@@ -18,8 +19,8 @@ namespace UsAcRe.Core.Services {
 		UiElement GetDesktop();
 		IntPtr GetNativeWindowHandle(UiElement element);
 
-		bool CompareInSiblings(UiElement left, UiElement right, ElementCompareParameters parameters, out string message);
-		bool Compare(UiElement left, UiElement right, ElementCompareParameters parameters, out string message);
+		bool Compare(UiElement left, UiElement right, ElementCompareParameters parameters);
+		void Matching(UiElement left, UiElement right, ElementCompareParameters parameters);
 		string BuildFriendlyInfo(AutomationElement element);
 		void RetrieveElementValue(UiElement element);
 		ElementProgram GetProgram(UiElement element);
@@ -85,12 +86,17 @@ namespace UsAcRe.Core.Services {
 		}
 
 
-		public bool CompareInSiblings(UiElement left, UiElement right, ElementCompareParameters parameters, out string message) {
-			return Compare(left, right, int.MaxValue, parameters, out message);
+		public bool Compare(UiElement left, UiElement right, ElementCompareParameters parameters) {
+			try {
+				Matching(left, right, int.MaxValue, parameters);
+				return true;
+			} catch(ElementMismatchExceptions) {
+				return false;
+			}
 		}
 
-		public bool Compare(UiElement left, UiElement right, ElementCompareParameters parameters, out string message) {
-			return Compare(left, right, int.MaxValue, parameters, out message);
+		public void Matching(UiElement left, UiElement right, ElementCompareParameters parameters) {
+			Matching(left, right, int.MaxValue, parameters);
 		}
 
 		void CompareValue(UiElement left, UiElement right, ElementCompareParameters parameters) {
@@ -108,13 +114,12 @@ namespace UsAcRe.Core.Services {
 			left.Value.Compare(right.Value, parameters);
 		}
 
-		bool Compare(UiElement left, UiElement right, int nestedLevel, ElementCompareParameters parameters, out string message) {
-			message = null;
-			if(object.Equals(left, null)) {
-				return (object.Equals(right, null));
+		void Matching(UiElement left, UiElement right, int nestedLevel, ElementCompareParameters parameters) {
+			if(object.Equals(left, null) != object.Equals(right, null)) {
+				throw new ElementMismatchExceptions(string.Format("left or right is null"));
 			}
 			if(object.Equals(right, null)) {
-				return false;
+				return;
 			}
 
 			left.ControlTypeId.Compare(right.ControlTypeId, parameters);
@@ -127,31 +132,29 @@ namespace UsAcRe.Core.Services {
 			}
 
 			if(!parameters.AutomationElementInternal) {
-				return true;
+				return;
 			}
 
 			bool leftAutomationElementEmpty = !TryGetAutomationElement(left, out AutomationElement leftAutomationElement);
 			bool rightAutomationElementEmpty = !TryGetAutomationElement(right, out AutomationElement rightAutomationElement);
-			if(leftAutomationElementEmpty) {
-				return rightAutomationElementEmpty;
-			}
-			if(rightAutomationElementEmpty) {
-				return false;
+			if(leftAutomationElementEmpty != rightAutomationElementEmpty
+				&& (leftAutomationElementEmpty || rightAutomationElementEmpty)) {
+				throw new ElementMismatchExceptions(string.Format("left or right AutomationElement is empty"));
 			}
 
 			var leftRuntimeId = leftAutomationElement.GetRuntimeId();
 			var rightRuntimeId = rightAutomationElement.GetRuntimeId();
 			if(!leftRuntimeId.SequenceEqual(rightRuntimeId)) {
-				message = string.Format("left.GetRuntimeId() != right.GetRuntimeId() ({0}) != ({1})", string.Join(", ", leftRuntimeId), string.Join(", ", rightRuntimeId));
-				return false;
+				throw new ElementMismatchExceptions(string.Format("left.GetRuntimeId() != right.GetRuntimeId() ({0}) != ({1})",
+					string.Join(", ", leftRuntimeId), string.Join(", ", rightRuntimeId)));
 			}
 
 			if(nestedLevel > settingsService.ElementSearchNestingLevel) {
-				return true;
+				return;
 			}
 			var leftParent = TreeWalker.RawViewWalker.GetParent(leftAutomationElement);
 			var rightParent = TreeWalker.RawViewWalker.GetParent(rightAutomationElement);
-			return Compare(ToUiElement(leftParent), ToUiElement(rightParent), nestedLevel + 1, parameters, out message);
+			Matching(ToUiElement(leftParent), ToUiElement(rightParent), nestedLevel + 1, parameters);
 		}
 
 		UiElement ToUiElement(AutomationElement element) {

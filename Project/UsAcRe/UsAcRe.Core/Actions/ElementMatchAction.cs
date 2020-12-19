@@ -187,7 +187,7 @@ namespace UsAcRe.Core.Actions {
 				return null;
 			}
 
-			if(!automationElementService.Compare(rootElement, parentEquivalentInSearchPath, new ElementCompareParameters() {
+			var compareParameters = new ElementCompareParameters() {
 				AutomationElementInternal = false,
 				Anchor = TestActionConstants.defaultAnchor,
 				CompareLocation = false,
@@ -195,23 +195,21 @@ namespace UsAcRe.Core.Actions {
 				NameIsMatchCase = true,
 				NameIsMatchWholeWord = true,
 				CheckByValue = false
-			}, out string compareMessage)) {
-				FailMessage = compareMessage;
+			};
+
+			try {
+				automationElementService.Matching(rootElement, parentEquivalentInSearchPath, compareParameters);
+			} catch(ElementMismatchExceptions ex) {
+				FailMessage = ex.Message;
 				logger.Debug("attempt to retrieve the rootElement with help of window handle from WinApi");
 				rootElement = GetRootElement(true);
 				if(rootElement == null) {
 					return null;
 				}
-				if(!automationElementService.Compare(rootElement, parentEquivalentInSearchPath, new ElementCompareParameters() {
-					AutomationElementInternal = false,
-					Anchor = TestActionConstants.defaultAnchor,
-					CompareLocation = false,
-					CompareSizes = false,
-					NameIsMatchCase = true,
-					NameIsMatchWholeWord = true,
-					CheckByValue = false
-				}, out compareMessage)) {
-					FailMessage = compareMessage;
+				try {
+					automationElementService.Matching(rootElement, parentEquivalentInSearchPath, compareParameters);
+				} catch(ElementMismatchExceptions exw) {
+					FailMessage = exw.Message;
 					return null;
 				}
 			}
@@ -241,25 +239,27 @@ namespace UsAcRe.Core.Actions {
 		UiElement SearchRequiredElement(UiElement searchedElement, List<UiElement> childs) {
 			bool isTargetedElementWithPresentedValue = searchedElement == SearchPath[0];
 			foreach(var element in childs) {
-				if(!automationElementService.Compare(element, searchedElement, new ElementCompareParameters() {
-					AutomationElementInternal = false,
-					Anchor = TestActionConstants.defaultAnchor,
-					CompareLocation = settingsService.LocationToleranceInPercent.HasValue && settingsService.LocationToleranceInPercent.Value > 0,
-					CompareSizes = true,
-					SizeToleranceInPercent = settingsService.ClickPositionToleranceInPercent,
-					LocationToleranceInPercent = settingsService.LocationToleranceInPercent.HasValue
-						? settingsService.LocationToleranceInPercent.Value
-						: -1,
-					NameIsMatchCase = true,
-					NameIsMatchWholeWord = true,
-					CheckByValue = settingsService.CheckByValue && isTargetedElementWithPresentedValue
-				}, out string compareMessage)) {
-					FailMessage = compareMessage;
+				try {
+					automationElementService.Matching(element, searchedElement, new ElementCompareParameters() {
+						AutomationElementInternal = false,
+						Anchor = TestActionConstants.defaultAnchor,
+						CompareLocation = settingsService.LocationToleranceInPercent.HasValue && settingsService.LocationToleranceInPercent.Value > 0,
+						CompareSizes = true,
+						SizeToleranceInPercent = settingsService.ClickPositionToleranceInPercent,
+						LocationToleranceInPercent = settingsService.LocationToleranceInPercent.HasValue
+							? settingsService.LocationToleranceInPercent.Value
+							: -1,
+						NameIsMatchCase = true,
+						NameIsMatchWholeWord = true,
+						CheckByValue = settingsService.CheckByValue && isTargetedElementWithPresentedValue
+					});
+				} catch(ElementMismatchExceptions ex) {
+					FailMessage = ex.Message;
 					continue;
 				}
 				if(searchedElement.Index > 0) {
 					var similars = childs
-						.Where(x => automationElementService.CompareInSiblings(x, element, ElementCompareParameters.ForSimilars(), out string message))
+						.Where(x => automationElementService.Compare(x, element, ElementCompareParameters.ForSimilars()))
 						.ToList();
 					if(similars.Count > searchedElement.Index) {
 						return similars[searchedElement.Index];
