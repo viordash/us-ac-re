@@ -9,12 +9,10 @@ namespace UsAcRe.Core.UIAutomationElement {
 	[Serializable]
 	public class UiElement {
 		public int Index;
-		public string Value;
-		public string Name;
-		public string ClassName;
-
+		public ValueField Value { get; set; }
+		public NameField Name { get; set; }
+		public ClassNameField ClassName { get; set; }
 		public AutomationIdField AutomationId { get; set; }
-
 		public ControlTypeIdField ControlTypeId { get; set; }
 		public Rect BoundingRectangle;
 		[XmlIgnore]
@@ -22,21 +20,20 @@ namespace UsAcRe.Core.UIAutomationElement {
 
 		public UiElement(int index, string value, string name, string className, string automationId, int controlTypeId, Rect boundingRectangle) {
 			Index = index;
-			Value = value;
-			Name = name;
-			ClassName = className;
+			Value.Value = value;
+			Name.Value = name;
+			ClassName.Value = className;
 			AutomationId.Value = automationId;
 			ControlTypeId.Value = controlTypeId;
 			BoundingRectangle = boundingRectangle;
 		}
 
 		public override string ToString() {
-			return string.Format("[{0}] \"{1}\" \"{2}\" \"{3}\" \"{4}\" \"{5}\" {6}", Index, ControlTypeId, NamingHelpers.Escape(Name, 60),
-				NamingHelpers.Escape(ClassName, 60), AutomationId, Value, BoundingRectangle);
+			return string.Format("[{0}] \"{1}\" \"{2}\" \"{3}\" \"{4}\" \"{5}\" {6}", Index, ControlTypeId, Name, ClassName, AutomationId, Value, BoundingRectangle);
 		}
 
 		public string ToShortString() {
-			var strings = new[] { Value, Name, ClassName };
+			var strings = new[] { Value.Value, Name.Value, ClassName.Value };
 			return string.Format("\"{0}\" \"{1}\"", ControlTypeId, NamingHelpers.Escape(strings.FirstOrDefault(s => !string.IsNullOrEmpty(s)), 30));
 		}
 	}

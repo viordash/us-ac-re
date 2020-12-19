@@ -96,11 +96,11 @@ namespace UsAcRe.Core.Services {
 			return Compare(left, right, int.MaxValue, parameters, out message);
 		}
 
-		bool CompareValue(UiElement left, UiElement right) {
-			bool leftEmpty = string.IsNullOrEmpty(left.Value);
-			bool rightEmpty = string.IsNullOrEmpty(right.Value);
+		void CompareValue(UiElement left, UiElement right) {
+			bool leftEmpty = string.IsNullOrEmpty(left.Value.Value);
+			bool rightEmpty = string.IsNullOrEmpty(right.Value.Value);
 			if(leftEmpty && rightEmpty) {
-				return true;
+				return;
 			}
 			if(leftEmpty) {
 				RetrieveElementValue(left);
@@ -108,7 +108,7 @@ namespace UsAcRe.Core.Services {
 			if(rightEmpty) {
 				RetrieveElementValue(right);
 			}
-			return StringHelper.ImplicitEquals(left.Value, right.Value);
+			left.Value.Compare(right.Value);
 		}
 
 		bool Compare(UiElement left, UiElement right, int nestedLevel, ElementCompareParameters parameters, out string message) {
@@ -121,12 +121,7 @@ namespace UsAcRe.Core.Services {
 			}
 
 			left.ControlTypeId.Compare(right.ControlTypeId);
-
-			if(!StringHelper.ImplicitEquals(left.Name, right.Name)) {
-				message = string.Format("left.Name != right.Name ({0}) != ({1})", left.Name, right.Name);
-				return false;
-			}
-
+			left.Name.Compare(right.Name);
 			left.AutomationId.Compare(right.AutomationId);
 
 
@@ -143,9 +138,8 @@ namespace UsAcRe.Core.Services {
 				return false;
 			}
 
-			if(parameters.CheckByValue && !CompareValue(left, right)) {
-				message = string.Format("left.Value != right.Value ({0}) != ({1})", left.Value, right.Value);
-				return false;
+			if(parameters.CheckByValue) {
+				CompareValue(left, right);
 			}
 
 			if(!parameters.AutomationElementInternal) {
@@ -210,7 +204,7 @@ namespace UsAcRe.Core.Services {
 
 		public void RetrieveElementValue(UiElement element) {
 			if(TryGetAutomationElement(element, out AutomationElement automationElement)) {
-				element.Value = GetValue(automationElement);
+				element.Value.Value = GetValue(automationElement);
 			}
 		}
 

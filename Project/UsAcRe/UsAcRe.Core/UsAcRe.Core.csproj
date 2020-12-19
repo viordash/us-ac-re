@@ -123,6 +123,9 @@
     <Compile Include="Services\ITestsLaunchingService.cs" />
     <Compile Include="Services\WinApiService.cs" />
     <Compile Include="Services\IWindowsFormsService.cs" />
+    <Compile Include="UIAutomationElement\ValueField.cs" />
+    <Compile Include="UIAutomationElement\ClassNameField.cs" />
+    <Compile Include="UIAutomationElement\NameField.cs" />
     <Compile Include="UIAutomationElement\AutomationIdField.cs" />
     <Compile Include="UIAutomationElement\ControlTypeIdField.cs" />
     <Compile Include="UIAutomationElement\ElementFromPoint.cs" />
