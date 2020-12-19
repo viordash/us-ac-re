@@ -9,7 +9,7 @@ namespace UsAcRe.Core.UIAutomationElement {
 		public System.Windows.Rect BoundingRectangle {
 			get {
 				if(Count > 0) {
-					return this.First().BoundingRectangle;
+					return this.First().BoundingRectangle.Value;
 				}
 				return System.Windows.Rect.Empty;
 			}

@@ -1,6 +1,7 @@
 ﻿using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Extensions;
 using UsAcRe.Core.Helpers;
+using UsAcRe.Core.Services;
 
 namespace UsAcRe.Core.UIAutomationElement {
 	public class ClassNameField : IElementField<ClassNameField> {
@@ -10,7 +11,7 @@ namespace UsAcRe.Core.UIAutomationElement {
 			Value = value;
 		}
 
-		public void Compare(ClassNameField other) {
+		public void Compare(ClassNameField other, ElementCompareParameters parameters) {
 			if(!StringHelper.ImplicitEquals(Value, other.Value)) {
 				throw new ElementMismatchExceptions(string.Format("left.ClassName != right.ClassName ({0}) != ({1})", Value, other.Value));
 			}

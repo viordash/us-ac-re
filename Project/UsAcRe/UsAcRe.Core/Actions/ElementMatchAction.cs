@@ -73,7 +73,7 @@ namespace UsAcRe.Core.Actions {
 				var requiredElement = GetElement();
 				if(requiredElement?.Element != null) {
 					OffsetPoint = GetClickablePointOffset(MatchedElement, requiredElement.Element);
-					MouseHover.MoveTo(requiredElement.Element.BoundingRectangle.Location);
+					MouseHover.MoveTo(requiredElement.Element.BoundingRectangle.Value.Location);
 					break;
 				}
 				await WaitAppearElement(requiredElement);
@@ -116,10 +116,10 @@ namespace UsAcRe.Core.Actions {
 
 			if(requiredElement?.Parent != null) {
 				var offset = GetClickablePointOffset(requiredElement.ParentEquivalentInSearchPath, requiredElement.Parent);
-				rect = MatchedElement.BoundingRectangle;
+				rect = MatchedElement.BoundingRectangle.Value;
 				rect.Offset(offset.X, offset.Y);
 			} else {
-				rect = MatchedElement.BoundingRectangle;
+				rect = MatchedElement.BoundingRectangle.Value;
 			}
 			var clickableRect = rect;
 			clickableRect.Offset(clickableRect.Width / 2, clickableRect.Height / 2);
@@ -137,12 +137,12 @@ namespace UsAcRe.Core.Actions {
 				return point;
 			}
 			var originalRect = original.BoundingRectangle;
-			var originalLocation = originalRect.Location;
-			var originalSize = originalRect.Size;
+			var originalLocation = originalRect.Value.Location;
+			var originalSize = originalRect.Value.Size;
 
 			var currentRect = current.BoundingRectangle;
-			var currentLocation = currentRect.Location;
-			var currentSize = currentRect.Size;
+			var currentLocation = currentRect.Value.Location;
+			var currentSize = currentRect.Value.Size;
 
 			point.X = currentLocation.X - originalLocation.X;
 			point.Y = currentLocation.Y - originalLocation.Y;

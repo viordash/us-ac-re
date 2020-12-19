@@ -93,7 +93,7 @@ namespace UsAcRe.Core.Services {
 			return Compare(left, right, int.MaxValue, parameters, out message);
 		}
 
-		void CompareValue(UiElement left, UiElement right) {
+		void CompareValue(UiElement left, UiElement right, ElementCompareParameters parameters) {
 			bool leftEmpty = string.IsNullOrEmpty(left.Value.Value);
 			bool rightEmpty = string.IsNullOrEmpty(right.Value.Value);
 			if(leftEmpty && rightEmpty) {
@@ -105,7 +105,7 @@ namespace UsAcRe.Core.Services {
 			if(rightEmpty) {
 				RetrieveElementValue(right);
 			}
-			left.Value.Compare(right.Value);
+			left.Value.Compare(right.Value, parameters);
 		}
 
 		bool Compare(UiElement left, UiElement right, int nestedLevel, ElementCompareParameters parameters, out string message) {
@@ -117,26 +117,13 @@ namespace UsAcRe.Core.Services {
 				return false;
 			}
 
-			left.ControlTypeId.Compare(right.ControlTypeId);
-			left.Name.Compare(right.Name);
-			left.AutomationId.Compare(right.AutomationId);
-
-
-			if(parameters.CompareLocation
-				&& !DimensionsHelper.AreLocationEquals(left.BoundingRectangle.Location, right.BoundingRectangle.Location, parameters.LocationToleranceInPercent,
-					System.Windows.Forms.Screen.PrimaryScreen.WorkingArea)) {
-				message = string.Format("DimensionsHelper.AreLocationEquals ({0}) != ({1}), {2}%", left.BoundingRectangle.Location, right.BoundingRectangle.Location, parameters.LocationToleranceInPercent);
-				return false;
-			}
-
-			if(parameters.CompareSizes
-				&& !DimensionsHelper.AreSizeEquals(left.BoundingRectangle.Size, right.BoundingRectangle.Size, parameters.SizeToleranceInPercent)) {
-				message = string.Format("DimensionsHelper.AreSizeEquals ({0}) != ({1}), {2}%", left.BoundingRectangle.Size, right.BoundingRectangle.Size, parameters.SizeToleranceInPercent);
-				return false;
-			}
+			left.ControlTypeId.Compare(right.ControlTypeId, parameters);
+			left.Name.Compare(right.Name, parameters);
+			left.AutomationId.Compare(right.AutomationId, parameters);
+			left.BoundingRectangle.Compare(right.BoundingRectangle, parameters);
 
 			if(parameters.CheckByValue) {
-				CompareValue(left, right);
+				CompareValue(left, right, parameters);
 			}
 
 			if(!parameters.AutomationElementInternal) {

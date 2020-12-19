@@ -120,7 +120,7 @@ namespace UsAcRe.Core.UIAutomationElement {
 					BreakOperationsIfCoordChanged();
 					var childElements = GetChildren(rootParent);
 					var elementsUnderPoint = childElements
-						.Where(x => x.BoundingRectangle.Contains(elementCoord.x, elementCoord.y))
+						.Where(x => x.BoundingRectangle.Value.Contains(elementCoord.x, elementCoord.y))
 						.ToList();
 
 					//Debug.WriteLine($"inserted rootParent: {rootParent}");
@@ -225,7 +225,7 @@ namespace UsAcRe.Core.UIAutomationElement {
 				.Select(x => x.Item2);
 
 			var proximityElement = topElements
-				.OrderBy(x => x.Element.BoundingRectangle, new BoundingRectangleComp())
+				.OrderBy(x => x.Element.BoundingRectangle.Value, new BoundingRectangleComp())
 				.FirstOrDefault();
 			return proximityElement.Element;
 		}
@@ -235,18 +235,18 @@ namespace UsAcRe.Core.UIAutomationElement {
 			var childElements = GetChildren(elementUnderPoint);
 
 			var elementsUnderPoint = childElements
-				.Where(x => x.BoundingRectangle.Contains(elementCoord.x, elementCoord.y))
+				.Where(x => x.BoundingRectangle.Value.Contains(elementCoord.x, elementCoord.y))
 				.ToList();
 
 			var outsideOfPoint = childElements
-				.Where(x => !x.BoundingRectangle.Contains(elementCoord.x, elementCoord.y));
+				.Where(x => !x.BoundingRectangle.Value.Contains(elementCoord.x, elementCoord.y));
 
 			foreach(var item in outsideOfPoint) {
 				var suspectedElements = GetChildren(item);
 
 				var suspectedElementsUnderPoint = suspectedElements
 					.Except(elementsUnderPoint)
-					.Where(x => x.BoundingRectangle.Contains(elementCoord.x, elementCoord.y))
+					.Where(x => x.BoundingRectangle.Value.Contains(elementCoord.x, elementCoord.y))
 					.ToList();
 				if(suspectedElementsUnderPoint.Count > 0) {
 					elementsUnderPoint.AddRange(suspectedElementsUnderPoint);

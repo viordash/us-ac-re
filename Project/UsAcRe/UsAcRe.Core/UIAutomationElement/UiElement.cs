@@ -15,19 +15,19 @@ namespace UsAcRe.Core.UIAutomationElement {
 		public ClassNameField ClassName { get; private set; }
 		public AutomationIdField AutomationId { get; private set; }
 		public ControlTypeIdField ControlTypeId { get; private set; }
-		public Rect BoundingRectangle;
+		public BoundingRectangleField BoundingRectangle { get; private set; }
 		[XmlIgnore]
 		public object AutomationElementObj;
 
 		public UiElement(int index, string value, string name, string className, string automationId, int controlTypeId, Rect boundingRectangle) {
 			Index = index;
-			BoundingRectangle = boundingRectangle;
 
 			Value = new ValueField(value);
 			Name = new NameField(name);
 			ClassName = new ClassNameField(className);
 			ControlTypeId = new ControlTypeIdField(controlTypeId);
 			AutomationId = new AutomationIdField(automationId);
+			BoundingRectangle = new BoundingRectangleField(boundingRectangle);
 		}
 
 		public override string ToString() {
