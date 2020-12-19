@@ -6,6 +6,10 @@ namespace UsAcRe.Core.UIAutomationElement {
 	public class NameField : IElementField<NameField> {
 		public string Value { get; set; }
 
+		public NameField(string value) {
+			Value = value;
+		}
+
 		public void Compare(NameField other) {
 			if(!StringHelper.ImplicitEquals(Value, other.Value)) {
 				throw new ElementMismatchExceptions(string.Format("left.Name != right.Name ({0}) != ({1})", Value, other.Value));

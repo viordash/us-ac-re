@@ -4,28 +4,30 @@ using System.Windows;
 using System.Windows.Automation;
 using System.Xml.Serialization;
 using UsAcRe.Core.Helpers;
+using UsAcRe.Core.Services;
 
 namespace UsAcRe.Core.UIAutomationElement {
 	[Serializable]
 	public class UiElement {
 		public int Index;
-		public ValueField Value { get; set; }
-		public NameField Name { get; set; }
-		public ClassNameField ClassName { get; set; }
-		public AutomationIdField AutomationId { get; set; }
-		public ControlTypeIdField ControlTypeId { get; set; }
+		public ValueField Value { get; private set; }
+		public NameField Name { get; private set; }
+		public ClassNameField ClassName { get; private set; }
+		public AutomationIdField AutomationId { get; private set; }
+		public ControlTypeIdField ControlTypeId { get; private set; }
 		public Rect BoundingRectangle;
 		[XmlIgnore]
 		public object AutomationElementObj;
 
 		public UiElement(int index, string value, string name, string className, string automationId, int controlTypeId, Rect boundingRectangle) {
 			Index = index;
-			Value.Value = value;
-			Name.Value = name;
-			ClassName.Value = className;
-			AutomationId.Value = automationId;
-			ControlTypeId.Value = controlTypeId;
 			BoundingRectangle = boundingRectangle;
+
+			Value = new ValueField(value);
+			Name = new NameField(name);
+			ClassName = new ClassNameField(className);
+			ControlTypeId = new ControlTypeIdField(controlTypeId);
+			AutomationId = new AutomationIdField(automationId);
 		}
 
 		public override string ToString() {

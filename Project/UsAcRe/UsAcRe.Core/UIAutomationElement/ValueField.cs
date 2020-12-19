@@ -6,6 +6,10 @@ namespace UsAcRe.Core.UIAutomationElement {
 	public class ValueField : IElementField<ValueField> {
 		public string Value { get; set; }
 
+		public ValueField(string value) {
+			Value = value;
+		}
+
 		public void Compare(ValueField other) {
 			if(!StringHelper.ImplicitEquals(Value, other.Value)) {
 				throw new ElementMismatchExceptions(string.Format("left.Value != right.Value ({0}) != ({1})", Value, other.Value));
