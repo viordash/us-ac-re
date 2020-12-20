@@ -197,14 +197,14 @@ namespace UsAcRe.Core.Actions {
 				CheckByValue = false
 			};
 
-			FailMessage = automationElementService.ElementDifferences(rootElement, parentEquivalentInSearchPath, compareParameters);
+			FailMessage = rootElement.Differences(parentEquivalentInSearchPath, compareParameters, automationElementService);
 			if(FailMessage != null) {
 				logger.Debug("attempt to retrieve the rootElement with help of window handle from WinApi");
 				rootElement = GetRootElement(true);
 				if(rootElement == null) {
 					return null;
 				}
-				FailMessage = automationElementService.ElementDifferences(rootElement, parentEquivalentInSearchPath, compareParameters);
+				FailMessage = rootElement.Differences(parentEquivalentInSearchPath, compareParameters, automationElementService);
 			}
 
 			var requiredElement = new RequiredElement() {
@@ -232,7 +232,7 @@ namespace UsAcRe.Core.Actions {
 		UiElement SearchRequiredElement(UiElement searchedElement, List<UiElement> childs) {
 			bool isTargetedElementWithPresentedValue = searchedElement == SearchPath[0];
 			foreach(var element in childs) {
-				FailMessage = automationElementService.ElementDifferences(element, searchedElement, new ElementCompareParameters() {
+				FailMessage = element.Differences(searchedElement, new ElementCompareParameters() {
 					AutomationElementInternal = false,
 					Anchor = TestActionConstants.defaultAnchor,
 					CompareLocation = settingsService.LocationToleranceInPercent.HasValue && settingsService.LocationToleranceInPercent.Value > 0,
@@ -244,7 +244,7 @@ namespace UsAcRe.Core.Actions {
 					NameIsMatchCase = true,
 					NameIsMatchWholeWord = true,
 					CheckByValue = settingsService.CheckByValue && isTargetedElementWithPresentedValue
-				});
+				}, automationElementService);
 
 				if(FailMessage != null) {
 					continue;

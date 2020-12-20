@@ -5,7 +5,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Automation;
 using NGuard;
-using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Extensions;
 using UsAcRe.Core.Helpers;
 using UsAcRe.Core.UIAutomationElement;
@@ -20,9 +19,9 @@ namespace UsAcRe.Core.Services {
 		IntPtr GetNativeWindowHandle(UiElement element);
 
 		bool Compare(UiElement left, UiElement right, ElementCompareParameters parameters);
-		Func<string> ElementDifferences(UiElement left, UiElement right, ElementCompareParameters parameters);
 		string BuildFriendlyInfo(AutomationElement element);
 		void RetrieveElementValue(UiElement element);
+		bool TryGetAutomationElement(UiElement uiElement, out AutomationElement automationElement);
 		ElementProgram GetProgram(UiElement element);
 		UiElement GetRootElement(ElementProgram program, bool windowHandleFromWinApi);
 		bool TryGetClickablePoint(UiElement element, out Point pt);
@@ -87,65 +86,7 @@ namespace UsAcRe.Core.Services {
 
 
 		public bool Compare(UiElement left, UiElement right, ElementCompareParameters parameters) {
-			return ElementDifferences(left, right, parameters) == null;
-		}
-
-		Func<string> CompareValue(UiElement left, UiElement right, ElementCompareParameters parameters) {
-			bool leftEmpty = string.IsNullOrEmpty(left.Value.Value);
-			bool rightEmpty = string.IsNullOrEmpty(right.Value.Value);
-			if(leftEmpty && rightEmpty) {
-				return null;
-			}
-			if(leftEmpty) {
-				RetrieveElementValue(left);
-			}
-			if(rightEmpty) {
-				RetrieveElementValue(right);
-			}
-			return left.Value.Differences(right.Value, parameters);
-		}
-
-		public Func<string> ElementDifferences(UiElement left, UiElement right, ElementCompareParameters parameters) {
-			if(object.Equals(left, null) != object.Equals(right, null)) {
-				return () => string.Format("left or right is null");
-			}
-			if(object.Equals(right, null)) {
-				return null;
-			}
-
-			var res = left.ControlTypeId.Differences(right.ControlTypeId, parameters)
-				?? left.Name.Differences(right.Name, parameters)
-				?? left.AutomationId.Differences(right.AutomationId, parameters)
-				?? left.BoundingRectangle.Differences(right.BoundingRectangle, parameters);
-			if(res != null) {
-				return res;
-			}
-
-			if(parameters.CheckByValue) {
-				res = CompareValue(left, right, parameters);
-				if(res != null) {
-					return res;
-				}
-			}
-
-			if(!parameters.AutomationElementInternal) {
-				return null;
-			}
-
-			bool leftAutomationElementEmpty = !TryGetAutomationElement(left, out AutomationElement leftAutomationElement);
-			bool rightAutomationElementEmpty = !TryGetAutomationElement(right, out AutomationElement rightAutomationElement);
-			if(leftAutomationElementEmpty != rightAutomationElementEmpty
-				&& (leftAutomationElementEmpty || rightAutomationElementEmpty)) {
-				return () => string.Format("left or right AutomationElement is empty");
-			}
-
-			var leftRuntimeId = leftAutomationElement.GetRuntimeId();
-			var rightRuntimeId = rightAutomationElement.GetRuntimeId();
-			if(!leftRuntimeId.SequenceEqual(rightRuntimeId)) {
-				return () => string.Format("left.GetRuntimeId() != right.GetRuntimeId() ({0}) != ({1})",
-					string.Join(", ", leftRuntimeId), string.Join(", ", rightRuntimeId));
-			}
-			return null;
+			return left.Differences(right, parameters, this) == null;
 		}
 
 		UiElement ToUiElement(AutomationElement element) {
@@ -175,7 +116,7 @@ namespace UsAcRe.Core.Services {
 			}
 		}
 
-		bool TryGetAutomationElement(UiElement uiElement, out AutomationElement automationElement) {
+		public bool TryGetAutomationElement(UiElement uiElement, out AutomationElement automationElement) {
 			automationElement = uiElement?.AutomationElementObj as AutomationElement;
 			return automationElement != null;
 		}

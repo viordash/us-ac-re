@@ -38,5 +38,55 @@ namespace UsAcRe.Core.UIAutomationElement {
 			var strings = new[] { Value.Value, Name.Value, ClassName.Value };
 			return string.Format("\"{0}\" \"{1}\"", ControlTypeId, NamingHelpers.Escape(strings.FirstOrDefault(s => !string.IsNullOrEmpty(s)), 30));
 		}
+
+		public Func<string> Differences(UiElement other, ElementCompareParameters parameters, IAutomationElementService automationElementService) {
+			if(object.Equals(other, null)) {
+				return () => string.Format("other is null");
+			}
+
+			var res = ControlTypeId.Differences(other.ControlTypeId, parameters)
+				?? Name.Differences(other.Name, parameters)
+				?? AutomationId.Differences(other.AutomationId, parameters)
+				?? BoundingRectangle.Differences(other.BoundingRectangle, parameters);
+			if(res != null) {
+				return res;
+			}
+
+			if(parameters.CheckByValue) {
+				bool empty = string.IsNullOrEmpty(Value.Value);
+				bool otherEmpty = string.IsNullOrEmpty(other.Value.Value);
+				if(empty && otherEmpty) {
+					return null;
+				}
+				if(empty) {
+					automationElementService.RetrieveElementValue(this);
+				}
+				if(otherEmpty) {
+					automationElementService.RetrieveElementValue(other);
+				}
+				return Value.Differences(other.Value, parameters);
+			}
+
+			if(!parameters.AutomationElementInternal) {
+				return null;
+			}
+
+
+			bool automationElementEmpty = !automationElementService.TryGetAutomationElement(this, out AutomationElement automationElement);
+			bool otherAutomationElementEmpty = !automationElementService.TryGetAutomationElement(other, out AutomationElement otherAutomationElement);
+			if(automationElementEmpty != otherAutomationElementEmpty
+				&& (automationElementEmpty || otherAutomationElementEmpty)) {
+				return () => string.Format("this or other AutomationElement is empty");
+			}
+
+			var runtimeId = automationElement.GetRuntimeId();
+			var otherRuntimeId = otherAutomationElement.GetRuntimeId();
+			if(!runtimeId.SequenceEqual(otherRuntimeId)) {
+				return () => string.Format("this.GetRuntimeId() != other.GetRuntimeId() ({0}) != ({1})",
+					string.Join(", ", runtimeId), string.Join(", ", otherRuntimeId));
+			}
+
+			return null;
+		}
 	}
 }

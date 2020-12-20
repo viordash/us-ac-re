@@ -14,7 +14,7 @@ namespace UsAcRe.Core.UIAutomationElement {
 
 		public Func<string> Differences(NameField other, ElementCompareParameters parameters) {
 			if(!StringHelper.ImplicitEquals(Value, other.Value)) {
-				return () => string.Format("left.Name != right.Name ({0}) != ({1})", Value, other.Value);
+				return () => string.Format("this.Name != other.Name ({0}) != ({1})", Value, other.Value);
 			}
 			return null;
 		}
