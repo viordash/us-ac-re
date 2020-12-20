@@ -232,7 +232,7 @@ namespace UsAcRe.Core.Actions {
 		UiElement SearchRequiredElement(UiElement searchedElement, List<UiElement> childs) {
 			bool isTargetedElementWithPresentedValue = searchedElement == SearchPath[0];
 			foreach(var element in childs) {
-				FailMessage = element.Differences(searchedElement, new ElementCompareParameters() {
+				var orderedDifference = element.Differences(searchedElement, new ElementCompareParameters() {
 					AutomationElementInternal = false,
 					Anchor = TestActionConstants.defaultAnchor,
 					CompareLocation = settingsService.LocationToleranceInPercent.HasValue && settingsService.LocationToleranceInPercent.Value > 0,
@@ -246,7 +246,11 @@ namespace UsAcRe.Core.Actions {
 					CheckByValue = settingsService.CheckByValue && isTargetedElementWithPresentedValue
 				}, automationElementService);
 
-				if(FailMessage != null) {
+				if(orderedDifference != null) {
+					if(FailMessage == null || FailMessage.Weight < orderedDifference.Weight) {
+						FailMessage = orderedDifference;
+						Debug.WriteLine($"               -------  {FailMessage.Difference()}");
+					}
 					continue;
 				}
 				if(searchedElement.Index > 0) {

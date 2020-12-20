@@ -8,6 +8,7 @@ using CommonServiceLocator;
 using NGuard;
 using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Services;
+using UsAcRe.Core.UIAutomationElement;
 
 namespace UsAcRe.Core.Actions {
 	public abstract class BaseAction {
@@ -17,7 +18,7 @@ namespace UsAcRe.Core.Actions {
 			return ServiceLocator.Current.GetInstance<T>();
 		}
 
-		public Func<string> FailMessage { get; set; } = null;
+		public OrderedDifference FailMessage { get; set; } = null;
 		public TimeSpan Duration { get; set; } = TimeSpan.Zero;
 
 		protected readonly ISettingsService settingsService;

@@ -9,11 +9,11 @@ namespace UsAcRe.Core.Exceptions {
 		protected ExecuteBaseActionException(BaseAction baseAction) : this(BuildMessage(baseAction)) { }
 
 		static string BuildMessage(BaseAction baseAction) {
-			return string.Format("{0} \r\n {1}", baseAction.FailMessage != null ? baseAction.FailMessage() : string.Empty, baseAction.ToString());
+			return string.Format("{0} \r\n {1}", baseAction.FailMessage?.Difference(), baseAction.ToString());
 		}
 
 		static string BuildMessage(BaseAction baseAction, string targetName) {
-			return string.Format("{0} \r\n {1} ({2})", baseAction.FailMessage != null ? baseAction.FailMessage() : string.Empty, baseAction.ToString(), targetName);
+			return string.Format("{0} \r\n {1} ({2})", baseAction.FailMessage?.Difference(), baseAction.ToString(), targetName);
 		}
 	}
 

@@ -39,15 +39,25 @@ namespace UsAcRe.Core.UIAutomationElement {
 			return string.Format("\"{0}\" \"{1}\"", ControlTypeId, NamingHelpers.Escape(strings.FirstOrDefault(s => !string.IsNullOrEmpty(s)), 30));
 		}
 
-		public Func<string> Differences(UiElement other, ElementCompareParameters parameters, IAutomationElementService automationElementService) {
+
+		public OrderedDifference CreateOrderedDifference(Func<string> difference, ref int weight) {
+			weight++;
+			if(difference == null) {
+				return null;
+			}
+			return new OrderedDifference(weight, difference);
+		}
+
+		public OrderedDifference Differences(UiElement other, ElementCompareParameters parameters, IAutomationElementService automationElementService) {
+			int weight = 0;
 			if(object.Equals(other, null)) {
-				return () => string.Format("other is null");
+				return CreateOrderedDifference(() => string.Format("other is null"), ref weight);
 			}
 
-			var res = ControlTypeId.Differences(other.ControlTypeId, parameters)
-				?? Name.Differences(other.Name, parameters)
-				?? AutomationId.Differences(other.AutomationId, parameters)
-				?? BoundingRectangle.Differences(other.BoundingRectangle, parameters);
+			var res = CreateOrderedDifference(ControlTypeId.Differences(other.ControlTypeId, parameters), ref weight)
+				?? CreateOrderedDifference(Name.Differences(other.Name, parameters), ref weight)
+				?? CreateOrderedDifference(AutomationId.Differences(other.AutomationId, parameters), ref weight)
+				?? CreateOrderedDifference(BoundingRectangle.Differences(other.BoundingRectangle, parameters), ref weight);
 			if(res != null) {
 				return res;
 			}
@@ -64,28 +74,26 @@ namespace UsAcRe.Core.UIAutomationElement {
 				if(otherEmpty) {
 					automationElementService.RetrieveElementValue(other);
 				}
-				return Value.Differences(other.Value, parameters);
+				return CreateOrderedDifference(Value.Differences(other.Value, parameters), ref weight);
 			}
 
 			if(!parameters.AutomationElementInternal) {
 				return null;
 			}
 
-
 			bool automationElementEmpty = !automationElementService.TryGetAutomationElement(this, out AutomationElement automationElement);
 			bool otherAutomationElementEmpty = !automationElementService.TryGetAutomationElement(other, out AutomationElement otherAutomationElement);
 			if(automationElementEmpty != otherAutomationElementEmpty
 				&& (automationElementEmpty || otherAutomationElementEmpty)) {
-				return () => string.Format("this or other AutomationElement is empty");
+				return CreateOrderedDifference(() => string.Format("this or other AutomationElement is empty"), ref weight);
 			}
 
 			var runtimeId = automationElement.GetRuntimeId();
 			var otherRuntimeId = otherAutomationElement.GetRuntimeId();
 			if(!runtimeId.SequenceEqual(otherRuntimeId)) {
-				return () => string.Format("this.GetRuntimeId() != other.GetRuntimeId() ({0}) != ({1})",
-					string.Join(", ", runtimeId), string.Join(", ", otherRuntimeId));
+				return CreateOrderedDifference(() => string.Format("this.GetRuntimeId() != other.GetRuntimeId() ({0}) != ({1})",
+					string.Join(", ", runtimeId), string.Join(", ", otherRuntimeId)), ref weight);
 			}
-
 			return null;
 		}
 	}

@@ -123,6 +123,7 @@
     <Compile Include="Services\WinApiService.cs" />
     <Compile Include="Services\IWindowsFormsService.cs" />
     <Compile Include="UIAutomationElement\BoundingRectangleField.cs" />
+    <Compile Include="UIAutomationElement\OrderedDifference.cs" />
     <Compile Include="UIAutomationElement\ValueField.cs" />
     <Compile Include="UIAutomationElement\ClassNameField.cs" />
     <Compile Include="UIAutomationElement\NameField.cs" />
