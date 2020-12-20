@@ -12,7 +12,7 @@ namespace UsAcRe.Core.UIAutomationElement {
 			Value = value;
 		}
 
-		public Func<string> Differences(ClassNameField other, ElementCompareParameters parameters) {
+		public Func<string> Differences(ClassNameField other, ElementCompareParameters parameters, int attemptNumber) {
 			if(!StringHelper.ImplicitEquals(Value, other.Value)) {
 				return () => string.Format("this.ClassName != other.ClassName ({0}) != ({1})", Value, other.Value);
 			}

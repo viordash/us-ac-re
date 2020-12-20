@@ -21,6 +21,9 @@ namespace UsAcRe.Player {
 		[Option('l', "location-tolerance", Required = false, HelpText = "location change tolerance, percent", Default = null)]
 		public int? LocationToleranceInPercent { get; set; }
 
+		[Option('n', "weak-fields-comparisons-number", Required = false, HelpText = "weak fields comparisons number", Default = 3)]
+		public int WeakFieldsComparisonsNumber { get; set; }
+
 		[Option('s', "screenshot", Required = false, HelpText = "take screenshot when test fails", Default = true)]
 		public bool Screenshot { get; set; }
 	}

@@ -25,6 +25,12 @@ namespace UsAcRe.Player.Services {
 			}
 		}
 
+		public int WeakFieldsComparisonsNumber {
+			get {
+				return options.WeakFieldsComparisonsNumber;
+			}
+		}
+
 		public string TestResultsPath {
 			get {
 				return options.TestResultsPath;

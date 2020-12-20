@@ -3,7 +3,7 @@ using UsAcRe.Core.Services;
 
 namespace UsAcRe.Core.UIAutomationElement {
 	public interface IElementField<in A> {
-		Func<string> Differences(A other, ElementCompareParameters parameters);
+		Func<string> Differences(A other, ElementCompareParameters parameters, int attemptNumber);
 		string ForNew();
 	}
 }
