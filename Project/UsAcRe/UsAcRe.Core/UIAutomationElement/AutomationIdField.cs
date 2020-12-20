@@ -1,7 +1,5 @@
 ﻿using System;
-using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Extensions;
-using UsAcRe.Core.Helpers;
 using UsAcRe.Core.Services;
 
 namespace UsAcRe.Core.UIAutomationElement {
@@ -13,9 +11,6 @@ namespace UsAcRe.Core.UIAutomationElement {
 		}
 
 		public Func<string> Differences(AutomationIdField other, ElementCompareParameters parameters) {
-			if(!StringHelper.ImplicitEquals(Value, other.Value)) {
-				return () => string.Format("this.AutomationId != other.AutomationId ({0}) != ({1})", Value, other.Value);
-			}
 			return null;
 		}
 
