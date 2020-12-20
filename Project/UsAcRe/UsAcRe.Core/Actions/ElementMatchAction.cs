@@ -194,17 +194,18 @@ namespace UsAcRe.Core.Actions {
 				CompareSizes = false,
 				NameIsMatchCase = true,
 				NameIsMatchWholeWord = true,
-				CheckByValue = false
+				CheckByValue = false,
+				WeakFieldsComparisonsNumber = settingsService.WeakFieldsComparisonsNumber
 			};
 
-			FailMessage = rootElement.Differences(parentEquivalentInSearchPath, compareParameters, automationElementService);
+			FailMessage = rootElement.Differences(parentEquivalentInSearchPath, compareParameters, automationElementService, stepWaitAppear);
 			if(FailMessage != null) {
 				logger.Debug("attempt to retrieve the rootElement with help of window handle from WinApi");
 				rootElement = GetRootElement(true);
 				if(rootElement == null) {
 					return null;
 				}
-				FailMessage = rootElement.Differences(parentEquivalentInSearchPath, compareParameters, automationElementService);
+				FailMessage = rootElement.Differences(parentEquivalentInSearchPath, compareParameters, automationElementService, stepWaitAppear);
 			}
 
 			var requiredElement = new RequiredElement() {
@@ -243,8 +244,9 @@ namespace UsAcRe.Core.Actions {
 						: -1,
 					NameIsMatchCase = true,
 					NameIsMatchWholeWord = true,
-					CheckByValue = settingsService.CheckByValue && isTargetedElementWithPresentedValue
-				}, automationElementService);
+					CheckByValue = settingsService.CheckByValue && isTargetedElementWithPresentedValue,
+					WeakFieldsComparisonsNumber = settingsService.WeakFieldsComparisonsNumber
+				}, automationElementService, stepWaitAppear);
 
 				if(orderedDifference != null) {
 					if(FailMessage == null || FailMessage.Weight < orderedDifference.Weight) {
