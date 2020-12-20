@@ -21,9 +21,6 @@ namespace UsAcRe.Player {
 		[Option('l', "location-tolerance", Required = false, HelpText = "location change tolerance, percent", Default = null)]
 		public int? LocationToleranceInPercent { get; set; }
 
-		[Option('n', "search-nesting-level", Required = false, HelpText = "element search nesting level", Default = 5)]
-		public int ElementSearchNestingLevel { get; set; }
-
 		[Option('s', "screenshot", Required = false, HelpText = "take screenshot when test fails", Default = true)]
 		public bool Screenshot { get; set; }
 	}

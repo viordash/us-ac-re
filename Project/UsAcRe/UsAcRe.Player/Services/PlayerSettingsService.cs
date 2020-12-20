@@ -7,12 +7,6 @@ namespace UsAcRe.Player.Services {
 			this.options = options;
 		}
 
-		public int ElementSearchNestingLevel {
-			get {
-				return options.ElementSearchNestingLevel;
-			}
-		}
-
 		public int ClickPositionToleranceInPercent {
 			get {
 				return options.ClickPositionToleranceInPercent;
