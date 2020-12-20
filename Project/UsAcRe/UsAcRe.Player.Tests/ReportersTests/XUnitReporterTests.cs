@@ -34,7 +34,7 @@ namespace UsAcRe.Player.Tests.ReportersTests {
 				new UiElement(3, "value2", "name2", "className2", "automationId2", ControlType.CheckBox.Id, Rect.Empty),
 				new UiElement(1, "value3", "name3", "className3", "automationId3", ControlType.ComboBox.Id, Rect.Empty),
 			});
-			action.FailMessage = "FailMessage";
+			action.FailMessage = new OrderedDifference(0, () => "FailMessage");
 			var reporter = new XUnitReporter();
 			reporter.Success("success0", TimeSpan.FromMilliseconds(100));
 			reporter.Success("success1", TimeSpan.FromMilliseconds(101));
