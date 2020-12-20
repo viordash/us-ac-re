@@ -39,7 +39,6 @@ namespace UsAcRe.Core.UIAutomationElement {
 			return string.Format("\"{0}\" \"{1}\"", ControlTypeId, NamingHelpers.Escape(strings.FirstOrDefault(s => !string.IsNullOrEmpty(s)), 30));
 		}
 
-
 		public OrderedDifference CreateOrderedDifference(Func<string> difference, ref int weight) {
 			weight++;
 			if(difference == null) {
@@ -56,6 +55,7 @@ namespace UsAcRe.Core.UIAutomationElement {
 
 			var res = CreateOrderedDifference(ControlTypeId.Differences(other.ControlTypeId, parameters), ref weight)
 				?? CreateOrderedDifference(Name.Differences(other.Name, parameters), ref weight)
+				?? CreateOrderedDifference(ClassName.Differences(other.ClassName, parameters), ref weight)
 				?? CreateOrderedDifference(AutomationId.Differences(other.AutomationId, parameters), ref weight)
 				?? CreateOrderedDifference(BoundingRectangle.Differences(other.BoundingRectangle, parameters), ref weight);
 			if(res != null) {
@@ -74,7 +74,10 @@ namespace UsAcRe.Core.UIAutomationElement {
 				if(otherEmpty) {
 					automationElementService.RetrieveElementValue(other);
 				}
-				return CreateOrderedDifference(Value.Differences(other.Value, parameters), ref weight);
+				res = CreateOrderedDifference(Value.Differences(other.Value, parameters), ref weight);
+				if(res != null) {
+					return res;
+				}
 			}
 
 			if(!parameters.AutomationElementInternal) {
@@ -83,9 +86,11 @@ namespace UsAcRe.Core.UIAutomationElement {
 
 			bool automationElementEmpty = !automationElementService.TryGetAutomationElement(this, out AutomationElement automationElement);
 			bool otherAutomationElementEmpty = !automationElementService.TryGetAutomationElement(other, out AutomationElement otherAutomationElement);
-			if(automationElementEmpty != otherAutomationElementEmpty
-				&& (automationElementEmpty || otherAutomationElementEmpty)) {
-				return CreateOrderedDifference(() => string.Format("this or other AutomationElement is empty"), ref weight);
+			if(automationElementEmpty || otherAutomationElementEmpty) {
+				if(automationElementEmpty != otherAutomationElementEmpty) {
+					return CreateOrderedDifference(() => string.Format("this or other AutomationElement is empty"), ref weight);
+				}
+				return null;
 			}
 
 			var runtimeId = automationElement.GetRuntimeId();

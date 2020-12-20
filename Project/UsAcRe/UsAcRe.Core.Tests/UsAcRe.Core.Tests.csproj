@@ -117,6 +117,7 @@
     <Compile Include="ScriptTests\ScriptBuilderTests.cs" />
     <Compile Include="ServicesTests\AutomationElementServiceTests.cs" />
     <Compile Include="UIAutomationElement\ElementFromPointTests.cs" />
+    <Compile Include="UIAutomationElement\UiElementTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
