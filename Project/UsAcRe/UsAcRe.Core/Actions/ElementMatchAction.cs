@@ -172,7 +172,7 @@ namespace UsAcRe.Core.Actions {
 
 		UiElement GetRootElement(bool windowHandleFromWinApi) {
 			UiElement rootElement;
-			if(System.IO.Path.GetFileName(Program.FileName).ToLower() == "explorer.exe") {
+			if(System.IO.Path.GetFileName(Program.FileName).ToLower() == "explorer") {
 				rootElement = GetRootElementFromDesktop();
 			} else {
 				rootElement = automationElementService.GetRootElement(Program, windowHandleFromWinApi);
