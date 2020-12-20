@@ -7,6 +7,12 @@ namespace UsAcRe.Player.Services {
 			this.options = options;
 		}
 
+		public int ElementSearchNestingLevel {
+			get {
+				return options.ElementSearchNestingLevel;
+			}
+		}
+
 		public int ClickPositionToleranceInPercent {
 			get {
 				return options.ClickPositionToleranceInPercent;
@@ -22,12 +28,6 @@ namespace UsAcRe.Player.Services {
 		public bool CheckByValue {
 			get {
 				return options.CheckByValue;
-			}
-		}
-
-		public int WeakFieldsComparisonsNumber {
-			get {
-				return options.WeakFieldsComparisonsNumber;
 			}
 		}
 

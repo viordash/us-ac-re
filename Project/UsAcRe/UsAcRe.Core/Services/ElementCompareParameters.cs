@@ -12,7 +12,6 @@ namespace UsAcRe.Core.Services {
 		public bool NameIsMatchCase { get; set; }
 		public bool NameIsMatchWholeWord { get; set; }
 		public bool CheckByValue { get; set; }
-		public int WeakFieldsComparisonsNumber { get; set; } = int.MaxValue;
 
 		public static ElementCompareParameters ForExact() {
 			return new ElementCompareParameters() {

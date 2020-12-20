@@ -47,17 +47,17 @@ namespace UsAcRe.Core.UIAutomationElement {
 			return new OrderedDifference(weight, difference);
 		}
 
-		public OrderedDifference Differences(UiElement other, ElementCompareParameters parameters, IAutomationElementService automationElementService, int attemptNumber) {
+		public OrderedDifference Differences(UiElement other, ElementCompareParameters parameters, IAutomationElementService automationElementService) {
 			int weight = 0;
 			if(object.Equals(other, null)) {
 				return CreateOrderedDifference(() => string.Format("other is null"), ref weight);
 			}
 
-			var res = CreateOrderedDifference(ControlTypeId.Differences(other.ControlTypeId, parameters, attemptNumber), ref weight)
-				?? CreateOrderedDifference(Name.Differences(other.Name, parameters, attemptNumber), ref weight)
-				?? CreateOrderedDifference(ClassName.Differences(other.ClassName, parameters, attemptNumber), ref weight)
-				?? CreateOrderedDifference(AutomationId.Differences(other.AutomationId, parameters, attemptNumber), ref weight)
-				?? CreateOrderedDifference(BoundingRectangle.Differences(other.BoundingRectangle, parameters, attemptNumber), ref weight);
+			var res = CreateOrderedDifference(ControlTypeId.Differences(other.ControlTypeId, parameters), ref weight)
+				?? CreateOrderedDifference(Name.Differences(other.Name, parameters), ref weight)
+				?? CreateOrderedDifference(ClassName.Differences(other.ClassName, parameters), ref weight)
+				?? CreateOrderedDifference(AutomationId.Differences(other.AutomationId, parameters), ref weight)
+				?? CreateOrderedDifference(BoundingRectangle.Differences(other.BoundingRectangle, parameters), ref weight);
 			if(res != null) {
 				return res;
 			}
@@ -74,7 +74,7 @@ namespace UsAcRe.Core.UIAutomationElement {
 				if(otherEmpty) {
 					automationElementService.RetrieveElementValue(other);
 				}
-				res = CreateOrderedDifference(Value.Differences(other.Value, parameters, attemptNumber), ref weight);
+				res = CreateOrderedDifference(Value.Differences(other.Value, parameters), ref weight);
 				if(res != null) {
 					return res;
 				}

@@ -13,7 +13,7 @@ namespace UsAcRe.Core.UIAutomationElement {
 			Value = value;
 		}
 
-		public Func<string> Differences(BoundingRectangleField other, ElementCompareParameters parameters, int attemptNumber) {
+		public Func<string> Differences(BoundingRectangleField other, ElementCompareParameters parameters) {
 			if(parameters.CompareLocation && !DimensionsHelper.AreLocationEquals(Value.Location, other.Value.Location, parameters.LocationToleranceInPercent,
 					System.Windows.Forms.Screen.PrimaryScreen.WorkingArea)) {
 				return () => string.Format("this.Location != other.Location ({0}) != ({1}), tol:{2}%", Value.Location, other.Value.Location,

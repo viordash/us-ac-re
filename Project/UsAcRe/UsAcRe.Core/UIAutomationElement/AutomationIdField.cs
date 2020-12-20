@@ -12,10 +12,7 @@ namespace UsAcRe.Core.UIAutomationElement {
 			Value = value;
 		}
 
-		public Func<string> Differences(AutomationIdField other, ElementCompareParameters parameters, int attemptNumber) {
-			if(attemptNumber >= parameters.WeakFieldsComparisonsNumber) {
-				return null;
-			}
+		public Func<string> Differences(AutomationIdField other, ElementCompareParameters parameters) {
 			if(!StringHelper.ImplicitEquals(Value, other.Value)) {
 				return () => string.Format("this.AutomationId != other.AutomationId ({0}) != ({1})", Value, other.Value);
 			}

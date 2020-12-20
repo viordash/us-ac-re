@@ -86,7 +86,7 @@ namespace UsAcRe.Core.Services {
 
 
 		public bool Compare(UiElement left, UiElement right, ElementCompareParameters parameters) {
-			return left.Differences(right, parameters, this, -1) == null;
+			return left.Differences(right, parameters, this) == null;
 		}
 
 		UiElement ToUiElement(AutomationElement element) {
