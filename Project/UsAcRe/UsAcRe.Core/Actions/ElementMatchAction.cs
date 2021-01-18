@@ -195,7 +195,6 @@ namespace UsAcRe.Core.Actions {
 				NameIsMatchCase = true,
 				NameIsMatchWholeWord = true,
 				CheckByValue = false,
-				WeakFieldsComparisonsNumber = settingsService.WeakFieldsComparisonsNumber
 			};
 
 			FailMessage = rootElement.Differences(parentEquivalentInSearchPath, compareParameters, automationElementService, stepWaitAppear);
@@ -245,7 +244,6 @@ namespace UsAcRe.Core.Actions {
 					NameIsMatchCase = true,
 					NameIsMatchWholeWord = true,
 					CheckByValue = settingsService.CheckByValue && isTargetedElementWithPresentedValue,
-					WeakFieldsComparisonsNumber = settingsService.WeakFieldsComparisonsNumber
 				}, automationElementService, stepWaitAppear);
 
 				if(orderedDifference != null) {

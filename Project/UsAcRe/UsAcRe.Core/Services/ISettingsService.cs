@@ -3,6 +3,5 @@
 		int ClickPositionToleranceInPercent { get; }
 		int? LocationToleranceInPercent { get; }
 		bool CheckByValue { get; }
-		int WeakFieldsComparisonsNumber { get; }
 	}
 }

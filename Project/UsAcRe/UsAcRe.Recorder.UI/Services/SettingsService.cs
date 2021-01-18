@@ -25,11 +25,5 @@ namespace UsAcRe.Services {
 				return null;
 			}
 		}
-
-		public int WeakFieldsComparisonsNumber {
-			get {
-				return int.MaxValue;
-			}
-		}
 	}
 }
