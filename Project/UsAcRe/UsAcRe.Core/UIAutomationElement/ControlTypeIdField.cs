@@ -20,7 +20,7 @@ namespace UsAcRe.Core.UIAutomationElement {
 		}
 
 		public override string ToString() {
-			return ControlType.LookupById(Value).LocalizedControlType;
+			return string.Format("(0x{0:X4}){1}", Value, ControlType.LookupById(Value).LocalizedControlType);
 		}
 
 		public string ForNew() {
