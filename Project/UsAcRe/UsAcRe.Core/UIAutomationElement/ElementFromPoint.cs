@@ -15,26 +15,16 @@ namespace UsAcRe.Core.UIAutomationElement {
 		private static readonly NLog.Logger logger = LogManager.GetCurrentClassLogger();
 
 		#region inner classes
-
-		public class TreeElement {
-			public UiElement Element { get; private set; }
-			public List<UiElement> Childs { get; } = new List<UiElement>();
-			public TreeElement(UiElement element, List<UiElement> childs) {
-				Element = element;
-				Childs.AddRange(childs);
-			}
-		}
-
 		public class TreeItem {
 			public UiElement Element { get; private set; }
-			public UiElement Parent { get; private set; }
-			public List<UiElement> Childs { get; } = new List<UiElement>();
-			public TreeItem(UiElement element, UiElement parent) {
+			public TreeItem Parent { get; private set; }
+			public List<UiElement> Childs { get; set; }
+			public TreeItem(UiElement element, TreeItem parent) {
 				Element = element;
 				Parent = parent;
 			}
-			public TreeItem(UiElement element, UiElement parent, List<UiElement> childs) : this(element, parent) {
-				Childs.AddRange(childs);
+			public TreeItem(UiElement element, TreeItem parent, List<UiElement> childs) : this(element, parent) {
+				Childs = childs;
 			}
 		}
 
@@ -90,10 +80,10 @@ namespace UsAcRe.Core.UIAutomationElement {
 		}
 
 		void BuildTreeOfSpecificElement() {
-			//Debug.WriteLine("");
-			//Debug.WriteLine("------------------------");
-			//Debug.WriteLine("ElementCoord: {0}", elementCoord);
-			//Debug.WriteLine("");
+			Debug.WriteLine("");
+			Debug.WriteLine("------------------------");
+			Debug.WriteLine("ElementCoord: {0}", elementCoord);
+			Debug.WriteLine("");
 
 			var rootWindowHwnd = winApiService.GetRootWindowForElementUnderPoint(elementCoord);
 			if(rootWindowHwnd == IntPtr.Zero) {
@@ -121,30 +111,22 @@ namespace UsAcRe.Core.UIAutomationElement {
 				}
 			}
 
-			//Debug.WriteLine($"rootElement: {rootElement}");
-
 			try {
 				TreeOfSpecificUiElement.Program = automationElementService.GetProgram(rootElement);
 
-				var elements = new List<TreeElement>();
-
-				var rootParent = automationElementService.GetParent(rootElement);
-				while(rootParent != null && !automationElementService.Compare(rootParent, desktop, ElementCompareParameters.ForExact())) {
+				var rootParent = rootElement;
+				do {
 					BreakOperationsIfCoordChanged();
-					var childElements = GetChildren(rootParent);
-					var elementsUnderPoint = childElements
-						.Where(x => x.BoundingRectangle.Value.Contains(elementCoord.x, elementCoord.y))
-						.ToList();
-
-					//Debug.WriteLine($"inserted rootParent: {rootParent}");
-					elements.Add(new TreeElement(rootParent, elementsUnderPoint));
-					rootParent = automationElementService.GetParent(rootParent);
-				}
+					rootElement = rootParent;
+					rootParent = automationElementService.GetParent(rootElement);
+				} while(rootParent != null && !automationElementService.Compare(rootParent, desktop, ElementCompareParameters.ForExact()));
 
 				var treeItems = new List<TreeItem>();
-				BuildElementsTree(rootElement, treeItems);
+				var rootTreeElement = new TreeItem(rootElement, null);
+				treeItems.Add(rootTreeElement);
+
+				BuildElementsTree(rootTreeElement, treeItems);
 				var filteredElements = FilterByUnderPoint(treeItems);
-				FillChilds(filteredElements);
 				var targetedElement = SortElementsByPointProximity(filteredElements, rootWindowHwnd);
 
 				if(targetedElement != null) {
@@ -152,22 +134,6 @@ namespace UsAcRe.Core.UIAutomationElement {
 					var tree = BuildElementTree(treeItems, targetedElement, rootElement);
 					TreeOfSpecificUiElement.AddRange(tree);
 				}
-
-
-				return;
-
-				//RetreiveElementsUnderPoint(rootElement, elements);
-
-				//Debug.WriteLine($"elements under point: {string.Join(", ", elements.Select(x => x.Element))}");
-
-				//var targetedElement = SortElementsByPointProximity(elements, rootWindowHwnd);
-				//if(targetedElement != null) {
-				//	//var tree = BuildTreeElements(targetedElement, elements);
-
-				//	Debug.WriteLine($"targetedElement: {targetedElement}");
-				//	var tree = BuildElementTree(targetedElement, desktop);
-				//	TreeOfSpecificUiElement.AddRange(tree);
-				//}
 			} catch(Exception ex) {
 				if(ex is OperationCanceledException) {
 					throw;
@@ -175,17 +141,15 @@ namespace UsAcRe.Core.UIAutomationElement {
 			}
 		}
 
-		void BuildElementsTree(UiElement parent, List<TreeItem> elements) {
+		void BuildElementsTree(TreeItem parent, List<TreeItem> elements) {
 			BreakOperationsIfCoordChanged();
-			//Debug.WriteLine("");
-			var childElements = GetChildren(parent);
-			foreach(var item in childElements) {
-				elements.Add(new TreeItem(item, parent));
-				//BuildElementsTree(item, elements);
-				//Debug.WriteLine($"tree: item:{item},\r\n\t\t\t{parent}");
-			}
-			foreach(var item in childElements) {
-				BuildElementsTree(item, elements);
+			Debug.WriteLine("");
+			parent.Childs = GetChildren(parent.Element);
+			foreach(var item in parent.Childs) {
+				Debug.WriteLine($"tree: item:{item},\r\n\t\t\t{parent}");
+				var treeItem = new TreeItem(item, parent);
+				elements.Add(treeItem);
+				BuildElementsTree(treeItem, elements);
 			}
 		}
 
@@ -203,13 +167,6 @@ namespace UsAcRe.Core.UIAutomationElement {
 				Debug.WriteLine($"underPoint: item:{item.Element},\r\n\t\t\t{item.Parent}");
 			}
 			return elementsUnderPoint;
-		}
-
-		void FillChilds(List<TreeItem> treeItems) {
-			BreakOperationsIfCoordChanged();
-			foreach(var item in treeItems) {
-				item.Childs.AddRange(GetChildren(item.Element));
-			}
 		}
 
 		protected UiElement SortElementsByPointProximity(List<TreeItem> filteredElements, IntPtr rootWindow) {
@@ -251,173 +208,33 @@ namespace UsAcRe.Core.UIAutomationElement {
 			var tree = new List<UiElement>();
 			tree.Add(targetedElement);
 			while(true) {
-				var parent = treeItems.Where(x => x.Element == targetedElement).SingleOrDefault();
-				if(parent == null) {
-					throw new RetrieveElementExceptions($"Not found ancestor for {targetedElement}");
+				var element = treeItems.Where(x => x.Element == targetedElement).SingleOrDefault();
+				if(element == null || element.Parent == null) {
+					break;
 				}
 
-				Debug.WriteLine($"parent: item:{parent.Element},\r\n\t\t\t{parent.Parent}");
+				var similars = element.Parent.Childs
+					.Where(x => automationElementService.Compare(x, targetedElement, ElementCompareParameters.ForSimilars()))
+					.ToList();
 
-				targetedElement = parent.Parent;
+				for(int i = 0; i < similars.Count; i++) {
+					Debug.WriteLine($"similars: {similars[i]}");
+					if(targetedElement == similars[i]) {
+						targetedElement.Index = i;
+						break;
+					}
+				}
+
+				Debug.WriteLine($"parent: item:{element.Element},\r\n\t\t\t{element.Parent}");
+
+				targetedElement = element.Parent.Element;
 				tree.Add(targetedElement);
 
 				if(targetedElement == rootElement) {
-					return tree;
+					break;
 				}
 			}
-		}
-
-		/*	List<UiElement> BuildTreeElements(UiElement targetedElement, List<TreeElement> elements) {
-				var tree = new List<UiElement>();
-				tree.Add(targetedElement);
-				while(targetedElement != null) {
-					var parent = elements
-						.Where(x => x.Childs.Contains(targetedElement))
-						.Select(x => x.Element)
-						.SingleOrDefault();
-
-					if(parent == null) {
-						break;// throw new RetrieveElementExceptions($"Not found ancestor for {targetedElement}");
-					}
-
-					var childElements = GetChildren(parent);
-					var similars = childElements
-						.Where(x => automationElementService.Compare(x, targetedElement, ElementCompareParameters.ForSimilars()))
-						.ToList();
-
-					for(int i = 0; i < similars.Count; i++) {
-						if(automationElementService.Compare(targetedElement, similars[i], ElementCompareParameters.ForExact())) {
-							targetedElement.Index = i;
-						}
-						Debug.WriteLine($"similars: {similars[i]}");
-					}
-
-					Debug.WriteLine($"parent {parent} for child: {targetedElement}");
-					targetedElement = parent;
-					tree.Add(targetedElement);
-				}
-				return tree;
-			}*/
-
-		UiElement GetAncestor(UiElement targetedElement, UiElement startingPoint) {
-			BreakOperationsIfCoordChanged();
-			Debug.WriteLine("                        ----  ");
-			Debug.WriteLine($"GetAncestor targeted: {targetedElement}, strtPnt: {startingPoint}");
-			var parent = automationElementService.GetParent(startingPoint);
-			if(parent == null) {
-				return null;
-			}
-			Debug.WriteLine($"GetAncestor, parent: {parent}");
-
-			var childElements = GetChildren(parent);
-			var similars = childElements
-				.Where(x => automationElementService.Compare(x, targetedElement, ElementCompareParameters.ForSimilars()))
-				.ToList();
-
-			for(int i = 0; i < similars.Count; i++) {
-				Debug.WriteLine($"similars: {similars[i]}");
-				if(automationElementService.Compare(targetedElement, similars[i], ElementCompareParameters.ForExact())) {
-					targetedElement.Index = i;
-					return parent;
-				}
-			}
-			Debug.WriteLine($"GetAncestor, Parent not found: {targetedElement}");
-			return GetAncestor(targetedElement, parent);
-		}
-
-		List<UiElement> BuildElementTree(UiElement targetedElement, UiElement desktop) {
-			var tree = new List<UiElement>();
-			tree.Add(targetedElement);
-			while(true) {
-				var parent = GetAncestor(targetedElement, targetedElement);
-				if(parent == null) {
-					bool attemptToSearchElementInAncestor = tree.Count >= 2;
-					if(attemptToSearchElementInAncestor) {
-						targetedElement = tree[tree.Count - 2];
-						var startingPoint = tree[tree.Count - 1];
-						parent = GetAncestor(targetedElement, startingPoint);
-						if(parent != null) {
-							tree.Remove(startingPoint);
-						}
-					}
-
-					if(parent == null) {
-						throw new RetrieveElementExceptions($"Not found ancestor for {targetedElement}");
-					}
-				}
-
-				if(automationElementService.Compare(parent, desktop, ElementCompareParameters.ForExact())) {
-					return tree;
-				}
-				tree.Add(parent);
-				targetedElement = parent;
-			}
-		}
-
-		protected UiElement SortElementsByPointProximity(IEnumerable<TreeElement> elements, IntPtr rootWindow) {
-			var elementsByChilds = elements
-				.OrderBy(x => x.Childs.Count)
-				.ToList();
-
-			if(!elementsByChilds.Any()) {
-				return null;
-			}
-
-			var elementWithLeastChilds = elementsByChilds.First();
-			var elementsWithLeastChilds = elementsByChilds
-				.Where(x => x.Childs.Count == elementWithLeastChilds.Childs.Count);
-
-			var elementsByZOrder = elementsWithLeastChilds
-				.Select(x => Tuple.Create(GetZOrder(x.Element, rootWindow), x))
-				.OrderBy(x => x.Item1)
-				.ToList();
-
-			if(!elementsByZOrder.Any()) {
-				return null;
-			}
-			var topElement = elementsByZOrder.First();
-			var topElements = elementsByZOrder
-				.Where(x => x.Item1 == topElement.Item1)
-				.Select(x => x.Item2);
-
-			var proximityElement = topElements
-				.OrderBy(x => x.Element.BoundingRectangle.Value, new BoundingRectangleComp())
-				.FirstOrDefault();
-			return proximityElement.Element;
-		}
-
-		void RetreiveElementsUnderPoint(UiElement elementUnderPoint, List<TreeElement> elements) {
-			BreakOperationsIfCoordChanged();
-			var childElements = GetChildren(elementUnderPoint);
-
-			var childsUnderPoint = childElements
-				.Where(x => x.BoundingRectangle.Value.Contains(elementCoord.x, elementCoord.y))
-				.ToList();
-
-			var outsideOfPoint = childElements
-				.Where(x => !x.BoundingRectangle.Value.Contains(elementCoord.x, elementCoord.y));
-
-			foreach(var item in outsideOfPoint) {
-				var suspectedElements = GetChildren(item);
-
-				var suspectedElementsUnderPoint = suspectedElements
-					.Except(childsUnderPoint)
-					.Where(x => x.BoundingRectangle.Value.Contains(elementCoord.x, elementCoord.y))
-					.ToList();
-				if(suspectedElementsUnderPoint.Count > 0) {
-					childsUnderPoint.AddRange(suspectedElementsUnderPoint);
-					Debug.WriteLine("		suspected: {0}, childs: {1}", item, suspectedElementsUnderPoint.Count());
-				}
-			}
-
-			//Debug.WriteLine($"elementsUnderPoint: {elementUnderPoint}, childs: {elementsUnderPoint.Count()}");
-			elements.Add(new TreeElement(elementUnderPoint, childsUnderPoint));
-
-			if(childsUnderPoint.Count > 0) {
-				foreach(var item in childsUnderPoint) {
-					RetreiveElementsUnderPoint(item, elements);
-				}
-			}
+			return tree;
 		}
 
 		List<UiElement> GetChildren(UiElement element) {
