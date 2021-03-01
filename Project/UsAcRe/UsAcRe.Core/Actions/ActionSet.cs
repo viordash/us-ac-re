@@ -61,10 +61,10 @@ namespace UsAcRe.Core.Actions {
 
 		int GetChildActionsCount() {
 			var sourceCode = fileService.ReadAllText(SourceCodeFileName);
-			using(testsLaunchingService.Start(true)) {
+			using(testsLaunchingService.Examine()) {
 				scriptCompiler.RunTest(sourceCode).Wait();
+				return testsLaunchingService.ExecutedActions.Count;
 			}
-			return testsLaunchingService.ExecutedActions.Count();
 		}
 	}
 }

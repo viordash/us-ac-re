@@ -117,8 +117,10 @@
     <Compile Include="Scripts\ScriptConstants.cs" />
     <Compile Include="Services\AutomationElementService.cs" />
     <Compile Include="Services\ElementCompareParameters.cs" />
+    <Compile Include="Services\ExecuteActionEvent.cs" />
     <Compile Include="Services\IFileService.cs" />
     <Compile Include="Services\ISettingsService.cs" />
+    <Compile Include="Services\ITestLaunchScope.cs" />
     <Compile Include="Services\ITestsLaunchingService.cs" />
     <Compile Include="Services\WinApiService.cs" />
     <Compile Include="Services\IWindowsFormsService.cs" />

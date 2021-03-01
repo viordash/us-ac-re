@@ -36,20 +36,18 @@ namespace UsAcRe.Player {
 			try {
 				actionsCount = 0;
 				executedActionsCount = 0;
-				if(TestsLaunchingService is TestsLaunchingService testsLaunchingService) {
-					using(TestsLaunchingService.Start(true)) {
-						await ScriptCompiler.RunTest(sourceCode);
-						actionsCount = TestsLaunchingService.ExecutedActions.Count();
-					}
-					testsLaunchingService.OnAfterExecuteAction += (sender, arg) => {
-						ExecutionProgress(arg.Action);
-						if(arg.Action is ElementMatchAction) {
-							reporter.Success(arg.Action.ShortDescription(), arg.Action.Duration);
-						}
-					};
+				using(TestsLaunchingService.Examine()) {
+					await ScriptCompiler.RunTest(sourceCode);
+					actionsCount = TestsLaunchingService.ExecutedActions.Count();
 				}
+				TestsLaunchingService.OnAfterExecuteAction += (sender, arg) => {
+					ExecutionProgress(arg.Action);
+					if(arg.Action is ElementMatchAction) {
+						reporter.Success(arg.Action.ShortDescription(), arg.Action.Duration);
+					}
+				};
 
-				using(TestsLaunchingService.Start(false)) {
+				using(TestsLaunchingService.Start()) {
 					try {
 						await ScriptCompiler.RunTest(sourceCode);
 					} catch(TestFailedException ex) {

@@ -56,7 +56,7 @@ namespace UsAcRe.Core.Actions {
 					throw new OperationCanceledException(this.ToString());
 				}
 				testsLaunchingService.BeforeExecuteAction(this);
-				if(testsLaunchingService.IsDryRunMode) {
+				if(testsLaunchingService.Examination) {
 					return;
 				}
 				stopWatch.Start();

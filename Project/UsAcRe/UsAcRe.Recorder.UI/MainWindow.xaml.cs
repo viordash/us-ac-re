@@ -78,7 +78,7 @@ namespace UsAcRe.Recorder.UI {
 			}
 			var sourceCode = FileService.ReadAllText(fileName);
 			try {
-				using(TestsLaunchingService.Start(true)) {
+				using(TestsLaunchingService.Start()) {
 					await ScriptCompiler.RunTest(sourceCode);
 					Actions.AddRange(TestsLaunchingService.ExecutedActions);
 				}
