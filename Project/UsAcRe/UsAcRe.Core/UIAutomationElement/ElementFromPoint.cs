@@ -5,9 +5,7 @@ using System.Linq;
 using System.Windows.Automation;
 using NGuard;
 using NLog;
-using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Services;
-using UsAcRe.Core.UIAutomationElement;
 using UsAcRe.Core.WindowsSystem;
 
 namespace UsAcRe.Core.UIAutomationElement {
