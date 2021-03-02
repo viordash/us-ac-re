@@ -46,5 +46,20 @@ namespace UsAcRe.Core.UI.Tests.ServicesTests {
 			}
 			Assert.That(cancellationToken.IsCancellationRequested, Is.True);
 		}
+
+		[Test]
+		public void Examine_After_Started_Use_Nested_Scope() {
+			CancellationToken cancellationToken;
+			using(testable.Start()) {
+				cancellationToken = testable.CurrentCancellationToken;
+				var executedActions = testable.ExecutedActions;
+
+				using(testable.Examine()) {
+					Assert.AreEqual(cancellationToken, testable.CurrentCancellationToken);
+					Assert.AreNotSame(executedActions, testable.ExecutedActions);
+				}
+			}
+			Assert.That(cancellationToken.IsCancellationRequested, Is.True);
+		}
 	}
 }

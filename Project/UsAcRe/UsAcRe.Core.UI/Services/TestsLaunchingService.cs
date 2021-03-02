@@ -54,16 +54,13 @@ namespace UsAcRe.Core.UI.Services {
 			readonly TestsLaunchingService service;
 			readonly bool oldExamination;
 			readonly List<BaseAction> oldExecutedActions;
-			readonly CancellationTokenSource oldCancelTokenSource;
+			protected readonly CancellationTokenSource oldCancelTokenSource;
 			readonly bool nestedScope;
 
 			public TestLaunchScope(TestsLaunchingService service, Action closeAction) {
 				this.service = service;
 				this.closeAction = closeAction;
 				oldExamination = service.Examination;
-				if(!oldExamination && service.cancelTokenSource?.IsCancellationRequested == false) {
-					throw new InvalidOperationException("Testing already runned");
-				}
 				oldExecutedActions = service.ExecutedActions;
 				service.ExecutedActions = new List<BaseAction>();
 				oldCancelTokenSource = service.cancelTokenSource;
@@ -85,6 +82,9 @@ namespace UsAcRe.Core.UI.Services {
 		class TestsRunningScope : TestLaunchScope {
 			public TestsRunningScope(TestsLaunchingService service, Action closeAction) : base(service, closeAction) {
 				service.Examination = false;
+				if(oldCancelTokenSource?.IsCancellationRequested == false) {
+					throw new InvalidOperationException("Testing already runned");
+				}
 			}
 		}
 		class TestsExamineScope : TestLaunchScope {
