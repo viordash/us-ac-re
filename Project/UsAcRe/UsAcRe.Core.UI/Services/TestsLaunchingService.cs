@@ -103,7 +103,7 @@ namespace UsAcRe.Core.UI.Services {
 		}
 
 		public void Record() {
-			//CreatCancelTokenSource();
+			cancelTokenSource = new CancellationTokenSource();
 		}
 
 		public void Stop() {
