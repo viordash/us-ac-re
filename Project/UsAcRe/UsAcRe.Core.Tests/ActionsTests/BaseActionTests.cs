@@ -45,7 +45,7 @@ namespace UsAcRe.Core.Tests.ActionsTests {
 		public async Task Calc_Duration_Test() {
 			var cancellationToken = new CancellationToken(false);
 			testsLaunchingServiceMock
-				.Setup(x => x.GetCurrentCancellationToken())
+				.SetupGet(x => x.CurrentCancellationToken)
 				.Returns(() => {
 					return cancellationToken;
 				});
@@ -67,7 +67,7 @@ namespace UsAcRe.Core.Tests.ActionsTests {
 		public void Calc_Duration_When_Failed_Test() {
 			var cancellationToken = new CancellationToken(false);
 			testsLaunchingServiceMock
-				.Setup(x => x.GetCurrentCancellationToken())
+				.SetupGet(x => x.CurrentCancellationToken)
 				.Returns(() => {
 					return cancellationToken;
 				});

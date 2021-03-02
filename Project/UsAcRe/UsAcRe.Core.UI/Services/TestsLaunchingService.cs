@@ -35,15 +35,17 @@ namespace UsAcRe.Core.UI.Services {
 			this.windowsFormsService = windowsFormsService;
 		}
 
-		CancellationTokenSource GetCurrentCancellation() {
-			if(cancelTokenSource == null) {
-				throw new InvalidOperationException("CancellationToken not ready");
+		CancellationTokenSource CurrentCancellation {
+			get {
+				if(cancelTokenSource == null) {
+					throw new InvalidOperationException("CancellationToken not ready");
+				}
+				return cancelTokenSource;
 			}
-			return cancelTokenSource;
 		}
 
-		public CancellationToken GetCurrentCancellationToken() {
-			return GetCurrentCancellation().Token;
+		public CancellationToken CurrentCancellationToken {
+			get { return CurrentCancellation.Token; }
 		}
 
 		#region inner classes
@@ -102,7 +104,7 @@ namespace UsAcRe.Core.UI.Services {
 		}
 
 		public void Stop() {
-			GetCurrentCancellation().Cancel();
+			CurrentCancellation.Cancel();
 			CloseHighlighter();
 		}
 

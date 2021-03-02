@@ -5,7 +5,7 @@ using UsAcRe.Core.Actions;
 
 namespace UsAcRe.Core.Services {
 	public interface ITestsLaunchingService {
-		CancellationToken GetCurrentCancellationToken();
+		CancellationToken CurrentCancellationToken { get; }
 		ITestLaunchScope Start();
 		ITestLaunchScope Examine();
 		void Record();

@@ -29,7 +29,7 @@ namespace UsAcRe.Core.Tests.ActionsTests {
 		public async Task Execute_With_DryMode_Test() {
 			var cancellationToken = new CancellationToken(false);
 			testsLaunchingServiceMock
-				.Setup(x => x.GetCurrentCancellationToken())
+				.SetupGet(x => x.CurrentCancellationToken)
 				.Returns(() => {
 					return cancellationToken;
 				});

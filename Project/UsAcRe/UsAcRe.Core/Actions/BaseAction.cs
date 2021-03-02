@@ -23,7 +23,6 @@ namespace UsAcRe.Core.Actions {
 
 		protected readonly ISettingsService settingsService;
 		protected readonly ITestsLaunchingService testsLaunchingService;
-		protected readonly CancellationToken cancellationToken;
 		protected readonly IFileService fileService;
 
 		protected BaseAction(
@@ -36,7 +35,6 @@ namespace UsAcRe.Core.Actions {
 			this.settingsService = settingsService;
 			this.testsLaunchingService = testsLaunchingService;
 			this.fileService = fileService;
-			cancellationToken = testsLaunchingService.GetCurrentCancellationToken();
 		}
 
 		public abstract string ExecuteAsScriptSource();
@@ -52,7 +50,7 @@ namespace UsAcRe.Core.Actions {
 		async Task SafeActionAsync(Func<ValueTask> action) {
 			var stopWatch = new Stopwatch();
 			try {
-				if(cancellationToken.IsCancellationRequested) {
+				if(testsLaunchingService.CurrentCancellationToken.IsCancellationRequested) {
 					throw new OperationCanceledException(this.ToString());
 				}
 				testsLaunchingService.BeforeExecuteAction(this);
