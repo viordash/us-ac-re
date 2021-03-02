@@ -61,6 +61,9 @@ namespace UsAcRe.Core.UI.Services {
 				this.service = service;
 				this.closeAction = closeAction;
 				oldExamination = service.Examination;
+				if(!oldExamination && service.cancelTokenSource?.IsCancellationRequested == false) {
+					throw new InvalidOperationException("Testing already runned");
+				}
 				oldExecutedActions = service.ExecutedActions;
 				service.ExecutedActions = new List<BaseAction>();
 				oldCancelTokenSource = service.cancelTokenSource;
