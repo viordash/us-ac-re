@@ -21,9 +21,6 @@ namespace UsAcRe.Core.UIAutomationElement {
 				Element = element;
 				Parent = parent;
 			}
-			public TreeItem(UiElement element, TreeItem parent, List<UiElement> childs) : this(element, parent) {
-				Childs = childs;
-			}
 		}
 
 		class BoundingRectangleComp : IComparer<System.Windows.Rect> {

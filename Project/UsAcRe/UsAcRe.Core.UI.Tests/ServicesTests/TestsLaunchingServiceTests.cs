@@ -25,7 +25,7 @@ namespace UsAcRe.Core.UI.Tests.ServicesTests {
 		[Test]
 		public void Start_Method_Is_Disposable_And_CancellationToken_Is_Canceled_On_ScopeEnd() {
 			CancellationToken cancellationToken;
-			using(testable.Start(true)) {
+			using(testable.Start()) {
 				cancellationToken = testable.GetCurrentCancellationToken();
 				Assert.That(cancellationToken.IsCancellationRequested, Is.False);
 			}
@@ -40,9 +40,9 @@ namespace UsAcRe.Core.UI.Tests.ServicesTests {
 		[Test]
 		public void Start_After_Already_Started_Throws_Error() {
 			CancellationToken cancellationToken;
-			using(testable.Start(true)) {
+			using(testable.Start()) {
 				cancellationToken = testable.GetCurrentCancellationToken();
-				Assert.Throws<InvalidOperationException>(() => testable.Start(true));
+				Assert.Throws<InvalidOperationException>(() => testable.Start());
 			}
 			Assert.That(cancellationToken.IsCancellationRequested, Is.True);
 		}

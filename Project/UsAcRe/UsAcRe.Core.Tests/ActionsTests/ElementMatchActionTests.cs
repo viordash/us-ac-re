@@ -114,7 +114,7 @@ namespace UsAcRe.Core.Tests.ActionsTests {
 				});
 
 			testsLaunchingServiceMock
-				.SetupGet(x => x.IsDryRunMode)
+				.SetupGet(x => x.Examination)
 				.Returns(() => {
 					return true;
 				});
