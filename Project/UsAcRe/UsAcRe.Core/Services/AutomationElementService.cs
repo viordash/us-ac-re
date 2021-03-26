@@ -8,6 +8,7 @@ using NGuard;
 using UsAcRe.Core.Extensions;
 using UsAcRe.Core.Helpers;
 using UsAcRe.Core.UIAutomationElement;
+using Condition = System.Windows.Automation.Condition;
 
 namespace UsAcRe.Core.Services {
 	public interface IAutomationElementService {
