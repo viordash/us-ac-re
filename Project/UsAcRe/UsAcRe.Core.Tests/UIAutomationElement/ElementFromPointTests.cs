@@ -24,7 +24,7 @@ namespace UsAcRe.Core.Tests.UIAutomationElement {
 				this.predefinedElements = predefinedElements;
 			}
 
-			public UiElement PublicSortElementsByPointProximity(List<TreeElement> elements) {
+			public UiElement PublicSortElementsByPointProximity(List<ElementFromPoint.TreeItem> elements) {
 				return SortElementsByPointProximity(elements, IntPtr.Zero);
 			}
 
@@ -112,43 +112,16 @@ namespace UsAcRe.Core.Tests.UIAutomationElement {
 					element6,
 					element7
 				});
-			var elements = new List<TreeElement>();
+			var elements = new List<ElementFromPoint.TreeItem>();
 
-			var tree = new Dictionary<UiElement, List<UiElement>>();
-			elements.Add(new TreeElement(element0, new List<UiElement>() {
-				new UiElement(-1, null, "Panel0", "SomeClass", "AutomationId", ControlType.Tree.Id, new System.Windows.Rect()),
-				new UiElement(-1, null, "Panel00", "SomeClass", "AutomationId", ControlType.Tree.Id, new System.Windows.Rect())
-			}));
-			elements.Add(new TreeElement(element1, new List<UiElement>() {
-				new UiElement(-1, null, "Panel1", "SomeClass", "AutomationId", ControlType.Tree.Id, new System.Windows.Rect()),
-				new UiElement(-1, null, "Panel10", "SomeClass", "AutomationId", ControlType.Tree.Id, new System.Windows.Rect())
-			}));
-			elements.Add(new TreeElement(element2, new List<UiElement>() {
-				new UiElement(-1, null, "Panel2", "SomeClass", "AutomationId", ControlType.Tree.Id, new System.Windows.Rect()),
-				new UiElement(-1, null, "Panel20", "SomeClass", "AutomationId", ControlType.Tree.Id, new System.Windows.Rect())
-			}));
-			elements.Add(new TreeElement(element3, new List<UiElement>() {
-				new UiElement(-1, null, "Panel3", "SomeClass", "AutomationId", ControlType.Tree.Id, new System.Windows.Rect()),
-				new UiElement(-1, null, "Panel30", "SomeClass", "AutomationId", ControlType.Tree.Id, new System.Windows.Rect())
-			}));
-			elements.Add(new TreeElement(element4, new List<UiElement>() {
-				new UiElement(-1, null, "Panel4", "SomeClass", "AutomationId", ControlType.Tree.Id, new System.Windows.Rect()),
-				new UiElement(-1, null, "Panel40", "SomeClass", "AutomationId", ControlType.Tree.Id, new System.Windows.Rect())
-			}));
-			elements.Add(new TreeElement(element5, new List<UiElement>() {
-				new UiElement(-1, null, "Panel5", "SomeClass", "AutomationId", ControlType.Tree.Id, new System.Windows.Rect()),
-				new UiElement(-1, null, "Panel50", "SomeClass", "AutomationId", ControlType.Tree.Id, new System.Windows.Rect())
-			}));
-			elements.Add(new TreeElement(element6, new List<UiElement>() {
-				new UiElement(-1, null, "Panel6", "SomeClass", "AutomationId", ControlType.Tree.Id, new System.Windows.Rect()),
-				new UiElement(-1, null, "Panel60", "SomeClass", "AutomationId", ControlType.Tree.Id, new System.Windows.Rect())
-			}));
-			elements.Add(new TreeElement(element7, new List<UiElement>() {
-				new UiElement(-1, null, "Panel7", "SomeClass", "AutomationId", ControlType.Tree.Id, new System.Windows.Rect()),
-				new UiElement(-1, null, "Panel70", "SomeClass", "AutomationId", ControlType.Tree.Id, new System.Windows.Rect()),
-				new UiElement(-1, null, "Panel700", "SomeClass", "AutomationId", ControlType.Tree.Id, new System.Windows.Rect()),
-				new UiElement(-1, null, "Panel7000", "SomeClass", "AutomationId", ControlType.Tree.Id, new System.Windows.Rect()),
-			}));
+			elements.Add(new ElementFromPoint.TreeItem(element0, null));
+			elements.Add(new ElementFromPoint.TreeItem(element1, null));
+			elements.Add(new ElementFromPoint.TreeItem(element2, null));
+			elements.Add(new ElementFromPoint.TreeItem(element3, null));
+			elements.Add(new ElementFromPoint.TreeItem(element4, null));
+			elements.Add(new ElementFromPoint.TreeItem(element5, null));
+			elements.Add(new ElementFromPoint.TreeItem(element6, null));
+			elements.Add(new ElementFromPoint.TreeItem(element7, null));
 
 			var sortedElements = testable.PublicSortElementsByPointProximity(elements);
 			Assert.That(sortedElements.Name.Value, Is.EqualTo("Button2"));

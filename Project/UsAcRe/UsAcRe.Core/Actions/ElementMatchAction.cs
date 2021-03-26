@@ -67,7 +67,7 @@ namespace UsAcRe.Core.Actions {
 			OffsetPoint = null;
 			var stopwatch = Stopwatch.StartNew();
 			while(stopwatch.Elapsed.TotalMilliseconds < TimeoutMs) {
-				if(cancellationToken.IsCancellationRequested) {
+				if(testsLaunchingService.CurrentCancellationToken.IsCancellationRequested) {
 					throw new OperationCanceledException(this.ToString());
 				}
 				var requiredElement = GetElement();

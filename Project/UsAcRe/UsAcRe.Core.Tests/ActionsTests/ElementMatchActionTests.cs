@@ -61,7 +61,7 @@ namespace UsAcRe.Core.Tests.ActionsTests {
 		public void ExecuteAsync_Return_By_Timeout_Test() {
 			var cancellationToken = new CancellationToken(false);
 			testsLaunchingServiceMock
-				.Setup(x => x.GetCurrentCancellationToken())
+				.SetupGet(x => x.CurrentCancellationToken)
 				.Returns(() => {
 					return cancellationToken;
 				});
@@ -82,7 +82,7 @@ namespace UsAcRe.Core.Tests.ActionsTests {
 			var cancellationToken = cancelTokenSource.Token;
 
 			testsLaunchingServiceMock
-				.Setup(x => x.GetCurrentCancellationToken())
+				.SetupGet(x => x.CurrentCancellationToken)
 				.Returns(() => {
 					return cancellationToken;
 				});
@@ -108,13 +108,13 @@ namespace UsAcRe.Core.Tests.ActionsTests {
 		public async Task Execute_With_DryMode_Test() {
 			var cancellationToken = new CancellationToken(false);
 			testsLaunchingServiceMock
-				.Setup(x => x.GetCurrentCancellationToken())
+				.SetupGet(x => x.CurrentCancellationToken)
 				.Returns(() => {
 					return cancellationToken;
 				});
 
 			testsLaunchingServiceMock
-				.SetupGet(x => x.IsDryRunMode)
+				.SetupGet(x => x.Examination)
 				.Returns(() => {
 					return true;
 				});

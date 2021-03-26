@@ -70,7 +70,7 @@ namespace UsAcRe.Core.Tests.ActionsTests {
 
 
 			testsLaunchingServiceMock
-				.Setup(x => x.GetCurrentCancellationToken())
+				.SetupGet(x => x.CurrentCancellationToken)
 				.Returns(() => {
 					return new CancellationToken(true);
 				});

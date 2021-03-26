@@ -29,13 +29,13 @@ namespace UsAcRe.Core.Tests.ActionsTests {
 		public async Task Play_Test() {
 			var cancellationToken = new CancellationToken(false);
 			testsLaunchingServiceMock
-				.Setup(x => x.GetCurrentCancellationToken())
+				.SetupGet(x => x.CurrentCancellationToken)
 				.Returns(() => {
 					return cancellationToken;
 				});
 
 			testsLaunchingServiceMock
-				.SetupGet(x => x.IsDryRunMode)
+				.SetupGet(x => x.Examination)
 				.Returns(() => {
 					return false;
 				});

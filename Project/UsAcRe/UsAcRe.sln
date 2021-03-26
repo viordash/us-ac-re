@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30517.126
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsAcRe", "UsAcRe\UsAcRe.csproj", "{3DFBCCAC-5B3A-46CB-95B5-1685B4AA03C3}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsAcRe.Core", "UsAcRe.Core\UsAcRe.Core.csproj", "{397F80C0-E494-44AD-9996-D3B248DC41DE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsAcRe.Core.Tests", "UsAcRe.Core.Tests\UsAcRe.Core.Tests.csproj", "{2EBC8EF3-82CF-4B51-949F-E10D70761210}"
@@ -29,10 +27,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{3DFBCCAC-5B3A-46CB-95B5-1685B4AA03C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3DFBCCAC-5B3A-46CB-95B5-1685B4AA03C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3DFBCCAC-5B3A-46CB-95B5-1685B4AA03C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3DFBCCAC-5B3A-46CB-95B5-1685B4AA03C3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{397F80C0-E494-44AD-9996-D3B248DC41DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{397F80C0-E494-44AD-9996-D3B248DC41DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{397F80C0-E494-44AD-9996-D3B248DC41DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
