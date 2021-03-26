@@ -16,10 +16,11 @@ namespace UsAcRe.Core.UIAutomationElement {
 		public class TreeItem {
 			public UiElement Element { get; private set; }
 			public TreeItem Parent { get; private set; }
-			public List<UiElement> Childs { get; set; }
-			public TreeItem(UiElement element, TreeItem parent) {
+			public List<UiElement> Childs { get; private set; }
+			public TreeItem(UiElement element, TreeItem parent, List<UiElement> childs) {
 				Element = element;
 				Parent = parent;
+				Childs = childs;
 			}
 		}
 
@@ -117,7 +118,7 @@ namespace UsAcRe.Core.UIAutomationElement {
 				} while(rootParent != null && !automationElementService.Compare(rootParent, desktop, ElementCompareParameters.ForExact()));
 
 				var treeItems = new List<TreeItem>();
-				var rootTreeElement = new TreeItem(rootElement, null);
+				var rootTreeElement = new TreeItem(rootElement, null, GetChildren(rootElement));
 				treeItems.Add(rootTreeElement);
 
 				BuildElementsTree(rootTreeElement, treeItems);
@@ -139,10 +140,9 @@ namespace UsAcRe.Core.UIAutomationElement {
 		void BuildElementsTree(TreeItem parent, List<TreeItem> elements) {
 			BreakOperationsIfCoordChanged();
 			Debug.WriteLine("");
-			parent.Childs = GetChildren(parent.Element);
 			foreach(var item in parent.Childs) {
 				Debug.WriteLine($"tree: item:{item},\r\n\t\t\t{parent}");
-				var treeItem = new TreeItem(item, parent);
+				var treeItem = new TreeItem(item, parent, GetChildren(item));
 				elements.Add(treeItem);
 				BuildElementsTree(treeItem, elements);
 			}

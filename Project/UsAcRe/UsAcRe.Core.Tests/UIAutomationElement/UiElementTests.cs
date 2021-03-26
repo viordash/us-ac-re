@@ -56,9 +56,7 @@ namespace UsAcRe.Core.Tests.UIAutomationElement {
 			var otherElement = new UiElement(-1, "123", "Name", "SomeClass", "AutomationId1", ControlType.Tree.Id, new System.Windows.Rect(1, 2, 3, 4));
 
 			var difference = element.Differences(otherElement, ElementCompareParameters.ForSimilars(), automationElementServiceMock.Object, 0);
-			Assert.That(difference, Is.Not.Null);
-			Assert.That(difference.Weight, Is.EqualTo(4));
-			Assert.That(difference.Difference(), Does.Contain("AutomationId").And.Contain("(AutomationId)").And.Contain("(AutomationId1)"));
+			Assert.That(difference, Is.Null);
 		}
 
 		[Test]
