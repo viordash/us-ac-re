@@ -13,7 +13,7 @@ namespace UsAcRe.Core.Tests.ScriptTests {
 				.Select(x => Path.GetFileNameWithoutExtension(x));
 
 			Assert.That(assembliesNames, Does.Contain("System.Windows.Forms"));
-			Assert.That(assembliesNames, Does.Contain("System.Drawing"));
+			Assert.That(assembliesNames, Does.Contain("System.Drawing.Primitives"));
 			Assert.That(assembliesNames, Does.Contain("UsAcRe.Core"));
 		}
 
