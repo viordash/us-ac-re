@@ -75,12 +75,17 @@ namespace UsAcRe.Core.Tests.UIAutomationElement {
 
 			automationElementServiceMock
 				.Setup(x => x.FindAllValidElements(It.IsAny<UiElement>(), It.IsAny<TreeScope>()))
-				.Returns(() => {
-					return new List<UiElement>() {
-						new UiElement(-1, null, "Button2", "SomeClass", "AutomationId", ControlType.Tree.Id, new System.Windows.Rect(1, 2, 3, 4)) {
-							AutomationElementObj = new object()
-						}
-					};
+				.Returns<UiElement, TreeScope>((e, s) => {
+					switch(e.Name.Value) {
+						case "Desktop":
+							return new List<UiElement>() {
+								new UiElement(-1, null, "Button2", "SomeClass", "AutomationId", ControlType.Tree.Id, new System.Windows.Rect(1, 2, 3, 4)) {
+									AutomationElementObj = new object()
+								}
+							};
+						default:
+							return new List<UiElement>();
+					}
 				});
 
 			var testable = new ElementFromPoint(automationElementServiceMock.Object, winApiServiceMock.Object, new WinAPI.POINT(100, 200), true);
@@ -91,7 +96,7 @@ namespace UsAcRe.Core.Tests.UIAutomationElement {
 
 
 		[Test]
-		public void SortingElements_For_Similar_ZOrder_Test() {
+		public void SortingElements_For_Similar_ZOrder_Use_BoundingRectangle_For_Sort_Test() {
 			var element0 = new UiElement(1, null, "Button0", "SomeClass", "AutomationId", ControlType.Tree.Id, new System.Windows.Rect(0, 0, 100, 100));
 			var element1 = new UiElement(1, null, "Button1", "SomeClass", "AutomationId", ControlType.Tree.Id, new System.Windows.Rect(0, 0, 55, 100));
 			var element2 = new UiElement(1, null, "Button2", "SomeClass", "AutomationId", ControlType.Tree.Id, new System.Windows.Rect(0, 0, 100, 54));
@@ -99,7 +104,7 @@ namespace UsAcRe.Core.Tests.UIAutomationElement {
 			var element4 = new UiElement(10, null, "Button4", "SomeClass", "AutomationId", ControlType.Tree.Id, new System.Windows.Rect(0, 0, 100, 100));
 			var element5 = new UiElement(20, null, "Button5", "SomeClass", "AutomationId", ControlType.Tree.Id, new System.Windows.Rect(0, 0, 100, 100));
 			var element6 = new UiElement(20, null, "Button6", "SomeClass", "AutomationId", ControlType.Tree.Id, new System.Windows.Rect(0, 0, 100, 100));
-			var element7 = new UiElement(1, null, "Button7", "SomeClass", "AutomationId", ControlType.Tree.Id, new System.Windows.Rect(0, 0, 10, 10));
+			var element7 = new UiElement(1, null, "Button7", "SomeClass", "AutomationId", ControlType.Tree.Id, new System.Windows.Rect(0, 0, 90, 90));
 
 			var testable = new TestableElementFromPoint(automationElementServiceMock.Object, winApiServiceMock.Object, new WinAPI.POINT(100, 200), true,
 				new List<UiElement>() {
@@ -114,14 +119,14 @@ namespace UsAcRe.Core.Tests.UIAutomationElement {
 				});
 			var elements = new List<ElementFromPoint.TreeItem>();
 
-			elements.Add(new ElementFromPoint.TreeItem(element0, null));
-			elements.Add(new ElementFromPoint.TreeItem(element1, null));
-			elements.Add(new ElementFromPoint.TreeItem(element2, null));
-			elements.Add(new ElementFromPoint.TreeItem(element3, null));
-			elements.Add(new ElementFromPoint.TreeItem(element4, null));
-			elements.Add(new ElementFromPoint.TreeItem(element5, null));
-			elements.Add(new ElementFromPoint.TreeItem(element6, null));
-			elements.Add(new ElementFromPoint.TreeItem(element7, null));
+			elements.Add(new ElementFromPoint.TreeItem(element0, null, new List<UiElement>()));
+			elements.Add(new ElementFromPoint.TreeItem(element1, null, new List<UiElement>()));
+			elements.Add(new ElementFromPoint.TreeItem(element2, null, new List<UiElement>()));
+			elements.Add(new ElementFromPoint.TreeItem(element3, null, new List<UiElement>()));
+			elements.Add(new ElementFromPoint.TreeItem(element4, null, new List<UiElement>()));
+			elements.Add(new ElementFromPoint.TreeItem(element5, null, new List<UiElement>()));
+			elements.Add(new ElementFromPoint.TreeItem(element6, null, new List<UiElement>()));
+			elements.Add(new ElementFromPoint.TreeItem(element7, null, new List<UiElement>()));
 
 			var sortedElements = testable.PublicSortElementsByPointProximity(elements);
 			Assert.That(sortedElements.Name.Value, Is.EqualTo("Button2"));
