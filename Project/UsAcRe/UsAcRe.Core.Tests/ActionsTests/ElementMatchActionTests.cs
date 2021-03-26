@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -89,7 +90,7 @@ namespace UsAcRe.Core.Tests.ActionsTests {
 
 			var task = ElementMatchAction.Play(new ElementProgram(42, "notepad.exe"), new List<UiElement>() {
 				new UiElement(4, "value1", "name1", "className1", "automationId1", ControlType.Button.Id, new Rect(1, 2, 3, 4)),
-			}, 500);
+			}, 1000);
 
 			var stopwatch = Stopwatch.StartNew();
 
@@ -97,11 +98,8 @@ namespace UsAcRe.Core.Tests.ActionsTests {
 				Thread.Sleep(150);
 				cancelTokenSource.Cancel();
 			},
-			async () => await task
+				() => Assert.ThrowsAsync<OperationCanceledException>(async () => await task)
 			);
-
-			var elapsed = stopwatch.Elapsed.TotalMilliseconds;
-			Assert.That(elapsed, Is.LessThan(500 - 1));
 		}
 
 		[Test]
