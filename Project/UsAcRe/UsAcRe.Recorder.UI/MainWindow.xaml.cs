@@ -1,7 +1,10 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
+using Microsoft.Extensions.DependencyInjection;
+using NGuard;
 using UsAcRe.Core.Actions;
 using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Scripts;
@@ -41,6 +44,13 @@ namespace UsAcRe.Recorder.UI {
 			IScriptBuilder scriptBuilder,
 			IScriptCompiler scriptCompiler
 			) {
+			Guard.Requires(automationElementService, nameof(automationElementService));
+			Guard.Requires(winApiService, nameof(winApiService));
+			Guard.Requires(testsLaunchingService, nameof(testsLaunchingService));
+			Guard.Requires(dialogService, nameof(dialogService));
+			Guard.Requires(fileService, nameof(fileService));
+			Guard.Requires(scriptCompiler, nameof(scriptCompiler));
+
 			this.automationElementService = automationElementService;
 			this.winApiService = winApiService;
 			this.testsLaunchingService = testsLaunchingService;

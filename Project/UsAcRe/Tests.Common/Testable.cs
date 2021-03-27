@@ -1,5 +1,5 @@
-﻿using System.Threading;
-using CommonServiceLocator;
+﻿using System;
+using System.Threading;
 using Moq;
 using UsAcRe.Core.Actions;
 using UsAcRe.Core.Scripts;
@@ -7,7 +7,7 @@ using UsAcRe.Core.Services;
 
 namespace UsAcRe.Core.Tests.ActionsTests {
 	public class Testable {
-		protected Mock<IServiceLocator> serviceLocatorMock;
+		protected Mock<IServiceProvider> serviceProviderMock;
 		protected Mock<IAutomationElementService> automationElementServiceMock;
 		protected Mock<IWinApiService> winApiServiceMock;
 		protected Mock<ITestsLaunchingService> testsLaunchingServiceMock;
@@ -17,7 +17,7 @@ namespace UsAcRe.Core.Tests.ActionsTests {
 		protected Mock<IScriptCompiler> scriptCompilerMock;
 
 		public virtual void Setup() {
-			serviceLocatorMock = new Mock<IServiceLocator>();
+			serviceProviderMock = new Mock<IServiceProvider>();
 			automationElementServiceMock = new Mock<IAutomationElementService>();
 			winApiServiceMock = new Mock<IWinApiService>();
 			testsLaunchingServiceMock = new Mock<ITestsLaunchingService>();
@@ -26,44 +26,44 @@ namespace UsAcRe.Core.Tests.ActionsTests {
 			scriptBuilderMock = new Mock<IScriptBuilder>();
 			scriptCompilerMock = new Mock<IScriptCompiler>();
 
-			serviceLocatorMock
-				.Setup(x => x.GetInstance<IAutomationElementService>())
+			serviceProviderMock
+				.Setup(x => x.GetService(typeof(IAutomationElementService)))
 				.Returns(() => {
 					return automationElementServiceMock.Object;
 				});
 
-			serviceLocatorMock
-				.Setup(x => x.GetInstance<IWinApiService>())
+			serviceProviderMock
+				.Setup(x => x.GetService(typeof(IWinApiService)))
 				.Returns(() => {
 					return winApiServiceMock.Object;
 				});
 
-			serviceLocatorMock
-				.Setup(x => x.GetInstance<ITestsLaunchingService>())
+			serviceProviderMock
+				.Setup(x => x.GetService(typeof(ITestsLaunchingService)))
 				.Returns(() => {
 					return testsLaunchingServiceMock.Object;
 				});
 
-			serviceLocatorMock
-				.Setup(x => x.GetInstance<ISettingsService>())
+			serviceProviderMock
+				.Setup(x => x.GetService(typeof(ISettingsService)))
 				.Returns(() => {
 					return settingsServiceMock.Object;
 				});
 
-			serviceLocatorMock
-				.Setup(x => x.GetInstance<IFileService>())
+			serviceProviderMock
+				.Setup(x => x.GetService(typeof(IFileService)))
 				.Returns(() => {
 					return fileServiceMock.Object;
 				});
 
-			serviceLocatorMock
-				.Setup(x => x.GetInstance<IScriptBuilder>())
+			serviceProviderMock
+				.Setup(x => x.GetService(typeof(IScriptBuilder)))
 				.Returns(() => {
 					return scriptBuilderMock.Object;
 				});
 
-			serviceLocatorMock
-				.Setup(x => x.GetInstance<IScriptCompiler>())
+			serviceProviderMock
+				.Setup(x => x.GetService(typeof(IScriptCompiler)))
 				.Returns(() => {
 					return scriptCompilerMock.Object;
 				});
@@ -75,49 +75,49 @@ namespace UsAcRe.Core.Tests.ActionsTests {
 					return new CancellationToken(true);
 				});
 
-			serviceLocatorMock
-				.Setup(x => x.GetInstance<KeybdAction>())
+			serviceProviderMock
+				.Setup(x => x.GetService(typeof(KeybdAction)))
 				.Returns(() => {
 					return new KeybdAction(settingsServiceMock.Object, testsLaunchingServiceMock.Object, fileServiceMock.Object);
 				});
 
-			serviceLocatorMock
-				.Setup(x => x.GetInstance<MouseClickAction>())
+			serviceProviderMock
+				.Setup(x => x.GetService(typeof(MouseClickAction)))
 				.Returns(() => {
 					return new MouseClickAction(settingsServiceMock.Object, testsLaunchingServiceMock.Object, fileServiceMock.Object);
 				});
 
-			serviceLocatorMock
-				.Setup(x => x.GetInstance<MouseDragAction>())
+			serviceProviderMock
+				.Setup(x => x.GetService(typeof(MouseDragAction)))
 				.Returns(() => {
 					return new MouseDragAction(settingsServiceMock.Object, testsLaunchingServiceMock.Object, fileServiceMock.Object);
 				});
 
-			serviceLocatorMock
-				.Setup(x => x.GetInstance<TextTypingAction>())
+			serviceProviderMock
+				.Setup(x => x.GetService(typeof(TextTypingAction)))
 				.Returns(() => {
 					return new TextTypingAction(settingsServiceMock.Object, testsLaunchingServiceMock.Object, fileServiceMock.Object);
 				});
 
-			serviceLocatorMock
-				.Setup(x => x.GetInstance<ElementMatchAction>())
+			serviceProviderMock
+				.Setup(x => x.GetService(typeof(ElementMatchAction)))
 				.Returns(() => {
 					return new ElementMatchAction(automationElementServiceMock.Object, settingsServiceMock.Object, testsLaunchingServiceMock.Object, fileServiceMock.Object);
 				});
 
-			serviceLocatorMock
-				.Setup(x => x.GetInstance<DelayAction>())
+			serviceProviderMock
+				.Setup(x => x.GetService(typeof(DelayAction)))
 				.Returns(() => {
 					return new DelayAction(settingsServiceMock.Object, testsLaunchingServiceMock.Object, fileServiceMock.Object);
 				});
 
-			serviceLocatorMock
-				.Setup(x => x.GetInstance<ActionSet>())
+			serviceProviderMock
+				.Setup(x => x.GetService(typeof(ActionSet)))
 				.Returns(() => {
 					return new ActionSet(scriptCompilerMock.Object, settingsServiceMock.Object, testsLaunchingServiceMock.Object, fileServiceMock.Object);
 				});
 
-			ServiceLocator.SetLocatorProvider(() => serviceLocatorMock.Object);
+			ServiceLocator.SetLocatorProvider(serviceProviderMock.Object);
 		}
 
 		public virtual void TearDown() {

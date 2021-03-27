@@ -11,7 +11,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommonServiceLocator" Version="2.0.6" />
     <PackageReference Include="NGuard" Version="3.0.0" />
     <PackageReference Include="NLog" Version="4.7.9" />
   </ItemGroup>

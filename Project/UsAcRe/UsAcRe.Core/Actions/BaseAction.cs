@@ -3,7 +3,6 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using CommonServiceLocator;
 using NGuard;
 using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Services;

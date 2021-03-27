@@ -14,7 +14,7 @@ namespace UsAcRe.Recorder.UI {
 		}
 
 		private void OnStartup(object sender, StartupEventArgs e) {
-			var mainWindow = serviceProvider.GetService<MainWindow>();
+			var mainWindow = serviceProvider.GetRequiredService<MainWindow>();
 			mainWindow.Show();
 		}
 

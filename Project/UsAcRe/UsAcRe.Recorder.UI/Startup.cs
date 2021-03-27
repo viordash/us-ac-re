@@ -30,7 +30,11 @@ namespace UsAcRe.Recorder.UI {
 					.AddTransient<TextTypingAction, TextTypingAction>()
 					.AddTransient<ActionSet, ActionSet>();
 
-			return services.BuildServiceProvider();
+			var serviceProvider = services.BuildServiceProvider();
+			ServiceLocator.SetLocatorProvider(serviceProvider);
+			return serviceProvider;
 		}
+
+
 	}
 }
