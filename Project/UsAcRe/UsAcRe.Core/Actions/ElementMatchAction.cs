@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Automation;
 using System.Windows.Forms;
-using NGuard;
+using GuardNet;
 using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Extensions;
 using UsAcRe.Core.MouseProcess;
@@ -58,7 +58,7 @@ namespace UsAcRe.Core.Actions {
 			ISettingsService settingsService,
 			ITestsLaunchingService testsLaunchingService,
 			IFileService fileService) : base(settingsService, testsLaunchingService, fileService) {
-			Guard.Requires(automationElementService, nameof(automationElementService));
+			Guard.NotNull(automationElementService, nameof(automationElementService));
 			this.automationElementService = automationElementService;
 		}
 

@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Windows.Media;
-using NGuard;
+using GuardNet;
 using UsAcRe.Core.Actions;
 using UsAcRe.Core.Scripts;
 using UsAcRe.Core.Services;
@@ -45,8 +45,8 @@ namespace UsAcRe.Recorder.UI.Models {
 		public ActionsListModel(
 			IScriptBuilder scriptBuilder,
 			IFileService fileService) {
-			Guard.Requires(scriptBuilder, nameof(scriptBuilder));
-			Guard.Requires(fileService, nameof(fileService));
+			Guard.NotNull(scriptBuilder, nameof(scriptBuilder));
+			Guard.NotNull(fileService, nameof(fileService));
 			this.scriptBuilder = scriptBuilder;
 			this.fileService = fileService;
 			Items = new ObservableCollection<ActionsListItem>();

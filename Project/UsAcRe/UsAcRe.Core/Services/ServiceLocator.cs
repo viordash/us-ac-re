@@ -1,5 +1,5 @@
 ﻿using System;
-using NGuard;
+using GuardNet;
 
 namespace UsAcRe.Core.Services {
 	public class ServiceLocator {
@@ -20,7 +20,7 @@ namespace UsAcRe.Core.Services {
 		}
 
 		public static void SetLocatorProvider(IServiceProvider serviceProvider) {
-			Guard.Requires(serviceProvider, nameof(serviceProvider)).IsNotNull();
+			Guard.NotNull(serviceProvider, nameof(serviceProvider));
 			gServiceProvider = serviceProvider;
 		}
 

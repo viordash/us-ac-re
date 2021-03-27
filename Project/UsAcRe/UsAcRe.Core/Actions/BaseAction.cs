@@ -2,8 +2,9 @@
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
-using NGuard;
+using GuardNet;
 using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Services;
 using UsAcRe.Core.UIAutomationElement;
@@ -27,9 +28,9 @@ namespace UsAcRe.Core.Actions {
 			ISettingsService settingsService,
 			ITestsLaunchingService testsLaunchingService,
 			IFileService fileService) {
-			Guard.Requires(settingsService, nameof(settingsService));
-			Guard.Requires(testsLaunchingService, nameof(testsLaunchingService));
-			Guard.Requires(fileService, nameof(fileService));
+			Guard.NotNull(settingsService, nameof(settingsService));
+			Guard.NotNull(testsLaunchingService, nameof(testsLaunchingService));
+			Guard.NotNull(fileService, nameof(fileService));
 			this.settingsService = settingsService;
 			this.testsLaunchingService = testsLaunchingService;
 			this.fileService = fileService;

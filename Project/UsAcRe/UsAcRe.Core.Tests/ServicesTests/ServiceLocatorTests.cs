@@ -29,7 +29,7 @@ namespace UsAcRe.Core.Tests.ServicesTests {
 		}
 
 		[Test]
-		public void Set_Null_Tol_LocatorProvider_Throws_InvalidOperationException() {
+		public void Set_Null_To_LocatorProvider_Throws_InvalidOperationException() {
 			Assert.Throws<ArgumentNullException>(() => ServiceLocator.SetLocatorProvider(null));
 		}
 

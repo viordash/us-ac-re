@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Automation;
-using NGuard;
+using GuardNet;
 using UsAcRe.Core.Extensions;
 using UsAcRe.Core.Helpers;
 using UsAcRe.Core.UIAutomationElement;
@@ -36,8 +36,8 @@ namespace UsAcRe.Core.Services {
 		public AutomationElementService(
 			IWinApiService winApiService,
 			ISettingsService settingsService) {
-			Guard.Requires(winApiService, nameof(winApiService));
-			Guard.Requires(settingsService, nameof(settingsService));
+			Guard.NotNull(winApiService, nameof(winApiService));
+			Guard.NotNull(settingsService, nameof(settingsService));
 			this.winApiService = winApiService;
 			this.settingsService = settingsService;
 		}

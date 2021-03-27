@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Windows.Media;
-using NGuard;
+using GuardNet;
 using UsAcRe.Core.Actions;
 using UsAcRe.Core.Services;
 using UsAcRe.Core.UI.Highlighter;
@@ -31,7 +31,7 @@ namespace UsAcRe.Core.UI.Services {
 		public bool Examination { get; private set; } = false;
 
 		public TestsLaunchingService(IWindowsFormsService windowsFormsService) {
-			Guard.Requires(windowsFormsService, nameof(windowsFormsService));
+			Guard.NotNull(windowsFormsService, nameof(windowsFormsService));
 			this.windowsFormsService = windowsFormsService;
 		}
 
