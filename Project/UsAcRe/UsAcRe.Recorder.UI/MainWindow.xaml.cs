@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
-using CommonServiceLocator;
 using UsAcRe.Core.Actions;
 using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Scripts;
@@ -25,18 +24,34 @@ namespace UsAcRe.Recorder.UI {
 		ElementFromPoint elementFromPoint = null;
 		ElementHighlighter mouseClickBlocker = null;
 
-		IAutomationElementService AutomationElementService { get { return ServiceLocator.Current.GetInstance<IAutomationElementService>(); } }
-		IWinApiService WinApiService { get { return ServiceLocator.Current.GetInstance<IWinApiService>(); } }
-		ITestsLaunchingService TestsLaunchingService { get { return ServiceLocator.Current.GetInstance<ITestsLaunchingService>(); } }
-		IDialogService DialogService { get { return ServiceLocator.Current.GetInstance<IDialogService>(); } }
-		IFileService FileService { get { return ServiceLocator.Current.GetInstance<IFileService>(); } }
-		IScriptBuilder ScriptBuilder { get { return ServiceLocator.Current.GetInstance<IScriptBuilder>(); } }
-		IScriptCompiler ScriptCompiler { get { return ServiceLocator.Current.GetInstance<IScriptCompiler>(); } }
+		readonly IAutomationElementService automationElementService;
+		readonly IWinApiService winApiService;
+		readonly ITestsLaunchingService testsLaunchingService;
+		readonly IDialogService dialogService;
+		readonly IFileService fileService;
+		readonly IScriptBuilder scriptBuilder;
+		readonly IScriptCompiler scriptCompiler;
 
-		public MainWindow() {
+		public MainWindow(
+			IAutomationElementService automationElementService,
+			IWinApiService winApiService,
+			ITestsLaunchingService testsLaunchingService,
+			IDialogService dialogService,
+			IFileService fileService,
+			IScriptBuilder scriptBuilder,
+			IScriptCompiler scriptCompiler
+			) {
+			this.automationElementService = automationElementService;
+			this.winApiService = winApiService;
+			this.testsLaunchingService = testsLaunchingService;
+			this.dialogService = dialogService;
+			this.fileService = fileService;
+			this.scriptBuilder = scriptBuilder;
+			this.scriptCompiler = scriptCompiler;
+
 			InitializeComponent();
 			if(!DesignerProperties.GetIsInDesignMode(this)) {
-				Actions = new ActionsListModel(ScriptBuilder, FileService);
+				Actions = new ActionsListModel(scriptBuilder, fileService);
 				Actions.ActionsListChanged += (s, e) => {
 					MainMenu.SaveEnable = e.Items.Count > 0;
 					ActionsList.ListActions.ItemsSource = e.Items;
@@ -64,23 +79,23 @@ namespace UsAcRe.Recorder.UI {
 		}
 
 		internal void OnCommand_NewProject(object sender, ExecutedRoutedEventArgs e) {
-			if(DialogService.Confirmation("Create new project?", "Confirm", MessageBoxButton.OKCancel) != MessageBoxResult.OK) {
+			if(dialogService.Confirmation("Create new project?", "Confirm", MessageBoxButton.OKCancel) != MessageBoxResult.OK) {
 				return;
 			}
 			Actions.Clear();
 		}
 
 		internal async void OnCommand_OpenProject(object sender, ExecutedRoutedEventArgs e) {
-			var fileName = DialogService.OpenFileDialog(Constants.TestsFileFilter);
+			var fileName = dialogService.OpenFileDialog(Constants.TestsFileFilter);
 
 			if(string.IsNullOrEmpty(fileName)) {
 				return;
 			}
-			var sourceCode = FileService.ReadAllText(fileName);
+			var sourceCode = fileService.ReadAllText(fileName);
 			try {
-				using(TestsLaunchingService.Start()) {
-					await ScriptCompiler.RunTest(sourceCode);
-					Actions.AddRange(TestsLaunchingService.ExecutedActions);
+				using(testsLaunchingService.Start()) {
+					await scriptCompiler.RunTest(sourceCode);
+					Actions.AddRange(testsLaunchingService.ExecutedActions);
 				}
 			} catch(TestFailedException ex) {
 				logger.Error(ex.Message);
@@ -89,7 +104,7 @@ namespace UsAcRe.Recorder.UI {
 		}
 
 		internal void OnCommand_SaveProject(object sender, ExecutedRoutedEventArgs e) {
-			var fileName = DialogService.SaveFileDialog(Constants.TestsFileFilter);
+			var fileName = dialogService.SaveFileDialog(Constants.TestsFileFilter);
 			if(string.IsNullOrEmpty(fileName)) {
 				return;
 			}
@@ -115,7 +130,7 @@ namespace UsAcRe.Recorder.UI {
 				return;
 			}
 			if(e.Command == ActionsCommands.IncludeSet) {
-				var fileName = DialogService.OpenFileDialog(Constants.TestsFileFilter);
+				var fileName = dialogService.OpenFileDialog(Constants.TestsFileFilter);
 				if(string.IsNullOrEmpty(fileName)) {
 					return;
 				}

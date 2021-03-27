@@ -41,12 +41,12 @@ namespace UsAcRe.Recorder.UI {
 			ActionsList.IsEnabled = false;
 			this.ResizeMode = ResizeMode.NoResize;
 			MainMenu.IsStopped = false;
-			TestsLaunchingService.Record();
+			testsLaunchingService.Record();
 		}
 
 		void StopHooks() {
 			logger.Warn("Stop");
-			TestsLaunchingService.Stop();
+			testsLaunchingService.Stop();
 			MouseHook.OnMouseClick -= MouseClickHook;
 			MouseHook.OnMouseStartDrag -= MouseStartDragHook;
 			MouseHook.OnMouseDrag -= MouseDragHook;
@@ -77,7 +77,7 @@ namespace UsAcRe.Recorder.UI {
 				if(elementFromPoint != null) {
 					Actions.Add(ElementMatchAction.Record(elementFromPoint.TreeOfSpecificUiElement.Program, elementFromPoint.TreeOfSpecificUiElement));
 					CloseMouseClickBlocker();
-					TestsLaunchingService.CloseHighlighter();
+					testsLaunchingService.CloseHighlighter();
 					elementFromPoint = null;
 				}
 				Actions.Add(MouseClickAction.Record(args.Button, args.Coord, args.DoubleClick));
@@ -92,7 +92,7 @@ namespace UsAcRe.Recorder.UI {
 				if(elementFromPoint != null) {
 					Actions.Add(ElementMatchAction.Record(elementFromPoint.TreeOfSpecificUiElement.Program, elementFromPoint.TreeOfSpecificUiElement));
 					CloseMouseClickBlocker();
-					TestsLaunchingService.CloseHighlighter();
+					testsLaunchingService.CloseHighlighter();
 					elementFromPoint = null;
 				}
 			}), e);
@@ -116,12 +116,12 @@ namespace UsAcRe.Recorder.UI {
 
 				if(args.Stopped && !IsRestrictedArea(args.Coord)) {
 					ShowMouseClickBlocker(args.Coord);
-					elementFromPoint = new ElementFromPoint(AutomationElementService, WinApiService, args.Coord, true);
-					TestsLaunchingService.HighlightElement(elementFromPoint.TreeOfSpecificUiElement.BoundingRectangle);
+					elementFromPoint = new ElementFromPoint(automationElementService, winApiService, args.Coord, true);
+					testsLaunchingService.HighlightElement(elementFromPoint.TreeOfSpecificUiElement.BoundingRectangle);
 					CloseMouseClickBlocker();
 					//logger.Info("elementFromPoint {0}", elementFromPoint == null);
 				} else {
-					TestsLaunchingService.CloseHighlighter();
+					testsLaunchingService.CloseHighlighter();
 					CloseMouseClickBlocker();
 				}
 			}), e);
@@ -143,7 +143,7 @@ namespace UsAcRe.Recorder.UI {
 		void KeyboardEvent(object sender, RawKeyEventArgs e) {
 			if(!MainMenu.miStartStop.IsChecked) {
 				if(e.VKCode == KeyboardHook.KeyStartStop) {
-					TestsLaunchingService.Stop();
+					testsLaunchingService.Stop();
 				}
 				return;
 			}
@@ -165,7 +165,7 @@ namespace UsAcRe.Recorder.UI {
 					Actions.Add(KeybdAction.Record(args.VKCode, e.IsUp));
 				}
 				CloseMouseClickBlocker();
-				TestsLaunchingService.CloseHighlighter();
+				testsLaunchingService.CloseHighlighter();
 			}), e);
 		}
 
