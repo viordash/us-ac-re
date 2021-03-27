@@ -1,7 +1,8 @@
 {
   "profiles": {
     "UsAcRe.Player": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "\"C:\\Users\\ViorIDE\\Desktop\\New folder\\000.scrcs\""
     }
   }
 }

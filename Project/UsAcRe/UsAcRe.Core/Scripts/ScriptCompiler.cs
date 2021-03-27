@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using UsAcRe.Core.Actions;
-using UsAcRe.Core.Services;
 
 namespace UsAcRe.Core.Scripts {
 	public class ScriptCompiler : IScriptCompiler {

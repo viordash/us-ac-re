@@ -1,10 +1,12 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using CommandLine;
 using CommandLine.Text;
 
 namespace UsAcRe.Player {
+	[SupportedOSPlatform("windows")]
 	class Program {
 		static NLog.Logger logger = NLog.LogManager.GetLogger("UsAcRe.Player");
 
