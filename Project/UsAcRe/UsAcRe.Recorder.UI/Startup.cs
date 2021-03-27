@@ -34,7 +34,5 @@ namespace UsAcRe.Recorder.UI {
 			ServiceLocator.SetLocatorProvider(serviceProvider);
 			return serviceProvider;
 		}
-
-
 	}
 }

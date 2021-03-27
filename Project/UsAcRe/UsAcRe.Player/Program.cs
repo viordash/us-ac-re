@@ -32,7 +32,7 @@ namespace UsAcRe.Player {
 				  logger.Info(HeadingInfo.Default);
 				  logger.Info(CopyrightInfo.Default);
 				  logger.Info(string.Join(", ", args));
-				  Bootstrapper.Initialize(opt);
+				  Startup.BuildServiceProvider(opt);
 				  return Run(opt);
 			  });
 

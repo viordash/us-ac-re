@@ -14,10 +14,8 @@
 
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.8.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
     <PackageReference Include="NLog" Version="4.7.9" />
-    <PackageReference Include="Unity" Version="5.11.10" />
-    <PackageReference Include="Unity.Abstractions" Version="5.11.7" />
-    <PackageReference Include="Unity.ServiceLocation" Version="5.11.1" />
   </ItemGroup>
   
   <ItemGroup>
