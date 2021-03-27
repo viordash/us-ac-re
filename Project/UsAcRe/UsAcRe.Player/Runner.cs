@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using CommonServiceLocator;
 using UsAcRe.Core.Actions;
 using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Scripts;
