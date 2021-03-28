@@ -87,7 +87,6 @@ namespace UsAcRe.Core.Scripts {
 				GC.Collect();
 				GC.WaitForPendingFinalizers();
 			}
-			Console.WriteLine(assemblyLoadContextWeakRef.IsAlive ? "Unloading failed!" : "Unloading success!");
 		}
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
