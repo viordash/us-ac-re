@@ -1,13 +1,19 @@
 ﻿using System.Threading.Tasks;
-using Microsoft.Test.Input;
+using UsAcRe.Core.Services;
+using UsAcRe.Core.WindowsSystem;
 
 namespace UsAcRe.Core.MouseProcess {
 	public class MouseHover {
+		readonly IWinApiService winApiService;
 		const int beamCount = 8;
 		const int beamLengthStep = 1;
 		const int beamLengthStepMaxCount = 8 + 1;
 
-		public static async Task Perform(System.Windows.Point point, int step, int delay = 20) {
+		public MouseHover(IWinApiService winApiService) {
+			this.winApiService = winApiService;
+		}
+
+		public async Task Perform(System.Windows.Point point, int step, int delay = 20) {
 			var gradation = step % (beamCount * beamLengthStepMaxCount);
 			var beamLengthNum = gradation % beamLengthStepMaxCount;
 			var shiftPos = beamLengthStep * beamLengthNum;
@@ -51,7 +57,7 @@ namespace UsAcRe.Core.MouseProcess {
 		}
 
 
-		public static async Task<System.Windows.Point> SmoothMove(System.Windows.Point from, System.Windows.Point to, int delay, int interpolate) {
+		public async Task<System.Windows.Point> SmoothMove(System.Windows.Point from, System.Windows.Point to, int delay, int interpolate) {
 			var deltaX = (to.X - from.X) / interpolate;
 			var deltaY = (to.Y - from.Y) / interpolate;
 			var delayDelta = delay / interpolate;
@@ -73,8 +79,8 @@ namespace UsAcRe.Core.MouseProcess {
 		}
 
 
-		public static void MoveTo(System.Windows.Point point) {
-			Mouse.MoveTo(new System.Drawing.Point((int)point.X, (int)point.Y));
+		public void MoveTo(System.Windows.Point point) {
+			new Mouse(winApiService).MoveTo(new System.Drawing.Point((int)point.X, (int)point.Y));
 		}
 	}
 }

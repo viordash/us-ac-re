@@ -4,9 +4,11 @@ using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Extensions;
 using UsAcRe.Core.MouseProcess;
 using UsAcRe.Core.Services;
+using UsAcRe.Core.WindowsSystem;
 
 namespace UsAcRe.Core.Actions {
 	public class MouseClickAction : BaseAction {
+		readonly IWinApiService winApiService;
 		public MouseButtonType Button { get; set; }
 		public Point ClickedPoint { get; set; }
 		public bool DoubleClick { get; set; }
@@ -31,7 +33,9 @@ namespace UsAcRe.Core.Actions {
 		public MouseClickAction(
 			ISettingsService settingsService,
 			ITestsLaunchingService testsLaunchingService,
-			IFileService fileService) : base(settingsService, testsLaunchingService, fileService) {
+			IFileService fileService,
+			IWinApiService winApiService) : base(settingsService, testsLaunchingService, fileService) {
+			this.winApiService = winApiService;
 		}
 
 		protected override async ValueTask ExecuteCoreAsync() {
@@ -70,30 +74,31 @@ namespace UsAcRe.Core.Actions {
 			}
 
 			testsLaunchingService.CloseHighlighter();
+			var mouse = new Mouse(winApiService);
 			//MainForm.MoveOutFromPoint(clickedPoint.X, clickedPoint.Y);
 			switch(Button) {
 				case MouseButtonType.Left:
 					Mouse_MoveTo(clickedPoint.X, clickedPoint.Y);
 					if(DoubleClick) {
-						Mouse.DoubleClick(MouseButton.Left);
+						mouse.DoubleClick(Mouse.Button.Left);
 					} else {
-						Mouse.Click(MouseButton.Left);
+						mouse.Click(Mouse.Button.Left);
 					}
 					break;
 				case MouseButtonType.Right:
 					Mouse_MoveTo(clickedPoint.X, clickedPoint.Y);
 					if(DoubleClick) {
-						Mouse.DoubleClick(MouseButton.Right);
+						mouse.DoubleClick(Mouse.Button.Right);
 					} else {
-						Mouse.Click(MouseButton.Right);
+						mouse.Click(Mouse.Button.Right);
 					}
 					break;
 				case MouseButtonType.Middle:
 					Mouse_MoveTo(clickedPoint.X, clickedPoint.Y);
 					if(DoubleClick) {
-						Mouse.DoubleClick(MouseButton.Middle);
+						mouse.DoubleClick(Mouse.Button.Middle);
 					} else {
-						Mouse.Click(MouseButton.Middle);
+						mouse.Click(Mouse.Button.Middle);
 					}
 					break;
 				default:
@@ -102,7 +107,7 @@ namespace UsAcRe.Core.Actions {
 		}
 
 		void Mouse_MoveTo(int x, int y) {
-			Mouse.MoveTo(new Point(x, y));
+			new Mouse(winApiService).MoveTo(new Point(x, y));
 		}
 	}
 }

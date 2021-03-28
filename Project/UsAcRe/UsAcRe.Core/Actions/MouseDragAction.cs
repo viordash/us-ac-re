@@ -5,9 +5,11 @@ using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Extensions;
 using UsAcRe.Core.MouseProcess;
 using UsAcRe.Core.Services;
+using UsAcRe.Core.WindowsSystem;
 
 namespace UsAcRe.Core.Actions {
 	public class MouseDragAction : BaseAction {
+		readonly IWinApiService winApiService;
 		public MouseButtonType Button { get; set; }
 		public Point StartCoord { get; set; }
 		public Point EndCoord { get; set; }
@@ -31,7 +33,9 @@ namespace UsAcRe.Core.Actions {
 		public MouseDragAction(
 			ISettingsService settingsService,
 			ITestsLaunchingService testsLaunchingService,
-			IFileService fileService) : base(settingsService, testsLaunchingService, fileService) {
+			IFileService fileService,
+			IWinApiService winApiService) : base(settingsService, testsLaunchingService, fileService) {
+			this.winApiService = winApiService;
 		}
 
 		protected override async ValueTask ExecuteCoreAsync() {
@@ -66,22 +70,23 @@ namespace UsAcRe.Core.Actions {
 			//MainForm.MoveOutFromPoint(startCoord.X, startCoord.Y);
 			switch(Button) {
 				case MouseButtonType.Left:
-					DragTo(MouseButton.Left, startCoord, endCoord);
+					DragTo(Mouse.Button.Left, startCoord, endCoord);
 					break;
 				case MouseButtonType.Right:
-					DragTo(MouseButton.Right, startCoord, endCoord);
+					DragTo(Mouse.Button.Right, startCoord, endCoord);
 					break;
 				case MouseButtonType.Middle:
-					DragTo(MouseButton.Middle, startCoord, endCoord);
+					DragTo(Mouse.Button.Middle, startCoord, endCoord);
 					break;
 				default:
 					throw new SevereException(this, nameof(DoDrag));
 			}
 		}
 
-		void DragTo(MouseButton mouseButton, Point startCoord, Point endCoord) {
-			Mouse.MoveTo(startCoord);
-			Mouse.Down(mouseButton);
+		void DragTo(Mouse.Button mouseButton, Point startCoord, Point endCoord) {
+			var mouse = new Mouse(winApiService);
+			mouse.MoveTo(startCoord);
+			mouse.Down(mouseButton);
 			bool xPointReached = false, yPointReached = false;
 			int counter = 0;
 			do {
@@ -99,12 +104,12 @@ namespace UsAcRe.Core.Actions {
 				} else {
 					yPointReached = true;
 				}
-				Mouse.MoveTo(startCoord);
+				mouse.MoveTo(startCoord);
 				if(counter++ % 10 == 0) {
 					Thread.Sleep(1);
 				}
 			} while(!xPointReached || !yPointReached);
-			Mouse.Up(mouseButton);
+			mouse.Up(mouseButton);
 		}
 	}
 }

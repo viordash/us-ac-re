@@ -78,31 +78,31 @@ namespace UsAcRe.Core.Tests.ActionsTests {
 			serviceProviderMock
 				.Setup(x => x.GetService(typeof(KeybdAction)))
 				.Returns(() => {
-					return new KeybdAction(settingsServiceMock.Object, testsLaunchingServiceMock.Object, fileServiceMock.Object);
+					return new KeybdAction(settingsServiceMock.Object, testsLaunchingServiceMock.Object, fileServiceMock.Object, winApiServiceMock.Object);
 				});
 
 			serviceProviderMock
 				.Setup(x => x.GetService(typeof(MouseClickAction)))
 				.Returns(() => {
-					return new MouseClickAction(settingsServiceMock.Object, testsLaunchingServiceMock.Object, fileServiceMock.Object);
+					return new MouseClickAction(settingsServiceMock.Object, testsLaunchingServiceMock.Object, fileServiceMock.Object, winApiServiceMock.Object);
 				});
 
 			serviceProviderMock
 				.Setup(x => x.GetService(typeof(MouseDragAction)))
 				.Returns(() => {
-					return new MouseDragAction(settingsServiceMock.Object, testsLaunchingServiceMock.Object, fileServiceMock.Object);
+					return new MouseDragAction(settingsServiceMock.Object, testsLaunchingServiceMock.Object, fileServiceMock.Object, winApiServiceMock.Object);
 				});
 
 			serviceProviderMock
 				.Setup(x => x.GetService(typeof(TextTypingAction)))
 				.Returns(() => {
-					return new TextTypingAction(settingsServiceMock.Object, testsLaunchingServiceMock.Object, fileServiceMock.Object);
+					return new TextTypingAction(settingsServiceMock.Object, testsLaunchingServiceMock.Object, fileServiceMock.Object, winApiServiceMock.Object);
 				});
 
 			serviceProviderMock
 				.Setup(x => x.GetService(typeof(ElementMatchAction)))
 				.Returns(() => {
-					return new ElementMatchAction(automationElementServiceMock.Object, settingsServiceMock.Object, testsLaunchingServiceMock.Object, fileServiceMock.Object);
+					return new ElementMatchAction(automationElementServiceMock.Object, settingsServiceMock.Object, testsLaunchingServiceMock.Object, fileServiceMock.Object, winApiServiceMock.Object);
 				});
 
 			serviceProviderMock

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -19,6 +20,7 @@ namespace UsAcRe.Core.Services {
 		bool SetForegroundWindow(IntPtr hWnd);
 		IntPtr GetWindowHandle(int dwProcessId);
 		void SendKeyboardKey(VirtualKeyCodes vKCode, bool isKeyDown, bool isExtended, bool isUnicode);
+		void SendMouseInput(int x, int y, uint data, WinAPI.SendMouseInputFlags flags);
 		short GetKeyScan(char c);
 	}
 
@@ -135,6 +137,39 @@ namespace UsAcRe.Core.Services {
 
 			WinAPI.SendInput(1, new WinAPI.INPUT[] { input }, Marshal.SizeOf(input));
 			Thread.Sleep(100);
+		}
+
+		public void SendMouseInput(int x, int y, uint data, WinAPI.SendMouseInputFlags flags) {
+			uint intflags = (uint)flags;
+
+			bool absolutPosition = (intflags & (int)WinAPI.SendMouseInputFlags.Absolute) != 0;
+			if(absolutPosition) {
+				NormalizeCoordinates(ref x, ref y);
+				intflags |= WinAPI.MouseeventfVirtualdesk;
+			}
+
+			var mi = new WinAPI.INPUT();
+			mi.Type = WinAPI.INPUT_MOUSE;
+			mi.Data.Mouse.X = x;
+			mi.Data.Mouse.Y = y;
+			mi.Data.Mouse.MouseData = data;
+			mi.Data.Mouse.Flags = intflags;
+			mi.Data.Mouse.Time = 0;
+			mi.Data.Mouse.ExtraInfo = new IntPtr(0);
+
+			if(WinAPI.SendInput(1, new WinAPI.INPUT[] { mi }, Marshal.SizeOf(mi)) == 0) {
+				throw new Win32Exception(Marshal.GetLastWin32Error());
+			}
+		}
+
+		static void NormalizeCoordinates(ref int x, ref int y) {
+			int vScreenWidth = WinAPI.GetSystemMetrics(WinAPI.SMCxvirtualscreen);
+			int vScreenHeight = WinAPI.GetSystemMetrics(WinAPI.SMCyvirtualscreen);
+			int vScreenLeft = WinAPI.GetSystemMetrics(WinAPI.SMXvirtualscreen);
+			int vScreenTop = WinAPI.GetSystemMetrics(WinAPI.SMYvirtualscreen);
+
+			x = ((x - vScreenLeft) * 65536) / vScreenWidth + 65536 / (vScreenWidth * 2);
+			y = ((y - vScreenTop) * 65536) / vScreenHeight + 65536 / (vScreenHeight * 2);
 		}
 
 		public short GetKeyScan(char c) {
