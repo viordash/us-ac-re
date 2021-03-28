@@ -23,12 +23,8 @@ namespace UsAcRe.Recorder.UI {
 					.AddTransient<ISettingsService>((sp) => sp.GetRequiredService<IRecorderSettingsService>())
 					.AddTransient<IScriptBuilder, ScriptBuilder>()
 					.AddTransient<IScriptCompiler, ScriptCompiler>()
-					.AddTransient<ElementMatchAction, ElementMatchAction>()
-					.AddTransient<KeybdAction, KeybdAction>()
-					.AddTransient<MouseClickAction, MouseClickAction>()
-					.AddTransient<MouseDragAction, MouseDragAction>()
-					.AddTransient<TextTypingAction, TextTypingAction>()
-					.AddTransient<ActionSet, ActionSet>();
+
+					.AddTestsActions();
 
 			var serviceProvider = services.BuildServiceProvider();
 			ServiceLocator.SetLocatorProvider(serviceProvider);

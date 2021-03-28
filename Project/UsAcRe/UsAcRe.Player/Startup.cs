@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
+using UsAcRe.Core.Actions;
 using UsAcRe.Core.Scripts;
 using UsAcRe.Core.Services;
 using UsAcRe.Core.UI.Services;
@@ -20,7 +21,9 @@ namespace UsAcRe.Player {
 					.AddSingleton<IWinApiService, WinApiService>()
 
 					.AddTransient<ISettingsService>(sp => sp.GetRequiredService<IPlayerSettingsService>())
-					.AddTransient<IScriptCompiler, ScriptCompiler>();
+					.AddTransient<IScriptCompiler, ScriptCompiler>()
+
+					.AddTestsActions();
 
 			var serviceProvider = services.BuildServiceProvider();
 			ServiceLocator.SetLocatorProvider(serviceProvider);
