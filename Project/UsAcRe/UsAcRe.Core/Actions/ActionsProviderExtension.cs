@@ -8,7 +8,8 @@ namespace UsAcRe.Core.Actions {
 					.AddTransient<MouseClickAction, MouseClickAction>()
 					.AddTransient<MouseDragAction, MouseDragAction>()
 					.AddTransient<TextTypingAction, TextTypingAction>()
-					.AddTransient<ActionSet, ActionSet>();
+					.AddTransient<ActionSet, ActionSet>()
+					.AddTransient<DelayAction, DelayAction>();
 			return services;
 		}
 	}
