@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 
 namespace UsAcRe.Core.WindowsSystem {
-	public enum VirtualKeyCodes {
+	public enum VirtualKeyCodes : int {
 		[Description("Left mouse button")]
 		VK_LBUTTON = 0x01,
 

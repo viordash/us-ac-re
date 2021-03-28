@@ -42,9 +42,24 @@ namespace UsAcRe.Core.WindowsSystem {
 		public const uint MK_XBUTTON2 = 0x0040; //The second X button is down.
 
 
+		public const int INPUT_MOUSE = 0;
+		public const int INPUT_KEYBOARD = 1;
+		public const int INPUT_HARDWARE = 2;
 		public const uint KEYEVENTF_EXTENDEDKEY = 0x0001;
 		public const uint KEYEVENTF_KEYUP = 0x0002;
+		public const uint KEYEVENTF_UNICODE = 0x0004;
+		public const uint KEYEVENTF_SCANCODE = 0x0008;
 
+		public const int VKeyShiftMask = 0x0100;
+		public const int VKeyCtrlMask = 0x0200;
+		public const int VKeyAltMask = 0x0400;
+		public const int VKeyCharMask = 0x00FF;
+
+		public const int VK_LBUTTON = 0x0001;
+		public const int VK_RBUTTON = 0x0002;
+		public const int VK_MBUTTON = 0x0004;
+		public const int VK_XBUTTON1 = 0x0005;
+		public const int VK_XBUTTON2 = 0x0006;
 
 		public const int CWP_ALL = 0;
 		public const int CWP_SKIPDISABLED = 0x0002;
@@ -279,6 +294,9 @@ namespace UsAcRe.Core.WindowsSystem {
 
 		[DllImport("user32.dll", SetLastError = true)]
 		public static extern uint SendInput(uint numberOfInputs, INPUT[] inputs, int sizeOfInputStructure);
+
+		[DllImport("user32.dll", CharSet = CharSet.Auto)]
+		public static extern short VkKeyScan(char ch);
 
 		[DllImport("kernel32.dll", SetLastError = true)]
 		public static extern IntPtr GetConsoleWindow();

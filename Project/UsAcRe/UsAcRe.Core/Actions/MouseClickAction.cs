@@ -1,6 +1,5 @@
 ﻿using System.Drawing;
 using System.Threading.Tasks;
-using Microsoft.Test.Input;
 using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Extensions;
 using UsAcRe.Core.MouseProcess;

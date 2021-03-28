@@ -1,10 +1,11 @@
 ﻿using System.Threading.Tasks;
-using Microsoft.Test.Input;
 using UsAcRe.Core.Helpers;
 using UsAcRe.Core.Services;
+using UsAcRe.Core.WindowsSystem;
 
 namespace UsAcRe.Core.Actions {
 	public class TextTypingAction : BaseAction {
+		readonly IWinApiService winApiService;
 		public string Text { get; set; }
 
 		public static TextTypingAction Record(string text) {
@@ -22,11 +23,14 @@ namespace UsAcRe.Core.Actions {
 		public TextTypingAction(
 			ISettingsService settingsService,
 			ITestsLaunchingService testsLaunchingService,
-			IFileService fileService) : base(settingsService, testsLaunchingService, fileService) {
+			IFileService fileService,
+			IWinApiService winApiService) : base(settingsService, testsLaunchingService, fileService) {
+			this.winApiService = winApiService;
 		}
 
 		protected override ValueTask ExecuteCoreAsync() {
-			Keyboard.Type(Text);
+			var keyboard = new Keyboard(winApiService);
+			keyboard.Type(Text);
 			return new ValueTask(Task.CompletedTask);
 		}
 
