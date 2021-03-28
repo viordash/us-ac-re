@@ -7,7 +7,6 @@ using UsAcRe.Core.Helpers;
 using UsAcRe.Core.Services;
 
 namespace UsAcRe.Core.UIAutomationElement {
-	[Serializable]
 	public class UiElement {
 		public int Index;
 		public ValueField Value { get; private set; }

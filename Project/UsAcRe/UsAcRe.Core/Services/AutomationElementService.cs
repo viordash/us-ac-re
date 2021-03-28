@@ -26,6 +26,7 @@ namespace UsAcRe.Core.Services {
 		ElementProgram GetProgram(UiElement element);
 		UiElement GetRootElement(ElementProgram program, bool windowHandleFromWinApi);
 		bool TryGetClickablePoint(UiElement element, out Point pt);
+		bool IsClickable(UiElement element);
 	}
 
 	public class AutomationElementService : IAutomationElementService {
@@ -175,6 +176,13 @@ namespace UsAcRe.Core.Services {
 			}
 			pt = new Point();
 			return false;
+		}
+
+		public bool IsClickable(UiElement element) {
+			if(!TryGetAutomationElement(element, out AutomationElement automationElement)) {
+				return false;
+			}
+			return automationElement.Current.IsEnabled && !automationElement.Current.IsOffscreen;
 		}
 	}
 }
