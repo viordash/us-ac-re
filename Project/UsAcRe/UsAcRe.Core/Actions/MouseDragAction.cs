@@ -13,6 +13,7 @@ namespace UsAcRe.Core.Actions {
 		public MouseButtonType Button { get; set; }
 		public Point StartCoord { get; set; }
 		public Point EndCoord { get; set; }
+		public Point? Offset { get; set; } = null;
 
 		public static MouseDragAction Record(MouseButtonType button, Point startCoord, Point endCoord) {
 			var instance = CreateInstance<MouseDragAction>();
@@ -58,11 +59,17 @@ namespace UsAcRe.Core.Actions {
 			var startCoord = StartCoord;
 			var endCoord = EndCoord;
 
-			if(testsLaunchingService.LastAction is ElementMatchAction elementMatchAction) {
-				if(elementMatchAction.OffsetPoint.HasValue) {
-					startCoord.Offset((int)elementMatchAction.OffsetPoint.Value.X, (int)elementMatchAction.OffsetPoint.Value.Y);
-					endCoord.Offset((int)elementMatchAction.OffsetPoint.Value.X, (int)elementMatchAction.OffsetPoint.Value.Y);
-				}
+			var actionForDetermineClickPoint = testsLaunchingService.LastAction;
+			if(actionForDetermineClickPoint is MouseClickAction prevMouseAct) {
+				Offset = prevMouseAct.Offset;
+			} else if(actionForDetermineClickPoint is MouseDragAction prevMouseDragAct) {
+				Offset = prevMouseDragAct.Offset;
+			} else if(actionForDetermineClickPoint is ElementMatchAction elementMatchAction) {
+				Offset = new Point((int)elementMatchAction.OffsetPoint.Value.X, (int)elementMatchAction.OffsetPoint.Value.Y);
+			}
+			if(Offset.HasValue) {
+				startCoord.Offset(Offset.Value.X, Offset.Value.Y);
+				endCoord.Offset(Offset.Value.X, Offset.Value.Y);
 			}
 
 			testsLaunchingService.CloseHighlighter();

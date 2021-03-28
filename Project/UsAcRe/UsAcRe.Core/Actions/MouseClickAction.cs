@@ -12,7 +12,7 @@ namespace UsAcRe.Core.Actions {
 		public MouseButtonType Button { get; set; }
 		public Point ClickedPoint { get; set; }
 		public bool DoubleClick { get; set; }
-		Point? Offset { get; set; } = null;
+		public Point? Offset { get; set; } = null;
 
 		public static MouseClickAction Record(MouseButtonType button, Point clickedPoint, bool doubleClick) {
 			var instance = CreateInstance<MouseClickAction>();
@@ -65,6 +65,8 @@ namespace UsAcRe.Core.Actions {
 			var actionForDetermineClickPoint = testsLaunchingService.LastAction;
 			if(actionForDetermineClickPoint is MouseClickAction prevMouseAct) {
 				Offset = prevMouseAct.Offset;
+			} else if(actionForDetermineClickPoint is MouseDragAction prevMouseDragAct) {
+				Offset = prevMouseDragAct.Offset;
 			} else if(actionForDetermineClickPoint is ElementMatchAction elementMatchAction) {
 				Offset = new Point((int)elementMatchAction.OffsetPoint.Value.X, (int)elementMatchAction.OffsetPoint.Value.Y);
 			}
