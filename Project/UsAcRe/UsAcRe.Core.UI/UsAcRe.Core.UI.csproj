@@ -10,10 +10,6 @@
     <AssemblyName>UsAcRe.Core.UI</AssemblyName>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="NLog" Version="4.7.9" />
-  </ItemGroup>
-
 
   <ItemGroup>
     <ProjectReference Include="..\UsAcRe.Core\UsAcRe.Core.csproj">
