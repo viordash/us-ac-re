@@ -58,6 +58,7 @@ namespace UsAcRe.Core.Actions {
 				}
 				stopWatch.Start();
 				try {
+					await Task.Delay(50);
 					await action();
 				} finally {
 					stopWatch.Stop();

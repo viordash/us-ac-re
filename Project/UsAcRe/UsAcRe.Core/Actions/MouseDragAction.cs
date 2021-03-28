@@ -55,7 +55,6 @@ namespace UsAcRe.Core.Actions {
 		}
 
 		async ValueTask DoDrag() {
-			await Task.Delay(20);
 			var startCoord = StartCoord;
 			var endCoord = EndCoord;
 
@@ -70,23 +69,23 @@ namespace UsAcRe.Core.Actions {
 			//MainForm.MoveOutFromPoint(startCoord.X, startCoord.Y);
 			switch(Button) {
 				case MouseButtonType.Left:
-					DragTo(Mouse.Button.Left, startCoord, endCoord);
+					await DragTo(Mouse.Button.Left, startCoord, endCoord);
 					break;
 				case MouseButtonType.Right:
-					DragTo(Mouse.Button.Right, startCoord, endCoord);
+					await DragTo(Mouse.Button.Right, startCoord, endCoord);
 					break;
 				case MouseButtonType.Middle:
-					DragTo(Mouse.Button.Middle, startCoord, endCoord);
+					await DragTo(Mouse.Button.Middle, startCoord, endCoord);
 					break;
 				default:
 					throw new SevereException(this, nameof(DoDrag));
 			}
 		}
 
-		void DragTo(Mouse.Button mouseButton, Point startCoord, Point endCoord) {
+		async ValueTask DragTo(Mouse.Button mouseButton, Point startCoord, Point endCoord) {
 			var mouse = new Mouse(winApiService);
-			mouse.MoveTo(startCoord);
-			mouse.Down(mouseButton);
+			await mouse.MoveTo(startCoord.X, startCoord.Y);
+			await mouse.Down(mouseButton);
 			bool xPointReached = false, yPointReached = false;
 			int counter = 0;
 			do {
@@ -104,12 +103,12 @@ namespace UsAcRe.Core.Actions {
 				} else {
 					yPointReached = true;
 				}
-				mouse.MoveTo(startCoord);
+				await mouse.MoveTo(startCoord.X, startCoord.Y);
 				if(counter++ % 10 == 0) {
-					Thread.Sleep(1);
+					await Task.Delay(1);
 				}
 			} while(!xPointReached || !yPointReached);
-			mouse.Up(mouseButton);
+			await mouse.Up(mouseButton);
 		}
 	}
 }

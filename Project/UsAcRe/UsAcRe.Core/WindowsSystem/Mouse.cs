@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Threading.Tasks;
 using GuardNet;
+using UsAcRe.Core.MouseProcess;
 using UsAcRe.Core.Services;
 
 namespace UsAcRe.Core.WindowsSystem {
@@ -21,34 +23,32 @@ namespace UsAcRe.Core.WindowsSystem {
 			this.winApiService = winApiService;
 		}
 
-		public void Click(Button mouseButton) {
-			Down(mouseButton);
-			Up(mouseButton);
+		public async ValueTask Click(Button mouseButton) {
+			await Down(mouseButton);
+			await Up(mouseButton);
 		}
 
-		public void DoubleClick(Button mouseButton) {
-			Click(mouseButton);
-			Click(mouseButton);
+		public async ValueTask DoubleClick(Button mouseButton) {
+			await Click(mouseButton);
+			await Task.Delay(MouseProcessConstants.DoubleClickTime / 2);
+			await Click(mouseButton);
 		}
 
-		public void Down(Button mouseButton) {
+		public ValueTask Down(Button mouseButton) {
 			var inputFlags = GetInputFlags(mouseButton, false, out uint additionalData);
 			winApiService.SendMouseInput(0, 0, additionalData, inputFlags);
+			return new ValueTask(Task.CompletedTask);
 		}
 
-		public void DragTo(Button mouseButton, System.Drawing.Point point) {
-			Down(mouseButton);
-			MoveTo(point);
-			Up(mouseButton);
+		public ValueTask MoveTo(int x, int y) {
+			winApiService.SendMouseInput(x, y, 0, WinAPI.SendMouseInputFlags.Move | WinAPI.SendMouseInputFlags.Absolute);
+			return new ValueTask(Task.CompletedTask);
 		}
 
-		public void MoveTo(System.Drawing.Point point) {
-			winApiService.SendMouseInput(point.X, point.Y, 0, WinAPI.SendMouseInputFlags.Move | WinAPI.SendMouseInputFlags.Absolute);
-		}
-
-		public void Up(Button mouseButton) {
+		public ValueTask Up(Button mouseButton) {
 			var inputFlags = GetInputFlags(mouseButton, true, out uint additionalData);
 			winApiService.SendMouseInput(0, 0, additionalData, inputFlags);
+			return new ValueTask(Task.CompletedTask);
 		}
 
 		static WinAPI.SendMouseInputFlags GetInputFlags(Button mouseButton, bool isUp, out uint additionalData) {

@@ -136,7 +136,6 @@ namespace UsAcRe.Core.Services {
 			input.Data.Keyboard.ExtraInfo = IntPtr.Zero;
 
 			WinAPI.SendInput(1, new WinAPI.INPUT[] { input }, Marshal.SizeOf(input));
-			Thread.Sleep(100);
 		}
 
 		public void SendMouseInput(int x, int y, uint data, WinAPI.SendMouseInputFlags flags) {

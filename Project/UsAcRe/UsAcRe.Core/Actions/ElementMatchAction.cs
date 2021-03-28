@@ -76,7 +76,7 @@ namespace UsAcRe.Core.Actions {
 				var requiredElement = GetElement();
 				if(requiredElement?.Element != null) {
 					OffsetPoint = GetClickablePointOffset(MatchedElement, requiredElement.Element);
-					new MouseHover(winApiService).MoveTo(requiredElement.Element.BoundingRectangle.Value.Location);
+					await new MouseHover(winApiService).MoveTo(requiredElement.Element.BoundingRectangle.Value.Location);
 					break;
 				}
 				await WaitAppearElement(requiredElement);

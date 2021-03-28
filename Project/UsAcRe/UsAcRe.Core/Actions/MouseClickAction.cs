@@ -54,7 +54,6 @@ namespace UsAcRe.Core.Actions {
 		}
 
 		async ValueTask DoClick() {
-			await Task.Delay(20);
 			var clickedPoint = ClickedPoint;
 
 			if(testsLaunchingService.LastAction is MouseClickAction prevMouseAction) {
@@ -78,36 +77,32 @@ namespace UsAcRe.Core.Actions {
 			//MainForm.MoveOutFromPoint(clickedPoint.X, clickedPoint.Y);
 			switch(Button) {
 				case MouseButtonType.Left:
-					Mouse_MoveTo(clickedPoint.X, clickedPoint.Y);
+					await mouse.MoveTo(clickedPoint.X, clickedPoint.Y);
 					if(DoubleClick) {
-						mouse.DoubleClick(Mouse.Button.Left);
+						await mouse.DoubleClick(Mouse.Button.Left);
 					} else {
-						mouse.Click(Mouse.Button.Left);
+						await mouse.Click(Mouse.Button.Left);
 					}
 					break;
 				case MouseButtonType.Right:
-					Mouse_MoveTo(clickedPoint.X, clickedPoint.Y);
+					await mouse.MoveTo(clickedPoint.X, clickedPoint.Y);
 					if(DoubleClick) {
-						mouse.DoubleClick(Mouse.Button.Right);
+						await mouse.DoubleClick(Mouse.Button.Right);
 					} else {
-						mouse.Click(Mouse.Button.Right);
+						await mouse.Click(Mouse.Button.Right);
 					}
 					break;
 				case MouseButtonType.Middle:
-					Mouse_MoveTo(clickedPoint.X, clickedPoint.Y);
+					await mouse.MoveTo(clickedPoint.X, clickedPoint.Y);
 					if(DoubleClick) {
-						mouse.DoubleClick(Mouse.Button.Middle);
+						await mouse.DoubleClick(Mouse.Button.Middle);
 					} else {
-						mouse.Click(Mouse.Button.Middle);
+						await mouse.Click(Mouse.Button.Middle);
 					}
 					break;
 				default:
 					throw new SevereException(this, nameof(DoClick));
 			}
-		}
-
-		void Mouse_MoveTo(int x, int y) {
-			new Mouse(winApiService).MoveTo(new Point(x, y));
 		}
 	}
 }

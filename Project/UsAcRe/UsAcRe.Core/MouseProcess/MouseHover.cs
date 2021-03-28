@@ -68,19 +68,19 @@ namespace UsAcRe.Core.MouseProcess {
 				for(int i = 0; i < interpolate; i++) {
 					from.X += deltaX;
 					from.Y += deltaY;
-					MoveTo(from);
+					await MoveTo(from);
 					await Task.Delay(delayDelta);
 				}
 			} else {
-				MoveTo(to);
+				await MoveTo(to);
 				await Task.Delay(delay);
 			}
 			return from;
 		}
 
 
-		public void MoveTo(System.Windows.Point point) {
-			new Mouse(winApiService).MoveTo(new System.Drawing.Point((int)point.X, (int)point.Y));
+		public async ValueTask MoveTo(System.Windows.Point point) {
+			await new Mouse(winApiService).MoveTo((int)point.X, (int)point.Y);
 		}
 	}
 }
