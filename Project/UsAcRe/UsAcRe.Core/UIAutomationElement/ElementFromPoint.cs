@@ -138,9 +138,9 @@ namespace UsAcRe.Core.UIAutomationElement {
 		}
 
 		void BuildElementsTree(TreeItem parent, List<TreeItem> elements) {
-			BreakOperationsIfCoordChanged();
 			Debug.WriteLine("");
 			foreach(var item in parent.Childs) {
+				BreakOperationsIfCoordChanged();
 				Debug.WriteLine($"tree: item:{item},\r\n\t\t\t{parent}");
 				var treeItem = new TreeItem(item, parent, GetChildren(item));
 				elements.Add(treeItem);
