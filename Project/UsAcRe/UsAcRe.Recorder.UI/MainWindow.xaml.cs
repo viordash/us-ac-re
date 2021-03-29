@@ -34,6 +34,7 @@ namespace UsAcRe.Recorder.UI {
 		readonly IFileService fileService;
 		readonly IScriptBuilder scriptBuilder;
 		readonly IScriptCompiler scriptCompiler;
+		readonly IWindowsFormsService windowsFormsService;
 
 		public MainWindow(
 			IAutomationElementService automationElementService,
@@ -42,14 +43,17 @@ namespace UsAcRe.Recorder.UI {
 			IDialogService dialogService,
 			IFileService fileService,
 			IScriptBuilder scriptBuilder,
-			IScriptCompiler scriptCompiler
+			IScriptCompiler scriptCompiler,
+			IWindowsFormsService windowsFormsService
 			) {
 			Guard.NotNull(automationElementService, nameof(automationElementService));
 			Guard.NotNull(winApiService, nameof(winApiService));
 			Guard.NotNull(testsLaunchingService, nameof(testsLaunchingService));
 			Guard.NotNull(dialogService, nameof(dialogService));
 			Guard.NotNull(fileService, nameof(fileService));
+			Guard.NotNull(scriptBuilder, nameof(scriptBuilder));
 			Guard.NotNull(scriptCompiler, nameof(scriptCompiler));
+			Guard.NotNull(windowsFormsService, nameof(windowsFormsService));
 
 			this.automationElementService = automationElementService;
 			this.winApiService = winApiService;
@@ -58,10 +62,11 @@ namespace UsAcRe.Recorder.UI {
 			this.fileService = fileService;
 			this.scriptBuilder = scriptBuilder;
 			this.scriptCompiler = scriptCompiler;
+			this.windowsFormsService = windowsFormsService;
 
 			InitializeComponent();
 			if(!DesignerProperties.GetIsInDesignMode(this)) {
-				Actions = new ActionsListModel(scriptBuilder, fileService);
+				Actions = new ActionsListModel(scriptBuilder, fileService, windowsFormsService);
 				Actions.ActionsListChanged += (s, e) => {
 					MainMenu.SaveEnable = e.Items.Count > 0;
 					ActionsList.ListActions.ItemsSource = e.Items;

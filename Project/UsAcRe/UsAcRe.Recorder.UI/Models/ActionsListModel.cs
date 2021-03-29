@@ -35,6 +35,7 @@ namespace UsAcRe.Recorder.UI.Models {
 		readonly NLog.Logger logger = NLog.LogManager.GetLogger("UsAcRe.FormMain");
 		readonly IScriptBuilder scriptBuilder;
 		readonly IFileService fileService;
+		readonly IWindowsFormsService windowsFormsService;
 		ObservableCollection<ActionsListItem> Items;
 
 		public string Name { get; set; }
@@ -44,26 +45,30 @@ namespace UsAcRe.Recorder.UI.Models {
 
 		public ActionsListModel(
 			IScriptBuilder scriptBuilder,
-			IFileService fileService) {
-			Guard.NotNull(scriptBuilder, nameof(scriptBuilder));
-			Guard.NotNull(fileService, nameof(fileService));
+			IFileService fileService,
+			IWindowsFormsService windowsFormsService) {
 			this.scriptBuilder = scriptBuilder;
 			this.fileService = fileService;
+			this.windowsFormsService = windowsFormsService;
 			Items = new ObservableCollection<ActionsListItem>();
 		}
 
 		public void Add(BaseAction actionInfo) {
-			Items.Add(new ActionsListItem(actionInfo));
-			ActionsListChanged?.Invoke(this, new ActionsListChangedEventArgs(Items));
-			logger.Info("{0}", actionInfo.ExecuteAsScriptSource());
+			windowsFormsService.BeginInvoke((Action)(() => {
+				Items.Add(new ActionsListItem(actionInfo));
+				ActionsListChanged?.Invoke(this, new ActionsListChangedEventArgs(Items));
+				logger.Info("{0}", actionInfo.ExecuteAsScriptSource());
+			}));
 		}
 
 		public void AddRange(IEnumerable<BaseAction> actions) {
-			var actionItems = Items
+			windowsFormsService.BeginInvoke((Action)(() => {
+				var actionItems = Items
 				.Concat(actions.Select(x => new ActionsListItem(x)));
-			Items = new ObservableCollection<ActionsListItem>(actionItems);
-			ActionsListChanged?.Invoke(this, new ActionsListChangedEventArgs(Items));
-			logger.Info("AddRange {0}", actions.Count());
+				Items = new ObservableCollection<ActionsListItem>(actionItems);
+				ActionsListChanged?.Invoke(this, new ActionsListChangedEventArgs(Items));
+				logger.Info("AddRange {0}", actions.Count());
+			}));
 		}
 
 		public void Store(string fileName) {
