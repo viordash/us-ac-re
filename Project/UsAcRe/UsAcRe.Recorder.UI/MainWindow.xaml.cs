@@ -1,9 +1,7 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
-using Microsoft.Extensions.DependencyInjection;
 using GuardNet;
 using UsAcRe.Core.Actions;
 using UsAcRe.Core.Exceptions;
@@ -44,7 +42,8 @@ namespace UsAcRe.Recorder.UI {
 			IFileService fileService,
 			IScriptBuilder scriptBuilder,
 			IScriptCompiler scriptCompiler,
-			IWindowsFormsService windowsFormsService
+			IWindowsFormsService windowsFormsService,
+			ActionsListModel actionsListModel
 			) {
 			Guard.NotNull(automationElementService, nameof(automationElementService));
 			Guard.NotNull(winApiService, nameof(winApiService));
@@ -54,6 +53,7 @@ namespace UsAcRe.Recorder.UI {
 			Guard.NotNull(scriptBuilder, nameof(scriptBuilder));
 			Guard.NotNull(scriptCompiler, nameof(scriptCompiler));
 			Guard.NotNull(windowsFormsService, nameof(windowsFormsService));
+			Guard.NotNull(actionsListModel, nameof(actionsListModel));
 
 			this.automationElementService = automationElementService;
 			this.winApiService = winApiService;
@@ -63,10 +63,10 @@ namespace UsAcRe.Recorder.UI {
 			this.scriptBuilder = scriptBuilder;
 			this.scriptCompiler = scriptCompiler;
 			this.windowsFormsService = windowsFormsService;
+			this.Actions = actionsListModel;
 
 			InitializeComponent();
 			if(!DesignerProperties.GetIsInDesignMode(this)) {
-				Actions = new ActionsListModel(scriptBuilder, fileService, windowsFormsService);
 				Actions.ActionsListChanged += (s, e) => {
 					MainMenu.SaveEnable = e.Items.Count > 0;
 					ActionsList.ListActions.ItemsSource = e.Items;

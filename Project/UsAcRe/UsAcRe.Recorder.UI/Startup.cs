@@ -4,6 +4,7 @@ using UsAcRe.Core.Actions;
 using UsAcRe.Core.Scripts;
 using UsAcRe.Core.Services;
 using UsAcRe.Core.UI.Services;
+using UsAcRe.Recorder.UI.Models;
 using UsAcRe.Services;
 
 namespace UsAcRe.Recorder.UI {
@@ -19,10 +20,11 @@ namespace UsAcRe.Recorder.UI {
 					.AddSingleton<IDialogService, DialogService>()
 					.AddSingleton<IFileService, FileService>()
 					.AddSingleton<MainWindow>()
+					.AddSingleton<ActionsListModel, ActionsListModel>()
+					.AddSingleton<IScriptBuilder, ScriptBuilder>()
+					.AddSingleton<IScriptCompiler, ScriptCompiler>()
 
 					.AddTransient<ISettingsService>((sp) => sp.GetRequiredService<IRecorderSettingsService>())
-					.AddTransient<IScriptBuilder, ScriptBuilder>()
-					.AddTransient<IScriptCompiler, ScriptCompiler>()
 
 					.AddTestsActions();
 
