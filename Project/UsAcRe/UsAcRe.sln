@@ -3,23 +3,29 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30517.126
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsAcRe.Core", "UsAcRe.Core\UsAcRe.Core.csproj", "{397F80C0-E494-44AD-9996-D3B248DC41DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UsAcRe.Core", "UsAcRe.Core\UsAcRe.Core.csproj", "{397F80C0-E494-44AD-9996-D3B248DC41DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsAcRe.Core.Tests", "UsAcRe.Core.Tests\UsAcRe.Core.Tests.csproj", "{2EBC8EF3-82CF-4B51-949F-E10D70761210}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UsAcRe.Core.Tests", "UsAcRe.Core.Tests\UsAcRe.Core.Tests.csproj", "{2EBC8EF3-82CF-4B51-949F-E10D70761210}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsAcRe.Recorder.UI", "UsAcRe.Recorder.UI\UsAcRe.Recorder.UI.csproj", "{759F5619-9AB4-4344-BC4D-C95461139825}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UsAcRe.Recorder.UI", "UsAcRe.Recorder.UI\UsAcRe.Recorder.UI.csproj", "{759F5619-9AB4-4344-BC4D-C95461139825}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{3A1DDD3F-11CC-470A-BD2B-D9854D300681}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsAcRe.Core.UI", "UsAcRe.Core.UI\UsAcRe.Core.UI.csproj", "{07E1B9CB-7400-4CDB-B286-466BF400F370}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UsAcRe.Core.UI", "UsAcRe.Core.UI\UsAcRe.Core.UI.csproj", "{07E1B9CB-7400-4CDB-B286-466BF400F370}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Common", "Tests.Common\Tests.Common.csproj", "{1C4FC327-3DB4-47DF-9216-125037C538BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests.Common", "Tests.Common\Tests.Common.csproj", "{1C4FC327-3DB4-47DF-9216-125037C538BA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsAcRe.Core.UI.Tests", "UsAcRe.Core.UI.Tests\UsAcRe.Core.UI.Tests.csproj", "{E63C2577-89B8-4CC4-8C0F-BCFF6B1F9264}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UsAcRe.Core.UI.Tests", "UsAcRe.Core.UI.Tests\UsAcRe.Core.UI.Tests.csproj", "{E63C2577-89B8-4CC4-8C0F-BCFF6B1F9264}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsAcRe.Player", "UsAcRe.Player\UsAcRe.Player.csproj", "{5C8DC301-0218-4A7F-AF86-5BD62E0F7CE9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UsAcRe.Player", "UsAcRe.Player\UsAcRe.Player.csproj", "{5C8DC301-0218-4A7F-AF86-5BD62E0F7CE9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsAcRe.Player.Tests", "UsAcRe.Player.Tests\UsAcRe.Player.Tests.csproj", "{84D604D1-F576-4CF1-ADEE-FA32B2C61E5F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UsAcRe.Player.Tests", "UsAcRe.Player.Tests\UsAcRe.Player.Tests.csproj", "{84D604D1-F576-4CF1-ADEE-FA32B2C61E5F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsAcRe.Web.Server", "UsAcRe.Web\Server\UsAcRe.Web.Server.csproj", "{D1A30B7C-38FE-44B5-9284-C1CB128847CE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsAcRe.Web.Client", "UsAcRe.Web\Client\UsAcRe.Web.Client.csproj", "{190758DC-E1B0-4E10-BA2A-FD96B2FE18BB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsAcRe.Web.Shared", "UsAcRe.Web\Shared\UsAcRe.Web.Shared.csproj", "{DE6E6B43-FC64-4F2B-8533-7F5583A202A5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,6 +65,18 @@ Global
 		{84D604D1-F576-4CF1-ADEE-FA32B2C61E5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{84D604D1-F576-4CF1-ADEE-FA32B2C61E5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{84D604D1-F576-4CF1-ADEE-FA32B2C61E5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1A30B7C-38FE-44B5-9284-C1CB128847CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1A30B7C-38FE-44B5-9284-C1CB128847CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1A30B7C-38FE-44B5-9284-C1CB128847CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1A30B7C-38FE-44B5-9284-C1CB128847CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{190758DC-E1B0-4E10-BA2A-FD96B2FE18BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{190758DC-E1B0-4E10-BA2A-FD96B2FE18BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{190758DC-E1B0-4E10-BA2A-FD96B2FE18BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{190758DC-E1B0-4E10-BA2A-FD96B2FE18BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE6E6B43-FC64-4F2B-8533-7F5583A202A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE6E6B43-FC64-4F2B-8533-7F5583A202A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE6E6B43-FC64-4F2B-8533-7F5583A202A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE6E6B43-FC64-4F2B-8533-7F5583A202A5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
