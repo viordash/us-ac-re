@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Automation;
-using NGuard;
+using GuardNet;
 using NLog;
 using UsAcRe.Core.Services;
 using UsAcRe.Core.WindowsSystem;
@@ -48,8 +48,8 @@ namespace UsAcRe.Core.UIAutomationElement {
 			IWinApiService winApiService,
 			WinAPI.POINT elementCoord,
 			bool detailedRetrieve) {
-			Guard.Requires(automationElementService, nameof(automationElementService));
-			Guard.Requires(winApiService, nameof(winApiService));
+			Guard.NotNull(automationElementService, nameof(automationElementService));
+			Guard.NotNull(winApiService, nameof(winApiService));
 
 			this.automationElementService = automationElementService;
 			this.winApiService = winApiService;
@@ -138,9 +138,9 @@ namespace UsAcRe.Core.UIAutomationElement {
 		}
 
 		void BuildElementsTree(TreeItem parent, List<TreeItem> elements) {
-			BreakOperationsIfCoordChanged();
 			Debug.WriteLine("");
 			foreach(var item in parent.Childs) {
+				BreakOperationsIfCoordChanged();
 				Debug.WriteLine($"tree: item:{item},\r\n\t\t\t{parent}");
 				var treeItem = new TreeItem(item, parent, GetChildren(item));
 				elements.Add(treeItem);

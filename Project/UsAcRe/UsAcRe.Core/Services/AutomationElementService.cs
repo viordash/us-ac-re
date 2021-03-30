@@ -4,10 +4,11 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Automation;
-using NGuard;
+using GuardNet;
 using UsAcRe.Core.Extensions;
 using UsAcRe.Core.Helpers;
 using UsAcRe.Core.UIAutomationElement;
+using Condition = System.Windows.Automation.Condition;
 
 namespace UsAcRe.Core.Services {
 	public interface IAutomationElementService {
@@ -25,6 +26,7 @@ namespace UsAcRe.Core.Services {
 		ElementProgram GetProgram(UiElement element);
 		UiElement GetRootElement(ElementProgram program, bool windowHandleFromWinApi);
 		bool TryGetClickablePoint(UiElement element, out Point pt);
+		bool IsClickable(UiElement element);
 	}
 
 	public class AutomationElementService : IAutomationElementService {
@@ -35,8 +37,8 @@ namespace UsAcRe.Core.Services {
 		public AutomationElementService(
 			IWinApiService winApiService,
 			ISettingsService settingsService) {
-			Guard.Requires(winApiService, nameof(winApiService));
-			Guard.Requires(settingsService, nameof(settingsService));
+			Guard.NotNull(winApiService, nameof(winApiService));
+			Guard.NotNull(settingsService, nameof(settingsService));
 			this.winApiService = winApiService;
 			this.settingsService = settingsService;
 		}
@@ -174,6 +176,13 @@ namespace UsAcRe.Core.Services {
 			}
 			pt = new Point();
 			return false;
+		}
+
+		public bool IsClickable(UiElement element) {
+			if(!TryGetAutomationElement(element, out AutomationElement automationElement)) {
+				return false;
+			}
+			return automationElement.Current.IsEnabled && !automationElement.Current.IsOffscreen;
 		}
 	}
 }

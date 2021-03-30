@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Drawing;
 using System.Threading.Tasks;
-using Microsoft.Test.Input;
 using UsAcRe.Core.Extensions;
 using UsAcRe.Core.Services;
 using UsAcRe.Core.WindowsSystem;
 
 namespace UsAcRe.Core.Actions {
 	public class KeybdAction : BaseAction {
+		readonly IWinApiService winApiService;
 		public VirtualKeyCodes VKCode { get; set; }
 		public bool IsUp { get; set; }
 
@@ -28,7 +28,9 @@ namespace UsAcRe.Core.Actions {
 		public KeybdAction(
 			ISettingsService settingsService,
 			ITestsLaunchingService testsLaunchingService,
-			IFileService fileService) : base(settingsService, testsLaunchingService, fileService) {
+			IFileService fileService,
+			IWinApiService winApiService) : base(settingsService, testsLaunchingService, fileService) {
+			this.winApiService = winApiService;
 		}
 
 		protected override async ValueTask ExecuteCoreAsync() {
@@ -47,10 +49,11 @@ namespace UsAcRe.Core.Actions {
 		}
 
 		ValueTask DoKeyPress() {
+			var keyboard = new Keyboard(winApiService);
 			if(!this.IsUp) {
-				Keyboard.Press((Key)this.VKCode);
+				keyboard.Press(VKCode);
 			} else if(this.IsUp) {
-				Keyboard.Release((Key)this.VKCode);
+				keyboard.Release(VKCode);
 			}
 			return new ValueTask(Task.CompletedTask);
 		}

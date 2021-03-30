@@ -41,12 +41,12 @@ namespace UsAcRe.Recorder.UI {
 			ActionsList.IsEnabled = false;
 			this.ResizeMode = ResizeMode.NoResize;
 			MainMenu.IsStopped = false;
-			TestsLaunchingService.Record();
+			testsLaunchingService.Record();
 		}
 
 		void StopHooks() {
 			logger.Warn("Stop");
-			TestsLaunchingService.Stop();
+			testsLaunchingService.Stop();
 			MouseHook.OnMouseClick -= MouseClickHook;
 			MouseHook.OnMouseStartDrag -= MouseStartDragHook;
 			MouseHook.OnMouseDrag -= MouseDragHook;
@@ -70,80 +70,76 @@ namespace UsAcRe.Recorder.UI {
 		}
 
 		void MouseClickHook(object sender, MouseClickEventArgs e) {
-			Dispatcher.BeginInvoke((Action<MouseClickEventArgs>)((args) => {
-				if(IsRestrictedArea(args.Coord)) {
-					return;
-				}
-				if(elementFromPoint != null) {
-					Actions.Add(ElementMatchAction.Record(elementFromPoint.TreeOfSpecificUiElement.Program, elementFromPoint.TreeOfSpecificUiElement));
-					CloseMouseClickBlocker();
-					TestsLaunchingService.CloseHighlighter();
-					elementFromPoint = null;
-				}
-				Actions.Add(MouseClickAction.Record(args.Button, args.Coord, args.DoubleClick));
-			}), e);
+			if(IsRestrictedArea(e.Coord)) {
+				return;
+			}
+			if(elementFromPoint != null) {
+				Actions.Add(ElementMatchAction.Record(elementFromPoint.TreeOfSpecificUiElement.Program, elementFromPoint.TreeOfSpecificUiElement));
+				CloseMouseClickBlocker();
+				testsLaunchingService.CloseHighlighter();
+				elementFromPoint = null;
+			}
+			Actions.Add(MouseClickAction.Record(e.Button, e.Coord, e.DoubleClick));
 		}
 
 		void MouseStartDragHook(object sender, MouseStartDragEventArgs e) {
-			Dispatcher.BeginInvoke((Action<MouseStartDragEventArgs>)((args) => {
-				if(IsRestrictedArea(args.Coord)) {
-					return;
-				}
-				if(elementFromPoint != null) {
-					Actions.Add(ElementMatchAction.Record(elementFromPoint.TreeOfSpecificUiElement.Program, elementFromPoint.TreeOfSpecificUiElement));
-					CloseMouseClickBlocker();
-					TestsLaunchingService.CloseHighlighter();
-					elementFromPoint = null;
-				}
-			}), e);
+			if(IsRestrictedArea(e.Coord)) {
+				return;
+			}
+			if(elementFromPoint != null) {
+				Actions.Add(ElementMatchAction.Record(elementFromPoint.TreeOfSpecificUiElement.Program, elementFromPoint.TreeOfSpecificUiElement));
+				CloseMouseClickBlocker();
+				testsLaunchingService.CloseHighlighter();
+				elementFromPoint = null;
+			}
 		}
 
 		void MouseDragHook(object sender, MouseDragEventArgs e) {
-			Dispatcher.BeginInvoke((Action<MouseDragEventArgs>)((args) => {
-				if(IsRestrictedArea(args.StartCoord)) {
-					return;
-				}
-				Actions.Add(MouseDragAction.Record(args.Button, args.StartCoord, args.EndCoord));
-			}), e);
+			if(IsRestrictedArea(e.StartCoord)) {
+				return;
+			}
+			Actions.Add(MouseDragAction.Record(e.Button, e.StartCoord, e.EndCoord));
 		}
 
 		void MouseMoveHook(object sender, MouseMoveArgs e) {
-			Dispatcher.BeginInvoke((Action<MouseMoveArgs>)((args) => {
-				if(elementFromPoint != null) {
-					elementFromPoint.BreakOperations();
-					elementFromPoint = null;
-				}
+			if(elementFromPoint != null) {
+				elementFromPoint.BreakOperations();
+				elementFromPoint = null;
+			}
 
-				if(args.Stopped && !IsRestrictedArea(args.Coord)) {
-					ShowMouseClickBlocker(args.Coord);
-					elementFromPoint = new ElementFromPoint(AutomationElementService, WinApiService, args.Coord, true);
-					TestsLaunchingService.HighlightElement(elementFromPoint.TreeOfSpecificUiElement.BoundingRectangle);
-					CloseMouseClickBlocker();
-					//logger.Info("elementFromPoint {0}", elementFromPoint == null);
-				} else {
-					TestsLaunchingService.CloseHighlighter();
-					CloseMouseClickBlocker();
-				}
-			}), e);
+			if(e.Stopped && !IsRestrictedArea(e.Coord)) {
+				ShowMouseClickBlocker(e.Coord);
+				var tmpElem = new ElementFromPoint(automationElementService, winApiService, e.Coord, true);
+				testsLaunchingService.HighlightElement(tmpElem.TreeOfSpecificUiElement.BoundingRectangle);
+				elementFromPoint = tmpElem;
+				CloseMouseClickBlocker();
+			} else {
+				testsLaunchingService.CloseHighlighter();
+				CloseMouseClickBlocker();
+			}
 		}
 
 		void ShowMouseClickBlocker(WinAPI.POINT coord) {
-			CloseMouseClickBlocker();
-			mouseClickBlocker = new ElementHighlighter(new System.Windows.Rect(coord.x - 3, coord.y - 3, 6, 6));
-			mouseClickBlocker.StartHighlighting();
+			windowsFormsService.BeginInvoke((Action)(() => {
+				mouseClickBlocker?.StopHighlighting();
+				mouseClickBlocker = new ElementHighlighter(new System.Windows.Rect(coord.x - 3, coord.y - 3, 6, 6));
+				mouseClickBlocker.StartHighlighting();
+			}));
 		}
 
 		void CloseMouseClickBlocker() {
-			if(mouseClickBlocker != null) {
-				mouseClickBlocker.StopHighlighting();
-				mouseClickBlocker = null;
-			}
+			windowsFormsService.BeginInvoke((Action)(() => {
+				if(mouseClickBlocker != null) {
+					mouseClickBlocker.StopHighlighting();
+					mouseClickBlocker = null;
+				}
+			}));
 		}
 
 		void KeyboardEvent(object sender, RawKeyEventArgs e) {
 			if(!MainMenu.miStartStop.IsChecked) {
 				if(e.VKCode == KeyboardHook.KeyStartStop) {
-					TestsLaunchingService.Stop();
+					testsLaunchingService.Stop();
 				}
 				return;
 			}
@@ -153,20 +149,18 @@ namespace UsAcRe.Recorder.UI {
 				return;
 			}
 
-			Dispatcher.BeginInvoke((Action<RawKeyEventArgs>)((args) => {
-				if(elementFromPoint != null) {
-					elementFromPoint.BreakOperations();
-					elementFromPoint = null;
-				}
+			if(elementFromPoint != null) {
+				elementFromPoint.BreakOperations();
+				elementFromPoint = null;
+			}
 
-				WinAPI.GetCursorPos(out WinAPI.POINT pt);
+			WinAPI.GetCursorPos(out WinAPI.POINT pt);
 
-				if(!IsRestrictedArea(pt)) {
-					Actions.Add(KeybdAction.Record(args.VKCode, e.IsUp));
-				}
-				CloseMouseClickBlocker();
-				TestsLaunchingService.CloseHighlighter();
-			}), e);
+			if(!IsRestrictedArea(pt)) {
+				Actions.Add(KeybdAction.Record(e.VKCode, e.IsUp));
+			}
+			CloseMouseClickBlocker();
+			testsLaunchingService.CloseHighlighter();
 		}
 
 	}

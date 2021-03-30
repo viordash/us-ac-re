@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Automation;
 using System.Windows.Forms;
-using NGuard;
+using GuardNet;
 using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Extensions;
 using UsAcRe.Core.MouseProcess;
@@ -52,14 +52,17 @@ namespace UsAcRe.Core.Actions {
 		int stepWaitAppear;
 
 		readonly IAutomationElementService automationElementService;
+		readonly IWinApiService winApiService;
 
 		public ElementMatchAction(
 			IAutomationElementService automationElementService,
 			ISettingsService settingsService,
 			ITestsLaunchingService testsLaunchingService,
-			IFileService fileService) : base(settingsService, testsLaunchingService, fileService) {
-			Guard.Requires(automationElementService, nameof(automationElementService));
+			IFileService fileService,
+			IWinApiService winApiService) : base(settingsService, testsLaunchingService, fileService) {
+			Guard.NotNull(automationElementService, nameof(automationElementService));
 			this.automationElementService = automationElementService;
+			this.winApiService = winApiService;
 		}
 
 		protected override async ValueTask ExecuteCoreAsync() {
@@ -71,9 +74,11 @@ namespace UsAcRe.Core.Actions {
 					throw new OperationCanceledException(this.ToString());
 				}
 				var requiredElement = GetElement();
-				if(requiredElement?.Element != null) {
+				if(stepWaitAppear > 0
+					&& requiredElement?.Element != null
+					&& automationElementService.IsClickable(requiredElement?.Element)) {
 					OffsetPoint = GetClickablePointOffset(MatchedElement, requiredElement.Element);
-					MouseHover.MoveTo(requiredElement.Element.BoundingRectangle.Value.Location);
+					await new MouseHover(winApiService).MoveTo(requiredElement.Element.BoundingRectangle.Value.Location);
 					break;
 				}
 				await WaitAppearElement(requiredElement);
@@ -124,9 +129,13 @@ namespace UsAcRe.Core.Actions {
 			var clickableRect = rect;
 			clickableRect.Offset(clickableRect.Width / 2, clickableRect.Height / 2);
 			testsLaunchingService.CloseHighlighter();
-			await MouseHover.Perform(clickableRect.Location, stepWaitAppear, 10);
+			if(stepWaitAppear > 0) {
+				await new MouseHover(winApiService).Perform(clickableRect.Location, stepWaitAppear, 10);
+			} else {
+				await new MouseHover(winApiService).MoveTo(clickableRect.Location);
+			}
 			testsLaunchingService.OpenHighlighter(rect, MatchedElement.ToShortString());
-			var period = Math.Min(200 + (stepWaitAppear * 100), 1000);
+			var period = Math.Min(10 + (stepWaitAppear * 100), 1000);
 			await Task.Delay(period);
 			stepWaitAppear++;
 		}

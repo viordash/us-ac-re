@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using NGuard;
+using GuardNet;
 using UsAcRe.Core.Scripts;
 using UsAcRe.Core.Services;
 
@@ -38,7 +38,7 @@ namespace UsAcRe.Core.Actions {
 			ISettingsService settingsService,
 			ITestsLaunchingService testsLaunchingService,
 			IFileService fileService) : base(settingsService, testsLaunchingService, fileService) {
-			Guard.Requires(scriptCompiler, nameof(scriptCompiler));
+			Guard.NotNull(scriptCompiler, nameof(scriptCompiler));
 			this.scriptCompiler = scriptCompiler;
 		}
 

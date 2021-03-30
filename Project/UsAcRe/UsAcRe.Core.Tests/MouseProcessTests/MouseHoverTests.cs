@@ -1,21 +1,24 @@
 ﻿using System.Diagnostics;
 using System.Threading.Tasks;
+using Moq;
 using NUnit.Framework;
 using UsAcRe.Core.MouseProcess;
+using UsAcRe.Core.Services;
+using UsAcRe.Core.Tests.ActionsTests;
 using UsAcRe.Core.WindowsSystem;
 
 namespace UsAcRe.Core.Tests.MouseProcessTests {
 	[TestFixture]
-	public class MouseHoverTests {
+	public class MouseHoverTests : Testable {
 
 		[SetUp]
-		public void Setup() {
-
+		public override void Setup() {
+			base.Setup();
 		}
 
 		[TearDown]
-		public void TearDown() {
-
+		public override void TearDown() {
+			base.TearDown();
 		}
 
 
@@ -23,13 +26,20 @@ namespace UsAcRe.Core.Tests.MouseProcessTests {
 		public async Task Perform_Test() {
 			int step = 0;
 
+			winApiServiceMock
+				.Setup(x => x.SendMouseInput(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<uint>(), It.IsAny<WinAPI.SendMouseInputFlags>()))
+				.Callback<int, int, uint, WinAPI.SendMouseInputFlags>((x, y, data, flags) => {
+					new WinApiService().SendMouseInput(x, y, data, flags);
+				});
+
+
 			WinAPI.SetCursorPos(800 - 50, 600 - 50);
 
 			var stopwatch = Stopwatch.StartNew();
 			WinAPI.GetCursorPos(out WinAPI.POINT startPt);
 			for(int i = 0; i < 4; i++) {
 				var point = new System.Windows.Point(startPt.x, startPt.y);
-				await MouseHover.Perform(point, step, 1);
+				await new MouseHover(winApiServiceMock.Object).Perform(point, step, 1);
 				step += 4;
 			}
 

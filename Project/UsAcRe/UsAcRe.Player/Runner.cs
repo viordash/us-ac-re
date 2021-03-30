@@ -2,9 +2,9 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using CommonServiceLocator;
 using UsAcRe.Core.Actions;
 using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Scripts;
@@ -15,6 +15,7 @@ using UsAcRe.Player.Reporters;
 using UsAcRe.Player.Services;
 
 namespace UsAcRe.Player {
+	[SupportedOSPlatform("windows")]
 	public class Runner {
 		readonly NLog.Logger logger = NLog.LogManager.GetLogger("UsAcRe.Player");
 		int hotKey = -1;

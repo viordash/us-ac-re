@@ -1,4 +1,4 @@
-﻿using NGuard;
+﻿using GuardNet;
 using UsAcRe.Core.Actions;
 using UsAcRe.Core.Scripts;
 using UsAcRe.Core.Services;
@@ -15,8 +15,8 @@ namespace UsAcRe.Player.Actions {
 		public ActionsContainer(
 			IScriptBuilder scriptBuilder,
 			IFileService fileService) {
-			Guard.Requires(scriptBuilder, nameof(scriptBuilder));
-			Guard.Requires(fileService, nameof(fileService));
+			Guard.NotNull(scriptBuilder, nameof(scriptBuilder));
+			Guard.NotNull(fileService, nameof(fileService));
 			this.scriptBuilder = scriptBuilder;
 			this.fileService = fileService;
 			Items = new ActionsList();

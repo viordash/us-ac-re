@@ -1,17 +1,18 @@
 ﻿using System.Drawing;
 using System.Threading.Tasks;
-using Microsoft.Test.Input;
 using UsAcRe.Core.Exceptions;
 using UsAcRe.Core.Extensions;
 using UsAcRe.Core.MouseProcess;
 using UsAcRe.Core.Services;
+using UsAcRe.Core.WindowsSystem;
 
 namespace UsAcRe.Core.Actions {
 	public class MouseClickAction : BaseAction {
+		readonly IWinApiService winApiService;
 		public MouseButtonType Button { get; set; }
 		public Point ClickedPoint { get; set; }
 		public bool DoubleClick { get; set; }
-		Point? Offset { get; set; } = null;
+		public Point? Offset { get; set; } = null;
 
 		public static MouseClickAction Record(MouseButtonType button, Point clickedPoint, bool doubleClick) {
 			var instance = CreateInstance<MouseClickAction>();
@@ -32,7 +33,9 @@ namespace UsAcRe.Core.Actions {
 		public MouseClickAction(
 			ISettingsService settingsService,
 			ITestsLaunchingService testsLaunchingService,
-			IFileService fileService) : base(settingsService, testsLaunchingService, fileService) {
+			IFileService fileService,
+			IWinApiService winApiService) : base(settingsService, testsLaunchingService, fileService) {
+			this.winApiService = winApiService;
 		}
 
 		protected override async ValueTask ExecuteCoreAsync() {
@@ -51,7 +54,6 @@ namespace UsAcRe.Core.Actions {
 		}
 
 		async ValueTask DoClick() {
-			await Task.Delay(20);
 			var clickedPoint = ClickedPoint;
 
 			if(testsLaunchingService.LastAction is MouseClickAction prevMouseAction) {
@@ -63,6 +65,8 @@ namespace UsAcRe.Core.Actions {
 			var actionForDetermineClickPoint = testsLaunchingService.LastAction;
 			if(actionForDetermineClickPoint is MouseClickAction prevMouseAct) {
 				Offset = prevMouseAct.Offset;
+			} else if(actionForDetermineClickPoint is MouseDragAction prevMouseDragAct) {
+				Offset = prevMouseDragAct.Offset;
 			} else if(actionForDetermineClickPoint is ElementMatchAction elementMatchAction) {
 				Offset = new Point((int)elementMatchAction.OffsetPoint.Value.X, (int)elementMatchAction.OffsetPoint.Value.Y);
 			}
@@ -71,39 +75,36 @@ namespace UsAcRe.Core.Actions {
 			}
 
 			testsLaunchingService.CloseHighlighter();
+			var mouse = new Mouse(winApiService);
 			//MainForm.MoveOutFromPoint(clickedPoint.X, clickedPoint.Y);
 			switch(Button) {
 				case MouseButtonType.Left:
-					Mouse_MoveTo(clickedPoint.X, clickedPoint.Y);
+					await mouse.MoveTo(clickedPoint.X, clickedPoint.Y);
 					if(DoubleClick) {
-						Mouse.DoubleClick(MouseButton.Left);
+						await mouse.DoubleClick(Mouse.Button.Left);
 					} else {
-						Mouse.Click(MouseButton.Left);
+						await mouse.Click(Mouse.Button.Left);
 					}
 					break;
 				case MouseButtonType.Right:
-					Mouse_MoveTo(clickedPoint.X, clickedPoint.Y);
+					await mouse.MoveTo(clickedPoint.X, clickedPoint.Y);
 					if(DoubleClick) {
-						Mouse.DoubleClick(MouseButton.Right);
+						await mouse.DoubleClick(Mouse.Button.Right);
 					} else {
-						Mouse.Click(MouseButton.Right);
+						await mouse.Click(Mouse.Button.Right);
 					}
 					break;
 				case MouseButtonType.Middle:
-					Mouse_MoveTo(clickedPoint.X, clickedPoint.Y);
+					await mouse.MoveTo(clickedPoint.X, clickedPoint.Y);
 					if(DoubleClick) {
-						Mouse.DoubleClick(MouseButton.Middle);
+						await mouse.DoubleClick(Mouse.Button.Middle);
 					} else {
-						Mouse.Click(MouseButton.Middle);
+						await mouse.Click(Mouse.Button.Middle);
 					}
 					break;
 				default:
 					throw new SevereException(this, nameof(DoClick));
 			}
-		}
-
-		void Mouse_MoveTo(int x, int y) {
-			Mouse.MoveTo(new Point(x, y));
 		}
 	}
 }
