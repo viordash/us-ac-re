@@ -6,23 +6,27 @@
 <BlazoredMenu MenuBuilder="@MenuBuilder" />
 
 @code {
+    [CascadingParameter] Task<AuthenticationState> authenticationStateTask { get; set; }
     MenuBuilder MenuBuilder = new MenuBuilder();
 
-    protected override void OnInitialized() {
-        MenuBuilder.AddItem(1, "Home", "/", match: NavLinkMatch.All)
-                   .AddItem(2, "Counter", "counter", isEnabled: false)
-                   .AddSubMenu(3, "Sub Menu", new MenuBuilder()
-                        .AddItem(1, "Counter", "counter")
-                        .AddItem(2, "Fetch Data", "fetchdata", isEnabled: false)
-                        .AddItem(3, "You Can't See Me", "invisible", isVisible: false))
-                   .AddItem(4, "FetchData", "fetchdata")
-                   .AddIconCssToClose("oi oi-caret-bottom pt-3")
-                   .AddIconCssToOpen("oi oi-caret-right pt-3");
+    protected override async Task OnInitializedAsync() {
+        var authState = await authenticationStateTask;
+        var user = authState.User;
 
-        MenuBuilder.AddSubMenu(5, "Administration", new MenuBuilder()
-            .AddItem(1, "Users list", "counter")
-            .AddItem(2, "Fetch Data", "fetchdata", isEnabled: false)
-            .AddItem(3, "You Can't See Me", "invisible", isVisible: false)
-        );
+        MenuBuilder.AddItem(1, "Home", "/", match: NavLinkMatch.All)
+               .AddItem(2, "Counter", "counter", isEnabled: false)
+               .AddSubMenu(3, "Sub Menu", new MenuBuilder()
+                    .AddItem(1, "Counter", "counter")
+                    .AddItem(2, "Fetch Data", "fetchdata", isEnabled: false)
+                    .AddItem(3, "You Can't See Me", "invisible", isVisible: false))
+               .AddItem(4, "FetchData", "fetchdata")
+               .AddIconCssToClose("oi oi-caret-bottom pt-3")
+               .AddIconCssToOpen("oi oi-caret-right pt-3");
+
+        if(user.Identity.IsAuthenticated) {
+            MenuBuilder.AddSubMenu(5, "Administration", new MenuBuilder()
+                .AddItem(1, "List of users", "users/list")
+            );
+        }
     }
 }
