@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Radzen;
 
 namespace UsAcRe.Web.Client {
 	public class Program {
@@ -22,6 +23,11 @@ namespace UsAcRe.Web.Client {
 			builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("UsAcRe.Web.ServerAPI"));
 
 			builder.Services.AddApiAuthorization();
+
+			builder.Services.AddScoped<DialogService>();
+			builder.Services.AddScoped<NotificationService>();
+			builder.Services.AddScoped<TooltipService>();
+			builder.Services.AddScoped<ContextMenuService>();
 
 			await builder.Build().RunAsync();
 		}

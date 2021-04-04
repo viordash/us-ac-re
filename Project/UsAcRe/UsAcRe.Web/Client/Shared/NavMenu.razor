@@ -1,32 +1,22 @@
 ﻿
-<div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" href="">UsAcRe.Web</a>
-</div>
+<RadzenPanelMenu>
+    <ChildContent>
+        <RadzenPanelMenuItem Text="Home" Icon="home" Path="/" />
 
-<BlazoredMenu MenuBuilder="@MenuBuilder" />
+        <RadzenPanelMenuItem Text="General" Icon="settings">
+            <RadzenPanelMenuItem Text="Counter" Path="counter" Icon="account_circle"></RadzenPanelMenuItem>
+            <RadzenPanelMenuItem Text="Fetch Data" Path="fetchdata" Icon="line_weight"></RadzenPanelMenuItem>
+        </RadzenPanelMenuItem>
 
-@code {
-    [CascadingParameter] Task<AuthenticationState> authenticationStateTask { get; set; }
-    MenuBuilder MenuBuilder = new MenuBuilder();
+        <AuthorizeView>
+            <Authorized>
+                <RadzenPanelMenuItem Text="Administration" Icon="account_circle">
+                    <RadzenPanelMenuItem Text="Item1"></RadzenPanelMenuItem>
+                    <RadzenPanelMenuItem Text="Users" Path="users/list" Icon="manage_accounts"></RadzenPanelMenuItem>
+                    <RadzenPanelMenuItem Text="Roles" Path="users/roles" Icon="groups"></RadzenPanelMenuItem>
+                </RadzenPanelMenuItem>
+            </Authorized>
+        </AuthorizeView>
+    </ChildContent>
+</RadzenPanelMenu>
 
-    protected override async Task OnInitializedAsync() {
-        var authState = await authenticationStateTask;
-        var user = authState.User;
-
-        MenuBuilder.AddItem(1, "Home", "/", match: NavLinkMatch.All)
-               .AddItem(2, "Counter", "counter", isEnabled: false)
-               .AddSubMenu(3, "Sub Menu", new MenuBuilder()
-                    .AddItem(1, "Counter", "counter")
-                    .AddItem(2, "Fetch Data", "fetchdata", isEnabled: false)
-                    .AddItem(3, "You Can't See Me", "invisible", isVisible: false))
-               .AddItem(4, "FetchData", "fetchdata")
-               .AddIconCssToClose("oi oi-caret-bottom pt-3")
-               .AddIconCssToOpen("oi oi-caret-right pt-3");
-
-        if(user.Identity.IsAuthenticated) {
-            MenuBuilder.AddSubMenu(5, "Administration", new MenuBuilder()
-                .AddItem(1, "List of users", "users/list")
-            );
-        }
-    }
-}
