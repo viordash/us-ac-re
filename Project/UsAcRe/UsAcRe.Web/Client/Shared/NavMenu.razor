@@ -1,37 +1,28 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
+﻿
+<div class="top-row pl-4 navbar navbar-dark">
     <a class="navbar-brand" href="">UsAcRe.Web</a>
-    <button class="navbar-toggler" @onclick="ToggleNavMenu">
-        <span class="navbar-toggler-icon"></span>
-    </button>
 </div>
 
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <ul class="nav flex-column">
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="fetchdata">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
-            </NavLink>
-        </li>
-    </ul>
-</div>
+<BlazoredMenu MenuBuilder="@MenuBuilder" />
 
 @code {
-    private bool collapseNavMenu = true;
+    MenuBuilder MenuBuilder = new MenuBuilder();
 
-    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    protected override void OnInitialized() {
+        MenuBuilder.AddItem(1, "Home", "/", match: NavLinkMatch.All)
+                   .AddItem(2, "Counter", "counter", isEnabled: false)
+                   .AddSubMenu(3, "Sub Menu", new MenuBuilder()
+                        .AddItem(1, "Counter", "counter")
+                        .AddItem(2, "Fetch Data", "fetchdata", isEnabled: false)
+                        .AddItem(3, "You Can't See Me", "invisible", isVisible: false))
+                   .AddItem(4, "FetchData", "fetchdata")
+                   .AddIconCssToClose("oi oi-caret-bottom pt-3")
+                   .AddIconCssToOpen("oi oi-caret-right pt-3");
 
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
+        MenuBuilder.AddSubMenu(5, "Administration", new MenuBuilder()
+            .AddItem(1, "Users list", "counter")
+            .AddItem(2, "Fetch Data", "fetchdata", isEnabled: false)
+            .AddItem(3, "You Can't See Me", "invisible", isVisible: false)
+        );
     }
 }
