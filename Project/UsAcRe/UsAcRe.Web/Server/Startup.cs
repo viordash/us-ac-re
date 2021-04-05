@@ -7,12 +7,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using UsAcRe.Web.Server.Data;
 using UsAcRe.Web.Server.Models;
+using UsAcRe.Web.Server.Services;
 
 namespace UsAcRe.Web.Server {
 	public class Startup {
 		public Startup(IConfiguration configuration) {
 			Configuration = configuration;
-			}
+		}
 
 		public IConfiguration Configuration { get; }
 
@@ -36,7 +37,9 @@ namespace UsAcRe.Web.Server {
 
 			services.AddControllersWithViews();
 			services.AddRazorPages();
-			}
+
+			services.AddTransient<IUserAccountManagementService, UserAccountManagementService>();
+		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
@@ -44,11 +47,11 @@ namespace UsAcRe.Web.Server {
 				app.UseDeveloperExceptionPage();
 				app.UseMigrationsEndPoint();
 				app.UseWebAssemblyDebugging();
-				} else {
+			} else {
 				app.UseExceptionHandler("/Error");
 				// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
 				app.UseHsts();
-				}
+			}
 
 			app.UseHttpsRedirection();
 			app.UseBlazorFrameworkFiles();
@@ -65,6 +68,6 @@ namespace UsAcRe.Web.Server {
 				endpoints.MapControllers();
 				endpoints.MapFallbackToFile("index.html");
 			});
-			}
 		}
 	}
+}
