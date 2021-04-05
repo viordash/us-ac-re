@@ -7,44 +7,31 @@
 
 <h1>List of users</h1>
 
-<p>This component demonstrates fetching data from the server.</p>
+<RadzenGrid Count="@count" Data="@users" LoadData="@LoadData" AllowSorting="true" AllowFiltering="true" AllowPaging="true" PageSize="4" TItem="UserAccountModel" ColumnWidth="200px">
+    <Columns>
+        <RadzenGridColumn TItem="UserAccountModel" Property="UserName" Title="UserName" />
 
-@if(users == null) {
-    <p><em>Loading...</em></p>
-} else {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>UserName</th>
-                <th>Email</th>
-                <th>EmailConfirmed</th>
-                <th>AccessFailedCount</th>
-                <th>Role</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach(var user in users) {
-                <tr>
-                    <td>@user.UserName</td>
-                    <td>@user.Email</td>
-                    <td>@user.EmailConfirmed</td>
-                    <td>@user.AccessFailedCount</td>
-                    <td>@user.Role</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
+        <RadzenGridColumn TItem="UserAccountModel" Property="Email" Title="Email" />
+        <RadzenGridColumn TItem="UserAccountModel" Property="EmailConfirmed" Title="First Name" Filterable="false" />
+        <RadzenGridColumn TItem="UserAccountModel" Property="AccessFailedCount" Title="AccessFailedCount" />
+        <RadzenGridColumn TItem="UserAccountModel" Property="Role" Title="Role" />
+
+    </Columns>
+</RadzenGrid>
+
 
 @code {
-    private UserAccountModel[] users;
+    IEnumerable<UserAccountModel> users;
+    int count;
 
-    protected override async Task OnInitializedAsync() {
+    async Task LoadData(LoadDataArgs args) {
         try {
-            users = await Http.GetFromJsonAsync<UserAccountModel[]>("users");
+            var response = await Http.PostAsJsonAsync("users", args);
+            users = await response.Content.ReadFromJsonAsync<IEnumerable<UserAccountModel>>();
+            count = users.Count();
+            await InvokeAsync(StateHasChanged);
         } catch(AccessTokenNotAvailableException exception) {
             exception.Redirect();
         }
     }
-
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Radzen;
 using UsAcRe.Web.Shared.Models;
 
 namespace UsAcRe.Web.Server.Controllers {
@@ -17,8 +18,8 @@ namespace UsAcRe.Web.Server.Controllers {
 			this.logger = logger;
 		}
 
-		[HttpGet]
-		public IEnumerable<UserAccountModel> Get() {
+		[HttpPost]
+		public IEnumerable<UserAccountModel> Users(LoadDataArgs args) {
 			var rng = new Random();
 			return Enumerable.Range(1, 5).Select(index => new UserAccountModel {
 				UserName = DateTime.Now.AddDays(index).ToShortDateString(),
