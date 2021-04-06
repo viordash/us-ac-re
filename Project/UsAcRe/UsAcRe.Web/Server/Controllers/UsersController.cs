@@ -12,24 +12,20 @@ using UsAcRe.Web.Shared.Models;
 namespace UsAcRe.Web.Server.Controllers {
 	[Authorize]
 	[ApiController]
-	[Route("[controller]")]
+	[Route("[controller]/[action]")]
 	public class UsersController : ControllerBase {
-		readonly ILogger<UsersController> logger;
 		readonly IUserAccountManagementService userAccountManagementService;
 
 		public UsersController(
-			ILogger<UsersController> logger,
 			IUserAccountManagementService userAccountManagementService
 			) {
-			Guard.NotNull(logger, nameof(logger));
 			Guard.NotNull(userAccountManagementService, nameof(userAccountManagementService));
-			this.logger = logger;
 			this.userAccountManagementService = userAccountManagementService;
 		}
 
 		[HttpPost]
-		public IEnumerable<UserAccountModel> Users(LoadDataArgs loadDataArgs) {
-			return userAccountManagementService.List(loadDataArgs);
+		public IEnumerable<UserAccountModel> List(LoadDataArgs loadDataArgs) {
+			return userAccountManagementService.UsersList(loadDataArgs);
 		}
 	}
 }

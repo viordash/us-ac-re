@@ -1,16 +1,14 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
-using System.Collections.Generic;
 using GuardNet;
-using Microsoft.EntityFrameworkCore;
 using Radzen;
 using UsAcRe.Web.Server.Data;
 using UsAcRe.Web.Shared.Models;
 
 namespace UsAcRe.Web.Server.Services {
 	public interface IUserAccountManagementService {
-		IEnumerable<UserAccountModel> List(LoadDataArgs loadDataArgs);
+		IEnumerable<UserAccountModel> UsersList(LoadDataArgs loadDataArgs);
 	}
 
 	public class UserAccountManagementService : IUserAccountManagementService {
@@ -21,7 +19,7 @@ namespace UsAcRe.Web.Server.Services {
 			this.dbContext = dbContext;
 		}
 
-		public IEnumerable<UserAccountModel> List(LoadDataArgs loadDataArgs) {
+		public IEnumerable<UserAccountModel> UsersList(LoadDataArgs loadDataArgs) {
 			var query = dbContext.Users.AsQueryable();
 
 			if(!string.IsNullOrEmpty(loadDataArgs.Filter)) {
