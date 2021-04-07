@@ -1,0 +1,33 @@
+﻿@page "/roles/list"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using UsAcRe.Web.Shared.Models
+@attribute [Authorize]
+@inject HttpClient Http
+
+<h1>List of roles</h1>
+
+<RadzenGrid Count="@count" Data="@roles" LoadData="@LoadData" AllowSorting="true" AllowFiltering="true" AllowPaging="true" PageSize="4" TItem="RoleModel">
+    <Columns>
+        <RadzenGridColumn TItem="RoleModel" Property="Id" Title="Id" Filterable="false" Visible="true" />
+        <RadzenGridColumn TItem="RoleModel" Property="Name" Title="Name" />
+
+    </Columns>
+</RadzenGrid>
+
+
+@code {
+    IEnumerable<RoleModel> roles;
+    int count;
+
+    async Task LoadData(LoadDataArgs args) {
+        try {
+            var response = await Http.PostAsJsonAsync("/roles/list", args);
+            roles = await response.Content.ReadFromJsonAsync<IEnumerable<RoleModel>>();
+            count = roles.Count();
+            await InvokeAsync(StateHasChanged);
+        } catch(AccessTokenNotAvailableException exception) {
+            exception.Redirect();
+        }
+    }
+}
