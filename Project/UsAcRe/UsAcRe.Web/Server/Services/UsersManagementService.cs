@@ -26,11 +26,15 @@ namespace UsAcRe.Web.Server.Services {
 				query = query.Where(loadDataArgs.Filter);
 			}
 
+			string orderField;
 			if(!string.IsNullOrEmpty(loadDataArgs.OrderBy)) {
-				query = query.OrderBy(loadDataArgs.OrderBy);
+				orderField = loadDataArgs.OrderBy;
+			} else {
+				orderField = $"{nameof(UserModel.Email)} asc";
 			}
 
 			return query
+				.OrderBy(orderField)
 				.Skip(loadDataArgs.Skip.Value)
 				.Take(loadDataArgs.Top.Value)
 				.Select(x => new UserModel() {
