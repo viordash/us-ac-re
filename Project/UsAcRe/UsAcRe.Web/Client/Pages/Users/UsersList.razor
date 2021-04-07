@@ -7,27 +7,25 @@
 
 <h1>List of users</h1>
 
-<RadzenGrid Count="@count" Data="@users" LoadData="@LoadData" AllowSorting="true" AllowFiltering="true" AllowPaging="true" PageSize="4" TItem="UserAccountModel" ColumnWidth="200px">
+<RadzenGrid Count="@count" Data="@users" LoadData="@LoadData" AllowSorting="true" AllowFiltering="true" AllowPaging="true" PageSize="10" TItem="UserModel">
     <Columns>
-        <RadzenGridColumn TItem="UserAccountModel" Property="UserName" Title="UserName" />
-
-        <RadzenGridColumn TItem="UserAccountModel" Property="Email" Title="Email" />
-        <RadzenGridColumn TItem="UserAccountModel" Property="EmailConfirmed" Title="First Name" Filterable="false" />
-        <RadzenGridColumn TItem="UserAccountModel" Property="AccessFailedCount" Title="AccessFailedCount" />
-        <RadzenGridColumn TItem="UserAccountModel" Property="Role" Title="Role" />
+        <RadzenGridColumn TItem="UserModel" Property="Id" Title="Id" Filterable="false" Visible="true" />
+        <RadzenGridColumn TItem="UserModel" Property="UserName" Title="UserName" />
+        <RadzenGridColumn TItem="UserModel" Property="Email" Title="Email" />
+        <RadzenGridColumn TItem="UserModel" Property="Role" Title="Role" />
 
     </Columns>
 </RadzenGrid>
 
 
 @code {
-    IEnumerable<UserAccountModel> users;
+    IEnumerable<UserModel> users;
     int count;
 
     async Task LoadData(LoadDataArgs args) {
         try {
             var response = await Http.PostAsJsonAsync("/users/list", args);
-            users = await response.Content.ReadFromJsonAsync<IEnumerable<UserAccountModel>>();
+            users = await response.Content.ReadFromJsonAsync<IEnumerable<UserModel>>();
             count = users.Count();
             await InvokeAsync(StateHasChanged);
         } catch(AccessTokenNotAvailableException exception) {

@@ -38,7 +38,7 @@ namespace UsAcRe.Web.Server {
 			services.AddControllersWithViews();
 			services.AddRazorPages();
 
-			services.AddTransient<IUserAccountManagementService, UserAccountManagementService>();
+			services.AddTransient<IUsersManagementService, UsersManagementService>();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

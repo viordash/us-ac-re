@@ -7,19 +7,19 @@ using UsAcRe.Web.Server.Data;
 using UsAcRe.Web.Shared.Models;
 
 namespace UsAcRe.Web.Server.Services {
-	public interface IUserAccountManagementService {
-		IEnumerable<UserAccountModel> UsersList(LoadDataArgs loadDataArgs);
+	public interface IUsersManagementService {
+		IEnumerable<UserModel> List(LoadDataArgs loadDataArgs);
 	}
 
-	public class UserAccountManagementService : IUserAccountManagementService {
+	public class UsersManagementService : IUsersManagementService {
 		readonly ApplicationDbContext dbContext;
 
-		public UserAccountManagementService(ApplicationDbContext dbContext) {
+		public UsersManagementService(ApplicationDbContext dbContext) {
 			Guard.NotNull(dbContext, nameof(dbContext));
 			this.dbContext = dbContext;
 		}
 
-		public IEnumerable<UserAccountModel> UsersList(LoadDataArgs loadDataArgs) {
+		public IEnumerable<UserModel> List(LoadDataArgs loadDataArgs) {
 			var query = dbContext.Users.AsQueryable();
 
 			if(!string.IsNullOrEmpty(loadDataArgs.Filter)) {
@@ -33,11 +33,10 @@ namespace UsAcRe.Web.Server.Services {
 			return query
 				.Skip(loadDataArgs.Skip.Value)
 				.Take(loadDataArgs.Top.Value)
-				.Select(x => new UserAccountModel() {
+				.Select(x => new UserModel() {
+					Id = x.Id,
 					UserName = x.UserName,
 					Email = x.Email,
-					AccessFailedCount = x.AccessFailedCount,
-					EmailConfirmed = x.EmailConfirmed,
 					Role = x.Id
 				});
 		}

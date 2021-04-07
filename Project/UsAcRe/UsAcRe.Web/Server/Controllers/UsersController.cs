@@ -14,18 +14,18 @@ namespace UsAcRe.Web.Server.Controllers {
 	[ApiController]
 	[Route("[controller]/[action]")]
 	public class UsersController : ControllerBase {
-		readonly IUserAccountManagementService userAccountManagementService;
+		readonly IUsersManagementService userManagementService;
 
 		public UsersController(
-			IUserAccountManagementService userAccountManagementService
+			IUsersManagementService userManagementService
 			) {
-			Guard.NotNull(userAccountManagementService, nameof(userAccountManagementService));
-			this.userAccountManagementService = userAccountManagementService;
+			Guard.NotNull(userManagementService, nameof(userManagementService));
+			this.userManagementService = userManagementService;
 		}
 
 		[HttpPost]
-		public IEnumerable<UserAccountModel> List(LoadDataArgs loadDataArgs) {
-			return userAccountManagementService.UsersList(loadDataArgs);
+		public IEnumerable<UserModel> List(LoadDataArgs loadDataArgs) {
+			return userManagementService.List(loadDataArgs);
 		}
 	}
 }
