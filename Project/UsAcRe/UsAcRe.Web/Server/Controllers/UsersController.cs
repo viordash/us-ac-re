@@ -27,5 +27,10 @@ namespace UsAcRe.Web.Server.Controllers {
 		public IEnumerable<UserModel> List(LoadDataArgs loadDataArgs) {
 			return userManagementService.List(loadDataArgs);
 		}
+
+		[HttpGet("{id}")]
+		public UserModel Get(string id) {
+			return userManagementService.Get(id);
+		}
 	}
 }
