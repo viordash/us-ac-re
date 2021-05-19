@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
+using System.Threading.Tasks;
 using GuardNet;
+using Microsoft.EntityFrameworkCore;
 using Radzen;
 using UsAcRe.Web.Server.Data;
 using UsAcRe.Web.Server.Models;
@@ -10,8 +12,9 @@ using UsAcRe.Web.Shared.Models;
 
 namespace UsAcRe.Web.Server.Services {
 	public interface IUsersManagementService {
-		IEnumerable<UserModel> List(LoadDataArgs loadDataArgs);
-		UserModel Get(string id);
+		Task<IEnumerable<UserModel>> List(LoadDataArgs loadDataArgs);
+		Task<UserModel> Get(string id);
+		void Edit(UserModel user);
 	}
 
 	public class UsersManagementService : IUsersManagementService {
@@ -22,15 +25,19 @@ namespace UsAcRe.Web.Server.Services {
 			this.dbContext = dbContext;
 		}
 
-		public UserModel Get(string id) {
-			var user = dbContext.Users.Find(id);
+		public void Edit(UserModel user) {
+			throw new System.NotImplementedException();
+		}
+
+		public async Task<UserModel> Get(string id) {
+			var user = await dbContext.Users.FindAsync(id);
 			if(user == null) {
 				throw new ObjectNotFoundException();
 			}
 			return MapUser(user);
 		}
 
-		public IEnumerable<UserModel> List(LoadDataArgs loadDataArgs) {
+		public async Task<IEnumerable<UserModel>> List(LoadDataArgs loadDataArgs) {
 			var query = dbContext.Users.AsQueryable();
 
 			if(!string.IsNullOrEmpty(loadDataArgs.Filter)) {
@@ -44,10 +51,13 @@ namespace UsAcRe.Web.Server.Services {
 				orderField = $"{nameof(UserModel.Email)} asc";
 			}
 
-			return query
+			var qUsers = await query
 				.OrderBy(orderField)
 				.Skip(loadDataArgs.Skip.Value)
 				.Take(loadDataArgs.Top.Value)
+				.ToListAsync();
+
+			return qUsers
 				.Select(MapUser);
 		}
 
