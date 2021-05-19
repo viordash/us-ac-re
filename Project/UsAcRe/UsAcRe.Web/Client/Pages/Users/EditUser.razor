@@ -1,0 +1,95 @@
+﻿@page "/edit-user/{UserId}"
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using UsAcRe.Web.Shared.Models
+@using System.Diagnostics;
+
+@inject HttpClient Http
+@inject DialogService DialogService
+@inject NotificationService NotificationService
+
+
+<RadzenContent Container="main">
+    <ChildContent>
+        <div class="row">
+            <div class="col-md-12">
+                <RadzenTemplateForm TItem="UserModel" Data="@user" Visible="@(user != null)" Submit="@FormSubmit">
+                    <ChildContent>
+                        <div style="margin-bottom: 1rem" class="row">
+                            <div class="col-md-3">
+                                <RadzenLabel Text="User Name" Component="UserName" style="width: 100%">
+                                </RadzenLabel>
+                            </div>
+                            <div class="col-md-9">
+                                <RadzenTextBox MaxLength="255" style="display: block; width: 100%" @bind-Value="@(user.UserName)" Name="UserName">
+                                </RadzenTextBox>
+                                <RadzenRequiredValidator Component="UserName" Text="UserName is required" style="position: absolute">
+                                </RadzenRequiredValidator>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 1rem" class="row">
+                            <div class="col-md-3">
+                                <RadzenLabel Text="Email" Component="Email" style="width: 100%">
+                                </RadzenLabel>
+                            </div>
+                            <div class="col-md-9">
+                                <RadzenTextBox MaxLength="255" style="display: block; width: 100%" @bind-Value="@(user.Email)" Name="Email">
+                                </RadzenTextBox>
+                                <RadzenRequiredValidator Component="Email" Text="Email is required" style="position: absolute">
+                                </RadzenRequiredValidator>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 1rem" class="row">
+                            <div class="col-md-3">
+                                <RadzenLabel Text="Role" Component="Role" style="width: 100%">
+                                </RadzenLabel>
+                            </div>
+                            <div class="col-md-9">
+                                <RadzenTextBox MaxLength="255" style="display: block; width: 100%" @bind-Value="@(user.Role)" Name="Role">
+                                </RadzenTextBox>
+                                <RadzenRequiredValidator Component="Role" Text="Role is required" style="position: absolute">
+                                </RadzenRequiredValidator>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col offset-sm-3">
+                                <RadzenButton ButtonType="ButtonType.Submit" Icon="save" Text="Save" ButtonStyle="ButtonStyle.Primary">
+                                </RadzenButton>
+                                <RadzenButton ButtonStyle="ButtonStyle.Light" style="margin-left: 1rem" Text="Cancel" Click="@CloseForm">
+                                </RadzenButton>
+                            </div>
+                        </div>
+                    </ChildContent>
+                </RadzenTemplateForm>
+            </div>
+        </div>
+    </ChildContent>
+</RadzenContent>
+
+
+
+@code {
+    [Parameter] public string UserId { get; set; }
+    UserModel user;
+
+    protected override async Task OnInitializedAsync() {
+        try {
+            user = await Http.GetFromJsonAsync<UserModel>($"/users/{UserId}");
+        } catch(AccessTokenNotAvailableException exception) {
+            exception.Redirect();
+        }
+    }
+
+    protected async Task FormSubmit(UserModel args) {
+        try {
+            await ValueTask.CompletedTask;
+            //var testRadzenDbUpdateOrderResult = await TestRadzenDb.UpdateOrder(id: Id, order: order);
+            DialogService.Close(user);
+        } catch(System.Exception) {
+            NotificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = $"Error", Detail = $"Unable to update User" });
+        }
+    }
+
+    protected void CloseForm(MouseEventArgs args) {
+        DialogService.Close(null);
+    }
+}

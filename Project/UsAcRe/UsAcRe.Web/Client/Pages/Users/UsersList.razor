@@ -1,24 +1,29 @@
-﻿@page "/users/list"
-@using Microsoft.AspNetCore.Authorization
+﻿@page "/users"
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using UsAcRe.Web.Shared.Models
-@attribute [Authorize]
+@using System.Diagnostics;
+
 @inject HttpClient Http
+@inject DialogService DialogService
 
 <h1>List of users</h1>
 
-<RadzenGrid Count="@count" Data="@users" LoadData="@LoadData" AllowSorting="true" AllowFiltering="true" AllowPaging="true" PageSize="10" TItem="UserModel">
+<RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px" Text="Add" Click="@AddRecord" />
+<RadzenGrid @ref="usersGrid" Count="@count" Data="@users"
+            AllowSorting="true" AllowFiltering="true" AllowPaging="true"
+            SelectionMode="DataGridSelectionMode.Multiple"
+            PageSize="10" TItem="UserModel"
+            LoadData="@LoadData" RowDoubleClick="@OpenEditor">
     <Columns>
         <RadzenGridColumn TItem="UserModel" Property="Id" Title="Id" Filterable="false" Visible="true" />
         <RadzenGridColumn TItem="UserModel" Property="UserName" Title="UserName" />
         <RadzenGridColumn TItem="UserModel" Property="Email" Title="Email" />
         <RadzenGridColumn TItem="UserModel" Property="Role" Title="Role" />
-
     </Columns>
 </RadzenGrid>
 
-
 @code {
+    RadzenGrid<UserModel> usersGrid;
     IEnumerable<UserModel> users;
     int count;
 
@@ -31,5 +36,17 @@
         } catch(AccessTokenNotAvailableException exception) {
             exception.Redirect();
         }
+    }
+
+    async Task OpenEditor(UserModel user) {
+        await DialogService.OpenAsync<EditUser>($"User {user}",
+            new Dictionary<string, object>() { { "UserId", user.Id } },
+                        new DialogOptions() { Width = "700px", Height = "530px" });
+
+    }
+
+
+    void AddRecord() {
+        //    ordersGrid.InsertRow(new Order());
     }
 }

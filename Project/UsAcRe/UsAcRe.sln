@@ -21,11 +21,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UsAcRe.Player", "UsAcRe.Pla
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UsAcRe.Player.Tests", "UsAcRe.Player.Tests\UsAcRe.Player.Tests.csproj", "{84D604D1-F576-4CF1-ADEE-FA32B2C61E5F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsAcRe.Web.Server", "UsAcRe.Web\Server\UsAcRe.Web.Server.csproj", "{D1A30B7C-38FE-44B5-9284-C1CB128847CE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UsAcRe.Web.Server", "UsAcRe.Web\Server\UsAcRe.Web.Server.csproj", "{D1A30B7C-38FE-44B5-9284-C1CB128847CE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsAcRe.Web.Client", "UsAcRe.Web\Client\UsAcRe.Web.Client.csproj", "{190758DC-E1B0-4E10-BA2A-FD96B2FE18BB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UsAcRe.Web.Client", "UsAcRe.Web\Client\UsAcRe.Web.Client.csproj", "{190758DC-E1B0-4E10-BA2A-FD96B2FE18BB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsAcRe.Web.Shared", "UsAcRe.Web\Shared\UsAcRe.Web.Shared.csproj", "{DE6E6B43-FC64-4F2B-8533-7F5583A202A5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UsAcRe.Web.Shared", "UsAcRe.Web\Shared\UsAcRe.Web.Shared.csproj", "{DE6E6B43-FC64-4F2B-8533-7F5583A202A5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

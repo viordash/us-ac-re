@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using GuardNet;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Radzen;
 using UsAcRe.Web.Server.Services;
 using UsAcRe.Web.Shared.Models;
@@ -12,7 +9,7 @@ using UsAcRe.Web.Shared.Models;
 namespace UsAcRe.Web.Server.Controllers {
 	[Authorize]
 	[ApiController]
-	[Route("[controller]/[action]")]
+	[Route("[controller]")]
 	public class UsersController : ControllerBase {
 		readonly IUsersManagementService userManagementService;
 
@@ -23,7 +20,7 @@ namespace UsAcRe.Web.Server.Controllers {
 			this.userManagementService = userManagementService;
 		}
 
-		[HttpPost]
+		[HttpPost("[action]")]
 		public IEnumerable<UserModel> List(LoadDataArgs loadDataArgs) {
 			return userManagementService.List(loadDataArgs);
 		}
@@ -32,5 +29,6 @@ namespace UsAcRe.Web.Server.Controllers {
 		public UserModel Get(string id) {
 			return userManagementService.Get(id);
 		}
+
 	}
 }
