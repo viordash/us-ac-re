@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using GuardNet;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -31,6 +30,12 @@ namespace UsAcRe.Web.Server.Controllers {
 		public async Task<IActionResult> Get(string id) {
 			var user = await userManagementService.Get(id);
 			return new ObjectResult(user);
+		}
+
+		[HttpPut("{Id}")]
+		public async Task<IActionResult> Put(UserModel user) {
+			await userManagementService.Edit(user);
+			return new NoContentResult();
 		}
 	}
 }

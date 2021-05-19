@@ -5,8 +5,6 @@
 
 @inject HttpClient Http
 @inject DialogService DialogService
-@inject NotificationService NotificationService
-
 
 <RadzenContent Container="main">
     <ChildContent>
@@ -81,11 +79,10 @@
 
     protected async Task FormSubmit(UserModel args) {
         try {
-            await ValueTask.CompletedTask;
-            //var testRadzenDbUpdateOrderResult = await TestRadzenDb.UpdateOrder(id: Id, order: order);
+            await Http.PutAsJsonAsync($"/users/{UserId}", user);
             DialogService.Close(user);
-        } catch(System.Exception) {
-            NotificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = $"Error", Detail = $"Unable to update User" });
+        } catch(AccessTokenNotAvailableException exception) {
+            exception.Redirect();
         }
     }
 

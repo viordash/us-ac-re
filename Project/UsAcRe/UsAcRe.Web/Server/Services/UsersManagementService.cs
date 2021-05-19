@@ -14,7 +14,7 @@ namespace UsAcRe.Web.Server.Services {
 	public interface IUsersManagementService {
 		Task<IEnumerable<UserModel>> List(LoadDataArgs loadDataArgs);
 		Task<UserModel> Get(string id);
-		void Edit(UserModel user);
+		Task Edit(UserModel user);
 	}
 
 	public class UsersManagementService : IUsersManagementService {
@@ -23,10 +23,6 @@ namespace UsAcRe.Web.Server.Services {
 		public UsersManagementService(ApplicationDbContext dbContext) {
 			Guard.NotNull(dbContext, nameof(dbContext));
 			this.dbContext = dbContext;
-		}
-
-		public void Edit(UserModel user) {
-			throw new System.NotImplementedException();
 		}
 
 		public async Task<UserModel> Get(string id) {
@@ -60,6 +56,11 @@ namespace UsAcRe.Web.Server.Services {
 			return qUsers
 				.Select(MapUser);
 		}
+
+		public Task Edit(UserModel user) {
+			throw new ObjectNotFoundException();
+		}
+
 
 		UserModel MapUser(ApplicationUser user) {
 			return new UserModel() {
