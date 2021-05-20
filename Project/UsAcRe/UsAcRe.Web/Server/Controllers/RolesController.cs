@@ -12,7 +12,7 @@ using UsAcRe.Web.Shared.Models;
 namespace UsAcRe.Web.Server.Controllers {
 	[Authorize]
 	[ApiController]
-	[Route("[controller]/[action]")]
+	[Route("[controller]")]
 	public class RolesController : ControllerBase {
 		readonly IRolesManagementService rolesManagementService;
 
@@ -23,9 +23,11 @@ namespace UsAcRe.Web.Server.Controllers {
 			this.rolesManagementService = rolesManagementService;
 		}
 
-		[HttpPost]
-		public IEnumerable<RoleModel> List(LoadDataArgs loadDataArgs) {
-			return rolesManagementService.List(loadDataArgs);
+		[HttpPost("[action]")]
+		public async Task<IActionResult> Paged(LoadDataArgs loadDataArgs) {
+			var roles = await rolesManagementService.List(loadDataArgs);
+			return new ObjectResult(roles);
+		}
 		}
 	}
 }

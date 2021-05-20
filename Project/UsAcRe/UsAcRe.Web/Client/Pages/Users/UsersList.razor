@@ -29,7 +29,7 @@
 
     async Task LoadData(LoadDataArgs args) {
         try {
-            var response = await Http.PostAsJsonAsync("/users/list", args);
+            var response = await Http.PostAsJsonAsync("/users/paged", args);
             users = await response.Content.ReadFromJsonAsync<IEnumerable<UserModel>>();
             count = users.Count();
             await InvokeAsync(StateHasChanged);

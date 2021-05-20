@@ -21,7 +21,7 @@ namespace UsAcRe.Web.Server.Controllers {
 		}
 
 		[HttpPost("[action]")]
-		public async Task<IActionResult> List(LoadDataArgs loadDataArgs) {
+		public async Task<IActionResult> Paged(LoadDataArgs loadDataArgs) {
 			var users = await userManagementService.List(loadDataArgs);
 			return new ObjectResult(users);
 		}

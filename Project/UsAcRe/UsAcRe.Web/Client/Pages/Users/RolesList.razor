@@ -20,7 +20,7 @@
 
     async Task LoadData(LoadDataArgs args) {
         try {
-            var response = await Http.PostAsJsonAsync("/roles/list", args);
+            var response = await Http.PostAsJsonAsync("/roles/paged", args);
             roles = await response.Content.ReadFromJsonAsync<IEnumerable<RoleModel>>();
             count = roles.Count();
             await InvokeAsync(StateHasChanged);
