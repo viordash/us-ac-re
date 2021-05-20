@@ -47,13 +47,20 @@ namespace UsAcRe.Web.Server.Services {
 				orderField = $"{nameof(UserModel.Email)} asc";
 			}
 
-			var qUsers = await query
+			var orderedQuery = query
 				.OrderBy(orderField)
-				.Skip(loadDataArgs.Skip.Value)
-				.Take(loadDataArgs.Top.Value)
+				.AsQueryable();
+			if(loadDataArgs.Skip.HasValue) {
+				orderedQuery = orderedQuery.Skip(loadDataArgs.Skip.Value);
+			}
+			if(loadDataArgs.Top.HasValue) {
+				orderedQuery = orderedQuery.Take(loadDataArgs.Top.Value);
+			}
+
+			var items = await orderedQuery
 				.ToListAsync();
 
-			return qUsers
+			return items
 				.Select(MapUser);
 		}
 
@@ -61,13 +68,12 @@ namespace UsAcRe.Web.Server.Services {
 			throw new ObjectNotFoundException();
 		}
 
-
 		UserModel MapUser(ApplicationUser user) {
 			return new UserModel() {
 				Id = user.Id,
 				UserName = user.UserName,
 				Email = user.Email,
-				Role = user.Id
+				RoleNames = user.Id
 			};
 		}
 

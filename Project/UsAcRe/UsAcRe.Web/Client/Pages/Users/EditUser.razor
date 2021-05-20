@@ -14,45 +14,39 @@
                     <ChildContent>
                         <div style="margin-bottom: 1rem" class="row">
                             <div class="col-md-3">
-                                <RadzenLabel Text="User Name" Component="UserName" style="width: 100%">
+                                <RadzenLabel Component="UserName" style="width: 100%" Text="User Name">
                                 </RadzenLabel>
                             </div>
                             <div class="col-md-9">
-                                <RadzenTextBox MaxLength="255" style="display: block; width: 100%" @bind-Value="@(user.UserName)" Name="UserName">
+                                <RadzenTextBox Disabled="true" style="width: 100%" @bind-Value="@(user.UserName)" Name="UserName">
                                 </RadzenTextBox>
-                                <RadzenRequiredValidator Component="UserName" Text="UserName is required" style="position: absolute">
-                                </RadzenRequiredValidator>
                             </div>
                         </div>
                         <div style="margin-bottom: 1rem" class="row">
                             <div class="col-md-3">
-                                <RadzenLabel Text="Email" Component="Email" style="width: 100%">
+                                <RadzenLabel Component="Email" style="width: 100%" Text="Email">
                                 </RadzenLabel>
                             </div>
                             <div class="col-md-9">
-                                <RadzenTextBox MaxLength="255" style="display: block; width: 100%" @bind-Value="@(user.Email)" Name="Email">
+                                <RadzenTextBox style="width: 100%" @bind-Value="@(user.Email)" Name="Email">
                                 </RadzenTextBox>
-                                <RadzenRequiredValidator Component="Email" Text="Email is required" style="position: absolute">
-                                </RadzenRequiredValidator>
                             </div>
                         </div>
                         <div style="margin-bottom: 1rem" class="row">
                             <div class="col-md-3">
-                                <RadzenLabel Text="Role" Component="Role" style="width: 100%">
+                                <RadzenLabel Component="RoleNames" style="width: 100%" Text="Roles">
                                 </RadzenLabel>
                             </div>
                             <div class="col-md-9">
-                                <RadzenTextBox MaxLength="255" style="display: block; width: 100%" @bind-Value="@(user.Role)" Name="Role">
-                                </RadzenTextBox>
-                                <RadzenRequiredValidator Component="Role" Text="Role is required" style="position: absolute">
-                                </RadzenRequiredValidator>
+                                <RadzenDropDown Data="@roles" Multiple="true" style="width: 100%" TextProperty="Name" @bind-Value="@(user.RoleNames)" ValueProperty="Name" Name="RoleNames">
+                                </RadzenDropDown>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col offset-sm-3">
-                                <RadzenButton ButtonType="ButtonType.Submit" Icon="save" Text="Save" ButtonStyle="ButtonStyle.Primary">
+                                <RadzenButton ButtonStyle="ButtonStyle.Primary" ButtonType="ButtonType.Submit" Icon="save" Text="Save">
                                 </RadzenButton>
-                                <RadzenButton ButtonStyle="ButtonStyle.Light" style="margin-left: 1rem" Text="Cancel" Click="@CloseForm">
+                                <RadzenButton ButtonStyle="ButtonStyle.Light" Text="Cancel" Click="@CloseForm">
                                 </RadzenButton>
                             </div>
                         </div>
@@ -68,10 +62,12 @@
 @code {
     [Parameter] public string UserId { get; set; }
     UserModel user;
+    IEnumerable<RoleModel> roles;
 
     protected override async Task OnInitializedAsync() {
         try {
             user = await Http.GetFromJsonAsync<UserModel>($"/users/{UserId}");
+            roles = await Http.GetFromJsonAsync<IEnumerable<RoleModel>>($"/roles");
         } catch(AccessTokenNotAvailableException exception) {
             exception.Redirect();
         }
