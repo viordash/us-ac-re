@@ -18,9 +18,9 @@ namespace UsAcRe.Web.Server.Services {
 	}
 
 	public class UsersManagementService : IUsersManagementService {
-		readonly ApplicationDbContext dbContext;
+		readonly IApplicationDbContext dbContext;
 
-		public UsersManagementService(ApplicationDbContext dbContext) {
+		public UsersManagementService(IApplicationDbContext dbContext) {
 			Guard.NotNull(dbContext, nameof(dbContext));
 			this.dbContext = dbContext;
 		}

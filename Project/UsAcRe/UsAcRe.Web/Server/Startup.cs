@@ -38,6 +38,7 @@ namespace UsAcRe.Web.Server {
 			services.AddControllersWithViews();
 			services.AddRazorPages();
 
+			services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
 			services.AddTransient<IUsersManagementService, UsersManagementService>();
 			services.AddTransient<IRolesManagementService, RolesManagementService>();
 		}
