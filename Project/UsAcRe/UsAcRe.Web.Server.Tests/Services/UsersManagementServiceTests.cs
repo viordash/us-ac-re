@@ -1,20 +1,77 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Moq;
 using NUnit.Framework;
+using UsAcRe.Web.Server.Data;
+using UsAcRe.Web.Server.Models;
+using UsAcRe.Web.Server.Services;
+using UsAcRe.Web.Shared.Exceptions;
 
 namespace UsAcRe.Web.Server.Tests.ServicesTests {
 	[TestFixture]
 	public class UsersManagementServiceTests {
-		protected Mock<IServiceProvider> serviceProviderMock;
+		#region inner classes
+		class FakeDbSet<TEntity> : DbSet<TEntity> where TEntity : class {
+			readonly List<TEntity> items;
+			readonly Func<TEntity, object[], bool> predicate;
+			public FakeDbSet(Func<TEntity, object[], bool> predicate) {
+				items = new List<TEntity>();
+				this.predicate = predicate;
+			}
+
+			public override EntityEntry<TEntity> Add(TEntity entity) {
+				items.Add(entity);
+				return entity as EntityEntry<TEntity>;
+			}
+
+			public override ValueTask<TEntity> FindAsync(params object[] keyValues) {
+				return ValueTask.FromResult(items.FirstOrDefault(x => predicate(x, keyValues)));
+
+			}
+		}
+		#endregion
+
+		Mock<IApplicationDbContext> applicationDbContextMock;
+		UsersManagementService testable;
+
+
 
 		[SetUp]
 		public void Setup() {
+			applicationDbContextMock = new Mock<IApplicationDbContext>();
+			applicationDbContextMock
+				.SetupGet(x => x.Users)
+				.Returns(() => {
+					var users = new FakeDbSet<ApplicationUser>((en, ks) => ks.Any(x => (string)x == en.Id)) {
+						new ApplicationUser() {
+							Id = "1",
+							UserName = "test1"
+						},
+						new ApplicationUser {
+							Id = "2",
+							UserName = "test2"
+						}
+					};
+					return users;
+				});
+
+			testable = new UsersManagementService(applicationDbContextMock.Object);
 		}
 
 		[Test]
-		public void Get_User_Test() {
+		public async ValueTask Get_User_Test() {
+			var user = await testable.Get("2");
+			Assert.IsNotNull(user);
+			Assert.That(user.UserName, Is.EqualTo("test2"));
+		}
 
-			Assert.Pass();
+		[Test]
+		public void Get_For_Not_Exist_Key_Throws_ObjectNotFoundException() {
+			Assert.ThrowsAsync<ObjectNotFoundException>(async () => await testable.Get("not_exists_user"));
 		}
 	}
 }
