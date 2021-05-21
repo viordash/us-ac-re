@@ -6,6 +6,7 @@ using GuardNet;
 using Microsoft.EntityFrameworkCore;
 using Radzen;
 using UsAcRe.Web.Server.Data;
+using UsAcRe.Web.Server.Extensions;
 using UsAcRe.Web.Server.Models;
 using UsAcRe.Web.Shared.Exceptions;
 using UsAcRe.Web.Shared.Models;
@@ -34,32 +35,9 @@ namespace UsAcRe.Web.Server.Services {
 		}
 
 		public async Task<IEnumerable<UserModel>> List(LoadDataArgs loadDataArgs) {
-			var query = dbContext.Users.AsQueryable();
-
-			if(!string.IsNullOrEmpty(loadDataArgs.Filter)) {
-				query = query.Where(loadDataArgs.Filter);
-			}
-
-			string orderField;
-			if(!string.IsNullOrEmpty(loadDataArgs.OrderBy)) {
-				orderField = loadDataArgs.OrderBy;
-			} else {
-				orderField = $"{nameof(UserModel.Email)} asc";
-			}
-
-			var orderedQuery = query
-				.OrderBy(orderField)
-				.AsQueryable();
-			if(loadDataArgs.Skip.HasValue) {
-				orderedQuery = orderedQuery.Skip(loadDataArgs.Skip.Value);
-			}
-			if(loadDataArgs.Top.HasValue) {
-				orderedQuery = orderedQuery.Take(loadDataArgs.Top.Value);
-			}
-
-			var items = await orderedQuery
-				.ToListAsync();
-
+			var items = await dbContext.Users
+				.AsQueryable()
+				.PerformLoadPagedData(loadDataArgs, nameof(UserModel.Email));
 			return items
 				.Select(MapUser);
 		}

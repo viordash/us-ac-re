@@ -14,31 +14,8 @@ using UsAcRe.Web.Shared.Exceptions;
 namespace UsAcRe.Web.Server.Tests.ServicesTests {
 	[TestFixture]
 	public class UsersManagementServiceTests {
-		#region inner classes
-		class FakeDbSet<TEntity> : DbSet<TEntity> where TEntity : class {
-			readonly List<TEntity> items;
-			readonly Func<TEntity, object[], bool> predicate;
-			public FakeDbSet(Func<TEntity, object[], bool> predicate) {
-				items = new List<TEntity>();
-				this.predicate = predicate;
-			}
-
-			public override EntityEntry<TEntity> Add(TEntity entity) {
-				items.Add(entity);
-				return entity as EntityEntry<TEntity>;
-			}
-
-			public override ValueTask<TEntity> FindAsync(params object[] keyValues) {
-				return ValueTask.FromResult(items.FirstOrDefault(x => predicate(x, keyValues)));
-
-			}
-		}
-		#endregion
-
 		Mock<IApplicationDbContext> applicationDbContextMock;
 		UsersManagementService testable;
-
-
 
 		[SetUp]
 		public void Setup() {

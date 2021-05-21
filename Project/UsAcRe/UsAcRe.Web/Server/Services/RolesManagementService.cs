@@ -6,6 +6,7 @@ using GuardNet;
 using Microsoft.EntityFrameworkCore;
 using Radzen;
 using UsAcRe.Web.Server.Data;
+using UsAcRe.Web.Server.Extensions;
 using UsAcRe.Web.Shared.Models;
 
 namespace UsAcRe.Web.Server.Services {
@@ -22,31 +23,9 @@ namespace UsAcRe.Web.Server.Services {
 		}
 
 		public async Task<IEnumerable<RoleModel>> List(LoadDataArgs loadDataArgs) {
-			var query = dbContext.Roles.AsQueryable();
-
-			if(!string.IsNullOrEmpty(loadDataArgs.Filter)) {
-				query = query.Where(loadDataArgs.Filter);
-			}
-
-			string orderField;
-			if(!string.IsNullOrEmpty(loadDataArgs.OrderBy)) {
-				orderField = loadDataArgs.OrderBy;
-			} else {
-				orderField = $"{nameof(RoleModel.Name)} asc";
-			}
-			var orderedQuery = query
-				.OrderBy(orderField)
-				.AsQueryable();
-			if(loadDataArgs.Skip.HasValue) {
-				orderedQuery = orderedQuery.Skip(loadDataArgs.Skip.Value);
-			}
-			if(loadDataArgs.Top.HasValue) {
-				orderedQuery = orderedQuery.Take(loadDataArgs.Top.Value);
-			}
-
-			var items = await orderedQuery
-				.ToListAsync();
-
+			var items = await dbContext.Roles
+				.AsQueryable()
+				.PerformLoadPagedData(loadDataArgs, nameof(RoleModel.Name));
 			return items
 				.Select(x => new RoleModel() {
 					Id = x.Id,
