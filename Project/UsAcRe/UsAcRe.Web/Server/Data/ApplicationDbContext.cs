@@ -11,9 +11,8 @@ namespace UsAcRe.Web.Server.Data {
 	}
 
 	public class ApplicationDbContext : ApplicationAuthorizationDbContext, IApplicationDbContext {
-		public ApplicationDbContext(
-			DbContextOptions options,
-			IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions) {
+		public ApplicationDbContext(DbContextOptions options, IOptions<OperationalStoreOptions> operationalStoreOptions)
+			: base(options, operationalStoreOptions) {
 		}
 
 	}
