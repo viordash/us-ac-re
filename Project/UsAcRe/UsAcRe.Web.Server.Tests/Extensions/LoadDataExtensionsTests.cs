@@ -23,13 +23,13 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 				Id = "22",
 				UserName = "test22"
 			});
+			DbContext.SaveChanges();
 
 			var loadDataArgs = new LoadDataArgs() {
 				Filter = "Id=\"2\"",
 				Top = 10,
 				Skip = 0
 			};
-			DbContext.SaveChanges();
 
 			var users = await DbContext.Users.PerformLoadPagedData(loadDataArgs, "UserName");
 

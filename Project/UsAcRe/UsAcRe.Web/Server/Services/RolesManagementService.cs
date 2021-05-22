@@ -15,9 +15,9 @@ namespace UsAcRe.Web.Server.Services {
 	}
 
 	public class RolesManagementService : IRolesManagementService {
-		readonly IApplicationDbContext dbContext;
+		readonly ApplicationDbContext dbContext;
 
-		public RolesManagementService(IApplicationDbContext dbContext) {
+		public RolesManagementService(ApplicationDbContext dbContext) {
 			Guard.NotNull(dbContext, nameof(dbContext));
 			this.dbContext = dbContext;
 		}
