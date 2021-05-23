@@ -2,13 +2,15 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UsAcRe.Web.Server.Data;
 
 namespace UsAcRe.Web.Server.Migrations {
 	[DbContext(typeof(ApplicationDbContext))]
-	partial class ApplicationDbContextModelSnapshot : ModelSnapshot {
-		protected override void BuildModel(ModelBuilder modelBuilder) {
+	[Migration("20210523190113_UpdateIdentityObjects")]
+	partial class UpdateIdentityObjects {
+		protected override void BuildTargetModel(ModelBuilder modelBuilder) {
 #pragma warning disable 612, 618
 			modelBuilder
 				.HasAnnotation("Relational:MaxIdentifierLength", 64)
