@@ -3,11 +3,10 @@ using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using GuardNet;
-using Microsoft.EntityFrameworkCore;
 using Radzen;
 using UsAcRe.Web.Server.Data;
 using UsAcRe.Web.Server.Extensions;
-using UsAcRe.Web.Server.Models;
+using UsAcRe.Web.Server.Identity;
 using UsAcRe.Web.Shared.Exceptions;
 using UsAcRe.Web.Shared.Models;
 

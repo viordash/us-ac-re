@@ -6,7 +6,7 @@ using IdentityServer4.EntityFramework.Interfaces;
 using IdentityServer4.EntityFramework.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using UsAcRe.Web.Server.Models;
+using UsAcRe.Web.Server.Identity;
 
 namespace UsAcRe.Web.Server.Data {
 	public class ApplicationAuthorizationDbContext : ApplicationIdentityDbContext<ApplicationUser, ApplicationIdentityRole>, IPersistedGrantDbContext, IDisposable {

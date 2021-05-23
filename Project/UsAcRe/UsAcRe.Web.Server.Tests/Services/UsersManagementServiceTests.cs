@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using Radzen;
 using Tests.Common;
-using UsAcRe.Web.Server.Models;
+using UsAcRe.Web.Server.Identity;
 using UsAcRe.Web.Server.Services;
 using UsAcRe.Web.Shared.Exceptions;
 

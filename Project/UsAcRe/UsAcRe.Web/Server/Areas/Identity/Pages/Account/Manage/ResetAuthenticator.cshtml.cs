@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using UsAcRe.Web.Server.Models;
+using UsAcRe.Web.Server.Identity;
 
 namespace UsAcRe.Web.Server.Areas.Identity.Pages.Account.Manage {
 	public class ResetAuthenticatorModel : PageModel {

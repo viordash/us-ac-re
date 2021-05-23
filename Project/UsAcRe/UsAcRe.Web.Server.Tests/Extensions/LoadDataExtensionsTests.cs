@@ -3,7 +3,7 @@ using NUnit.Framework;
 using Radzen;
 using Tests.Common;
 using UsAcRe.Web.Server.Extensions;
-using UsAcRe.Web.Server.Models;
+using UsAcRe.Web.Server.Identity;
 
 namespace UsAcRe.Web.Server.Tests.ServicesTests {
 	[TestFixture]

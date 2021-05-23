@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using UsAcRe.Web.Server.Data;
-using UsAcRe.Web.Server.Models;
+using UsAcRe.Web.Server.Identity;
 using UsAcRe.Web.Server.Services;
 
 namespace UsAcRe.Web.Server {

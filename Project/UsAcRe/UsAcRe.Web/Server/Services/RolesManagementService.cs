@@ -3,7 +3,6 @@ using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using GuardNet;
-using Microsoft.EntityFrameworkCore;
 using Radzen;
 using UsAcRe.Web.Server.Data;
 using UsAcRe.Web.Server.Extensions;
