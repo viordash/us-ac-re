@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,8 +28,12 @@ namespace UsAcRe.Web.Server {
 
 			services.AddDatabaseDeveloperPageExceptionFilter();
 
-			services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+			services.AddIdentity<ApplicationUser, ApplicationIdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+				.AddRoles<ApplicationIdentityRole>()
+				.AddRoleStore<RoleStore<ApplicationIdentityRole, ApplicationDbContext, string>>()
+				.AddRoleManager<RoleManager<ApplicationIdentityRole>>()
 				.AddEntityFrameworkStores<ApplicationDbContext>();
+
 
 			services.AddIdentityServer()
 				.AddApiAuthorization<ApplicationUser, ApplicationDbContext>();

@@ -8,7 +8,7 @@ using UsAcRe.Web.Server.Services;
 
 namespace UsAcRe.Web.Server.Tests.ServicesTests {
 	[TestFixture]
-	public class RolesManagementServiceTests : DbContextFixture {
+	public class RolesManagementServiceTests : AuthorizationDbContextFixture {
 		RolesManagementService testable;
 
 		public override void SetUp() {
@@ -28,7 +28,7 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 			});
 			DbContext.SaveChanges();
 
-			testable = new RolesManagementService(DbContext);
+			testable = new RolesManagementService(DbContext, roleManager);
 		}
 
 		[Test]
