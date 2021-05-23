@@ -1,11 +1,21 @@
 ﻿@page "/roles/list"
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using UsAcRe.Web.Shared.Models
+
 @inject HttpClient Http
+@inject DialogService DialogService
 
 <h1>List of roles</h1>
 
-<RadzenGrid Count="@count" Data="@roles" LoadData="@LoadData" AllowSorting="true" AllowFiltering="true" AllowPaging="true" PageSize="4" TItem="RoleModel">
+<RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px" Text="Add" Click="@AddRecord" />
+<RadzenGrid Count="@count" Data="@roles"
+            AllowSorting="true"
+            AllowFiltering="true"
+            AllowPaging="true"
+            PageSize="4"
+            TItem="RoleModel"
+            LoadData="@LoadData"
+            RowDoubleClick="@OpenEditor">
     <Columns>
         <RadzenGridColumn TItem="RoleModel" Property="Id" Title="Id" Filterable="false" Visible="true" />
         <RadzenGridColumn TItem="RoleModel" Property="Name" Title="Name" />
@@ -27,5 +37,16 @@
         } catch(AccessTokenNotAvailableException exception) {
             exception.Redirect();
         }
+    }
+
+    async Task OpenEditor(RoleModel role) {
+        await DialogService.OpenAsync<EditRole>($"Role {role}",
+            new Dictionary<string, object>() { { "RoleId", role.Id } },
+                        new DialogOptions() { Width = "700px", Height = "530px" });
+
+    }
+
+    void AddRecord() {
+        
     }
 }

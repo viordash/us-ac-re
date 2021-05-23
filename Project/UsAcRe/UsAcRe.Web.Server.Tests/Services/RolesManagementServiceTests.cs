@@ -5,6 +5,7 @@ using Radzen;
 using Tests.Common;
 using UsAcRe.Web.Server.Identity;
 using UsAcRe.Web.Server.Services;
+using UsAcRe.Web.Shared.Exceptions;
 
 namespace UsAcRe.Web.Server.Tests.ServicesTests {
 	[TestFixture]
@@ -29,6 +30,18 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 			DbContext.SaveChanges();
 
 			testable = new RolesManagementService(DbContext, roleManager);
+		}
+
+		[Test]
+		public async ValueTask Get_Role_Test() {
+			var role = await testable.Get("2");
+			Assert.IsNotNull(role);
+			Assert.That(role.Name, Is.EqualTo("role2"));
+		}
+
+		[Test]
+		public void Get_For_Not_Exist_Key_Throws_ObjectNotFoundException() {
+			Assert.ThrowsAsync<ObjectNotFoundException>(async () => await testable.Get("not_exists_role"));
 		}
 
 		[Test]

@@ -1,0 +1,65 @@
+﻿@page "/edit-role/{RoleId}"
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using UsAcRe.Web.Shared.Models
+
+@inject HttpClient Http
+@inject DialogService DialogService
+
+<RadzenContent Container="main">
+    <ChildContent>
+        <div class="row">
+            <div class="col-md-12">
+                <RadzenTemplateForm TItem="RoleModel" Data="@role" Visible="@(role != null)" Submit="@FormSubmit">
+                    <ChildContent>
+                        <div style="margin-bottom: 1rem" class="row">
+                            <div class="col-md-3">
+                                <RadzenLabel Component="Name" style="width: 100%" Text="Role Name">
+                                </RadzenLabel>
+                            </div>
+                            <div class="col-md-9">
+                                <RadzenTextBox Disabled="true" style="width: 100%" @bind-Value="@(role.Name)" Name="Name">
+                                </RadzenTextBox>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col offset-sm-3">
+                                <RadzenButton ButtonStyle="ButtonStyle.Primary" ButtonType="ButtonType.Submit" Icon="save" Text="Save">
+                                </RadzenButton>
+                                <RadzenButton ButtonStyle="ButtonStyle.Light" Text="Cancel" Click="@CloseForm">
+                                </RadzenButton>
+                            </div>
+                        </div>
+                    </ChildContent>
+                </RadzenTemplateForm>
+            </div>
+        </div>
+    </ChildContent>
+</RadzenContent>
+
+
+
+@code {
+    [Parameter] public string RoleId { get; set; }
+    RoleModel role;
+
+    protected override async Task OnInitializedAsync() {
+        try {
+            role = await Http.GetFromJsonAsync<RoleModel>($"/roles/{RoleId}");
+        } catch(AccessTokenNotAvailableException exception) {
+            exception.Redirect();
+        }
+    }
+
+    protected async Task FormSubmit(RoleModel args) {
+        try {
+            await Http.PutAsJsonAsync($"/roles/{RoleId}", role);
+            DialogService.Close(role);
+        } catch(AccessTokenNotAvailableException exception) {
+            exception.Redirect();
+        }
+    }
+
+    protected void CloseForm(MouseEventArgs args) {
+        DialogService.Close(null);
+    }
+}

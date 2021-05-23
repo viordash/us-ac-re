@@ -13,7 +13,8 @@
             AllowSorting="true" AllowFiltering="true" AllowPaging="true"
             SelectionMode="DataGridSelectionMode.Multiple"
             PageSize="10" TItem="UserModel"
-            LoadData="@LoadData" RowDoubleClick="@OpenEditor">
+            LoadData="@LoadData"
+            RowDoubleClick="@OpenEditor">
     <Columns>
         <RadzenGridColumn TItem="UserModel" Property="Id" Title="Id" Filterable="false" Visible="true" />
         <RadzenGridColumn TItem="UserModel" Property="UserName" Title="UserName" />

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Radzen;
 using UsAcRe.Web.Server.Services;
+using UsAcRe.Web.Shared.Models;
 
 namespace UsAcRe.Web.Server.Controllers {
 	[Authorize]
@@ -34,6 +35,18 @@ namespace UsAcRe.Web.Server.Controllers {
 				Top = null
 			});
 			return new ObjectResult(roles);
+		}
+
+		[HttpGet("{id}")]
+		public async Task<IActionResult> Get(string id) {
+			var user = await rolesManagementService.Get(id);
+			return new ObjectResult(user);
+		}
+
+		[HttpPut("{Id}")]
+		public async Task<IActionResult> Put(RoleModel user) {
+			await rolesManagementService.Edit(user);
+			return new NoContentResult();
 		}
 	}
 }
