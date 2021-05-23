@@ -44,8 +44,14 @@ namespace UsAcRe.Web.Server.Controllers {
 		}
 
 		[HttpPut("{Id}")]
-		public async Task<IActionResult> Put(RoleModel user) {
-			await rolesManagementService.Edit(user);
+		public async Task<IActionResult> Put(string id, RoleModel user) {
+			await rolesManagementService.Edit(id, user);
+			return new NoContentResult();
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> Post(RoleModel user) {
+			await rolesManagementService.Add(user);
 			return new NoContentResult();
 		}
 	}

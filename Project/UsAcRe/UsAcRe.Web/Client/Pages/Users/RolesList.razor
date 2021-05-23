@@ -46,7 +46,8 @@
 
     }
 
-    void AddRecord() {
-        
+    async Task AddRecord() {
+        await DialogService.OpenAsync<EditRole>($"Create role");
+
     }
 }

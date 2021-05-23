@@ -17,7 +17,7 @@
                                 </RadzenLabel>
                             </div>
                             <div class="col-md-9">
-                                <RadzenTextBox Disabled="true" style="width: 100%" @bind-Value="@(role.Name)" Name="Name">
+                                <RadzenTextBox style="width: 100%" @bind-Value="@(role.Name)" Name="Name">
                                 </RadzenTextBox>
                             </div>
                         </div>
@@ -42,9 +42,18 @@
     [Parameter] public string RoleId { get; set; }
     RoleModel role;
 
+    bool IsNewRecord => string.IsNullOrEmpty(RoleId);
+
     protected override async Task OnInitializedAsync() {
         try {
-            role = await Http.GetFromJsonAsync<RoleModel>($"/roles/{RoleId}");
+            if(IsNewRecord) {
+                role = new RoleModel() {
+                    Id = null,
+                    Name = ""
+                };
+            } else {
+                role = await Http.GetFromJsonAsync<RoleModel>($"/roles/{RoleId}");
+            }
         } catch(AccessTokenNotAvailableException exception) {
             exception.Redirect();
         }
@@ -52,7 +61,11 @@
 
     protected async Task FormSubmit(RoleModel args) {
         try {
-            await Http.PutAsJsonAsync($"/roles/{RoleId}", role);
+            if(IsNewRecord) {
+                await Http.PostAsJsonAsync($"/roles", role);
+            } else {
+                await Http.PutAsJsonAsync($"/roles/{RoleId}", role);
+            }
             DialogService.Close(role);
         } catch(AccessTokenNotAvailableException exception) {
             exception.Redirect();

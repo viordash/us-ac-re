@@ -15,7 +15,8 @@ namespace UsAcRe.Web.Server.Services {
 	public interface IRolesManagementService {
 		Task<IEnumerable<RoleModel>> List(LoadDataArgs loadDataArgs);
 		Task<RoleModel> Get(string id);
-		Task Edit(RoleModel user);
+		Task Add(RoleModel role);
+		Task Edit(string id, RoleModel role);
 	}
 
 	public class RolesManagementService : IRolesManagementService {
@@ -45,12 +46,28 @@ namespace UsAcRe.Web.Server.Services {
 				.Select(MapRole);
 		}
 
-		public Task Edit(RoleModel user) {
-			throw new ObjectNotFoundException();
+		public async Task Add(RoleModel role) {
+			await roleManager.CreateAsync(MapRole(role));
+		}
+
+		public async Task Edit(string id, RoleModel role) {
+			var existsRole = await roleManager.FindByIdAsync(id);
+			if(existsRole == null) {
+				throw new ObjectNotFoundException();
+			}
+			role.Id = id;
+			await roleManager.UpdateAsync(MapRole(role));
 		}
 
 		RoleModel MapRole(ApplicationIdentityRole role) {
 			return new RoleModel() {
+				Id = role.Id,
+				Name = role.Name
+			};
+		}
+
+		ApplicationIdentityRole MapRole(RoleModel role) {
+			return new ApplicationIdentityRole() {
 				Id = role.Id,
 				Name = role.Name
 			};
