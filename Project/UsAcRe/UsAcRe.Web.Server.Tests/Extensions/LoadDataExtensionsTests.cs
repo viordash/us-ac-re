@@ -78,7 +78,19 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 			Assert.That(users[0].UserName, Is.EqualTo("test0"));
 			Assert.That(users[9].Id, Is.EqualTo("9"));
 			Assert.That(users[9].UserName, Is.EqualTo("test9"));
+		}
 
+
+		[Test]
+		public async ValueTask PerformLoadPagedData_For_Default_LoadDataArgs_Test() {
+			var loadDataArgs = new LoadDataArgs();
+
+			var users = await DbContext.Users.PerformLoadPagedData(loadDataArgs, "UserName");
+			Assert.That(users, Has.Count.EqualTo(10));
+			Assert.That(users[0].Id, Is.EqualTo("0"));
+			Assert.That(users[0].UserName, Is.EqualTo("test0"));
+			Assert.That(users[9].Id, Is.EqualTo("9"));
+			Assert.That(users[9].UserName, Is.EqualTo("test9"));
 		}
 	}
 }
