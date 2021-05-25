@@ -39,10 +39,10 @@
 
 
 @code {
-    [Parameter] public string RoleId { get; set; }
+    [Parameter] public System.Guid RoleId { get; set; }
     RoleModel role;
 
-    bool IsNewRecord => string.IsNullOrEmpty(RoleId);
+    bool IsNewRecord => RoleId == default(System.Guid);
 
     protected override async Task OnInitializedAsync() {
         try {
