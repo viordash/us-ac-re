@@ -32,7 +32,9 @@ namespace UsAcRe.Web.Server {
 				.AddRoles<ApplicationIdentityRole>()
 				.AddRoleStore<RoleStore<ApplicationIdentityRole, ApplicationDbContext, string>>()
 				.AddRoleManager<RoleManager<ApplicationIdentityRole>>()
-				.AddEntityFrameworkStores<ApplicationDbContext>();
+				.AddEntityFrameworkStores<ApplicationDbContext>()
+				.AddDefaultTokenProviders()
+				.AddDefaultUI();
 
 
 			services.AddIdentityServer()
