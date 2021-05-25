@@ -23,7 +23,7 @@ namespace UsAcRe.Web.Server {
 		// For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
 		public void ConfigureServices(IServiceCollection services) {
 			services.AddDbContext<ApplicationDbContext>(options =>
-				options.UseMySQL(Configuration.GetConnectionString("DefaultConnection"))
+				options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
 			);
 
 			services.AddDatabaseDeveloperPageExceptionFilter();
