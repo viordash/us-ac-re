@@ -1,13 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using UsAcRe.Web.Server.Data;
 
 namespace Tests.Common {
 	public class DbContextFixture {
+		protected static System.Guid[] guids = Enumerable.Range(0, 10).Select(x => System.Guid.NewGuid()).ToArray();
 		protected ApplicationDbContext DbContext { get; private set; }
 
 		[SetUp]
 		public virtual void SetUp() {
+		//	guids = Enumerable.Range(0, 10).Select(x => System.Guid.NewGuid()).ToArray();
 			var options = new DbContextOptionsBuilder<ApplicationDbContext>()
 				.UseInMemoryDatabase(databaseName: "Application Test")
 				.Options;

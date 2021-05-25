@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -11,6 +13,7 @@ namespace Tests.Common {
 		protected Mock<IRoleValidator<ApplicationIdentityRole>> roleValidatorMock;
 		protected Mock<ILookupNormalizer> keyNormalizerMock;
 		protected Mock<IdentityErrorDescriber> identityErrorDescriberMock;
+		protected Mock<IRoleStore<ApplicationIdentityRole>> roleStoreMock;
 		protected RoleManager<ApplicationIdentityRole> roleManager;
 
 		public override void SetUp() {
@@ -18,12 +21,19 @@ namespace Tests.Common {
 			roleValidatorMock = new Mock<IRoleValidator<ApplicationIdentityRole>>();
 			keyNormalizerMock = new Mock<ILookupNormalizer>();
 			identityErrorDescriberMock = new Mock<IdentityErrorDescriber>();
+			roleStoreMock = new Mock<IRoleStore<ApplicationIdentityRole>>();
 
-			var roleStore = new RoleStore<ApplicationIdentityRole>(DbContext);
+			roleStoreMock
+				.Setup(x => x.FindByIdAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+				.Returns<string, CancellationToken>((roleId, cancellationToken) => {
+					return DbContext.Roles.FindAsync(roleId);
+				});
+
+
 			var roleValidators = new List<IRoleValidator<ApplicationIdentityRole>>() { roleValidatorMock.Object };
 			var loggerMock = new Mock<ILogger<RoleManager<ApplicationIdentityRole>>>();
 
-			roleManager = new RoleManager<ApplicationIdentityRole>(roleStore, roleValidators, keyNormalizerMock.Object, identityErrorDescriberMock.Object, loggerMock.Object);
+			roleManager = new RoleManager<ApplicationIdentityRole>(roleStoreMock.Object, roleValidators, keyNormalizerMock.Object, identityErrorDescriberMock.Object, loggerMock.Object);
 		}
 	}
 }

@@ -14,17 +14,16 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 
 		public override void SetUp() {
 			base.SetUp();
-
 			DbContext.Roles.Add(new ApplicationIdentityRole() {
-				Id = "1",
+				Id = guids[1],
 				Name = "role1"
 			});
 			DbContext.Roles.Add(new ApplicationIdentityRole() {
-				Id = "2",
+				Id = guids[2],
 				Name = "role2"
 			});
 			DbContext.Roles.Add(new ApplicationIdentityRole() {
-				Id = "22",
+				Id = guids[5],
 				Name = "role22"
 			});
 			DbContext.SaveChanges();
@@ -34,14 +33,14 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 
 		[Test]
 		public async ValueTask Get_Role_Test() {
-			var role = await testable.Get("2");
+			var role = await testable.Get(guids[2]);
 			Assert.IsNotNull(role);
 			Assert.That(role.Name, Is.EqualTo("role2"));
 		}
 
 		[Test]
 		public void Get_For_Not_Exist_Key_Throws_ObjectNotFoundException() {
-			Assert.ThrowsAsync<ObjectNotFoundException>(async () => await testable.Get("not_exists_role"));
+			Assert.ThrowsAsync<ObjectNotFoundException>(async () => await testable.Get(System.Guid.NewGuid()));
 		}
 
 		[Test]
@@ -49,7 +48,7 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 			var users = await testable.List(new LoadDataArgs());
 			Assert.IsNotNull(users);
 			Assert.That(users.Count(), Is.EqualTo(3));
-			Assert.That(users.ElementAt(0).Id, Is.EqualTo("1"));
+			Assert.That(users.ElementAt(0).Id, Is.EqualTo(guids[0]));
 			Assert.That(users.ElementAt(0).Name, Is.EqualTo("role1"));
 		}
 	}
