@@ -30,7 +30,7 @@ namespace UsAcRe.Web.Server {
 
 			services.AddIdentity<ApplicationUser, ApplicationIdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
 				.AddRoles<ApplicationIdentityRole>()
-				.AddRoleStore<RoleStore<ApplicationIdentityRole, ApplicationDbContext, string>>()
+				.AddRoleStore<RoleStore<ApplicationIdentityRole, ApplicationDbContext, System.Guid>>()
 				.AddRoleManager<RoleManager<ApplicationIdentityRole>>()
 				.AddEntityFrameworkStores<ApplicationDbContext>()
 				.AddDefaultTokenProviders()

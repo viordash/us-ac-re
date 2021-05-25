@@ -13,7 +13,7 @@ using UsAcRe.Web.Shared.Models;
 namespace UsAcRe.Web.Server.Services {
 	public interface IUsersManagementService {
 		Task<IEnumerable<UserModel>> List(LoadDataArgs loadDataArgs);
-		Task<UserModel> Get(string id);
+		Task<UserModel> Get(System.Guid id);
 		Task Edit(UserModel user);
 	}
 
@@ -25,7 +25,7 @@ namespace UsAcRe.Web.Server.Services {
 			this.dbContext = dbContext;
 		}
 
-		public async Task<UserModel> Get(string id) {
+		public async Task<UserModel> Get(System.Guid id) {
 			var user = await dbContext.Users.FindAsync(id);
 			if(user == null) {
 				throw new ObjectNotFoundException();
@@ -50,7 +50,7 @@ namespace UsAcRe.Web.Server.Services {
 				Id = user.Id,
 				UserName = user.UserName,
 				Email = user.Email,
-				RoleNames = user.Id
+				RoleNames = user.Id.ToString()
 			};
 		}
 

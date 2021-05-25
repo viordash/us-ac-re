@@ -27,7 +27,7 @@ namespace UsAcRe.Web.Server.Controllers {
 		}
 
 		[HttpGet("{id}")]
-		public async Task<IActionResult> Get(string id) {
+		public async Task<IActionResult> Get(System.Guid id) {
 			var user = await userManagementService.Get(id);
 			return new ObjectResult(user);
 		}

@@ -2,9 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 
 namespace UsAcRe.Web.Server.Identity {
-	public class ApplicationIdentityUserToken : IdentityUserToken<string> {
-		[MaxLength(256)]
-		public override string UserId { get; set; }
+	public class ApplicationIdentityUserToken : IdentityUserToken<System.Guid> {
 		[MaxLength(256)]
 		public override string LoginProvider { get; set; }
 		[MaxLength(256)]

@@ -2,6 +2,6 @@
 using Microsoft.AspNetCore.Identity;
 
 namespace UsAcRe.Web.Server.Identity {
-	public class ApplicationIdentityUserRole : IdentityUserRole<string> {
+	public class ApplicationIdentityUserRole : IdentityUserRole<System.Guid> {
 	}
 }

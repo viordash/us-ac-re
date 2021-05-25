@@ -38,13 +38,13 @@ namespace UsAcRe.Web.Server.Controllers {
 		}
 
 		[HttpGet("{id}")]
-		public async Task<IActionResult> Get(string id) {
+		public async Task<IActionResult> Get(System.Guid id) {
 			var user = await rolesManagementService.Get(id);
 			return new ObjectResult(user);
 		}
 
 		[HttpPut("{Id}")]
-		public async Task<IActionResult> Put(string id, RoleModel user) {
+		public async Task<IActionResult> Put(System.Guid id, RoleModel user) {
 			await rolesManagementService.Edit(id, user);
 			return new NoContentResult();
 		}

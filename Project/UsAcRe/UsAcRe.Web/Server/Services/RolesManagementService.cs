@@ -14,9 +14,9 @@ using UsAcRe.Web.Shared.Models;
 namespace UsAcRe.Web.Server.Services {
 	public interface IRolesManagementService {
 		Task<IEnumerable<RoleModel>> List(LoadDataArgs loadDataArgs);
-		Task<RoleModel> Get(string id);
+		Task<RoleModel> Get(System.Guid id);
 		Task Add(RoleModel role);
-		Task Edit(string id, RoleModel role);
+		Task Edit(System.Guid id, RoleModel role);
 	}
 
 	public class RolesManagementService : IRolesManagementService {
@@ -30,8 +30,8 @@ namespace UsAcRe.Web.Server.Services {
 			this.roleManager = roleManager;
 		}
 
-		public async Task<RoleModel> Get(string id) {
-			var role = await roleManager.FindByIdAsync(id);
+		public async Task<RoleModel> Get(System.Guid id) {
+			var role = await roleManager.FindByIdAsync(id.ToString());
 			if(role == null) {
 				throw new ObjectNotFoundException();
 			}
@@ -50,8 +50,8 @@ namespace UsAcRe.Web.Server.Services {
 			await roleManager.CreateAsync(MapRole(role));
 		}
 
-		public async Task Edit(string id, RoleModel role) {
-			var existsRole = await roleManager.FindByIdAsync(id);
+		public async Task Edit(System.Guid id, RoleModel role) {
+			var existsRole = await roleManager.FindByIdAsync(id.ToString());
 			if(existsRole == null) {
 				throw new ObjectNotFoundException();
 			}
