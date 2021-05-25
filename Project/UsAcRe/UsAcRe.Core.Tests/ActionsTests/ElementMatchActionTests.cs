@@ -90,7 +90,7 @@ namespace UsAcRe.Core.Tests.ActionsTests {
 
 			var task = ElementMatchAction.Play(new ElementProgram(42, "notepad.exe"), new List<UiElement>() {
 				new UiElement(4, "value1", "name1", "className1", "automationId1", ControlType.Button.Id, new Rect(1, 2, 3, 4)),
-			}, 1000);
+			}, 3000);
 
 			var stopwatch = Stopwatch.StartNew();
 
