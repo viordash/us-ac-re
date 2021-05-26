@@ -9,7 +9,7 @@ using UsAcRe.Web.Shared.Exceptions;
 
 namespace UsAcRe.Web.Server.Tests.ServicesTests {
 	[TestFixture]
-	public class UsersManagementServiceTests : DbContextFixture {
+	public class UsersManagementServiceTests : AuthorizationDbContextFixture {
 		UsersManagementService testable;
 
 		public override void SetUp() {
@@ -29,7 +29,7 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 			});
 			DbContext.SaveChanges();
 
-			testable = new UsersManagementService(DbContext);
+			testable = new UsersManagementService(DbContext, userManager);
 		}
 
 		[Test]

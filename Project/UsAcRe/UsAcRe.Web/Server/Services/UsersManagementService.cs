@@ -3,6 +3,7 @@ using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using GuardNet;
+using Microsoft.AspNetCore.Identity;
 using Radzen;
 using UsAcRe.Web.Server.Data;
 using UsAcRe.Web.Server.Extensions;
@@ -19,10 +20,13 @@ namespace UsAcRe.Web.Server.Services {
 
 	public class UsersManagementService : IUsersManagementService {
 		readonly ApplicationDbContext dbContext;
+		readonly UserManager<ApplicationUser> userManager;
 
-		public UsersManagementService(ApplicationDbContext dbContext) {
+		public UsersManagementService(ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager) {
 			Guard.NotNull(dbContext, nameof(dbContext));
+			Guard.NotNull(userManager, nameof(userManager));
 			this.dbContext = dbContext;
+			this.userManager = userManager;
 		}
 
 		public async Task<UserModel> Get(System.Guid id) {
