@@ -40,7 +40,6 @@ namespace UsAcRe.Web.Server.Services {
 
 		public async Task<IEnumerable<RoleModel>> List(LoadDataArgs loadDataArgs) {
 			var items = await roleManager.Roles
-				.AsQueryable()
 				.PerformLoadPagedData(loadDataArgs, nameof(RoleModel.Name));
 			return items
 				.Select(MapRole);

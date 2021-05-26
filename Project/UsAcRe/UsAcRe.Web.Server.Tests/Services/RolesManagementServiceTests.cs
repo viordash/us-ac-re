@@ -48,7 +48,7 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 			var users = await testable.List(new LoadDataArgs());
 			Assert.IsNotNull(users);
 			Assert.That(users.Count(), Is.EqualTo(3));
-			Assert.That(users.ElementAt(0).Id, Is.EqualTo(guids[0]));
+			Assert.That(users.ElementAt(0).Id, Is.EqualTo(guids[1]));
 			Assert.That(users.ElementAt(0).Name, Is.EqualTo("role1"));
 		}
 	}
