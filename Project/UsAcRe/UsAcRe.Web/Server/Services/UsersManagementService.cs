@@ -34,27 +34,32 @@ namespace UsAcRe.Web.Server.Services {
 			if(user == null) {
 				throw new ObjectNotFoundException();
 			}
-			return MapUser(user);
+			return await MapUser(user);
 		}
 
 		public async Task<IEnumerable<UserModel>> List(LoadDataArgs loadDataArgs) {
 			var items = await dbContext.Users
 				.AsQueryable()
 				.PerformLoadPagedData(loadDataArgs, nameof(UserModel.Email));
-			return items
-				.Select(MapUser);
+
+			var users = new List<UserModel>();
+			foreach(var item in items) {
+				users.Add(await MapUser(item));
+			}
+			return users;
 		}
 
 		public Task Edit(UserModel user) {
 			throw new ObjectNotFoundException();
 		}
 
-		UserModel MapUser(ApplicationUser user) {
+		async Task<UserModel> MapUser(ApplicationUser user) {
+			var roles = await userManager.GetRolesAsync(user);
 			return new UserModel() {
 				Id = user.Id,
 				UserName = user.UserName,
 				Email = user.Email,
-				RoleNames = user.Id.ToString()
+				RoleNames = roles
 			};
 		}
 
