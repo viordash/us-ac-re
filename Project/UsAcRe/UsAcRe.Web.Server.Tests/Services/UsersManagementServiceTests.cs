@@ -27,8 +27,27 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 				Id = guids[5],
 				UserName = "test22"
 			});
-			DbContext.SaveChanges();
 
+			DbContext.Roles.Add(new ApplicationIdentityRole() {
+				Id = guids[7],
+				Name = "role1"
+			});
+			DbContext.Roles.Add(new ApplicationIdentityRole() {
+				Id = guids[8],
+				Name = "role2"
+			});
+
+			DbContext.UserRoles.Add(new ApplicationIdentityUserRole() {
+				UserId = guids[1],
+				RoleId = guids[7]
+			});
+
+			DbContext.UserRoles.Add(new ApplicationIdentityUserRole() {
+				UserId = guids[1],
+				RoleId = guids[8]
+			});
+
+			DbContext.SaveChanges();
 			testable = new UsersManagementService(DbContext, userManager);
 		}
 
@@ -51,6 +70,9 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 			Assert.That(users.Count(), Is.EqualTo(3));
 			Assert.That(users.ElementAt(0).Id, Is.EqualTo(guids[1]));
 			Assert.That(users.ElementAt(0).UserName, Is.EqualTo("test1"));
+			Assert.That(users.ElementAt(0).RoleNames, Is.EquivalentTo(new[] { "role1", "role2" }));
+			Assert.That(users.ElementAt(1).RoleNames, Is.EquivalentTo(new string[] { null }));
+			Assert.That(users.ElementAt(2).RoleNames, Is.EquivalentTo(new string[] { null }));
 		}
 	}
 }

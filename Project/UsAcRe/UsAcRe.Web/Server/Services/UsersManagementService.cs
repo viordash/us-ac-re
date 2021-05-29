@@ -38,15 +38,32 @@ namespace UsAcRe.Web.Server.Services {
 		}
 
 		public async Task<IEnumerable<UserModel>> List(LoadDataArgs loadDataArgs) {
-			var items = await dbContext.Users
-				.AsQueryable()
-				.PerformLoadPagedData(loadDataArgs, nameof(UserModel.Email));
+			var query = from u in dbContext.Users
+							  join ur in dbContext.UserRoles on u.Id equals ur.UserId into gj
+							  from x in gj.DefaultIfEmpty()
+							  join r in dbContext.Roles on x.RoleId equals r.Id into gj1
+							  from x1 in gj1.DefaultIfEmpty()
+							  select new {
+								  u.Id,
+								  u.UserName,
+								  u.Email,
+								  Role = x1.Name,
+							  };
 
-			var users = new List<UserModel>();
-			foreach(var item in items) {
-				users.Add(await MapUser(item));
-			}
-			return users;
+			var users = await query.PerformLoadPagedData(loadDataArgs, nameof(ApplicationUser.Email));
+			var groupedUsers = users.GroupBy(
+				u => u.Id,
+				u => u.Role,
+				(k, roles) => {
+					var user = users.FirstOrDefault(x => x.Id == k);
+					return new UserModel() {
+						Id = user.Id,
+						UserName = user.UserName,
+						Email = user.Email,
+						RoleNames = roles
+					};
+				});
+			return groupedUsers;
 		}
 
 		public Task Edit(UserModel user) {
