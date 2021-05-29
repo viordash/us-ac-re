@@ -19,7 +19,11 @@
         <RadzenGridColumn TItem="UserModel" Property="Id" Title="Id" Filterable="false" Visible="true" />
         <RadzenGridColumn TItem="UserModel" Property="UserName" Title="UserName" />
         <RadzenGridColumn TItem="UserModel" Property="Email" Title="Email" />
-        <RadzenGridColumn TItem="UserModel" Property="RoleNames" Title="RoleNames" />
+        <RadzenGridColumn TItem="UserModel" Property="Roles" Title="Roles">
+            <Template Context="user">
+                @string.Join(", ", user.Roles)
+            </Template>
+        </RadzenGridColumn>
     </Columns>
 </RadzenGrid>
 

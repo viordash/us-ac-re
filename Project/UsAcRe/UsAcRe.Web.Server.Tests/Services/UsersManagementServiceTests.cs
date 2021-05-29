@@ -70,9 +70,9 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 			Assert.That(users.Count(), Is.EqualTo(3));
 			Assert.That(users.ElementAt(0).Id, Is.EqualTo(guids[1]));
 			Assert.That(users.ElementAt(0).UserName, Is.EqualTo("test1"));
-			Assert.That(users.ElementAt(0).RoleNames, Is.EquivalentTo(new[] { "role1", "role2" }));
-			Assert.That(users.ElementAt(1).RoleNames, Is.EquivalentTo(new string[] { null }));
-			Assert.That(users.ElementAt(2).RoleNames, Is.EquivalentTo(new string[] { null }));
+			Assert.That(users.ElementAt(0).Roles, Is.EquivalentTo(new[] { "role1", "role2" }));
+			Assert.That(users.ElementAt(1).Roles, Is.EquivalentTo(new string[] { null }));
+			Assert.That(users.ElementAt(2).Roles, Is.EquivalentTo(new string[] { null }));
 		}
 	}
 }

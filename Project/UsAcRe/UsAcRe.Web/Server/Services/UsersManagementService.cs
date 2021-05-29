@@ -30,25 +30,28 @@ namespace UsAcRe.Web.Server.Services {
 		}
 
 		public async Task<UserModel> Get(System.Guid id) {
-			var user = await dbContext.Users.FindAsync(id);
+			var loadDataArgs = new LoadDataArgs() {
+				Filter = $"{nameof(ApplicationUser.Id)}=\"{id}\""
+			};
+			var user = (await List(loadDataArgs)).FirstOrDefault();
 			if(user == null) {
 				throw new ObjectNotFoundException();
 			}
-			return await MapUser(user);
+			return user;
 		}
 
 		public async Task<IEnumerable<UserModel>> List(LoadDataArgs loadDataArgs) {
 			var query = from u in dbContext.Users
-							  join ur in dbContext.UserRoles on u.Id equals ur.UserId into gj
-							  from x in gj.DefaultIfEmpty()
-							  join r in dbContext.Roles on x.RoleId equals r.Id into gj1
-							  from x1 in gj1.DefaultIfEmpty()
-							  select new {
-								  u.Id,
-								  u.UserName,
-								  u.Email,
-								  Role = x1.Name,
-							  };
+						join ur in dbContext.UserRoles on u.Id equals ur.UserId into gj
+						from x in gj.DefaultIfEmpty()
+						join r in dbContext.Roles on x.RoleId equals r.Id into gj1
+						from x1 in gj1.DefaultIfEmpty()
+						select new {
+							u.Id,
+							u.UserName,
+							u.Email,
+							Role = x1.Name,
+						};
 
 			var users = await query.PerformLoadPagedData(loadDataArgs, nameof(ApplicationUser.Email));
 			var groupedUsers = users.GroupBy(
@@ -60,7 +63,7 @@ namespace UsAcRe.Web.Server.Services {
 						Id = user.Id,
 						UserName = user.UserName,
 						Email = user.Email,
-						RoleNames = roles
+						Roles = roles
 					};
 				});
 			return groupedUsers;
@@ -69,16 +72,5 @@ namespace UsAcRe.Web.Server.Services {
 		public Task Edit(UserModel user) {
 			throw new ObjectNotFoundException();
 		}
-
-		async Task<UserModel> MapUser(ApplicationUser user) {
-			var roles = await userManager.GetRolesAsync(user);
-			return new UserModel() {
-				Id = user.Id,
-				UserName = user.UserName,
-				Email = user.Email,
-				RoleNames = roles
-			};
-		}
-
 	}
 }
