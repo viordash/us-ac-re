@@ -1,15 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using GuardNet;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Radzen;
 using UsAcRe.Web.Server.Data;
 using UsAcRe.Web.Server.Extensions;
 using UsAcRe.Web.Server.Identity;
 using UsAcRe.Web.Shared.Exceptions;
 using UsAcRe.Web.Shared.Models;
+using System.Linq.Dynamic.Core;
 
 namespace UsAcRe.Web.Server.Services {
 	public interface IUsersManagementService {
@@ -30,10 +33,11 @@ namespace UsAcRe.Web.Server.Services {
 		}
 
 		public async Task<UserModel> Get(System.Guid id) {
-			var loadDataArgs = new LoadDataArgs() {
-				Filter = $"{nameof(ApplicationUser.Id)}=\"{id}\""
-			};
-			var user = (await List(loadDataArgs)).FirstOrDefault();
+			var users = await ListInternal(q => q
+					.Where(x => x.Id == id)
+					.ToListAsync()
+					);
+			var user = users.FirstOrDefault();
 			if(user == null) {
 				throw new ObjectNotFoundException();
 			}
@@ -41,19 +45,36 @@ namespace UsAcRe.Web.Server.Services {
 		}
 
 		public async Task<IEnumerable<UserModel>> List(LoadDataArgs loadDataArgs) {
+			var users = await ListInternal((q) => q.PerformLoadPagedData(loadDataArgs, nameof(ApplicationUser.Email)));
+			return users;
+		}
+
+		public Task Edit(UserModel user) {
+			throw new ObjectNotFoundException();
+		}
+
+
+		class UserRolesInternal {
+			public Guid Id { get; set; }
+			public string UserName { get; set; }
+			public string Email { get; set; }
+			public string Role { get; set; }
+		}
+
+		async Task<IEnumerable<UserModel>> ListInternal(Func<IQueryable<UserRolesInternal>, Task<List<UserRolesInternal>>> funcRetrieveData) {
 			var query = from u in dbContext.Users
 						join ur in dbContext.UserRoles on u.Id equals ur.UserId into gj
 						from x in gj.DefaultIfEmpty()
 						join r in dbContext.Roles on x.RoleId equals r.Id into gj1
 						from x1 in gj1.DefaultIfEmpty()
-						select new {
-							u.Id,
-							u.UserName,
-							u.Email,
+						select new UserRolesInternal {
+							Id = u.Id,
+							UserName = u.UserName,
+							Email = u.Email,
 							Role = x1.Name,
 						};
 
-			var users = await query.PerformLoadPagedData(loadDataArgs, nameof(ApplicationUser.Email));
+			var users = await funcRetrieveData(query);
 			var groupedUsers = users.GroupBy(
 				u => u.Id,
 				u => u.Role,
@@ -67,10 +88,6 @@ namespace UsAcRe.Web.Server.Services {
 					};
 				});
 			return groupedUsers;
-		}
-
-		public Task Edit(UserModel user) {
-			throw new ObjectNotFoundException();
 		}
 	}
 }
