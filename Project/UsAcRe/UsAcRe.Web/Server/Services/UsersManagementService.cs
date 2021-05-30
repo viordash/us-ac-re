@@ -12,7 +12,6 @@ using UsAcRe.Web.Server.Extensions;
 using UsAcRe.Web.Server.Identity;
 using UsAcRe.Web.Shared.Exceptions;
 using UsAcRe.Web.Shared.Models;
-using System.Linq.Dynamic.Core;
 
 namespace UsAcRe.Web.Server.Services {
 	public interface IUsersManagementService {
