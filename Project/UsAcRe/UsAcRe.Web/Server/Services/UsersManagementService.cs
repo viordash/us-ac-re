@@ -57,8 +57,17 @@ namespace UsAcRe.Web.Server.Services {
 			return users;
 		}
 
-		public Task Edit(UserModel user) {
-			throw new ObjectNotFoundException();
+		public async Task Edit(UserModel user) {
+			var existsUser = dbContext.Users.Any(x => x.Id == user.Id);
+			if(existsUser) {
+				var appUser = new ApplicationUser() {
+					//Id = user.Id,
+					UserName = user.UserName,
+					Email = user.Email,
+				};
+				var result = await userManager.CreateAsync(appUser);
+				await userManager.AddToRolesAsync(appUser, user.Roles);
+			}
 		}
 
 		async Task<IEnumerable<UserModel>> ListInternal(Func<IQueryable<UserRolesInternal>, Task<List<UserRolesInternal>>> funcRetrieveData) {
