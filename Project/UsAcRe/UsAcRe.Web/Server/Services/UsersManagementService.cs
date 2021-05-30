@@ -21,6 +21,15 @@ namespace UsAcRe.Web.Server.Services {
 	}
 
 	public class UsersManagementService : IUsersManagementService {
+		#region inner classes
+		class UserRolesInternal {
+			public Guid Id { get; set; }
+			public string UserName { get; set; }
+			public string Email { get; set; }
+			public string Role { get; set; }
+		}
+		#endregion
+
 		readonly ApplicationDbContext dbContext;
 		readonly UserManager<ApplicationUser> userManager;
 
@@ -50,14 +59,6 @@ namespace UsAcRe.Web.Server.Services {
 
 		public Task Edit(UserModel user) {
 			throw new ObjectNotFoundException();
-		}
-
-
-		class UserRolesInternal {
-			public Guid Id { get; set; }
-			public string UserName { get; set; }
-			public string Email { get; set; }
-			public string Role { get; set; }
 		}
 
 		async Task<IEnumerable<UserModel>> ListInternal(Func<IQueryable<UserRolesInternal>, Task<List<UserRolesInternal>>> funcRetrieveData) {
