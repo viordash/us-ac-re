@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Radzen;
 using UsAcRe.Web.Server.Data;
+using UsAcRe.Web.Server.Exceptions;
 using UsAcRe.Web.Server.Extensions;
 using UsAcRe.Web.Server.Identity;
 using UsAcRe.Web.Shared.Exceptions;
@@ -57,17 +58,33 @@ namespace UsAcRe.Web.Server.Services {
 			return users;
 		}
 
-		public async Task Edit(UserModel user) {
-			var existsUser = dbContext.Users.Any(x => x.Id == user.Id);
-			if(existsUser) {
-				var appUser = new ApplicationUser() {
-					//Id = user.Id,
-					UserName = user.UserName,
-					Email = user.Email,
-				};
-				var result = await userManager.CreateAsync(appUser);
-				await userManager.AddToRolesAsync(appUser, user.Roles);
+		public async Task Edit(UserModel editUser) {
+			var user = await userManager.FindByIdAsync(editUser.Id.ToString());
+			if(user == null) {
+				throw new ObjectNotFoundException();
 			}
+
+			if(editUser.Roles != null) {
+				var editRolesResult = await userManager.RemoveFromRolesAsync(user, await userManager.GetRolesAsync(user));
+				if(!editRolesResult.Succeeded) {
+					throw new IdentityErrorException(editRolesResult);
+				}
+
+				if(editUser.Roles.Any()) {
+					editRolesResult = await userManager.AddToRolesAsync(user, editUser.Roles);
+					if(!editRolesResult.Succeeded) {
+						throw new IdentityErrorException(editRolesResult);
+					}
+				}
+			}
+
+			user.UserName = editUser.UserName;
+			user.Email = editUser.Email;
+
+			var updateResult = await userManager.UpdateAsync(user);
+			if(!updateResult.Succeeded) {
+				throw new IdentityErrorException(updateResult);
+			}		
 		}
 
 		async Task<IEnumerable<UserModel>> ListInternal(Func<IQueryable<UserRolesInternal>, Task<List<UserRolesInternal>>> funcRetrieveData) {

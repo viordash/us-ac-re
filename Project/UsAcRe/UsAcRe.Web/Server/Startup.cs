@@ -32,6 +32,7 @@ namespace UsAcRe.Web.Server {
 				.AddRoles<ApplicationIdentityRole>()
 				.AddRoleStore<RoleStore<ApplicationIdentityRole, ApplicationDbContext, System.Guid>>()
 				.AddRoleManager<RoleManager<ApplicationIdentityRole>>()
+				.AddUserManager<UserManager<ApplicationUser>>()
 				.AddEntityFrameworkStores<ApplicationDbContext>()
 				.AddDefaultTokenProviders()
 				.AddDefaultUI();
