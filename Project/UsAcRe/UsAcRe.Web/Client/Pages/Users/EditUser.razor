@@ -4,6 +4,7 @@
 
 @inject HttpClient Http
 @inject DialogService DialogService
+@inject NotificationService NotificationService
 
 <RadzenContent Container="main">
     <ChildContent>
@@ -74,8 +75,19 @@
 
     protected async Task FormSubmit(UserModel args) {
         try {
-            await Http.PutAsJsonAsync($"/users/{UserId}", user);
+            var result = await Http.PutAsJsonAsync($"/users/{UserId}", user);
+            if(!result.IsSuccessStatusCode) {
+                var message = await result.Content.ReadAsStringAsync();
+                NotificationService.Notify(new NotificationMessage {
+                    Severity = NotificationSeverity.Error,
+                    Summary = result.ReasonPhrase,
+                    Detail = message,
+                    Duration = 4000,
+                });
+                return;
+            }
             DialogService.Close(user);
+
         } catch(AccessTokenNotAvailableException exception) {
             exception.Redirect();
         }

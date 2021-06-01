@@ -44,10 +44,12 @@
     }
 
     async Task OpenEditor(UserModel user) {
-        await DialogService.OpenAsync<EditUser>($"User {user}",
+        var result = await DialogService.OpenAsync<EditUser>($"User {user}",
             new Dictionary<string, object>() { { "UserId", user.Id } },
                         new DialogOptions() { Width = "700px", Height = "530px" });
-
+        if(result is UserModel) {
+            await usersGrid.Reload();
+        }
     }
 
 
