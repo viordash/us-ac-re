@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -16,8 +19,8 @@ namespace Tests.Common {
 
 		protected Mock<IUserValidator<ApplicationUser>> userValidatorMock;
 		protected Mock<IPasswordValidator<ApplicationUser>> passwordValidatorMock;
+		protected Mock<IUserStore<ApplicationUser>> userStoreMock;
 		protected UserManager<ApplicationUser> userManager;
-
 
 		public override void SetUp() {
 			base.SetUp();
@@ -26,6 +29,7 @@ namespace Tests.Common {
 			identityErrorDescriberMock = new Mock<IdentityErrorDescriber>();
 			userValidatorMock = new Mock<IUserValidator<ApplicationUser>>();
 			passwordValidatorMock = new Mock<IPasswordValidator<ApplicationUser>>();
+			userStoreMock = new Mock<IUserStore<ApplicationUser>>();
 
 			var roleStore = new RoleStore<ApplicationIdentityRole, ApplicationDbContext, System.Guid>(DbContext);
 			var roleValidators = new List<IRoleValidator<ApplicationIdentityRole>>() { roleValidatorMock.Object };
@@ -33,15 +37,24 @@ namespace Tests.Common {
 
 			roleManager = new RoleManager<ApplicationIdentityRole>(roleStore, roleValidators, keyNormalizerMock.Object, identityErrorDescriberMock.Object, loggerRoleManagerMock.Object);
 
-			var userStore = new UserStore<ApplicationUser, ApplicationIdentityRole, ApplicationDbContext, System.Guid>(DbContext);
 			var optionsAccessorMock = new Mock<IOptions<IdentityOptions>>();
 			var passwordHasherMock = new Mock<IPasswordHasher<ApplicationUser>>();
 			var userValidators = new List<IUserValidator<ApplicationUser>>() { userValidatorMock.Object };
 			var passwordValidators = new List<IPasswordValidator<ApplicationUser>>() { passwordValidatorMock.Object };
 			var loggerUserManagerMock = new Mock<ILogger<UserManager<ApplicationUser>>>();
 
-			userManager = new UserManager<ApplicationUser>(userStore, optionsAccessorMock.Object, passwordHasherMock.Object, userValidators, passwordValidators, keyNormalizerMock.Object,
-				identityErrorDescriberMock.Object, serviceProviderMock.Object, loggerUserManagerMock.Object);
+			userValidatorMock.Setup(x => x.ValidateAsync(It.IsAny<UserManager<ApplicationUser>>(), It.IsAny<ApplicationUser>()))
+				.Returns(() => {
+					return Task.FromResult(IdentityResult.Success);
+				});
+
+			userStoreMock.Setup(x => x.FindByIdAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+				.Returns<string, CancellationToken>((id, ct) => {
+					return Task.FromResult(DbContext.Users.FirstOrDefault(x => x.Id.ToString() == id));
+				});
+
+			userManager = new UserManager<ApplicationUser>(userStoreMock.Object, optionsAccessorMock.Object, passwordHasherMock.Object, userValidators, passwordValidators,
+				keyNormalizerMock.Object, identityErrorDescriberMock.Object, serviceProviderMock.Object, loggerUserManagerMock.Object);
 
 		}
 	}

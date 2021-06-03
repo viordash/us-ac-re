@@ -1,11 +1,15 @@
 ﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using Moq;
 using NUnit.Framework;
 using Radzen;
 using Tests.Common;
 using UsAcRe.Web.Server.Identity;
 using UsAcRe.Web.Server.Services;
 using UsAcRe.Web.Shared.Exceptions;
+using UsAcRe.Web.Shared.Models;
 
 namespace UsAcRe.Web.Server.Tests.ServicesTests {
 	[TestFixture]
@@ -73,6 +77,16 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 			Assert.That(users.ElementAt(0).Roles, Is.EquivalentTo(new[] { "role1", "role2" }));
 			Assert.That(users.ElementAt(1).Roles, Is.EquivalentTo(new string[] { null }));
 			Assert.That(users.ElementAt(2).Roles, Is.EquivalentTo(new string[] { null }));
+		}
+
+		[Test]
+		public async ValueTask Edit_User_Test() {
+			userStoreMock.Setup(x => x.UpdateAsync(It.IsAny<ApplicationUser>(), It.IsAny<CancellationToken>()))
+				.Returns<ApplicationUser, CancellationToken>((user, ct) => {
+					return Task.FromResult(IdentityResult.Success);
+				});
+			await testable.Edit(new UserModel() { Id = guids[1], UserName = "test1_edit", Email = "test1@ttt.tt" });
+			userStoreMock.Verify(x => x.UpdateAsync(It.IsAny<ApplicationUser>(), It.IsAny<CancellationToken>()));
 		}
 	}
 }
