@@ -66,7 +66,8 @@ namespace UsAcRe.Web.Server.Services {
 			}
 
 			if(user.Roles != null) {
-				var editRolesResult = await userManager.RemoveFromRolesAsync(appUser, await userManager.GetRolesAsync(appUser));
+				var userRoles = await userManager.GetRolesAsync(appUser);
+				var editRolesResult = await userManager.RemoveFromRolesAsync(appUser, userRoles);
 				if(!editRolesResult.Succeeded) {
 					throw new IdentityErrorException(editRolesResult);
 				}

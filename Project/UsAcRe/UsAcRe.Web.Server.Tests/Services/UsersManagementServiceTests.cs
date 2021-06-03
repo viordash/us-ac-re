@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
@@ -21,24 +22,29 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 
 			DbContext.Users.Add(new ApplicationUser() {
 				Id = guids[1],
-				UserName = "test1"
+				UserName = "test1",
+				NormalizedUserName = "test1".ToUpper()
 			});
 			DbContext.Users.Add(new ApplicationUser() {
 				Id = guids[2],
-				UserName = "test2"
+				UserName = "test2",
+				NormalizedUserName = "test2".ToUpper()
 			});
 			DbContext.Users.Add(new ApplicationUser() {
 				Id = guids[5],
-				UserName = "test22"
+				UserName = "test22",
+				NormalizedUserName = "test22".ToUpper()
 			});
 
 			DbContext.Roles.Add(new ApplicationIdentityRole() {
 				Id = guids[7],
-				Name = "role1"
+				Name = "role1",
+				NormalizedName = "role1".ToUpper()
 			});
 			DbContext.Roles.Add(new ApplicationIdentityRole() {
 				Id = guids[8],
-				Name = "role2"
+				Name = "role2",
+				NormalizedName = "role2".ToUpper()
 			});
 
 			DbContext.UserRoles.Add(new ApplicationIdentityUserRole() {
@@ -52,6 +58,11 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 			});
 
 			DbContext.SaveChanges();
+
+			userStoreMock.Setup(x => x.UpdateAsync(It.IsAny<ApplicationUser>(), It.IsAny<CancellationToken>()))
+				.Returns<ApplicationUser, CancellationToken>((user, ct) => {
+					return Task.FromResult(IdentityResult.Success);
+				});
 			testable = new UsersManagementService(DbContext, userManager);
 		}
 
@@ -63,7 +74,7 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 		}
 
 		[Test]
-		public void Get_For_Not_Exist_Key_Throws_ObjectNotFoundException() {
+		public void Get_For_Not_Exist_User_Throws_ObjectNotFoundException() {
 			Assert.ThrowsAsync<ObjectNotFoundException>(async () => await testable.Get(System.Guid.NewGuid()));
 		}
 
@@ -81,12 +92,24 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 
 		[Test]
 		public async ValueTask Edit_User_Test() {
-			userStoreMock.Setup(x => x.UpdateAsync(It.IsAny<ApplicationUser>(), It.IsAny<CancellationToken>()))
-				.Returns<ApplicationUser, CancellationToken>((user, ct) => {
-					return Task.FromResult(IdentityResult.Success);
-				});
 			await testable.Edit(new UserModel() { Id = guids[1], UserName = "test1_edit", Email = "test1@ttt.tt" });
 			userStoreMock.Verify(x => x.UpdateAsync(It.IsAny<ApplicationUser>(), It.IsAny<CancellationToken>()));
+		}
+
+		[Test]
+		public void Edit_For_Not_Exist_User_Throws_ObjectNotFoundException() {
+			Assert.ThrowsAsync<ObjectNotFoundException>(async () => await testable.Edit(new UserModel() { Id = System.Guid.NewGuid(), UserName = "test1_edit", Email = "test1@ttt.tt" }));
+		}
+
+		[Test]
+		public async ValueTask Edit_User_Roles_Test() {
+			await testable.Edit(new UserModel() { Id = guids[1], UserName = "test1_edit", Roles = new List<string>() { "role1" } });
+			userStoreMock.Verify(x => x.UpdateAsync(It.IsAny<ApplicationUser>(), It.IsAny<CancellationToken>()));
+			userStoreMock.Verify(x => x.RemoveFromRoleAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>(), It.IsAny<CancellationToken>()));
+			userStoreMock.Verify(x => x.AddToRoleAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>(), It.IsAny<CancellationToken>()));
+
+			var users = await testable.List(new LoadDataArgs());
+			Assert.That(users.ElementAt(0).Roles, Is.EquivalentTo(new[] { "role1" }));
 		}
 	}
 }
