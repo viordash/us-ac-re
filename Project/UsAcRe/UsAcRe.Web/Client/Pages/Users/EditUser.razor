@@ -61,12 +61,17 @@
 
 @code {
     [Parameter] public System.Guid UserId { get; set; }
+    bool isCreateNew => UserId == default;
     UserModel user;
     IEnumerable<RoleModel> roles;
 
     protected override async Task OnInitializedAsync() {
         try {
-            user = await Http.GetFromJsonAsync<UserModel>($"/users/{UserId}");
+            if(!isCreateNew) {
+                user = await Http.GetFromJsonAsync<UserModel>($"/users/{UserId}");
+            } else {
+                user = new UserModel();
+            }
             roles = await Http.GetFromJsonAsync<IEnumerable<RoleModel>>($"/roles");
         } catch(AccessTokenNotAvailableException exception) {
             exception.Redirect();
@@ -75,7 +80,12 @@
 
     protected async Task FormSubmit(UserModel args) {
         try {
-            var result = await Http.PutAsJsonAsync($"/users/{UserId}", user);
+            HttpResponseMessage result;
+            if(!isCreateNew) {
+                result = await Http.PutAsJsonAsync($"/users/{UserId}", user);
+            } else {
+                result = await Http.PostAsJsonAsync($"/users", user);
+            }
             if(!result.IsSuccessStatusCode) {
                 var message = await result.Content.ReadAsStringAsync();
                 NotificationService.Notify(new NotificationMessage {

@@ -44,16 +44,18 @@
     }
 
     async Task OpenEditor(UserModel user) {
-        var result = await DialogService.OpenAsync<EditUser>($"User {user}",
-            new Dictionary<string, object>() { { "UserId", user.Id } },
-                        new DialogOptions() { Width = "700px", Height = "530px" });
+        var result = await DialogService.OpenAsync<EditUser>($"Edit user {user}",
+            new Dictionary<string, object>() { { "UserId", user.Id } });
         if(result is UserModel) {
             await usersGrid.Reload();
         }
     }
 
 
-    void AddRecord() {
-        //    ordersGrid.InsertRow(new Order());
+    async Task AddRecord() {
+        var result = await DialogService.OpenAsync<EditUser>($"Create new user");
+        if(result is UserModel) {
+            await usersGrid.Reload();
+        }
     }
 }

@@ -37,5 +37,11 @@ namespace UsAcRe.Web.Server.Controllers {
 			await userManagementService.Edit(user);
 			return new NoContentResult();
 		}
+
+		[HttpPost]
+		public async Task<IActionResult> Post(UserModel user) {
+			await userManagementService.Create(user);
+			return new NoContentResult();
+		}
 	}
 }

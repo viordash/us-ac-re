@@ -19,6 +19,7 @@ namespace UsAcRe.Web.Server.Services {
 		Task<IEnumerable<UserModel>> List(LoadDataArgs loadDataArgs);
 		Task<UserModel> Get(System.Guid id);
 		Task Edit(UserModel user);
+		Task Create(UserModel user);
 	}
 
 	public class UsersManagementService : IUsersManagementService {
@@ -58,33 +59,52 @@ namespace UsAcRe.Web.Server.Services {
 			return users;
 		}
 
-		public async Task Edit(UserModel editUser) {
-			var user = await userManager.FindByIdAsync(editUser.Id.ToString());
-			if(user == null) {
+		public async Task Edit(UserModel user) {
+			var appUser = await userManager.FindByIdAsync(user.Id.ToString());
+			if(appUser == null) {
 				throw new ObjectNotFoundException();
 			}
 
-			if(editUser.Roles != null) {
-				var editRolesResult = await userManager.RemoveFromRolesAsync(user, await userManager.GetRolesAsync(user));
+			if(user.Roles != null) {
+				var editRolesResult = await userManager.RemoveFromRolesAsync(appUser, await userManager.GetRolesAsync(appUser));
 				if(!editRolesResult.Succeeded) {
 					throw new IdentityErrorException(editRolesResult);
 				}
 
-				if(editUser.Roles.Any()) {
-					editRolesResult = await userManager.AddToRolesAsync(user, editUser.Roles);
+				if(user.Roles.Any()) {
+					editRolesResult = await userManager.AddToRolesAsync(appUser, user.Roles);
 					if(!editRolesResult.Succeeded) {
 						throw new IdentityErrorException(editRolesResult);
 					}
 				}
 			}
 
-			user.UserName = editUser.UserName;
-			user.Email = editUser.Email;
+			appUser.UserName = user.UserName;
+			appUser.Email = user.Email;
 
-			var updateResult = await userManager.UpdateAsync(user);
+			var updateResult = await userManager.UpdateAsync(appUser);
 			if(!updateResult.Succeeded) {
 				throw new IdentityErrorException(updateResult);
-			}		
+			}
+		}
+
+		public async Task Create(UserModel user) {
+			var appUser = new ApplicationUser {
+				UserName = user.UserName,
+				Email = user.Email
+			};
+
+			var createResult = await userManager.CreateAsync(appUser);
+			if(!createResult.Succeeded) {
+				throw new IdentityErrorException(createResult);
+			}
+
+			if(user.Roles.Any()) {
+				var editRolesResult = await userManager.AddToRolesAsync(appUser, user.Roles);
+				if(!editRolesResult.Succeeded) {
+					throw new IdentityErrorException(editRolesResult);
+				}
+			}
 		}
 
 		async Task<IEnumerable<UserModel>> ListInternal(Func<IQueryable<UserRolesInternal>, Task<List<UserRolesInternal>>> funcRetrieveData) {
