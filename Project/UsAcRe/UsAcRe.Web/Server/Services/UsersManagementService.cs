@@ -65,14 +65,14 @@ namespace UsAcRe.Web.Server.Services {
 				throw new ObjectNotFoundException();
 			}
 
-			if(user.Roles != null) {
-				var userRoles = await userManager.GetRolesAsync(appUser);
+			var userRoles = await userManager.GetRolesAsync(appUser);
+			if(userRoles != null) {
 				var editRolesResult = await userManager.RemoveFromRolesAsync(appUser, userRoles);
 				if(!editRolesResult.Succeeded) {
 					throw new IdentityErrorException(editRolesResult);
 				}
 
-				if(user.Roles.Any()) {
+				if(user.Roles != null && user.Roles.Any()) {
 					editRolesResult = await userManager.AddToRolesAsync(appUser, user.Roles);
 					if(!editRolesResult.Succeeded) {
 						throw new IdentityErrorException(editRolesResult);
