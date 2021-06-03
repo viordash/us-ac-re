@@ -86,8 +86,8 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 			Assert.That(users.ElementAt(0).Id, Is.EqualTo(guids[1]));
 			Assert.That(users.ElementAt(0).UserName, Is.EqualTo("test1"));
 			Assert.That(users.ElementAt(0).Roles, Is.EquivalentTo(new[] { "role1", "role2" }));
-			Assert.That(users.ElementAt(1).Roles, Is.EquivalentTo(new string[] { null }));
-			Assert.That(users.ElementAt(2).Roles, Is.EquivalentTo(new string[] { null }));
+			Assert.That(users.ElementAt(1).Roles, Is.Empty);
+			Assert.That(users.ElementAt(2).Roles, Is.Empty);
 		}
 
 		[Test]

@@ -131,7 +131,7 @@ namespace UsAcRe.Web.Server.Services {
 						Id = user.Id,
 						UserName = user.UserName,
 						Email = user.Email,
-						Roles = roles
+						Roles = roles.Where(x => !string.IsNullOrEmpty(x))
 					};
 				});
 			return groupedUsers;
