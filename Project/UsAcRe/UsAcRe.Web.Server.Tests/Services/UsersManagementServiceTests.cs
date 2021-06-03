@@ -7,6 +7,7 @@ using Moq;
 using NUnit.Framework;
 using Radzen;
 using Tests.Common;
+using UsAcRe.Web.Server.Exceptions;
 using UsAcRe.Web.Server.Identity;
 using UsAcRe.Web.Server.Services;
 using UsAcRe.Web.Shared.Exceptions;
@@ -110,6 +111,23 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 
 			var users = await testable.List(new LoadDataArgs());
 			Assert.That(users.ElementAt(0).Roles, Is.EquivalentTo(new[] { "role1" }));
+		}
+
+		[Test]
+		public async ValueTask Edit_User__Remove_All_Roles_Test() {
+			await testable.Edit(new UserModel() { Id = guids[1], UserName = "test1_edit" });
+			var users = await testable.List(new LoadDataArgs());
+			Assert.That(users.ElementAt(0).Roles, Is.Empty);
+		}
+
+		[Test]
+		public void Edit_User_With_Non_Existen_Role_Throws_IdentityErrorException() {
+			userStoreMock.Setup(x => x.GetRolesAsync(It.IsAny<ApplicationUser>(), It.IsAny<CancellationToken>()))
+			.Returns<ApplicationUser, CancellationToken>((user, ct) => {
+				var roleIds = DbContext.UserRoles.Where(x => x.UserId == user.Id).Select(x => x.RoleId);
+				return Task.FromResult(new List<string>() { "non-existen role" } as IList<string>);
+			});
+			Assert.ThrowsAsync<IdentityErrorException>(async () => await testable.Edit(new UserModel() { Id = guids[1], UserName = "test1_edit", Roles = new List<string>() { "role1" } }));
 		}
 	}
 }
