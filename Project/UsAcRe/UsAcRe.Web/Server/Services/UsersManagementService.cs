@@ -100,7 +100,7 @@ namespace UsAcRe.Web.Server.Services {
 				throw new IdentityErrorException(createResult);
 			}
 
-			if(user.Roles.Any()) {
+			if(user.Roles != null && user.Roles.Any()) {
 				var editRolesResult = await userManager.AddToRolesAsync(appUser, user.Roles);
 				if(!editRolesResult.Succeeded) {
 					throw new IdentityErrorException(editRolesResult);

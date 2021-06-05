@@ -62,11 +62,25 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 
 			userStoreMock.Setup(x => x.UpdateAsync(It.IsAny<ApplicationUser>(), It.IsAny<CancellationToken>()))
 				.Returns<ApplicationUser, CancellationToken>((user, ct) => {
+					var appUser = DbContext.Users.FirstOrDefault(x => x.Id == user.Id);
+					DbContext.Users.Update(appUser);
+					DbContext.SaveChanges();
+					return Task.FromResult(IdentityResult.Success);
+				});
+
+			userStoreMock.Setup(x => x.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<CancellationToken>()))
+				.Returns<ApplicationUser, CancellationToken>((user, ct) => {
+					if(DbContext.Users.Any(x => x.UserName == user.UserName)) {
+						return Task.FromResult(IdentityResult.Failed(new IdentityError()));
+					}
+					DbContext.Users.Add(user);
+					DbContext.SaveChanges();
 					return Task.FromResult(IdentityResult.Success);
 				});
 			testable = new UsersManagementService(DbContext, userManager);
 		}
 
+		#region Get
 		[Test]
 		public async ValueTask Get_User_Test() {
 			var user = await testable.Get(guids[2]);
@@ -78,7 +92,9 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 		public void Get_For_Not_Exist_User_Throws_ObjectNotFoundException() {
 			Assert.ThrowsAsync<ObjectNotFoundException>(async () => await testable.Get(System.Guid.NewGuid()));
 		}
+		#endregion
 
+		#region List
 		[Test]
 		public async ValueTask List_Test() {
 			var users = await testable.List(new LoadDataArgs());
@@ -90,7 +106,9 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 			Assert.That(users.ElementAt(1).Roles, Is.Empty);
 			Assert.That(users.ElementAt(2).Roles, Is.Empty);
 		}
+		#endregion
 
+		#region Edit
 		[Test]
 		public async ValueTask Edit_User_Test() {
 			await testable.Edit(new UserModel() { Id = guids[1], UserName = "test1_edit", Email = "test1@ttt.tt" });
@@ -124,10 +142,27 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 		public void Edit_User_With_Non_Existen_Role_Throws_IdentityErrorException() {
 			userStoreMock.Setup(x => x.GetRolesAsync(It.IsAny<ApplicationUser>(), It.IsAny<CancellationToken>()))
 			.Returns<ApplicationUser, CancellationToken>((user, ct) => {
-				var roleIds = DbContext.UserRoles.Where(x => x.UserId == user.Id).Select(x => x.RoleId);
 				return Task.FromResult(new List<string>() { "non-existen role" } as IList<string>);
 			});
 			Assert.ThrowsAsync<IdentityErrorException>(async () => await testable.Edit(new UserModel() { Id = guids[1], UserName = "test1_edit", Roles = new List<string>() { "role1" } }));
 		}
+		#endregion
+
+		#region Create
+		[Test]
+		public async ValueTask Create_User_Test() {
+			await testable.Create(new UserModel() { UserName = "new_test", Email = "new@ttt.tt", Roles = new List<string>() { "role1" } });
+			userStoreMock.Verify(x => x.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<CancellationToken>()));
+
+			var users = await testable.List(new LoadDataArgs());
+			Assert.That(users.Last().UserName, Is.EqualTo("new_test"));
+			Assert.That(users.Last().Roles, Is.EquivalentTo(new[] { "role1" }));
+		}
+
+		[Test]
+		public void Create_User_That_Already_Exists_Throws_IdentityErrorException() {
+			Assert.ThrowsAsync<IdentityErrorException>(async () => await testable.Create(new UserModel() { UserName = "test1" }));
+		}
+		#endregion
 	}
 }
