@@ -87,6 +87,7 @@ namespace UsAcRe.Web.Server.Services {
 			if(!updateResult.Succeeded) {
 				throw new IdentityErrorException(updateResult);
 			}
+			dbContext.CommitChanges();
 		}
 
 		public async Task Create(UserModel user) {

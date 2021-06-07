@@ -17,16 +17,41 @@ namespace UsAcRe.Web.Server.Data {
 			IOptions<OperationalStoreOptions> operationalStoreOptions)
 			: base(options) {
 			this.operationalStoreOptions = operationalStoreOptions;
+			SavingChanges += ApplicationDbContext_SavingChanges;
+		}
+
+		private void ApplicationDbContext_SavingChanges(object sender, SavingChangesEventArgs e) {
+			if(Database.CurrentTransaction == null) {
+				Database.BeginTransaction();
+			}
+		}
+
+		public override void Dispose() {
+			SavingChanges -= ApplicationDbContext_SavingChanges;
+			base.Dispose();
+		}
+
+		public override ValueTask DisposeAsync() {
+			SavingChanges -= ApplicationDbContext_SavingChanges;
+			return base.DisposeAsync();
 		}
 
 		public DbSet<PersistedGrant> PersistedGrants { get; set; }
 		public DbSet<DeviceFlowCodes> DeviceFlowCodes { get; set; }
 
-		Task<int> IPersistedGrantDbContext.SaveChangesAsync() => base.SaveChangesAsync();
+		Task<int> IPersistedGrantDbContext.SaveChangesAsync() {
+			using(var transaction = Database.BeginTransaction()) {
+				return base.SaveChangesAsync();
+			}
+		}
 
 		protected override void OnModelCreating(ModelBuilder builder) {
 			base.OnModelCreating(builder);
 			builder.ConfigurePersistedGrantContext(operationalStoreOptions.Value);
+		}
+
+		public void CommitChanges() {
+			Database.CurrentTransaction?.Commit();
 		}
 	}
 }
