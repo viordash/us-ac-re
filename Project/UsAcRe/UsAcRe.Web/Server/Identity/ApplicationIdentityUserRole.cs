@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 
 namespace UsAcRe.Web.Server.Identity {
 	public class ApplicationIdentityUserRole : IdentityUserRole<System.Guid> {
