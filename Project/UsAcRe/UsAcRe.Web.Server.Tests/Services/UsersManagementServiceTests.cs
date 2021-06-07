@@ -21,17 +21,17 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 		public override void SetUp() {
 			base.SetUp();
 
-			DbContext.Users.Add(new ApplicationUser() {
+			DbContext.Users.Add(new ApplicationIdentityUser() {
 				Id = guids[1],
 				UserName = "test1",
 				NormalizedUserName = "test1".ToUpper()
 			});
-			DbContext.Users.Add(new ApplicationUser() {
+			DbContext.Users.Add(new ApplicationIdentityUser() {
 				Id = guids[2],
 				UserName = "test2",
 				NormalizedUserName = "test2".ToUpper()
 			});
-			DbContext.Users.Add(new ApplicationUser() {
+			DbContext.Users.Add(new ApplicationIdentityUser() {
 				Id = guids[5],
 				UserName = "test22",
 				NormalizedUserName = "test22".ToUpper()
@@ -60,16 +60,16 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 
 			DbContext.SaveChanges();
 
-			userStoreMock.Setup(x => x.UpdateAsync(It.IsAny<ApplicationUser>(), It.IsAny<CancellationToken>()))
-				.Returns<ApplicationUser, CancellationToken>((user, ct) => {
+			userStoreMock.Setup(x => x.UpdateAsync(It.IsAny<ApplicationIdentityUser>(), It.IsAny<CancellationToken>()))
+				.Returns<ApplicationIdentityUser, CancellationToken>((user, ct) => {
 					var appUser = DbContext.Users.FirstOrDefault(x => x.Id == user.Id);
 					DbContext.Users.Update(appUser);
 					DbContext.SaveChanges();
 					return Task.FromResult(IdentityResult.Success);
 				});
 
-			userStoreMock.Setup(x => x.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<CancellationToken>()))
-				.Returns<ApplicationUser, CancellationToken>((user, ct) => {
+			userStoreMock.Setup(x => x.CreateAsync(It.IsAny<ApplicationIdentityUser>(), It.IsAny<CancellationToken>()))
+				.Returns<ApplicationIdentityUser, CancellationToken>((user, ct) => {
 					if(DbContext.Users.Any(x => x.UserName == user.UserName)) {
 						return Task.FromResult(IdentityResult.Failed(new IdentityError()));
 					}
@@ -112,7 +112,7 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 		[Test]
 		public async ValueTask Edit_User_Test() {
 			await testable.Edit(new UserModel() { Id = guids[1], UserName = "test1_edit", Email = "test1@ttt.tt" });
-			userStoreMock.Verify(x => x.UpdateAsync(It.IsAny<ApplicationUser>(), It.IsAny<CancellationToken>()));
+			userStoreMock.Verify(x => x.UpdateAsync(It.IsAny<ApplicationIdentityUser>(), It.IsAny<CancellationToken>()));
 		}
 
 		[Test]
@@ -123,9 +123,9 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 		[Test]
 		public async ValueTask Edit_User_Roles_Test() {
 			await testable.Edit(new UserModel() { Id = guids[1], UserName = "test1_edit", Roles = new List<string>() { "role1" } });
-			userStoreMock.Verify(x => x.UpdateAsync(It.IsAny<ApplicationUser>(), It.IsAny<CancellationToken>()));
-			userStoreMock.Verify(x => x.RemoveFromRoleAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>(), It.IsAny<CancellationToken>()));
-			userStoreMock.Verify(x => x.AddToRoleAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>(), It.IsAny<CancellationToken>()));
+			userStoreMock.Verify(x => x.UpdateAsync(It.IsAny<ApplicationIdentityUser>(), It.IsAny<CancellationToken>()));
+			userStoreMock.Verify(x => x.RemoveFromRoleAsync(It.IsAny<ApplicationIdentityUser>(), It.IsAny<string>(), It.IsAny<CancellationToken>()));
+			userStoreMock.Verify(x => x.AddToRoleAsync(It.IsAny<ApplicationIdentityUser>(), It.IsAny<string>(), It.IsAny<CancellationToken>()));
 
 			var users = await testable.List(new LoadDataArgs());
 			Assert.That(users.ElementAt(0).Roles, Is.EquivalentTo(new[] { "role1" }));
@@ -140,8 +140,8 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 
 		[Test]
 		public void Edit_User_With_Non_Existen_Role_Throws_IdentityErrorException() {
-			userStoreMock.Setup(x => x.GetRolesAsync(It.IsAny<ApplicationUser>(), It.IsAny<CancellationToken>()))
-			.Returns<ApplicationUser, CancellationToken>((user, ct) => {
+			userStoreMock.Setup(x => x.GetRolesAsync(It.IsAny<ApplicationIdentityUser>(), It.IsAny<CancellationToken>()))
+			.Returns<ApplicationIdentityUser, CancellationToken>((user, ct) => {
 				return Task.FromResult(new List<string>() { "non-existen role" } as IList<string>);
 			});
 			Assert.ThrowsAsync<IdentityErrorException>(async () => await testable.Edit(new UserModel() { Id = guids[1], UserName = "test1_edit", Roles = new List<string>() { "role1" } }));
@@ -152,7 +152,7 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 		[Test]
 		public async ValueTask Create_User_Test() {
 			await testable.Create(new UserModel() { UserName = "new_test", Email = "new@ttt.tt", Roles = new List<string>() { "role1" } });
-			userStoreMock.Verify(x => x.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<CancellationToken>()));
+			userStoreMock.Verify(x => x.CreateAsync(It.IsAny<ApplicationIdentityUser>(), It.IsAny<CancellationToken>()));
 
 			var users = await testable.List(new LoadDataArgs());
 			Assert.That(users.Last().UserName, Is.EqualTo("new_test"));

@@ -7,13 +7,13 @@ using UsAcRe.Web.Server.Identity;
 
 namespace UsAcRe.Web.Server.Areas.Identity.Pages.Account.Manage {
 	public class ResetAuthenticatorModel : PageModel {
-		UserManager<ApplicationUser> _userManager;
-		private readonly SignInManager<ApplicationUser> _signInManager;
+		UserManager<ApplicationIdentityUser> _userManager;
+		private readonly SignInManager<ApplicationIdentityUser> _signInManager;
 		ILogger<ResetAuthenticatorModel> _logger;
 
 		public ResetAuthenticatorModel(
-			UserManager<ApplicationUser> userManager,
-			SignInManager<ApplicationUser> signInManager,
+			UserManager<ApplicationIdentityUser> userManager,
+			SignInManager<ApplicationIdentityUser> signInManager,
 			ILogger<ResetAuthenticatorModel> logger) {
 			_userManager = userManager;
 			_signInManager = signInManager;

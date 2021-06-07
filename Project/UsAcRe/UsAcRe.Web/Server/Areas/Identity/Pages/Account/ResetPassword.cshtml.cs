@@ -11,9 +11,9 @@ using UsAcRe.Web.Server.Identity;
 namespace UsAcRe.Web.Server.Areas.Identity.Pages.Account {
 	[AllowAnonymous]
 	public class ResetPasswordModel : PageModel {
-		private readonly UserManager<ApplicationUser> _userManager;
+		private readonly UserManager<ApplicationIdentityUser> _userManager;
 
-		public ResetPasswordModel(UserManager<ApplicationUser> userManager) {
+		public ResetPasswordModel(UserManager<ApplicationIdentityUser> userManager) {
 			_userManager = userManager;
 		}
 

@@ -10,12 +10,12 @@ using UsAcRe.Web.Server.Identity;
 
 namespace UsAcRe.Web.Server.Areas.Identity.Pages.Account.Manage {
 	public class ExternalLoginsModel : PageModel {
-		private readonly UserManager<ApplicationUser> _userManager;
-		private readonly SignInManager<ApplicationUser> _signInManager;
+		private readonly UserManager<ApplicationIdentityUser> _userManager;
+		private readonly SignInManager<ApplicationIdentityUser> _signInManager;
 
 		public ExternalLoginsModel(
-			UserManager<ApplicationUser> userManager,
-			SignInManager<ApplicationUser> signInManager) {
+			UserManager<ApplicationIdentityUser> userManager,
+			SignInManager<ApplicationIdentityUser> signInManager) {
 			_userManager = userManager;
 			_signInManager = signInManager;
 		}

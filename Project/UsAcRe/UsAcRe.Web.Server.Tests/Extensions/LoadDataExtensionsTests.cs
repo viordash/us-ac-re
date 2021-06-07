@@ -14,7 +14,7 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 			base.SetUp();
 			for(int i = 0; i < guids.Length; i++) {
 				var id = guids[i];
-				DbContext.Users.Add(new ApplicationUser() {
+				DbContext.Users.Add(new ApplicationIdentityUser() {
 					Id = id,
 					UserName = $"test{i}",
 					Email = $"email{i}",

@@ -15,14 +15,14 @@ using UsAcRe.Web.Server.Identity;
 namespace UsAcRe.Web.Server.Areas.Identity.Pages.Account {
 	[AllowAnonymous]
 	public class ExternalLoginModel : PageModel {
-		private readonly SignInManager<ApplicationUser> _signInManager;
-		private readonly UserManager<ApplicationUser> _userManager;
+		private readonly SignInManager<ApplicationIdentityUser> _signInManager;
+		private readonly UserManager<ApplicationIdentityUser> _userManager;
 		private readonly IEmailSender _emailSender;
 		private readonly ILogger<ExternalLoginModel> _logger;
 
 		public ExternalLoginModel(
-			SignInManager<ApplicationUser> signInManager,
-			UserManager<ApplicationUser> userManager,
+			SignInManager<ApplicationIdentityUser> signInManager,
+			UserManager<ApplicationIdentityUser> userManager,
 			ILogger<ExternalLoginModel> logger,
 			IEmailSender emailSender) {
 			_signInManager = signInManager;
@@ -101,7 +101,7 @@ namespace UsAcRe.Web.Server.Areas.Identity.Pages.Account {
 			}
 
 			if(ModelState.IsValid) {
-				var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email };
+				var user = new ApplicationIdentityUser { UserName = Input.Email, Email = Input.Email };
 
 				var result = await _userManager.CreateAsync(user);
 				if(result.Succeeded) {

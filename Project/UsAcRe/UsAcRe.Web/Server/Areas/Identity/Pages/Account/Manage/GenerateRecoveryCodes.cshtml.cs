@@ -9,11 +9,11 @@ using UsAcRe.Web.Server.Identity;
 
 namespace UsAcRe.Web.Server.Areas.Identity.Pages.Account.Manage {
 	public class GenerateRecoveryCodesModel : PageModel {
-		private readonly UserManager<ApplicationUser> _userManager;
+		private readonly UserManager<ApplicationIdentityUser> _userManager;
 		private readonly ILogger<GenerateRecoveryCodesModel> _logger;
 
 		public GenerateRecoveryCodesModel(
-			UserManager<ApplicationUser> userManager,
+			UserManager<ApplicationIdentityUser> userManager,
 			ILogger<GenerateRecoveryCodesModel> logger) {
 			_userManager = userManager;
 			_logger = logger;

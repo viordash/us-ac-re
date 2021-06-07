@@ -11,10 +11,10 @@ using UsAcRe.Web.Server.Identity;
 namespace UsAcRe.Web.Server.Areas.Identity.Pages.Account {
 	[AllowAnonymous]
 	public class RegisterConfirmationModel : PageModel {
-		private readonly UserManager<ApplicationUser> _userManager;
+		private readonly UserManager<ApplicationIdentityUser> _userManager;
 		private readonly IEmailSender _sender;
 
-		public RegisterConfirmationModel(UserManager<ApplicationUser> userManager, IEmailSender sender) {
+		public RegisterConfirmationModel(UserManager<ApplicationIdentityUser> userManager, IEmailSender sender) {
 			_userManager = userManager;
 			_sender = sender;
 		}

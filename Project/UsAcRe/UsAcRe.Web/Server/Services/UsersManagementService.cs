@@ -33,9 +33,9 @@ namespace UsAcRe.Web.Server.Services {
 		#endregion
 
 		readonly ApplicationDbContext dbContext;
-		readonly UserManager<ApplicationUser> userManager;
+		readonly UserManager<ApplicationIdentityUser> userManager;
 
-		public UsersManagementService(ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager) {
+		public UsersManagementService(ApplicationDbContext dbContext, UserManager<ApplicationIdentityUser> userManager) {
 			Guard.NotNull(dbContext, nameof(dbContext));
 			Guard.NotNull(userManager, nameof(userManager));
 			this.dbContext = dbContext;
@@ -55,7 +55,7 @@ namespace UsAcRe.Web.Server.Services {
 		}
 
 		public async Task<IEnumerable<UserModel>> List(LoadDataArgs loadDataArgs) {
-			var users = await ListInternal((q) => q.PerformLoadPagedData(loadDataArgs, nameof(ApplicationUser.Email)));
+			var users = await ListInternal((q) => q.PerformLoadPagedData(loadDataArgs, nameof(ApplicationIdentityUser.Email)));
 			return users;
 		}
 
@@ -91,7 +91,7 @@ namespace UsAcRe.Web.Server.Services {
 		}
 
 		public async Task Create(UserModel user) {
-			var appUser = new ApplicationUser {
+			var appUser = new ApplicationIdentityUser {
 				UserName = user.UserName,
 				Email = user.Email
 			};

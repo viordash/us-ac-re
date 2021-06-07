@@ -13,10 +13,10 @@ using UsAcRe.Web.Server.Identity;
 namespace UsAcRe.Web.Server.Areas.Identity.Pages.Account {
 	[AllowAnonymous]
 	public class ForgotPasswordModel : PageModel {
-		private readonly UserManager<ApplicationUser> _userManager;
+		private readonly UserManager<ApplicationIdentityUser> _userManager;
 		private readonly IEmailSender _emailSender;
 
-		public ForgotPasswordModel(UserManager<ApplicationUser> userManager, IEmailSender emailSender) {
+		public ForgotPasswordModel(UserManager<ApplicationIdentityUser> userManager, IEmailSender emailSender) {
 			_userManager = userManager;
 			_emailSender = emailSender;
 		}

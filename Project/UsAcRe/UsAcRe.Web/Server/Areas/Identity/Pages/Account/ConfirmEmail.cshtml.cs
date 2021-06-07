@@ -10,9 +10,9 @@ using UsAcRe.Web.Server.Identity;
 namespace UsAcRe.Web.Server.Areas.Identity.Pages.Account {
 	[AllowAnonymous]
 	public class ConfirmEmailModel : PageModel {
-		private readonly UserManager<ApplicationUser> _userManager;
+		private readonly UserManager<ApplicationIdentityUser> _userManager;
 
-		public ConfirmEmailModel(UserManager<ApplicationUser> userManager) {
+		public ConfirmEmailModel(UserManager<ApplicationIdentityUser> userManager) {
 			_userManager = userManager;
 		}
 

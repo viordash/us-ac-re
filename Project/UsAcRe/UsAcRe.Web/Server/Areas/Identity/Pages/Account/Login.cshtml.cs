@@ -13,13 +13,13 @@ using UsAcRe.Web.Server.Identity;
 namespace UsAcRe.Web.Server.Areas.Identity.Pages.Account {
 	[AllowAnonymous]
 	public class LoginModel : PageModel {
-		private readonly UserManager<ApplicationUser> _userManager;
-		private readonly SignInManager<ApplicationUser> _signInManager;
+		private readonly UserManager<ApplicationIdentityUser> _userManager;
+		private readonly SignInManager<ApplicationIdentityUser> _signInManager;
 		private readonly ILogger<LoginModel> _logger;
 
-		public LoginModel(SignInManager<ApplicationUser> signInManager,
+		public LoginModel(SignInManager<ApplicationIdentityUser> signInManager,
 			ILogger<LoginModel> logger,
-			UserManager<ApplicationUser> userManager) {
+			UserManager<ApplicationIdentityUser> userManager) {
 			_userManager = userManager;
 			_signInManager = signInManager;
 			_logger = logger;

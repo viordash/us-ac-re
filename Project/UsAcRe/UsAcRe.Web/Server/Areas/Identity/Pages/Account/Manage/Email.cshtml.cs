@@ -11,13 +11,13 @@ using UsAcRe.Web.Server.Identity;
 
 namespace UsAcRe.Web.Server.Areas.Identity.Pages.Account.Manage {
 	public partial class EmailModel : PageModel {
-		private readonly UserManager<ApplicationUser> _userManager;
-		private readonly SignInManager<ApplicationUser> _signInManager;
+		private readonly UserManager<ApplicationIdentityUser> _userManager;
+		private readonly SignInManager<ApplicationIdentityUser> _signInManager;
 		private readonly IEmailSender _emailSender;
 
 		public EmailModel(
-			UserManager<ApplicationUser> userManager,
-			SignInManager<ApplicationUser> signInManager,
+			UserManager<ApplicationIdentityUser> userManager,
+			SignInManager<ApplicationIdentityUser> signInManager,
 			IEmailSender emailSender) {
 			_userManager = userManager;
 			_signInManager = signInManager;
@@ -43,7 +43,7 @@ namespace UsAcRe.Web.Server.Areas.Identity.Pages.Account.Manage {
 			public string NewEmail { get; set; }
 		}
 
-		private async Task LoadAsync(ApplicationUser user) {
+		private async Task LoadAsync(ApplicationIdentityUser user) {
 			var email = await _userManager.GetEmailAsync(user);
 			Email = email;
 

@@ -10,7 +10,7 @@ using UsAcRe.Web.Server.Identity;
 using UsAcRe.Web.Shared.Utils;
 
 namespace UsAcRe.Web.Server.Data {
-	public class ApplicationDbContext : ApplicationIdentityDbContext<ApplicationUser, ApplicationIdentityRole>, IPersistedGrantDbContext, IDisposable {
+	public class ApplicationDbContext : ApplicationIdentityDbContext<ApplicationIdentityUser, ApplicationIdentityRole>, IPersistedGrantDbContext, IDisposable {
 		readonly IOptions<OperationalStoreOptions> operationalStoreOptions;
 		protected bool supportTransactions = true;
 

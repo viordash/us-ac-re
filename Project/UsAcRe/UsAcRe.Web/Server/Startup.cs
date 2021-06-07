@@ -28,11 +28,11 @@ namespace UsAcRe.Web.Server {
 
 			services.AddDatabaseDeveloperPageExceptionFilter();
 
-			services.AddIdentity<ApplicationUser, ApplicationIdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+			services.AddIdentity<ApplicationIdentityUser, ApplicationIdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
 				.AddRoles<ApplicationIdentityRole>()
 				.AddRoleStore<ApplicationRoleStore>()
 				.AddRoleManager<RoleManager<ApplicationIdentityRole>>()
-				.AddUserManager<UserManager<ApplicationUser>>()
+				.AddUserManager<UserManager<ApplicationIdentityUser>>()
 				.AddUserStore<ApplicationUserStore>()
 				.AddEntityFrameworkStores<ApplicationDbContext>()
 				.AddDefaultTokenProviders()
@@ -40,7 +40,7 @@ namespace UsAcRe.Web.Server {
 
 
 			services.AddIdentityServer()
-				.AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
+				.AddApiAuthorization<ApplicationIdentityUser, ApplicationDbContext>();
 
 			services.AddAuthentication()
 				.AddIdentityServerJwt();

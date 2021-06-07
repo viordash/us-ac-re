@@ -9,13 +9,13 @@ namespace UsAcRe.Web.Server.Areas.Identity.Pages.Account.Manage {
 	public class TwoFactorAuthenticationModel : PageModel {
 		private const string AuthenicatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}";
 
-		private readonly UserManager<ApplicationUser> _userManager;
-		private readonly SignInManager<ApplicationUser> _signInManager;
+		private readonly UserManager<ApplicationIdentityUser> _userManager;
+		private readonly SignInManager<ApplicationIdentityUser> _signInManager;
 		private readonly ILogger<TwoFactorAuthenticationModel> _logger;
 
 		public TwoFactorAuthenticationModel(
-			UserManager<ApplicationUser> userManager,
-			SignInManager<ApplicationUser> signInManager,
+			UserManager<ApplicationIdentityUser> userManager,
+			SignInManager<ApplicationIdentityUser> signInManager,
 			ILogger<TwoFactorAuthenticationModel> logger) {
 			_userManager = userManager;
 			_signInManager = signInManager;

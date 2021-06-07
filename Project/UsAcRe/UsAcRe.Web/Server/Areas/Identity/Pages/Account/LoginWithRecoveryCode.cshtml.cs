@@ -11,10 +11,10 @@ using UsAcRe.Web.Server.Identity;
 namespace UsAcRe.Web.Server.Areas.Identity.Pages.Account {
 	[AllowAnonymous]
 	public class LoginWithRecoveryCodeModel : PageModel {
-		private readonly SignInManager<ApplicationUser> _signInManager;
+		private readonly SignInManager<ApplicationIdentityUser> _signInManager;
 		private readonly ILogger<LoginWithRecoveryCodeModel> _logger;
 
-		public LoginWithRecoveryCodeModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginWithRecoveryCodeModel> logger) {
+		public LoginWithRecoveryCodeModel(SignInManager<ApplicationIdentityUser> signInManager, ILogger<LoginWithRecoveryCodeModel> logger) {
 			_signInManager = signInManager;
 			_logger = logger;
 		}
