@@ -10,7 +10,14 @@ using UsAcRe.Web.Server.Identity;
 
 namespace UsAcRe.Web.Server.Data {
 	public class ApplicationDbContext : ApplicationIdentityDbContext<ApplicationUser, ApplicationIdentityRole>, IPersistedGrantDbContext, IDisposable {
+		#region inner classes
+		class EmptyDisposable : IDisposable {
+			public void Dispose() { }
+		}
+		#endregion
+
 		private readonly IOptions<OperationalStoreOptions> operationalStoreOptions;
+		private bool supportTransactions = true;
 
 		public ApplicationDbContext(
 			DbContextOptions options,
@@ -22,7 +29,7 @@ namespace UsAcRe.Web.Server.Data {
 
 		private void ApplicationDbContext_SavingChanges(object sender, SavingChangesEventArgs e) {
 			if(Database.CurrentTransaction == null) {
-				Database.BeginTransaction();
+				BeginTransaction();
 			}
 		}
 
@@ -40,7 +47,7 @@ namespace UsAcRe.Web.Server.Data {
 		public DbSet<DeviceFlowCodes> DeviceFlowCodes { get; set; }
 
 		Task<int> IPersistedGrantDbContext.SaveChangesAsync() {
-			using(var transaction = Database.BeginTransaction()) {
+			using(BeginTransaction()) {
 				return base.SaveChangesAsync();
 			}
 		}
@@ -52,6 +59,17 @@ namespace UsAcRe.Web.Server.Data {
 
 		public void CommitChanges() {
 			Database.CurrentTransaction?.Commit();
+		}
+
+		IDisposable BeginTransaction() {
+			if(supportTransactions) {
+				try {
+					return Database.BeginTransaction();
+				} catch(InvalidOperationException) {
+					supportTransactions = false;
+				}
+			}
+			return new EmptyDisposable();
 		}
 	}
 }
