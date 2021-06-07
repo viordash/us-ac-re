@@ -7,17 +7,12 @@ using IdentityServer4.EntityFramework.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using UsAcRe.Web.Server.Identity;
+using UsAcRe.Web.Shared.Utils;
 
 namespace UsAcRe.Web.Server.Data {
 	public class ApplicationDbContext : ApplicationIdentityDbContext<ApplicationUser, ApplicationIdentityRole>, IPersistedGrantDbContext, IDisposable {
-		#region inner classes
-		class EmptyDisposable : IDisposable {
-			public void Dispose() { }
-		}
-		#endregion
-
-		private readonly IOptions<OperationalStoreOptions> operationalStoreOptions;
-		private bool supportTransactions = true;
+		readonly IOptions<OperationalStoreOptions> operationalStoreOptions;
+		protected bool supportTransactions = true;
 
 		public ApplicationDbContext(
 			DbContextOptions options,
@@ -27,7 +22,7 @@ namespace UsAcRe.Web.Server.Data {
 			SavingChanges += ApplicationDbContext_SavingChanges;
 		}
 
-		private void ApplicationDbContext_SavingChanges(object sender, SavingChangesEventArgs e) {
+		void ApplicationDbContext_SavingChanges(object sender, SavingChangesEventArgs e) {
 			if(Database.CurrentTransaction == null) {
 				BeginTransaction();
 			}
