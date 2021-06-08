@@ -16,7 +16,7 @@ using UsAcRe.Web.Shared.Models;
 
 namespace UsAcRe.Web.Server.Services {
 	public interface IUsersManagementService {
-		Task<IEnumerable<UserModel>> List(LoadDataArgs loadDataArgs);
+		Task<IList<UserModel>> List(LoadDataArgs loadDataArgs);
 		Task<UserModel> Get(System.Guid id);
 		Task Edit(UserModel user);
 		Task Create(UserModel user);
@@ -58,9 +58,9 @@ namespace UsAcRe.Web.Server.Services {
 			return user;
 		}
 
-		public async Task<IEnumerable<UserModel>> List(LoadDataArgs loadDataArgs) {
+		public async Task<IList<UserModel>> List(LoadDataArgs loadDataArgs) {
 			var users = await ListInternal((q) => q.PerformLoadPagedData(loadDataArgs, nameof(ApplicationIdentityUser.Email)));
-			return users;
+			return users.ToList();
 		}
 
 		public async Task Edit(UserModel user) {
@@ -129,11 +129,12 @@ namespace UsAcRe.Web.Server.Services {
 				.Where(r => users.Any(u => u.RoleId == r.Id))
 				.ToList();
 
-			var groupedUsers = users.GroupBy(
+			var groupedUsers = users
+				.GroupBy(
 				u => u.Id,
 				u => u.RoleId,
 				(k, roles) => {
-					var user = users.FirstOrDefault(x => x.Id == k);
+					var user = users.First(x => x.Id == k);
 					return new UserModel() {
 						Id = user.Id,
 						UserName = user.UserName,
