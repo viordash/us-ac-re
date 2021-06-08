@@ -6,11 +6,10 @@ using IdentityServer4.EntityFramework.Interfaces;
 using IdentityServer4.EntityFramework.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using UsAcRe.Web.Server.Identity;
 using UsAcRe.Web.Shared.Utils;
 
 namespace UsAcRe.Web.Server.Data {
-	public class ApplicationDbContext : ApplicationIdentityDbContext<ApplicationIdentityUser, ApplicationIdentityRole>, IPersistedGrantDbContext, IDisposable {
+	public class ApplicationDbContext : ApplicationIdentityDbContext, IPersistedGrantDbContext, IDisposable {
 		readonly IOptions<OperationalStoreOptions> operationalStoreOptions;
 		protected bool supportTransactions = true;
 
