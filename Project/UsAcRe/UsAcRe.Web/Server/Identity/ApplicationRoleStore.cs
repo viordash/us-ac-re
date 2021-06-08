@@ -21,11 +21,18 @@ namespace UsAcRe.Web.Server.Identity {
 		public ApplicationRoleStore(ApplicationDbContext context, ILookupNormalizer keyNormalizer, IdentityErrorDescriber describer = null)
 			: base(context, describer) {
 			AutoSaveChanges = false;
+
 			predefinedRoles = ApplicationRoleTypeSpecifics.Names.Select(x =>
 						new ApplicationIdentityRole(x.Key, x.Value, (keyNormalizer == null)
 							? x.Value
 							: keyNormalizer.NormalizeName(x.Value)))
 				.AsQueryable();
+		}
+
+		public override Task<ApplicationIdentityRole> FindByNameAsync(string normalizedName, CancellationToken cancellationToken = default(CancellationToken)) {
+			cancellationToken.ThrowIfCancellationRequested();
+			ThrowIfDisposed();
+			return Task.FromResult(Roles.FirstOrDefault(r => r.NormalizedName == normalizedName));
 		}
 
 		public override Task<IdentityResult> CreateAsync(ApplicationIdentityRole role, CancellationToken cancellationToken = default(CancellationToken)) {
@@ -47,7 +54,7 @@ namespace UsAcRe.Web.Server.Identity {
 
 
 		public override Task<IList<Claim>> GetClaimsAsync(ApplicationIdentityRole role, CancellationToken cancellationToken = default(CancellationToken)) {
-			throw new NotSupportedException();
+			return Task.FromResult(Enumerable.Empty<Claim>().ToList() as IList<Claim>);
 		}
 
 		public override Task AddClaimAsync(ApplicationIdentityRole role, Claim claim, CancellationToken cancellationToken = default(CancellationToken)) {
