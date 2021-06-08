@@ -37,25 +37,14 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 				NormalizedUserName = "test22".ToUpper()
 			});
 
-			DbContext.Roles.Add(new ApplicationIdentityRole() {
-				Id = guids[7],
-				Name = "role1",
-				NormalizedName = "role1".ToUpper()
-			});
-			DbContext.Roles.Add(new ApplicationIdentityRole() {
-				Id = guids[8],
-				Name = "role2",
-				NormalizedName = "role2".ToUpper()
+			DbContext.UserRoles.Add(new ApplicationIdentityUserRole() {
+				UserId = guids[1],
+				RoleId = roleManager.Roles.ElementAt(0).Id
 			});
 
 			DbContext.UserRoles.Add(new ApplicationIdentityUserRole() {
 				UserId = guids[1],
-				RoleId = guids[7]
-			});
-
-			DbContext.UserRoles.Add(new ApplicationIdentityUserRole() {
-				UserId = guids[1],
-				RoleId = guids[8]
+				RoleId = roleManager.Roles.ElementAt(1).Id
 			});
 
 			DbContext.SaveChanges();
@@ -77,7 +66,7 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 					DbContext.SaveChanges();
 					return Task.FromResult(IdentityResult.Success);
 				});
-			testable = new UsersManagementService(DbContext, userManager);
+			testable = new UsersManagementService(DbContext, userManager, roleManager);
 		}
 
 		#region Get
@@ -102,7 +91,7 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 			Assert.That(users.Count(), Is.EqualTo(3));
 			Assert.That(users.ElementAt(0).Id, Is.EqualTo(guids[1]));
 			Assert.That(users.ElementAt(0).UserName, Is.EqualTo("test1"));
-			Assert.That(users.ElementAt(0).Roles, Is.EquivalentTo(new[] { "role1", "role2" }));
+			Assert.That(users.ElementAt(0).Roles, Is.EquivalentTo(new[] { "SuperUser", "Administrator" }));
 			Assert.That(users.ElementAt(1).Roles, Is.Empty);
 			Assert.That(users.ElementAt(2).Roles, Is.Empty);
 		}
@@ -122,13 +111,13 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 
 		[Test]
 		public async ValueTask Edit_User_Roles_Test() {
-			await testable.Edit(new UserModel() { Id = guids[1], UserName = "test1_edit", Roles = new List<string>() { "role1" } });
+			await testable.Edit(new UserModel() { Id = guids[1], UserName = "test1_edit", Roles = new List<string>() { "SuperUser" } });
 			userStoreMock.Verify(x => x.UpdateAsync(It.IsAny<ApplicationIdentityUser>(), It.IsAny<CancellationToken>()));
 			userStoreMock.Verify(x => x.RemoveFromRoleAsync(It.IsAny<ApplicationIdentityUser>(), It.IsAny<string>(), It.IsAny<CancellationToken>()));
 			userStoreMock.Verify(x => x.AddToRoleAsync(It.IsAny<ApplicationIdentityUser>(), It.IsAny<string>(), It.IsAny<CancellationToken>()));
 
 			var users = await testable.List(new LoadDataArgs());
-			Assert.That(users.ElementAt(0).Roles, Is.EquivalentTo(new[] { "role1" }));
+			Assert.That(users.ElementAt(0).Roles, Is.EquivalentTo(new[] { "SuperUser" }));
 		}
 
 		[Test]
@@ -144,19 +133,19 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 			.Returns<ApplicationIdentityUser, CancellationToken>((user, ct) => {
 				return Task.FromResult(new List<string>() { "non-existen role" } as IList<string>);
 			});
-			Assert.ThrowsAsync<IdentityErrorException>(async () => await testable.Edit(new UserModel() { Id = guids[1], UserName = "test1_edit", Roles = new List<string>() { "role1" } }));
+			Assert.ThrowsAsync<IdentityErrorException>(async () => await testable.Edit(new UserModel() { Id = guids[1], UserName = "test1_edit", Roles = new List<string>() { "SuperUser" } }));
 		}
 		#endregion
 
 		#region Create
 		[Test]
 		public async ValueTask Create_User_Test() {
-			await testable.Create(new UserModel() { UserName = "new_test", Email = "new@ttt.tt", Roles = new List<string>() { "role1" } });
+			await testable.Create(new UserModel() { UserName = "new_test", Email = "new@ttt.tt", Roles = new List<string>() { "SuperUser" } });
 			userStoreMock.Verify(x => x.CreateAsync(It.IsAny<ApplicationIdentityUser>(), It.IsAny<CancellationToken>()));
 
 			var users = await testable.List(new LoadDataArgs());
 			Assert.That(users.Last().UserName, Is.EqualTo("new_test"));
-			Assert.That(users.Last().Roles, Is.EquivalentTo(new[] { "role1" }));
+			Assert.That(users.Last().Roles, Is.EquivalentTo(new[] { "SuperUser" }));
 		}
 
 		[Test]

@@ -28,18 +28,22 @@ namespace UsAcRe.Web.Server.Services {
 			public Guid Id { get; set; }
 			public string UserName { get; set; }
 			public string Email { get; set; }
-			public string Role { get; set; }
+			public Guid? RoleId { get; set; }
 		}
 		#endregion
 
 		readonly ApplicationDbContext dbContext;
 		readonly UserManager<ApplicationIdentityUser> userManager;
+		readonly RoleManager<ApplicationIdentityRole> roleManager;
 
-		public UsersManagementService(ApplicationDbContext dbContext, UserManager<ApplicationIdentityUser> userManager) {
+		public UsersManagementService(ApplicationDbContext dbContext, UserManager<ApplicationIdentityUser> userManager,
+			RoleManager<ApplicationIdentityRole> roleManager) {
 			Guard.NotNull(dbContext, nameof(dbContext));
 			Guard.NotNull(userManager, nameof(userManager));
+			Guard.NotNull(roleManager, nameof(roleManager));
 			this.dbContext = dbContext;
 			this.userManager = userManager;
+			this.roleManager = roleManager;
 		}
 
 		public async Task<UserModel> Get(System.Guid id) {
@@ -113,26 +117,28 @@ namespace UsAcRe.Web.Server.Services {
 			var query = from u in dbContext.Users
 						join ur in dbContext.UserRoles on u.Id equals ur.UserId into gj
 						from x in gj.DefaultIfEmpty()
-						join r in dbContext.Roles on x.RoleId equals r.Id into gj1
-						from x1 in gj1.DefaultIfEmpty()
 						select new UserRolesInternal {
 							Id = u.Id,
 							UserName = u.UserName,
 							Email = u.Email,
-							Role = x1.Name,
+							RoleId = x.RoleId,
 						};
 
 			var users = await funcRetrieveData(query);
+			var filteredRoles = roleManager.Roles
+				.Where(r => users.Any(u => u.RoleId == r.Id))
+				.ToList();
+
 			var groupedUsers = users.GroupBy(
 				u => u.Id,
-				u => u.Role,
+				u => u.RoleId,
 				(k, roles) => {
 					var user = users.FirstOrDefault(x => x.Id == k);
 					return new UserModel() {
 						Id = user.Id,
 						UserName = user.UserName,
 						Email = user.Email,
-						Roles = roles.Where(x => !string.IsNullOrEmpty(x))
+						Roles = filteredRoles.Where(x => roles.Any(r => r == x.Id)).Select(x => x.Name)
 					};
 				});
 			return groupedUsers;

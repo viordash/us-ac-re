@@ -19,6 +19,7 @@ namespace Tests.Common {
 
 		protected Mock<IRoleValidator<ApplicationIdentityRole>> roleValidatorMock;
 		protected Mock<IdentityErrorDescriber> identityErrorDescriberMock;
+		protected Mock<ILookupNormalizer> keyNormalizerMock;
 		protected RoleManager<ApplicationIdentityRole> roleManager;
 
 		protected Mock<IUserValidator<ApplicationIdentityUser>> userValidatorMock;
@@ -33,8 +34,10 @@ namespace Tests.Common {
 			userValidatorMock = new Mock<IUserValidator<ApplicationIdentityUser>>();
 			passwordValidatorMock = new Mock<IPasswordValidator<ApplicationIdentityUser>>();
 			userStoreMock = new Mock<ITestUserStore>();
+			keyNormalizerMock = new Mock<ILookupNormalizer>();
 
-			var roleStore = new RoleStore<ApplicationIdentityRole, ApplicationDbContext, System.Guid>(DbContext);
+
+			var roleStore = new ApplicationRoleStore(DbContext, keyNormalizerMock.Object);
 			var roleValidators = new List<IRoleValidator<ApplicationIdentityRole>>() { roleValidatorMock.Object };
 			var loggerRoleManagerMock = new Mock<ILogger<RoleManager<ApplicationIdentityRole>>>();
 
@@ -59,13 +62,13 @@ namespace Tests.Common {
 
 			userStoreMock.Setup(x => x.IsInRoleAsync(It.IsAny<ApplicationIdentityUser>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
 				.Returns<ApplicationIdentityUser, string, CancellationToken>((user, role, ct) => {
-					var roleId = DbContext.Roles.FirstOrDefault(x => x.Name == role)?.Id;
+					var roleId = roleManager.Roles.FirstOrDefault(x => x.Name == role)?.Id;
 					return Task.FromResult(DbContext.UserRoles.Any(x => x.RoleId == roleId && x.UserId == user.Id));
 				});
 
 			userStoreMock.Setup(x => x.AddToRoleAsync(It.IsAny<ApplicationIdentityUser>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
 				.Returns<ApplicationIdentityUser, string, CancellationToken>((user, role, ct) => {
-					var roleId = DbContext.Roles.FirstOrDefault(x => x.Name == role).Id;
+					var roleId = roleManager.Roles.FirstOrDefault(x => x.Name == role).Id;
 					DbContext.UserRoles.Add(new ApplicationIdentityUserRole() { RoleId = roleId, UserId = user.Id });
 					DbContext.SaveChanges();
 					return Task.CompletedTask;
@@ -73,7 +76,7 @@ namespace Tests.Common {
 
 			userStoreMock.Setup(x => x.RemoveFromRoleAsync(It.IsAny<ApplicationIdentityUser>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
 				.Returns<ApplicationIdentityUser, string, CancellationToken>((user, role, ct) => {
-					var roleId = DbContext.Roles.FirstOrDefault(x => x.Name == role).Id;
+					var roleId = roleManager.Roles.FirstOrDefault(x => x.Name == role).Id;
 					var userRole = DbContext.UserRoles.FirstOrDefault(x => x.RoleId == roleId && x.UserId == user.Id);
 					DbContext.UserRoles.Remove(userRole);
 					DbContext.SaveChanges();
@@ -83,13 +86,17 @@ namespace Tests.Common {
 			userStoreMock.Setup(x => x.GetRolesAsync(It.IsAny<ApplicationIdentityUser>(), It.IsAny<CancellationToken>()))
 				.Returns<ApplicationIdentityUser, CancellationToken>((user, ct) => {
 					var roleIds = DbContext.UserRoles.Where(x => x.UserId == user.Id).Select(x => x.RoleId);
-					return Task.FromResult(DbContext.Roles.Where(x => roleIds.Contains(x.Id)).Select(x => x.Name).ToList() as IList<string>);
+					return Task.FromResult(roleManager.Roles.Where(x => roleIds.Contains(x.Id)).Select(x => x.Name).ToList() as IList<string>);
 				});
 
 			userManager = new UserManager<ApplicationIdentityUser>(userStoreMock.Object, optionsAccessorMock.Object, passwordHasherMock.Object, userValidators, passwordValidators,
 				null, identityErrorDescriberMock.Object, serviceProviderMock.Object, loggerUserManagerMock.Object);
 
 
+			keyNormalizerMock.Setup(x => x.NormalizeName(It.IsAny<string>()))
+				.Returns<string>((name) => {
+					return name;
+				});
 		}
 	}
 }
