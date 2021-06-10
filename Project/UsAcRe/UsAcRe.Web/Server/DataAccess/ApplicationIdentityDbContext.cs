@@ -17,18 +17,6 @@ namespace UsAcRe.Web.Server.Data {
 				b.HasMany<ApplicationIdentityUserRole>().WithOne().HasForeignKey(ur => ur.UserId).IsRequired();
 			});
 
-			builder.Entity<ApplicationIdentityRole>(b => {
-				b.HasKey(r => r.Id);
-				b.HasIndex(r => r.NormalizedName).HasDatabaseName("RoleNameIndex").IsUnique();
-				b.ToTable("AspNetRoles");
-				b.Property(r => r.ConcurrencyStamp).IsConcurrencyToken();
-
-				b.Property(u => u.Name).HasMaxLength(256);
-				b.Property(u => u.NormalizedName).HasMaxLength(256);
-
-				b.HasMany<ApplicationIdentityUserRole>().WithOne().HasForeignKey(ur => ur.RoleId).IsRequired();
-			});
-
 			builder.Entity<ApplicationIdentityUserRole>(b => {
 				b.HasKey(r => new { r.UserId, r.RoleId });
 				b.ToTable("AspNetUserRoles");
