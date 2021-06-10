@@ -1,3 +1,4 @@
+using System.Linq;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -31,13 +32,12 @@ namespace UsAcRe.Web.Server {
 			services.AddIdentity<ApplicationIdentityUser, ApplicationIdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
 				.AddRoles<ApplicationIdentityRole>()
 				.AddRoleStore<ApplicationRoleStore>()
+				.AddUserStore<ApplicationUserStore>()
 				.AddRoleManager<RoleManager<ApplicationIdentityRole>>()
 				.AddUserManager<UserManager<ApplicationIdentityUser>>()
-				.AddUserStore<ApplicationUserStore>()
 				.AddEntityFrameworkStores<ApplicationDbContext>()
 				.AddDefaultTokenProviders()
 				.AddDefaultUI();
-
 
 			services.AddIdentityServer()
 				.AddApiAuthorization<ApplicationIdentityUser, ApplicationDbContext>();
@@ -49,6 +49,7 @@ namespace UsAcRe.Web.Server {
 			services.AddRazorPages();
 
 			services.AddTransient<IUsersManagementService, UsersManagementService>();
+			services.AddScoped<ApplicationRoleStore, ApplicationRoleStore>();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
