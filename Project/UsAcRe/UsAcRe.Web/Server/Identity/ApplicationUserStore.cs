@@ -26,9 +26,7 @@ namespace UsAcRe.Web.Server.Identity {
 		public override Task<IList<string>> GetRolesAsync(ApplicationIdentityUser user, CancellationToken cancellationToken = default(CancellationToken)) {
 			cancellationToken.ThrowIfCancellationRequested();
 			ThrowIfDisposed();
-			if(user == null) {
-				throw new ArgumentNullException(nameof(user));
-			}
+			Guard.NotNull(user, nameof(user));
 			var userRoles = Context.UserRoles
 				.Where(x => x.UserId == user.Id);
 
