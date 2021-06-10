@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Diagnostics;
+using System.Threading.Tasks;
 using IdentityServer4.EntityFramework.Entities;
 using IdentityServer4.EntityFramework.Extensions;
 using IdentityServer4.EntityFramework.Interfaces;
@@ -20,9 +21,11 @@ namespace UsAcRe.Web.Server.Data {
 		public DbSet<PersistedGrant> PersistedGrants { get; set; }
 		public DbSet<DeviceFlowCodes> DeviceFlowCodes { get; set; }
 
-		Task<int> IPersistedGrantDbContext.SaveChangesAsync() {
-			using(BeginTransaction()) {
-				return base.SaveChangesAsync();
+		async Task<int> IPersistedGrantDbContext.SaveChangesAsync() {
+			using(var transaction = Database.BeginTransaction()) {
+				var number = await base.SaveChangesAsync();
+				transaction.Commit();
+				return number;
 			}
 		}
 

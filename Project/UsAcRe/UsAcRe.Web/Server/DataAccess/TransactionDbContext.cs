@@ -22,9 +22,9 @@ namespace UsAcRe.Web.Server.Data {
 			base.Dispose();
 		}
 
-		public override ValueTask DisposeAsync() {
+		public override async ValueTask DisposeAsync() {
 			SavingChanges -= TransactionDbContext_SavingChanges;
-			return base.DisposeAsync();
+			await base.DisposeAsync();
 		}
 
 		public void CommitChanges() {
