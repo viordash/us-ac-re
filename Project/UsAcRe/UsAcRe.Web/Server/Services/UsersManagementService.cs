@@ -24,7 +24,7 @@ namespace UsAcRe.Web.Server.Services {
 
 	public class UsersManagementService : IUsersManagementService {
 		#region inner classes
-		class UserRolesInternal {
+		class UserRolesInternal : ConcurrencyModel {
 			public Guid Id { get; set; }
 			public string UserName { get; set; }
 			public string Email { get; set; }
@@ -69,6 +69,18 @@ namespace UsAcRe.Web.Server.Services {
 				throw new ObjectNotFoundException();
 			}
 
+			var concurrencyStamp = dbContext.Entry(appUser).Property(e => e.ConcurrencyStamp);
+			concurrencyStamp.OriginalValue = user.ConcurrencyStamp;
+			concurrencyStamp.IsModified = false;
+
+			appUser.UserName = user.UserName;
+			appUser.Email = user.Email;
+
+			var updateResult = await userManager.UpdateAsync(appUser);
+			if(!updateResult.Succeeded) {
+				throw new IdentityErrorException(updateResult);
+			}
+
 			var userRoles = await userManager.GetRolesAsync(appUser);
 			if(userRoles != null) {
 				var editRolesResult = await userManager.RemoveFromRolesAsync(appUser, userRoles);
@@ -83,21 +95,14 @@ namespace UsAcRe.Web.Server.Services {
 					}
 				}
 			}
-
-			appUser.UserName = user.UserName;
-			appUser.Email = user.Email;
-
-			var updateResult = await userManager.UpdateAsync(appUser);
-			if(!updateResult.Succeeded) {
-				throw new IdentityErrorException(updateResult);
-			}
 			dbContext.CommitChanges();
 		}
 
 		public async Task Create(UserModel user) {
 			var appUser = new ApplicationIdentityUser {
 				UserName = user.UserName,
-				Email = user.Email
+				Email = user.Email,
+				ConcurrencyStamp = user.ConcurrencyStamp
 			};
 
 			var createResult = await userManager.CreateAsync(appUser);
@@ -121,6 +126,7 @@ namespace UsAcRe.Web.Server.Services {
 							Id = u.Id,
 							UserName = u.UserName,
 							Email = u.Email,
+							ConcurrencyStamp = u.ConcurrencyStamp,
 							RoleId = x.RoleId,
 						};
 
@@ -139,6 +145,7 @@ namespace UsAcRe.Web.Server.Services {
 						Id = user.Id,
 						UserName = user.UserName,
 						Email = user.Email,
+						ConcurrencyStamp = user.ConcurrencyStamp,
 						Roles = filteredRoles.Where(x => roles.Any(r => r == x.Id)).Select(x => x.Name)
 					};
 				});
