@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using NUnit.Framework;
 using Radzen;
@@ -100,18 +101,42 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 		#region Edit
 		[Test]
 		public async ValueTask Edit_User_Test() {
-			await testable.Edit(new UserModel() { Id = guids[1], UserName = "test1_edit", Email = "test1@ttt.tt" });
+			var appUser = await DbContext.Users.FindAsync(guids[1]);
+			await testable.Edit(new UserModel() { Id = guids[1], UserName = "test1_edit", Email = "test1@ttt.tt", ConcurrencyStamp = appUser.ConcurrencyStamp });
 			userStoreMock.Verify(x => x.UpdateAsync(It.IsAny<ApplicationIdentityUser>(), It.IsAny<CancellationToken>()));
 		}
 
 		[Test]
-		public void Edit_For_Not_Exist_User_Throws_ObjectNotFoundException() {
-			Assert.ThrowsAsync<ObjectNotFoundException>(async () => await testable.Edit(new UserModel() { Id = System.Guid.NewGuid(), UserName = "test1_edit", Email = "test1@ttt.tt" }));
+		public void Edit_User_With_Concurrency_Old_Throws_DbUpdateConcurrencyException_Test() {
+			Assert.ThrowsAsync<DbUpdateConcurrencyException>(async () => await testable.Edit(new UserModel() {
+				Id = guids[1],
+				UserName = "test1_edit",
+				Email = "test1@ttt.tt",
+				ConcurrencyStamp = "some old ConcurrencyStamp value"
+			}));
+			userStoreMock.Verify(x => x.UpdateAsync(It.IsAny<ApplicationIdentityUser>(), It.IsAny<CancellationToken>()));
+		}
+
+		[Test]
+		public async ValueTask Edit_For_Not_Exist_User_Throws_ObjectNotFoundException() {
+			var appUser = await DbContext.Users.FindAsync(guids[1]);
+			Assert.ThrowsAsync<ObjectNotFoundException>(async () => await testable.Edit(new UserModel() {
+				Id = System.Guid.NewGuid(),
+				UserName = "test1_edit",
+				Email = "test1@ttt.tt",
+				ConcurrencyStamp = appUser.ConcurrencyStamp
+			}));
 		}
 
 		[Test]
 		public async ValueTask Edit_User_Roles_Test() {
-			await testable.Edit(new UserModel() { Id = guids[1], UserName = "test1_edit", Roles = new List<string>() { "SuperUser" } });
+			var appUser = await DbContext.Users.FindAsync(guids[1]);
+			await testable.Edit(new UserModel() {
+				Id = guids[1],
+				UserName = "test1_edit",
+				Roles = new List<string>() { "SuperUser" },
+				ConcurrencyStamp = appUser.ConcurrencyStamp
+			});
 			userStoreMock.Verify(x => x.UpdateAsync(It.IsAny<ApplicationIdentityUser>(), It.IsAny<CancellationToken>()));
 			userStoreMock.Verify(x => x.RemoveFromRoleAsync(It.IsAny<ApplicationIdentityUser>(), It.IsAny<string>(), It.IsAny<CancellationToken>()));
 			userStoreMock.Verify(x => x.AddToRoleAsync(It.IsAny<ApplicationIdentityUser>(), It.IsAny<string>(), It.IsAny<CancellationToken>()));
@@ -122,18 +147,29 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 
 		[Test]
 		public async ValueTask Edit_User__Remove_All_Roles_Test() {
-			await testable.Edit(new UserModel() { Id = guids[1], UserName = "test1_edit" });
+			var appUser = await DbContext.Users.FindAsync(guids[1]);
+			await testable.Edit(new UserModel() {
+				Id = guids[1],
+				UserName = "test1_edit",
+				ConcurrencyStamp = appUser.ConcurrencyStamp
+			});
 			var users = await testable.List(new LoadDataArgs());
 			Assert.That(users.ElementAt(0).Roles, Is.Empty);
 		}
 
 		[Test]
-		public void Edit_User_With_Non_Existen_Role_Throws_IdentityErrorException() {
+		public async ValueTask Edit_User_With_Non_Existen_Role_Throws_IdentityErrorException() {
+			var appUser = await DbContext.Users.FindAsync(guids[1]);
 			userStoreMock.Setup(x => x.GetRolesAsync(It.IsAny<ApplicationIdentityUser>(), It.IsAny<CancellationToken>()))
 			.Returns<ApplicationIdentityUser, CancellationToken>((user, ct) => {
 				return Task.FromResult(new List<string>() { "non-existen role" } as IList<string>);
 			});
-			Assert.ThrowsAsync<IdentityErrorException>(async () => await testable.Edit(new UserModel() { Id = guids[1], UserName = "test1_edit", Roles = new List<string>() { "SuperUser" } }));
+			Assert.ThrowsAsync<IdentityErrorException>(async () => await testable.Edit(new UserModel() {
+				Id = guids[1],
+				UserName = "test1_edit",
+				Roles = new List<string>() { "SuperUser" },
+				ConcurrencyStamp = appUser.ConcurrencyStamp
+			}));
 		}
 		#endregion
 
