@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Linq.Dynamic.Core;
+using System.Reflection;
 using System.Threading.Tasks;
 using GuardNet;
 using Microsoft.AspNetCore.Identity;
@@ -69,12 +72,9 @@ namespace UsAcRe.Web.Server.Services {
 				throw new ObjectNotFoundException();
 			}
 
-			var concurrencyStamp = dbContext.Entry(appUser).Property(e => e.ConcurrencyStamp);
-			concurrencyStamp.OriginalValue = user.ConcurrencyStamp;
-			concurrencyStamp.IsModified = false;
-
 			appUser.UserName = user.UserName;
 			appUser.Email = user.Email;
+			appUser.SetConcurrencyStamp(dbContext, user.ConcurrencyStamp);
 
 			var updateResult = await userManager.UpdateAsync(appUser);
 			if(!updateResult.Succeeded) {
