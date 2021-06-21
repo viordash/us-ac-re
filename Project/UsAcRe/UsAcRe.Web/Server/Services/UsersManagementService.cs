@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Linq.Dynamic.Core;
-using System.Reflection;
 using System.Threading.Tasks;
 using GuardNet;
 using Microsoft.AspNetCore.Identity;
@@ -19,7 +16,7 @@ using UsAcRe.Web.Shared.Models;
 
 namespace UsAcRe.Web.Server.Services {
 	public interface IUsersManagementService {
-		Task<IList<UserModel>> List(LoadDataArgs loadDataArgs);
+		Task<IList<UserModel>> List(DataPaging dataPaging);
 		Task<UserModel> Get(System.Guid id);
 		Task Edit(UserModel user);
 		Task Create(UserModel user);
@@ -61,8 +58,8 @@ namespace UsAcRe.Web.Server.Services {
 			return user;
 		}
 
-		public async Task<IList<UserModel>> List(LoadDataArgs loadDataArgs) {
-			var users = await ListInternal((q) => q.PerformLoadPagedData(loadDataArgs, nameof(ApplicationIdentityUser.Email)));
+		public async Task<IList<UserModel>> List(DataPaging dataPaging) {
+			var users = await ListInternal((q) => q.PerformLoadPagedData(dataPaging, nameof(ApplicationIdentityUser.Email)));
 			return users.ToList();
 		}
 

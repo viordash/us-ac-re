@@ -34,7 +34,12 @@
 
     async Task LoadData(LoadDataArgs args) {
         try {
-            var response = await Http.PostAsJsonAsync("/users/paged", args);
+            var response = await Http.PostAsJsonAsync("/users/paged", new DataPaging() {
+                Filter = args.Filter,
+                OrderBy = args.OrderBy,
+                Top = args.Top,
+                Skip = args.Skip,
+            });
             users = await response.Content.ReadFromJsonAsync<IEnumerable<UserModel>>();
             count = users.Count();
             await InvokeAsync(StateHasChanged);
@@ -44,7 +49,7 @@
     }
 
     async Task OpenEditor(UserModel user) {
-        var result = await DialogService.OpenAsync<EditUser>($"Edit user {user}",
+        var result = await DialogService.OpenAsync<Pages.Users.EditUser>($"Edit user {user}",
             new Dictionary<string, object>() { { "UserId", user.Id } });
         if(result is UserModel) {
             await usersGrid.Reload();
@@ -53,7 +58,7 @@
 
 
     async Task AddRecord() {
-        var result = await DialogService.OpenAsync<EditUser>($"Create new user");
+        var result = await DialogService.OpenAsync<Pages.Users.EditUser>($"Create new user");
         if(result is UserModel) {
             await usersGrid.Reload();
         }

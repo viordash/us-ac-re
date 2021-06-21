@@ -87,7 +87,7 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 		#region List
 		[Test]
 		public async ValueTask List_Test() {
-			var users = await testable.List(new LoadDataArgs());
+			var users = await testable.List(new DataPaging());
 			Assert.IsNotNull(users);
 			Assert.That(users.Count(), Is.EqualTo(3));
 			Assert.That(users.ElementAt(0).Id, Is.EqualTo(guids[1]));
@@ -141,7 +141,7 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 			userStoreMock.Verify(x => x.RemoveFromRoleAsync(It.IsAny<ApplicationIdentityUser>(), It.IsAny<string>(), It.IsAny<CancellationToken>()));
 			userStoreMock.Verify(x => x.AddToRoleAsync(It.IsAny<ApplicationIdentityUser>(), It.IsAny<string>(), It.IsAny<CancellationToken>()));
 
-			var users = await testable.List(new LoadDataArgs());
+			var users = await testable.List(new DataPaging());
 			Assert.That(users.ElementAt(0).Roles, Is.EquivalentTo(new[] { "SuperUser" }));
 		}
 
@@ -153,7 +153,7 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 				UserName = "test1_edit",
 				ConcurrencyStamp = appUser.ConcurrencyStamp
 			});
-			var users = await testable.List(new LoadDataArgs());
+			var users = await testable.List(new DataPaging());
 			Assert.That(users.ElementAt(0).Roles, Is.Empty);
 		}
 
@@ -179,7 +179,7 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 			await testable.Create(new UserModel() { UserName = "new_test", Email = "new@ttt.tt", Roles = new List<string>() { "SuperUser" } });
 			userStoreMock.Verify(x => x.CreateAsync(It.IsAny<ApplicationIdentityUser>(), It.IsAny<CancellationToken>()));
 
-			var users = await testable.List(new LoadDataArgs());
+			var users = await testable.List(new DataPaging());
 			Assert.That(users.Last().UserName, Is.EqualTo("new_test"));
 			Assert.That(users.Last().Roles, Is.EquivalentTo(new[] { "SuperUser" }));
 		}

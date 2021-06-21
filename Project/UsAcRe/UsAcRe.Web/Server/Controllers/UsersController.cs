@@ -2,7 +2,6 @@
 using GuardNet;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Radzen;
 using UsAcRe.Web.Server.Services;
 using UsAcRe.Web.Shared.Models;
 
@@ -21,8 +20,8 @@ namespace UsAcRe.Web.Server.Controllers {
 		}
 
 		[HttpPost("[action]")]
-		public async Task<IActionResult> Paged(LoadDataArgs loadDataArgs) {
-			var users = await userManagementService.List(loadDataArgs);
+		public async Task<IActionResult> Paged(DataPaging dataPaging) {
+			var users = await userManagementService.List(dataPaging);
 			return new ObjectResult(users);
 		}
 
