@@ -22,7 +22,7 @@ namespace UsAcRe.Web.Server.Identity {
 			return Task.FromResult(roleStore.Roles.SingleOrDefault(r => r.NormalizedName == normalizedRoleName));
 		}
 
-		public override Task<IList<string>> GetRolesAsync(ApplicationIdentityUser user, CancellationToken cancellationToken = default(CancellationToken)) {
+		public override Task<IList<string>> GetRolesAsync(ApplicationIdentityUser user, CancellationToken cancellationToken = default) {
 			cancellationToken.ThrowIfCancellationRequested();
 			ThrowIfDisposed();
 			Guard.NotNull(user, nameof(user));
