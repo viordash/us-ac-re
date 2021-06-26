@@ -9,27 +9,31 @@
 <h1>List of users</h1>
 
 <RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px" Text="Add" Click="@AddRecord" />
-<RadzenGrid @ref="usersGrid" Count="@count" Data="@users"
-            AllowSorting="true" AllowFiltering="true" AllowPaging="true"
-            SelectionMode="DataGridSelectionMode.Multiple"
-            PageSize="10" TItem="UserModel"
-            LoadData="@LoadData"
-            RowDoubleClick="@OpenEditor">
+<RadzenDataGrid @ref="usersGrid" Count="@count" Data="@users"
+                AllowSorting="true" AllowFiltering="true" AllowPaging="true"
+                FilterMode="FilterMode.Advanced"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                SelectionMode="DataGridSelectionMode.Single"
+                PageSize="10" TItem="UserModel"
+                LoadData="@LoadData"
+                RowDoubleClick="@OpenEditor"
+                @bind-Value=@selectedUsers>
     <Columns>
-        <RadzenGridColumn TItem="UserModel" Property="Id" Title="Id" Filterable="false" Visible="true" />
-        <RadzenGridColumn TItem="UserModel" Property="UserName" Title="UserName" />
-        <RadzenGridColumn TItem="UserModel" Property="Email" Title="Email" />
-        <RadzenGridColumn TItem="UserModel" Property="Roles" Title="Roles">
+        <RadzenDataGridColumn TItem="UserModel" Property="Id" Title="Id" Filterable="false" Visible="true" />
+        <RadzenDataGridColumn TItem="UserModel" Property="UserName" Title="UserName" />
+        <RadzenDataGridColumn TItem="UserModel" Property="Email" Title="Email" />
+        <RadzenDataGridColumn TItem="UserModel" Property="Roles" Title="Roles">
             <Template Context="user">
                 @string.Join(", ", user.Roles)
             </Template>
-        </RadzenGridColumn>
+        </RadzenDataGridColumn>
     </Columns>
-</RadzenGrid>
+</RadzenDataGrid>
 
 @code {
-    RadzenGrid<UserModel> usersGrid;
+    RadzenDataGrid<UserModel> usersGrid;
     IEnumerable<UserModel> users;
+    IList<UserModel> selectedUsers;
     int count;
 
     async Task LoadData(LoadDataArgs args) {
@@ -42,15 +46,16 @@
             });
             users = await response.Content.ReadFromJsonAsync<IEnumerable<UserModel>>();
             count = users.Count();
+            selectedUsers = users.Take(1).ToList();
             await InvokeAsync(StateHasChanged);
         } catch(AccessTokenNotAvailableException exception) {
             exception.Redirect();
         }
     }
 
-    async Task OpenEditor(UserModel user) {
-        var result = await DialogService.OpenAsync<Pages.Users.EditUser>($"Edit user {user}",
-            new Dictionary<string, object>() { { "UserId", user.Id } });
+    async Task OpenEditor(DataGridRowMouseEventArgs<UserModel> args) {
+        var result = await DialogService.OpenAsync<Pages.Users.EditUser>($"Edit user {args.Data}",
+            new Dictionary<string, object>() { { "UserId", args.Data.Id } });
         if(result is UserModel) {
             await usersGrid.Reload();
         }
