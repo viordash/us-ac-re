@@ -134,7 +134,7 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 			await testable.Edit(new UserModel() {
 				Id = guids[1],
 				UserName = "test1_edit",
-				Roles = new List<string>() { "SuperUser" },
+				Roles = new List<RoleModel>() { new RoleModel() { Id = System.Guid.NewGuid(), Name = "SuperUser" } },
 				ConcurrencyStamp = appUser.ConcurrencyStamp
 			});
 			userStoreMock.Verify(x => x.UpdateAsync(It.IsAny<ApplicationIdentityUser>(), It.IsAny<CancellationToken>()));
@@ -167,7 +167,7 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 			Assert.ThrowsAsync<IdentityErrorException>(async () => await testable.Edit(new UserModel() {
 				Id = guids[1],
 				UserName = "test1_edit",
-				Roles = new List<string>() { "SuperUser" },
+				Roles = new List<RoleModel>() { new RoleModel() { Id = System.Guid.NewGuid(), Name = "SuperUser" } },
 				ConcurrencyStamp = appUser.ConcurrencyStamp
 			}));
 		}
@@ -176,7 +176,11 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 		#region Create
 		[Test]
 		public async ValueTask Create_User_Test() {
-			await testable.Create(new UserModel() { UserName = "new_test", Email = "new@ttt.tt", Roles = new List<string>() { "SuperUser" } });
+			await testable.Create(new UserModel() {
+				UserName = "new_test",
+				Email = "new@ttt.tt",
+				Roles = new List<RoleModel>() { new RoleModel() { Id = System.Guid.NewGuid(), Name = "SuperUser" } },
+			});
 			userStoreMock.Verify(x => x.CreateAsync(It.IsAny<ApplicationIdentityUser>(), It.IsAny<CancellationToken>()));
 
 			var users = await testable.List(new DataPaging());

@@ -8,28 +8,45 @@ using UsAcRe.Web.Shared.Models;
 
 namespace UsAcRe.Web.Server.Extensions {
 	public static class LoadDataExtensions {
-		public static Task<List<TEntity>> PerformLoadPagedData<TEntity>(this IQueryable<TEntity> query, DataPaging dataPaging, string defaultOrderField) {
-			if(!string.IsNullOrEmpty(dataPaging.Filter)) {
-				query = query.Where(dataPaging.Filter);
+		public static Task<List<TEntity>> PerformLoadPagedData<TEntity>(this IQueryable<TEntity> query, DataPaging dataPaging) {
+			if(dataPaging.Filters.Any()) {
+				foreach(var filter in dataPaging.Filters) {
+					//query = query.Where(dataPaging.Filter);
+				}
 			}
 
-			string orderField;
-			if(!string.IsNullOrEmpty(dataPaging.OrderBy)) {
-				orderField = dataPaging.OrderBy;
-			} else {
-				orderField = $"{defaultOrderField} asc";
+
+			var orderedQuery = query as IOrderedQueryable<TEntity>;
+			bool useThenBy = false;
+			foreach(var sort in dataPaging.Sorts) {
+				switch(sort.SortOrder) {
+					case Shared.Models.SortOrder.Descending:
+						if(useThenBy) {
+							orderedQuery = orderedQuery.ThenBy($"{sort.Field} desc");
+						} else {
+							orderedQuery = orderedQuery.OrderBy($"{sort.Field} desc");
+						}
+						break;
+
+					default:
+						if(useThenBy) {
+							orderedQuery = orderedQuery.ThenBy($"{sort.Field} asc");
+						} else {
+							orderedQuery = orderedQuery.OrderBy($"{sort.Field} asc");
+						}
+						break;
+				}
+				useThenBy = true;
 			}
 
-			var orderedQuery = query
-				.OrderBy(orderField)
-				.AsQueryable();
+			var pagedQuery = orderedQuery as IQueryable<TEntity>;
 			if(dataPaging.Skip.HasValue) {
-				orderedQuery = orderedQuery.Skip(dataPaging.Skip.Value);
+				pagedQuery = pagedQuery.Skip(dataPaging.Skip.Value);
 			}
 			if(dataPaging.Top.HasValue) {
-				orderedQuery = orderedQuery.Take(dataPaging.Top.Value);
+				pagedQuery = pagedQuery.Take(dataPaging.Top.Value);
 			}
-			return orderedQuery.ToListAsync();
+			return pagedQuery.ToListAsync();
 		}
 	}
 }

@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using UsAcRe.Web.Shared.Models
 @using System.Diagnostics;
+@using UsAcRe.Web.Client.Extensions;
 
 @inject HttpClient Http
 @inject DialogService DialogService
@@ -10,7 +11,7 @@
 
 <RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px" Text="Add" Click="@AddRecord" />
 <RadzenDataGrid @ref="usersGrid" Count="@count" Data="@users"
-                AllowSorting="true" AllowFiltering="true" AllowPaging="true"
+                AllowSorting="true" AllowMultiColumnSorting="true" AllowFiltering="true" AllowPaging="true"
                 FilterMode="FilterMode.Advanced"
                 FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                 SelectionMode="DataGridSelectionMode.Single"
@@ -19,10 +20,10 @@
                 RowDoubleClick="@OpenEditor"
                 @bind-Value=@selectedUsers>
     <Columns>
-        <RadzenDataGridColumn TItem="UserModel" Property="Id" Title="Id" Visible="false" />
-        <RadzenDataGridColumn TItem="UserModel" Property="UserName" Title="UserName" />
-        <RadzenDataGridColumn TItem="UserModel" Property="Email" Title="Email" />
-        <RadzenDataGridColumn TItem="UserModel" Property="Roles" Title="Roles">
+        <RadzenDataGridColumn TItem="UserModel" Property="@nameof(UserModel.Id)" Title="Id" Visible="false" />
+        <RadzenDataGridColumn TItem="UserModel" Property="@nameof(UserModel.UserName)" Title="UserName" SortOrder="Radzen.SortOrder.Ascending" />
+        <RadzenDataGridColumn TItem="UserModel" Property="@nameof(UserModel.Email)" Title="Email" />
+        <RadzenDataGridColumn TItem="UserModel" Property="@nameof(UserModel.Roles)" Title="Roles">
             <Template Context="user">
                 @string.Join(", ", user.Roles.Select(x => x.Name))
             </Template>
@@ -40,9 +41,10 @@
         try {
             var response = await Http.PostAsJsonAsync("/users/paged", new DataPaging() {
                 Filter = args.Filter,
-                OrderBy = args.OrderBy,
                 Top = args.Top,
                 Skip = args.Skip,
+                Sorts = args.Sorts.ToSortDescriptors(),
+                Filters = args.Filters.ToFilterDescriptors()
             });
             users = await response.Content.ReadFromJsonAsync<IEnumerable<UserModel>>();
             count = users.Count();

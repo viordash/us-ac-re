@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using Radzen;
@@ -32,14 +33,14 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 				Skip = 0
 			};
 
-			var users = await DbContext.Users.PerformLoadPagedData(dataPaging, "UserName");
+			var users = await DbContext.Users.PerformLoadPagedData(dataPaging);
 			Assert.That(users, Has.Count.EqualTo(1));
 			Assert.That(users[0].Id, Is.EqualTo(guids[2]));
 			Assert.That(users[0].UserName, Is.EqualTo($"test2"));
 
 			string ignoreCaseFilter = $"Id=\"{guids[4]}\"";
 			dataPaging.Filter = ignoreCaseFilter;
-			users = await DbContext.Users.PerformLoadPagedData(dataPaging, "UserName");
+			users = await DbContext.Users.PerformLoadPagedData(dataPaging);
 			Assert.That(users, Has.Count.EqualTo(1));
 			Assert.That(users[0].Id, Is.EqualTo(guids[4]));
 			Assert.That(users[0].UserName, Is.EqualTo($"test4"));
@@ -52,7 +53,7 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 				Skip = 3
 			};
 
-			var users = await DbContext.Users.PerformLoadPagedData(dataPaging, "UserName");
+			var users = await DbContext.Users.PerformLoadPagedData(dataPaging);
 			Assert.That(users, Has.Count.EqualTo(4));
 			Assert.That(users[0].Id, Is.EqualTo(guids[3]));
 			Assert.That(users[0].UserName, Is.EqualTo("test3"));
@@ -63,19 +64,20 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 			var dataPaging = new DataPaging() {
 				Top = 10,
 				Skip = 0,
-				OrderBy = "email desc"
+				Sorts = new List<Shared.Models.SortDescriptor>() { new Shared.Models.SortDescriptor() { Field = "email", SortOrder = Shared.Models.SortOrder.Descending } }
 			};
 
-			var users = await DbContext.Users.PerformLoadPagedData(dataPaging, "UserName");
+			var users = await DbContext.Users.PerformLoadPagedData(dataPaging);
 			Assert.That(users, Has.Count.EqualTo(10));
 			Assert.That(users[0].Id, Is.EqualTo(guids[9]));
 			Assert.That(users[0].Email, Is.EqualTo("email9"));
 			Assert.That(users[9].Id, Is.EqualTo(guids[0]));
 			Assert.That(users[9].Email, Is.EqualTo("email0"));
 
-			const string ignoreCaseOrderBy = "USERName asc";
-			dataPaging.OrderBy = ignoreCaseOrderBy;
-			users = await DbContext.Users.PerformLoadPagedData(dataPaging, "UserName");
+			const string ignoreCaseOrderBy = "USERName";
+			dataPaging.Sorts = new List<Shared.Models.SortDescriptor>() { new Shared.Models.SortDescriptor() { Field = ignoreCaseOrderBy, SortOrder = Shared.Models.SortOrder.Ascending } };
+
+			users = await DbContext.Users.PerformLoadPagedData(dataPaging);
 			Assert.That(users, Has.Count.EqualTo(10));
 			Assert.That(users[0].Id, Is.EqualTo(guids[0]));
 			Assert.That(users[0].UserName, Is.EqualTo("test0"));
@@ -88,7 +90,7 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 		public async ValueTask PerformLoadPagedData_For_Default_LoadDataArgs_Test() {
 			var dataPaging = new DataPaging();
 
-			var users = await DbContext.Users.PerformLoadPagedData(dataPaging, "UserName");
+			var users = await DbContext.Users.PerformLoadPagedData(dataPaging);
 			Assert.That(users, Has.Count.EqualTo(10));
 			Assert.That(users[0].Id, Is.EqualTo(guids[0]));
 			Assert.That(users[0].UserName, Is.EqualTo("test0"));
