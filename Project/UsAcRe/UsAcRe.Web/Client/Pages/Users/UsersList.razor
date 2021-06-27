@@ -19,12 +19,12 @@
                 RowDoubleClick="@OpenEditor"
                 @bind-Value=@selectedUsers>
     <Columns>
-        <RadzenDataGridColumn TItem="UserModel" Property="Id" Title="Id" Filterable="false" Visible="true" />
+        <RadzenDataGridColumn TItem="UserModel" Property="Id" Title="Id" Visible="false" />
         <RadzenDataGridColumn TItem="UserModel" Property="UserName" Title="UserName" />
         <RadzenDataGridColumn TItem="UserModel" Property="Email" Title="Email" />
         <RadzenDataGridColumn TItem="UserModel" Property="Roles" Title="Roles">
             <Template Context="user">
-                @string.Join(", ", user.Roles)
+                @string.Join(", ", user.Roles.Select(x => x.Name))
             </Template>
         </RadzenDataGridColumn>
     </Columns>

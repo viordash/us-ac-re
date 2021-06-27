@@ -86,7 +86,7 @@ namespace UsAcRe.Web.Server.Services {
 				}
 
 				if(user.Roles != null && user.Roles.Any()) {
-					editRolesResult = await userManager.AddToRolesAsync(appUser, user.Roles);
+					editRolesResult = await userManager.AddToRolesAsync(appUser, user.Roles.Select(x => x.Name));
 					if(!editRolesResult.Succeeded) {
 						throw new IdentityErrorException(editRolesResult);
 					}
@@ -108,7 +108,7 @@ namespace UsAcRe.Web.Server.Services {
 			}
 
 			if(user.Roles != null && user.Roles.Any()) {
-				var editRolesResult = await userManager.AddToRolesAsync(appUser, user.Roles);
+				var editRolesResult = await userManager.AddToRolesAsync(appUser, user.Roles.Select(x => x.Name));
 				if(!editRolesResult.Succeeded) {
 					throw new IdentityErrorException(editRolesResult);
 				}
@@ -138,14 +138,19 @@ namespace UsAcRe.Web.Server.Services {
 				u => u.RoleId,
 				(k, roles) => {
 					var user = users.First(x => x.Id == k);
+					var userRoles = filteredRoles.Where(x => roles.Any(r => r == x.Id));
 					return new UserModel() {
 						Id = user.Id,
 						UserName = user.UserName,
 						Email = user.Email,
 						ConcurrencyStamp = user.ConcurrencyStamp,
-						Roles = filteredRoles.Where(x => roles.Any(r => r == x.Id)).Select(x => x.Name)
+						Roles = filteredRoles.Where(x => roles.Any(r => r == x.Id)).Select(x => new RoleModel() {
+							Id = x.Id,
+							Name = x.Name
+						})
 					};
 				});
+
 			return groupedUsers;
 		}
 	}

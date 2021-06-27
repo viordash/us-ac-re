@@ -5,7 +5,7 @@ namespace UsAcRe.Web.Shared.Models {
 		public System.Guid Id { get; set; }
 		public string UserName { get; set; }
 		public string Email { get; set; }
-		public IEnumerable<string> Roles { get; set; }
+		public IEnumerable<RoleModel> Roles { get; set; }
 
 		public override string ToString() {
 			return $"{UserName} [{Email}]";
