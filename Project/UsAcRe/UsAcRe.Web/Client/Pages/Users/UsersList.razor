@@ -40,7 +40,6 @@
     async Task LoadData(LoadDataArgs args) {
         try {
             var response = await Http.PostAsJsonAsync("/users/paged", new DataPaging() {
-                Filter = args.Filter,
                 Top = args.Top,
                 Skip = args.Skip,
                 Sorts = args.Sorts.ToSortDescriptors(),
