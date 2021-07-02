@@ -26,27 +26,6 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 		}
 
 		[Test]
-		public async ValueTask PerformLoadPagedData_Filter_Test() {
-			var dataPaging = new DataPaging() {
-				Filter = $"Id=\"{guids[2]}\"",
-				Top = 10,
-				Skip = 0
-			};
-
-			var users = await DbContext.Users.PerformLoadPagedData(dataPaging);
-			Assert.That(users, Has.Count.EqualTo(1));
-			Assert.That(users[0].Id, Is.EqualTo(guids[2]));
-			Assert.That(users[0].UserName, Is.EqualTo($"test2"));
-
-			string ignoreCaseFilter = $"Id=\"{guids[4]}\"";
-			dataPaging.Filter = ignoreCaseFilter;
-			users = await DbContext.Users.PerformLoadPagedData(dataPaging);
-			Assert.That(users, Has.Count.EqualTo(1));
-			Assert.That(users[0].Id, Is.EqualTo(guids[4]));
-			Assert.That(users[0].UserName, Is.EqualTo($"test4"));
-		}
-
-		[Test]
 		public async ValueTask PerformLoadPagedData_Offset_Test() {
 			var dataPaging = new DataPaging() {
 				Top = 4,
@@ -96,6 +75,65 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 			Assert.That(users[0].UserName, Is.EqualTo("test0"));
 			Assert.That(users[9].Id, Is.EqualTo(guids[9]));
 			Assert.That(users[9].UserName, Is.EqualTo("test9"));
+		}
+
+		[Test]
+		public async ValueTask ApplyFilter_Single_Filter_Test() {
+			var dataPaging = new DataPaging() {
+				Filters = new List<Shared.Models.FilterDescriptor>() {
+					new Shared.Models.FilterDescriptor() {
+						Field = "Id",
+						FilterOperator = Shared.Models.FilterOperator.Equals,
+						FilterValue = guids[2]
+					}
+				},
+				Top = 10,
+				Skip = 0
+			};
+
+			var users = await DbContext.Users.PerformLoadPagedData(dataPaging);
+			Assert.That(users, Has.Count.EqualTo(1));
+			Assert.That(users[0].Id, Is.EqualTo(guids[2]));
+			Assert.That(users[0].UserName, Is.EqualTo("test2"));
+
+			dataPaging.Filters = new List<Shared.Models.FilterDescriptor>() {
+					new Shared.Models.FilterDescriptor() {
+						Field = "ID",
+						FilterOperator = Shared.Models.FilterOperator.NotEquals,
+						FilterValue = guids[4]
+					}
+				};
+			users = await DbContext.Users.PerformLoadPagedData(dataPaging);
+			Assert.That(users, Has.Count.EqualTo(9));
+			Assert.That(users.FirstOrDefault(x => x.UserName == "test4"), Is.Null);
+		}
+
+		[Test]
+		public async ValueTask ApplyFilter_Multiple_Filters_Test() {
+			var dataPaging = new DataPaging() {
+				Filters = new List<Shared.Models.FilterDescriptor>() {
+					new Shared.Models.FilterDescriptor() {
+						Field = "UserName",
+						FilterOperator = Shared.Models.FilterOperator.Contains,
+						FilterValue = "test",
+						LogicalFilterOperator = Shared.Models.LogicalFilterOperator.And,
+						SecondFilterOperator = Shared.Models.FilterOperator.NotEquals,
+						SecondFilterValue = "test5"
+					},
+					new Shared.Models.FilterDescriptor() {
+						Field = "Email",
+						FilterOperator = Shared.Models.FilterOperator.NotEquals,
+						FilterValue = "email6"
+					}
+				},
+				Top = 10,
+				Skip = 0
+			};
+
+			var users = await DbContext.Users.PerformLoadPagedData(dataPaging);
+			Assert.That(users, Has.Count.EqualTo(8));
+			Assert.That(users.FirstOrDefault(x => x.UserName == "test5"), Is.Null);
+			Assert.That(users.FirstOrDefault(x => x.UserName == "test6"), Is.Null);
 		}
 	}
 }

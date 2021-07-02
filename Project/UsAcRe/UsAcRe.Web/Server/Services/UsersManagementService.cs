@@ -60,7 +60,7 @@ namespace UsAcRe.Web.Server.Services {
 
 		public async Task<IList<UserModel>> List(DataPaging dataPaging) {
 			var users = await ListInternal((q) => {
-				if(dataPaging.Sorts.Any(x => x.Field == nameof(UserModel.Roles))) {
+				if(dataPaging.Sorts != null && dataPaging.Sorts.Any(x => x.Field == nameof(UserModel.Roles))) {
 					dataPaging.Sorts = dataPaging.Sorts.Where(x => x.Field != nameof(UserModel.Roles));
 				}
 				var pagedQuery = q.PerformLoadPagedData(dataPaging);
