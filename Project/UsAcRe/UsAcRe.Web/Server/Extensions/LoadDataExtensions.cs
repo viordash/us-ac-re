@@ -11,34 +11,6 @@ using UsAcRe.Web.Shared.Models;
 
 namespace UsAcRe.Web.Server.Extensions {
 	public static class LoadDataExtensions {
-		static IQueryable<TEntity> ApplyFilter<TEntity>(this IQueryable<TEntity> query, Shared.Models.FilterDescriptor filter) {
-			var expr = FilterOperatorSpecifics.Expressions[filter.FilterOperator](filter.Field, filter.FilterValue);
-			if(filter.SecondFilterValue == null) {
-				query = query.Where(expr);
-			} else {
-				var secondExpr = FilterOperatorSpecifics.Expressions[filter.SecondFilterOperator](filter.Field, filter.SecondFilterValue);
-				switch(filter.LogicalFilterOperator) {
-					case Shared.Models.LogicalFilterOperator.And:
-						query = query.Where(string.Format("({0} and {1})", expr, secondExpr));
-						break;
-					case Shared.Models.LogicalFilterOperator.Or:
-						query = query.Where(string.Format("({0} or {1})", expr, secondExpr));
-						break;
-				}
-			}
-			return query;
-		}
-		static IQueryable<TEntity> ApplyFilters<TEntity>(this IQueryable<TEntity> query, IEnumerable<Shared.Models.FilterDescriptor> filters) {
-			if(filters == null) {
-				return query;
-			}
-			foreach(var filter in filters) {
-				query = ApplyFilter(query, filter);
-			}
-			return query;
-		}
-
-
 		static IQueryable<TEntity> ApplySorts<TEntity>(this IQueryable<TEntity> query, IEnumerable<Shared.Models.SortDescriptor> sorts) {
 			if(sorts == null) {
 				return query;
