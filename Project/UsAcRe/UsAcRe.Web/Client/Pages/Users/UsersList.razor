@@ -11,7 +11,7 @@
 
 <RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px" Text="Add" Click="@AddRecord" />
 <RadzenDataGrid @ref="usersGrid" Count="@count" Data="@users"
-                AllowSorting="true" AllowMultiColumnSorting="true" AllowFiltering="true" AllowPaging="true"
+                AllowSorting="true" AllowMultiColumnSorting="false" AllowFiltering="true" AllowPaging="true"
                 FilterMode="FilterMode.Advanced"
                 FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                 SelectionMode="DataGridSelectionMode.Single"
