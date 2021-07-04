@@ -82,45 +82,45 @@ namespace UsAcRe.Web.Shared.Models {
 		static new bool Equals(object field, object value) =>
 			value switch {
 				string val => val.Equals(field),
-				JsonElement val when val.ValueKind == JsonValueKind.Number => field != null && (double)field == val.GetDouble(),
+				JsonElement val when val.ValueKind == JsonValueKind.Number => field != null && Convert.ToDouble(field) == val.GetDouble(),
 				JsonElement val => field != null && field as string == val.GetString(),
 				_ => field == value,
 			};
 		static bool NotEquals(object field, object value) =>
 			value switch {
 				string val => !val.Equals(field),
-				JsonElement val when val.ValueKind == JsonValueKind.Number => field != null && (double)field != val.GetDouble(),
+				JsonElement val when val.ValueKind == JsonValueKind.Number => field != null && Convert.ToDouble(field) != val.GetDouble(),
 				JsonElement val => field != null && field as string != val.GetString(),
 				_ => field != value,
 			};
 
 		static bool LessThan(object field, object value) =>
 			   value switch {
-				   int val => field != null && (int)field < val,
-				   double val => field != null && (double)field < val,
-				   JsonElement val when val.ValueKind == JsonValueKind.Number => field != null && (double)field < val.GetDouble(),
+				   int val => Convert.ToInt32(field) < val,
+				   double val => Convert.ToDouble(field) < val,
+				   JsonElement val when val.ValueKind == JsonValueKind.Number => Convert.ToDouble(field) < val.GetDouble(),
 				   _ => false,
 			   };
 		static bool LessThanOrEquals(object field, object value) =>
 			   value switch {
-				   int val => field != null && (int)field <= val,
-				   double val => field != null && (double)field <= val,
-				   JsonElement val when val.ValueKind == JsonValueKind.Number => field != null && (double)field <= val.GetDouble(),
+				   int val => Convert.ToInt32(field) <= val,
+				   double val => Convert.ToDouble(field) <= val,
+				   JsonElement val when val.ValueKind == JsonValueKind.Number => Convert.ToDouble(field) <= val.GetDouble(),
 				   _ => false,
 			   };
 
 		static bool GreaterThan(object field, object value) =>
 			   value switch {
-				   int val => field != null && (int)field > val,
-				   double val => field != null && (double)field > val,
-				   JsonElement val when val.ValueKind == JsonValueKind.Number => field != null && (double)field > val.GetDouble(),
+				   int val => Convert.ToInt32(field) > val,
+				   double val => Convert.ToDouble(field) > val,
+				   JsonElement val when val.ValueKind == JsonValueKind.Number => Convert.ToDouble(field) > val.GetDouble(),
 				   _ => false,
 			   };
 		static bool GreaterThanOrEquals(object field, object value) =>
 			   value switch {
-				   int val => field != null && (int)field >= val,
-				   double val => field != null && (double)field >= val,
-				   JsonElement val when val.ValueKind == JsonValueKind.Number => field != null && (double)field >= val.GetDouble(),
+				   int val => Convert.ToInt32(field) >= val,
+				   double val => Convert.ToDouble(field) >= val,
+				   JsonElement val when val.ValueKind == JsonValueKind.Number => Convert.ToDouble(field) >= val.GetDouble(),
 				   _ => false,
 			   };
 		static bool Contains(object field, object value) =>

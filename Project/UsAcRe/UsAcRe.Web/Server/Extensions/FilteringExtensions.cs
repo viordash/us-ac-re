@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using Radzen;
@@ -33,44 +34,58 @@ namespace UsAcRe.Web.Server.Extensions {
 			return query;
 		}
 
-		static object GetFilterField<TEntity>(TEntity entity, Shared.Models.FilterDescriptor filter) =>
-			entity switch {
-				UserModel userModel when filter.Field == nameof(UserModel.Id) => userModel.Id,
-				UserModel userModel when filter.Field == nameof(UserModel.UserName) => userModel.UserName,
-				UserModel userModel when filter.Field == nameof(UserModel.Email) => userModel.Email,
-				UserModel userModel when filter.Field == nameof(UserModel.Roles) => userModel.Roles,
-				UserModel userModel when filter.Field == UserModel.RolesNamesField => UserRolesView.Concat(userModel),
-				_ => null,
-			};
-
-		static IEnumerable<TEntity> ApplyFilter<TEntity>(this IEnumerable<TEntity> query, Shared.Models.FilterDescriptor filter) {
+		static IEnumerable<TEntity> ApplyFilter<TEntity>(this IEnumerable<TEntity> query, Shared.Models.FilterDescriptor filter,
+				Func<TEntity, string, object> fieldSelector) {
 			var predicate = FilterOperatorSpecifics.Predicates[filter.FilterOperator];
 			if(filter.SecondFilterValue == null) {
-				query = query.Where(x => predicate(GetFilterField(x, filter), filter.FilterValue)).ToList();
+				query = query.Where(x => predicate(fieldSelector(x, filter.Field), filter.FilterValue)).ToList();
 			} else {
 				var secondPredicate = FilterOperatorSpecifics.Predicates[filter.SecondFilterOperator];
 				switch(filter.LogicalFilterOperator) {
 					case Shared.Models.LogicalFilterOperator.And:
-						query = query.Where(x => predicate(GetFilterField(x, filter), filter.FilterValue) && secondPredicate(GetFilterField(x, filter), filter.SecondFilterValue));
+						query = query.Where(x => predicate(fieldSelector(x, filter.Field), filter.FilterValue) && secondPredicate(fieldSelector(x, filter.Field), filter.SecondFilterValue));
 						break;
 					case Shared.Models.LogicalFilterOperator.Or:
-						query = query.Where(x => predicate(GetFilterField(x, filter), filter.FilterValue) || secondPredicate(GetFilterField(x, filter), filter.SecondFilterValue));
+						query = query.Where(x => predicate(fieldSelector(x, filter.Field), filter.FilterValue) || secondPredicate(fieldSelector(x, filter.Field), filter.SecondFilterValue));
 						break;
 				}
 			}
 			return query;
 		}
 
-		public static IEnumerable<TEntity> ApplyFilter<TEntity>(this IEnumerable<TEntity> users, IEnumerable<Shared.Models.FilterDescriptor> filters) {
+		public static IEnumerable<TEntity> ApplyFilter<TEntity>(this IEnumerable<TEntity> users, IEnumerable<Shared.Models.FilterDescriptor> filters,
+				Func<TEntity, string, object> fieldSelector = null) {
 			if(filters == null || !filters.Any()) {
 				return users;
 			}
 
+			if(fieldSelector == null) {
+				fieldSelector = DefaultFilterFieldSelector;
+			}
+
 			foreach(var filter in filters) {
-				users = users.ApplyFilter(filter);
+				users = users.ApplyFilter(filter, fieldSelector);
 			}
 			return users;
 		}
+
+		static object MapField<TEntity>(TEntity entity, string fieldName) {
+			var propertyInfo = typeof(TEntity).GetProperty(fieldName);
+			if(propertyInfo != null) {
+				return propertyInfo.GetValue(entity);
+			}
+			var fieldInfo = typeof(TEntity).GetField(fieldName);
+			if(fieldInfo != null) {
+				return fieldInfo.GetValue(entity);
+			}
+			return false;
+		}
+
+		static object DefaultFilterFieldSelector<TEntity>(TEntity entity, string fieldName) =>
+			entity switch {
+				UserModel userModel => UserModel.MapField(userModel, fieldName),
+				_ => MapField(entity, fieldName),
+			};
 
 	}
 }

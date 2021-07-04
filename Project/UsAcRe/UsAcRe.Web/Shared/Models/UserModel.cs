@@ -1,7 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace UsAcRe.Web.Shared.Models {
 	public class UserModel : ConcurrencyModel {
+		[JsonIgnore]
+		public const string RolesNamesField = "RolesNames";
+
 		public System.Guid Id { get; set; }
 		public string UserName { get; set; }
 		public string Email { get; set; }
@@ -10,5 +15,23 @@ namespace UsAcRe.Web.Shared.Models {
 		public override string ToString() {
 			return $"{UserName} [{Email}]";
 		}
+
+		public static object MapField(UserModel model, string fieldName) =>
+			fieldName switch {
+				nameof(Id) => model.Id,
+				nameof(UserName) => model.UserName,
+				nameof(Email) => model.Email,
+				nameof(Roles) => model.Roles,
+				RolesNamesField => UserRolesView.Concat(model),
+				_ => null,
+			};
+	}
+
+
+	public static class UserRolesView {
+		public static string Concat(UserModel user) {
+			return string.Join(", ", user.Roles.Select(r => r.Name));
+		}
+
 	}
 }
