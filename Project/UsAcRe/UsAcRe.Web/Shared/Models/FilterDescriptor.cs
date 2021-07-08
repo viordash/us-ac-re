@@ -131,7 +131,7 @@ namespace UsAcRe.Web.Shared.Models {
 		static CompareResult CompareTo(object field, object value) =>
 			(field, value) switch {
 				(null, null) => CompareResult.Equal,
-				(null, not null) => CompareResult.Greater,
+				(null, _) => CompareResult.NoComparable,
 				(_, null) => CompareResult.NoComparable,
 
 				(String fieldVal, String stringVal) => GetCompareResult(fieldVal.CompareTo(stringVal)),
@@ -156,44 +156,47 @@ namespace UsAcRe.Web.Shared.Models {
 				(JsonElement jsonElement, _) => GetCompareResult(jsonElement.GetRawText().CompareTo(value)),
 
 				(Int32 or Single or Double or Int64 or Decimal or UInt32 or UInt16 or Byte or Int16 or SByte, JsonElement { ValueKind: JsonValueKind.Number } jsonElement) =>
-							GetCompareResult(jsonElement.GetDouble().CompareTo(ConvertToComparable<Double>(field))),
-				(String stringVal, JsonElement { ValueKind: JsonValueKind.Number } jsonElement) when Double.TryParse(stringVal, out Double doubleVal) => GetCompareResult(jsonElement.GetDouble().CompareTo(doubleVal)),
-				(_, JsonElement { ValueKind: JsonValueKind.String } jsonElement) => GetCompareResult(jsonElement.GetString().CompareTo(field)),
-				(_, JsonElement jsonElement) => GetCompareResult(jsonElement.GetRawText().CompareTo(field)),
+							GetCompareResult(ConvertToComparable<Double>(field).CompareTo(jsonElement.GetDouble())),
+				(String stringVal, JsonElement { ValueKind: JsonValueKind.Number } jsonElement) when Double.TryParse(stringVal, out Double doubleVal) =>
+							GetCompareResult(doubleVal.CompareTo(jsonElement.GetDouble())),
+				(_, JsonElement { ValueKind: JsonValueKind.String } jsonElement) => GetCompareResult(Convert.ToString(field).CompareTo(jsonElement.GetString())),
+				(_, JsonElement jsonElement) => GetCompareResult(Convert.ToString(field).CompareTo(jsonElement.GetRawText())),
 
 				(IComparable fieldVal, IComparable val) when fieldVal.GetType().IsAssignableFrom(val.GetType()) => GetCompareResult(fieldVal.CompareTo(val)),
 				(_, _) when field.GetType().IsAssignableFrom(value.GetType()) => field == value ? CompareResult.Equal : CompareResult.NotEqual,
 				(_, _) => CompareResult.NoComparable
-
 			};
 
 
 		static bool Contains(object field, object value) =>
-			field switch {
-				string fld when value is string val => fld.Contains(val, StringComparison.OrdinalIgnoreCase),
-				string fld when value is JsonElement val => fld.Contains(val.GetString(), StringComparison.OrdinalIgnoreCase),
+			(field, value) switch {
+				(String fieldVal, String stringVal) => fieldVal.Contains(stringVal, StringComparison.OrdinalIgnoreCase),
+				(String fieldVal, JsonElement { ValueKind: JsonValueKind.String } jsonElement) => fieldVal.Contains(jsonElement.GetString(), StringComparison.OrdinalIgnoreCase),
+				(String fieldVal, JsonElement jsonElement) => fieldVal.Contains(jsonElement.GetRawText(), StringComparison.OrdinalIgnoreCase),
 				_ => false,
 			};
 		static bool StartsWith(object field, object value) =>
-			field switch {
-				string fld when value is string val => fld.StartsWith(val, StringComparison.OrdinalIgnoreCase),
-				string fld when value is JsonElement val => fld.StartsWith(val.GetString(), StringComparison.OrdinalIgnoreCase),
+			(field, value) switch {
+				(String fieldVal, String stringVal) => fieldVal.StartsWith(stringVal, StringComparison.OrdinalIgnoreCase),
+				(String fieldVal, JsonElement { ValueKind: JsonValueKind.String } jsonElement) => fieldVal.StartsWith(jsonElement.GetString(), StringComparison.OrdinalIgnoreCase),
+				(String fieldVal, JsonElement jsonElement) => fieldVal.StartsWith(jsonElement.GetRawText(), StringComparison.OrdinalIgnoreCase),
 				_ => false,
 			};
 		static bool EndsWith(object field, object value) =>
-			field switch {
-				string fld when value is string val => fld.EndsWith(val, StringComparison.OrdinalIgnoreCase),
-				string fld when value is JsonElement val => fld.EndsWith(val.GetString(), StringComparison.OrdinalIgnoreCase),
+			(field, value) switch {
+				(String fieldVal, String stringVal) => fieldVal.EndsWith(stringVal, StringComparison.OrdinalIgnoreCase),
+				(String fieldVal, JsonElement { ValueKind: JsonValueKind.String } jsonElement) => fieldVal.EndsWith(jsonElement.GetString(), StringComparison.OrdinalIgnoreCase),
+				(String fieldVal, JsonElement jsonElement) => fieldVal.EndsWith(jsonElement.GetRawText(), StringComparison.OrdinalIgnoreCase),
 				_ => false,
 			};
 
 		public static Dictionary<FilterOperator, Func<object, object, bool>> Predicates = new Dictionary<FilterOperator, Func<object, object, bool>>() {
 			{FilterOperator.Equals, (field, value) => CompareTo(field, value) == CompareResult.Equal},
 			{FilterOperator.NotEquals, (field, value) => CompareTo(field, value) != CompareResult.Equal},
-			//{FilterOperator.LessThan, (field, value) => Compare(FilterOperator.LessThan, field, value)},
-			//{FilterOperator.LessThanOrEquals, (field, value) => Compare(FilterOperator.LessThanOrEquals, field, value)},
-			//{FilterOperator.GreaterThan, (field, value) => Compare(FilterOperator.GreaterThan, field, value)},
-			//{FilterOperator.GreaterThanOrEquals, (field, value) => Compare(FilterOperator.GreaterThanOrEquals, field, value)},
+			{FilterOperator.LessThan, (field, value) => CompareTo(field, value) == CompareResult.Less},
+			{FilterOperator.LessThanOrEquals, (field, value) => { var x = CompareTo(field, value); return x == CompareResult.Equal || x == CompareResult.Less; } },
+			{FilterOperator.GreaterThan, (field, value) => CompareTo(field, value) == CompareResult.Greater},
+			{FilterOperator.GreaterThanOrEquals, (field, value) => { var x = CompareTo(field, value); return x == CompareResult.Equal || x == CompareResult.Greater; } },
 			{FilterOperator.Contains, (field, value) => field == null ? false : Contains(field, value)},
 			{FilterOperator.StartsWith, (field, value) => field == null ? false : StartsWith(field, value)},
 			{FilterOperator.EndsWith, (field, value) => field == null ? false : EndsWith(field, value)},
