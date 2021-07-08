@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Numerics;
@@ -80,76 +81,93 @@ namespace UsAcRe.Web.Shared.Models {
 			{FilterOperator.EndsWith, (field, value) => EndsWith(field, value)},
 		};
 
-		static bool Compare<T>(FilterOperator filterOperator, T field, T value) where T : IComparable<T> =>
-			filterOperator switch {
-				FilterOperator.Equals => field.CompareTo(value) == 0,
-				FilterOperator.NotEquals => field.CompareTo(value) != 0,
-				FilterOperator.LessThan => field.CompareTo(value) < 0,
-				FilterOperator.LessThanOrEquals => field.CompareTo(value) <= 0,
-				FilterOperator.GreaterThan => field.CompareTo(value) > 0,
-				FilterOperator.GreaterThanOrEquals => field.CompareTo(value) >= 0,
-				_ => throw new ArgumentException(),
+		//static bool Compare<T>(FilterOperator filterOperator, T field, T value) where T : IComparable<T> =>
+		//	filterOperator switch {
+		//		FilterOperator.Equals => value.CompareTo(field) == 0,
+		//		FilterOperator.NotEquals => value.CompareTo(field) != 0,
+		//		FilterOperator.LessThan => value.CompareTo(field) < 0,
+		//		FilterOperator.LessThanOrEquals => value.CompareTo(field) <= 0,
+		//		FilterOperator.GreaterThan => value.CompareTo(field) > 0,
+		//		FilterOperator.GreaterThanOrEquals => value.CompareTo(field) >= 0,
+		//		_ => throw new ArgumentException(),
+		//	};
+
+		static IComparable ConvertToComparable(object field, IComparable val) =>
+			val switch {
+				Byte => Convert.ToByte(field),
+				Int16 => Convert.ToInt16(field),
+				Int32 => Convert.ToInt32(field),
+				Int64 => Convert.ToInt64(field),
+				SByte => Convert.ToSByte(field),
+				UInt16 => Convert.ToUInt16(field),
+				UInt32 => Convert.ToUInt32(field),
+				UInt64 => Convert.ToUInt64(field),
+				Decimal => Convert.ToDecimal(field),
+				Double => Convert.ToDouble(field),
+				Single => Convert.ToSingle(field),
+				_ => Convert.ToString(field),
 			};
 
+		static IComparable ConvertToComparable<T>(object field) =>
+			ConvertToComparable(field, default(T) as IComparable);
 
-		static bool Compare(FilterOperator filterOperator, object field, object value) =>
+		enum CompareResult {
+			NoComparable,
+			Less,
+			Equal,
+			Greater,
+			NotEqual,
+		}
+
+		static CompareResult GetCompareResult(int value) =>
 			value switch {
-				Byte val => field == null ? false : Compare(filterOperator, Convert.ToByte(field), val),
-				Int16 val => field == null ? false : Compare(filterOperator, Convert.ToInt16(field), val),
-				Int32 val => field == null ? false : Compare(filterOperator, Convert.ToInt32(field), val),
-				Int64 val => field == null ? false : Compare(filterOperator, Convert.ToInt64(field), val),
-				SByte val => field == null ? false : Compare(filterOperator, Convert.ToSByte(field), val),
-				UInt16 val => field == null ? false : Compare(filterOperator, Convert.ToUInt16(field), val),
-				UInt32 val => field == null ? false : Compare(filterOperator, Convert.ToUInt32(field), val),
-				UInt64 val => field == null ? false : Compare(filterOperator, Convert.ToUInt64(field), val),
-				Decimal val => field == null ? false : Compare(filterOperator, Convert.ToDecimal(field), val),
-				Double val => field == null ? false : Compare(filterOperator, Convert.ToDouble(field), val),
-				Single val => field == null ? false : Compare(filterOperator, Convert.ToSingle(field), val),
-				string val => Compare(filterOperator, Convert.ToString(field), val),
-				JsonElement val when val.ValueKind == JsonValueKind.Number => field != null && Compare(filterOperator, Convert.ToDouble(field), val.GetDouble()),
-				JsonElement val => field != null && Compare(filterOperator, Convert.ToString(field), val.GetString()),
-				_ => Compare(filterOperator, Convert.ToString(field), Convert.ToString(value)),
+				-1 => CompareResult.Less,
+				0 => CompareResult.Equal,
+				1 => CompareResult.Greater,
+				_ => CompareResult.NoComparable
 			};
 
-		static bool NotEquals(object field, object value) =>
-			value switch {
-				int val => field == null ? false : Convert.ToInt32(field) != val,
-				double val => field == null ? false : Convert.ToDouble(field) != val,
-				string val => !val.Equals(field),
-				JsonElement val when val.ValueKind == JsonValueKind.Number => field != null && Convert.ToDouble(field) != val.GetDouble(),
-				JsonElement val => field != null && field as string != val.GetString(),
-				_ => field != value,
+
+		static CompareResult CompareTo(object field, object value) =>
+			(field, value) switch {
+				(null, null) => CompareResult.Equal,
+				(null, not null) => CompareResult.Greater,
+				(_, null) => CompareResult.NoComparable,
+
+				(String fieldVal, String stringVal) => GetCompareResult(fieldVal.CompareTo(stringVal)),
+				(String stringVal, Int32 or Single or Double or Int64 or Decimal or UInt32 or UInt16 or Byte or Int16 or SByte) when Double.TryParse(stringVal, out Double doubleVal) => GetCompareResult(doubleVal.CompareTo(value)),
+				(Int32 or Single or Double or Int64 or Decimal or UInt32 or UInt16 or Byte or Int16 or SByte, String stringVal) when Double.TryParse(stringVal, out Double doubleVal) => GetCompareResult(doubleVal.CompareTo(field)),
+
+				(Int32 fieldVal, Int32 or Single or Double or Int64 or Decimal or UInt32 or UInt16 or Byte or Int16 or SByte) => GetCompareResult(fieldVal.CompareTo(ConvertToComparable(value, fieldVal))),
+				(Single fieldVal, Single or Int32 or Double or Int64 or Decimal or UInt32 or UInt16 or Byte or Int16 or SByte) => GetCompareResult(fieldVal.CompareTo(ConvertToComparable(value, fieldVal))),
+				(Double fieldVal, Double or Int32 or Single or Int64 or Decimal or UInt32 or UInt16 or Byte or Int16 or SByte) => GetCompareResult(fieldVal.CompareTo(ConvertToComparable(value, fieldVal))),
+				(Int64 fieldVal, Int64 or Int32 or Single or Double or Decimal or UInt32 or UInt16 or Byte or Int16 or SByte) => GetCompareResult(fieldVal.CompareTo(ConvertToComparable(value, fieldVal))),
+				(Decimal fieldVal, Decimal or Int32 or Single or Double or Int64 or UInt32 or UInt16 or Byte or Int16 or SByte) => GetCompareResult(fieldVal.CompareTo(ConvertToComparable(value, fieldVal))),
+				(UInt32 fieldVal, UInt32 or Int32 or Single or Double or Int64 or Decimal or UInt16 or Byte or Int16 or SByte) => GetCompareResult(fieldVal.CompareTo(ConvertToComparable(value, fieldVal))),
+				(UInt16 fieldVal, UInt16 or Int32 or Single or Double or Int64 or Decimal or UInt32 or Byte or Int16 or SByte) => GetCompareResult(fieldVal.CompareTo(ConvertToComparable(value, fieldVal))),
+				(Byte fieldVal, Byte or Int32 or Single or Double or Int64 or Decimal or UInt32 or UInt16 or Int16 or SByte) => GetCompareResult(fieldVal.CompareTo(ConvertToComparable(value, fieldVal))),
+				(Int16 fieldVal, Int16 or Int32 or Single or Double or Int64 or Decimal or UInt32 or UInt16 or Byte or SByte) => GetCompareResult(fieldVal.CompareTo(ConvertToComparable(value, fieldVal))),
+				(SByte fieldVal, SByte or Int32 or Single or Double or Int64 or Decimal or UInt32 or UInt16 or Byte or Int16) => GetCompareResult(fieldVal.CompareTo(ConvertToComparable(value, fieldVal))),
+
+				(JsonElement { ValueKind: JsonValueKind.Number } jsonElement, Int32 or Single or Double or Int64 or Decimal or UInt32 or UInt16 or Byte or Int16 or SByte) =>
+							GetCompareResult(jsonElement.GetDouble().CompareTo(ConvertToComparable<Double>(value))),
+				(JsonElement { ValueKind: JsonValueKind.Number } jsonElement, String stringVal) when Double.TryParse(stringVal, out Double doubleVal) => GetCompareResult(jsonElement.GetDouble().CompareTo(doubleVal)),
+				(JsonElement { ValueKind: JsonValueKind.String } jsonElement, _) => GetCompareResult(jsonElement.GetString().CompareTo(value)),
+				(JsonElement jsonElement, _) => GetCompareResult(jsonElement.GetRawText().CompareTo(value)),
+
+				(Int32 or Single or Double or Int64 or Decimal or UInt32 or UInt16 or Byte or Int16 or SByte, JsonElement { ValueKind: JsonValueKind.Number } jsonElement) =>
+							GetCompareResult(jsonElement.GetDouble().CompareTo(ConvertToComparable<Double>(field))),
+				(String stringVal, JsonElement { ValueKind: JsonValueKind.Number } jsonElement) when Double.TryParse(stringVal, out Double doubleVal) => GetCompareResult(jsonElement.GetDouble().CompareTo(doubleVal)),
+				(_, JsonElement { ValueKind: JsonValueKind.String } jsonElement) => GetCompareResult(jsonElement.GetString().CompareTo(field)),
+				(_, JsonElement jsonElement) => GetCompareResult(jsonElement.GetRawText().CompareTo(field)),
+
+				(IComparable fieldVal, IComparable val) when fieldVal.GetType().IsAssignableFrom(val.GetType()) => GetCompareResult(fieldVal.CompareTo(val)),
+				(_, _) when field.GetType().IsAssignableFrom(value.GetType()) => field == value ? CompareResult.Equal : CompareResult.NotEqual,
+				(_, _) => CompareResult.NoComparable
+
 			};
 
-		static bool LessThan(object field, object value) =>
-			   value switch {
-				   int val => field == null ? false : Convert.ToInt32(field) < val,
-				   double val => field == null ? false : Convert.ToDouble(field) < val,
-				   JsonElement val when val.ValueKind == JsonValueKind.Number => Convert.ToDouble(field) < val.GetDouble(),
-				   _ => false,
-			   };
-		static bool LessThanOrEquals(object field, object value) =>
-			   value switch {
-				   int val => field == null ? false : Convert.ToInt32(field) <= val,
-				   double val => field == null ? false : Convert.ToDouble(field) <= val,
-				   JsonElement val when val.ValueKind == JsonValueKind.Number => Convert.ToDouble(field) <= val.GetDouble(),
-				   _ => false,
-			   };
 
-		static bool GreaterThan(object field, object value) =>
-			   value switch {
-				   int val => field == null ? false : Convert.ToInt32(field) > val,
-				   double val => field == null ? false : Convert.ToDouble(field) > val,
-				   JsonElement val when val.ValueKind == JsonValueKind.Number => Convert.ToDouble(field) > val.GetDouble(),
-				   _ => false,
-			   };
-		static bool GreaterThanOrEquals(object field, object value) =>
-			   value switch {
-				   int val => field == null ? false : Convert.ToInt32(field) >= val,
-				   double val => field == null ? false : Convert.ToDouble(field) >= val,
-				   JsonElement val when val.ValueKind == JsonValueKind.Number => Convert.ToDouble(field) >= val.GetDouble(),
-				   _ => false,
-			   };
 		static bool Contains(object field, object value) =>
 			field switch {
 				string fld when value is string val => fld.Contains(val, StringComparison.OrdinalIgnoreCase),
@@ -170,12 +188,12 @@ namespace UsAcRe.Web.Shared.Models {
 			};
 
 		public static Dictionary<FilterOperator, Func<object, object, bool>> Predicates = new Dictionary<FilterOperator, Func<object, object, bool>>() {
-			{FilterOperator.Equals, (field, value) => Compare(FilterOperator.Equals, field, value)},
-			{FilterOperator.NotEquals, (field, value) => Compare(FilterOperator.NotEquals, field, value)},
-			{FilterOperator.LessThan, (field, value) => field == null ? false : LessThan(field, value)},
-			{FilterOperator.LessThanOrEquals, (field, value) => field == null ? false : LessThanOrEquals(field, value)},
-			{FilterOperator.GreaterThan, (field, value) => field == null ? false : GreaterThan(field, value)},
-			{FilterOperator.GreaterThanOrEquals, (field, value) => field == null ? false : GreaterThanOrEquals(field, value)},
+			{FilterOperator.Equals, (field, value) => CompareTo(field, value) == CompareResult.Equal},
+			{FilterOperator.NotEquals, (field, value) => CompareTo(field, value) != CompareResult.Equal},
+			//{FilterOperator.LessThan, (field, value) => Compare(FilterOperator.LessThan, field, value)},
+			//{FilterOperator.LessThanOrEquals, (field, value) => Compare(FilterOperator.LessThanOrEquals, field, value)},
+			//{FilterOperator.GreaterThan, (field, value) => Compare(FilterOperator.GreaterThan, field, value)},
+			//{FilterOperator.GreaterThanOrEquals, (field, value) => Compare(FilterOperator.GreaterThanOrEquals, field, value)},
 			{FilterOperator.Contains, (field, value) => field == null ? false : Contains(field, value)},
 			{FilterOperator.StartsWith, (field, value) => field == null ? false : StartsWith(field, value)},
 			{FilterOperator.EndsWith, (field, value) => field == null ? false : EndsWith(field, value)},
