@@ -315,5 +315,73 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 			var ex = new SystemException();
 			Assert.That(predicate(ex, ex), Is.True);
 		}
+
+		[Test]
+		public void Predicates_Contains_Test() {
+			var predicate = FilterOperatorSpecifics.Predicates[FilterOperator.Contains];
+			Assert.That(predicate(null, null), Is.False);
+			Assert.That(predicate(0, 0), Is.False);
+			Assert.That(predicate(null, "Test"), Is.False);
+			Assert.That(predicate("Test", null), Is.False);
+
+
+			Assert.That(predicate("A", "A"), Is.True);
+			Assert.That(predicate("A", "a"), Is.True);
+
+			Assert.That(predicate("Test", "es"), Is.True);
+			Assert.That(predicate("Test", "other"), Is.False);
+
+			Assert.That(predicate("test", jsonDocument.RootElement.GetProperty("Name")), Is.False);
+			Assert.That(predicate(jsonDocument.RootElement.GetProperty("Name"), "test"), Is.False);
+
+			Assert.That(predicate("John Doe", jsonDocument.RootElement.GetProperty("Name")), Is.True);
+			Assert.That(predicate(jsonDocument.RootElement.GetProperty("Name"), "Joh"), Is.True);
+		}
+
+		[Test]
+		public void Predicates_StartsWith_Test() {
+			var predicate = FilterOperatorSpecifics.Predicates[FilterOperator.StartsWith];
+			Assert.That(predicate(null, null), Is.False);
+			Assert.That(predicate(0, 0), Is.False);
+			Assert.That(predicate(null, "Test"), Is.False);
+			Assert.That(predicate("Test", null), Is.False);
+
+
+			Assert.That(predicate("A", "A"), Is.True);
+			Assert.That(predicate("A", "a"), Is.True);
+
+			Assert.That(predicate("Test", "es"), Is.False);
+			Assert.That(predicate("Test", "Te"), Is.True);
+			Assert.That(predicate("Test", "other"), Is.False);
+
+			Assert.That(predicate("test", jsonDocument.RootElement.GetProperty("Name")), Is.False);
+			Assert.That(predicate(jsonDocument.RootElement.GetProperty("Name"), "test"), Is.False);
+
+			Assert.That(predicate("John Doe", jsonDocument.RootElement.GetProperty("Name")), Is.True);
+			Assert.That(predicate(jsonDocument.RootElement.GetProperty("Name"), "Joh"), Is.True);
+		}
+
+		[Test]
+		public void Predicates_EndsWith_Test() {
+			var predicate = FilterOperatorSpecifics.Predicates[FilterOperator.EndsWith];
+			Assert.That(predicate(null, null), Is.False);
+			Assert.That(predicate(0, 0), Is.False);
+			Assert.That(predicate(null, "Test"), Is.False);
+			Assert.That(predicate("Test", null), Is.False);
+
+
+			Assert.That(predicate("A", "A"), Is.True);
+			Assert.That(predicate("A", "a"), Is.True);
+
+			Assert.That(predicate("Test", "est"), Is.True);
+			Assert.That(predicate("Test", "Te"), Is.False);
+			Assert.That(predicate("Test", "other"), Is.False);
+
+			Assert.That(predicate("test", jsonDocument.RootElement.GetProperty("Name")), Is.False);
+			Assert.That(predicate(jsonDocument.RootElement.GetProperty("Name"), "test"), Is.False);
+
+			Assert.That(predicate("Mr. John", jsonDocument.RootElement.GetProperty("Name")), Is.True);
+			Assert.That(predicate(jsonDocument.RootElement.GetProperty("Name"), "ohn"), Is.True);
+		}
 	}
 }

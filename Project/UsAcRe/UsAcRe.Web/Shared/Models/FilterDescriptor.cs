@@ -173,6 +173,9 @@ namespace UsAcRe.Web.Shared.Models {
 				(String fieldVal, String stringVal) => fieldVal.Contains(stringVal, StringComparison.OrdinalIgnoreCase),
 				(String fieldVal, JsonElement { ValueKind: JsonValueKind.String } jsonElement) => fieldVal.Contains(jsonElement.GetString(), StringComparison.OrdinalIgnoreCase),
 				(String fieldVal, JsonElement jsonElement) => fieldVal.Contains(jsonElement.GetRawText(), StringComparison.OrdinalIgnoreCase),
+
+				(JsonElement { ValueKind: JsonValueKind.String } jsonElement, String stringVal) => jsonElement.GetString().Contains(stringVal, StringComparison.OrdinalIgnoreCase),
+				(JsonElement jsonElement, String stringVal) => jsonElement.GetRawText().Contains(stringVal, StringComparison.OrdinalIgnoreCase),
 				_ => false,
 			};
 		static bool StartsWith(object field, object value) =>
@@ -180,6 +183,9 @@ namespace UsAcRe.Web.Shared.Models {
 				(String fieldVal, String stringVal) => fieldVal.StartsWith(stringVal, StringComparison.OrdinalIgnoreCase),
 				(String fieldVal, JsonElement { ValueKind: JsonValueKind.String } jsonElement) => fieldVal.StartsWith(jsonElement.GetString(), StringComparison.OrdinalIgnoreCase),
 				(String fieldVal, JsonElement jsonElement) => fieldVal.StartsWith(jsonElement.GetRawText(), StringComparison.OrdinalIgnoreCase),
+
+				(JsonElement { ValueKind: JsonValueKind.String } jsonElement, String stringVal) => jsonElement.GetString().StartsWith(stringVal, StringComparison.OrdinalIgnoreCase),
+				(JsonElement jsonElement, String stringVal) => jsonElement.GetRawText().StartsWith(stringVal, StringComparison.OrdinalIgnoreCase),
 				_ => false,
 			};
 		static bool EndsWith(object field, object value) =>
@@ -187,6 +193,9 @@ namespace UsAcRe.Web.Shared.Models {
 				(String fieldVal, String stringVal) => fieldVal.EndsWith(stringVal, StringComparison.OrdinalIgnoreCase),
 				(String fieldVal, JsonElement { ValueKind: JsonValueKind.String } jsonElement) => fieldVal.EndsWith(jsonElement.GetString(), StringComparison.OrdinalIgnoreCase),
 				(String fieldVal, JsonElement jsonElement) => fieldVal.EndsWith(jsonElement.GetRawText(), StringComparison.OrdinalIgnoreCase),
+
+				(JsonElement { ValueKind: JsonValueKind.String } jsonElement, String stringVal) => jsonElement.GetString().EndsWith(stringVal, StringComparison.OrdinalIgnoreCase),
+				(JsonElement jsonElement, String stringVal) => jsonElement.GetRawText().EndsWith(stringVal, StringComparison.OrdinalIgnoreCase),
 				_ => false,
 			};
 
