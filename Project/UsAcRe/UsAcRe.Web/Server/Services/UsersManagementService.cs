@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using GuardNet;
 using Microsoft.AspNetCore.Identity;
@@ -58,15 +57,36 @@ namespace UsAcRe.Web.Server.Services {
 			return user;
 		}
 
+
+
 		public async Task<IList<UserModel>> List(DataPaging dataPaging) {
-			var users = await ListInternal((q) => {
-				if(dataPaging.Sorts != null && dataPaging.Sorts.Any(x => x.Field == nameof(UserModel.Roles))) {
+			bool rolesSortAsc = false;
+			bool rolesSortDesc = false;
+			if(dataPaging.Sorts != null) {
+				var rolesSort = dataPaging.Sorts.Where(x => x.Field == nameof(UserModel.Roles));
+				rolesSortAsc = rolesSort.Any(x => x.SortOrder == Shared.Models.SortOrder.Ascending);
+				rolesSortDesc = rolesSort.Any(x => x.SortOrder == Shared.Models.SortOrder.Descending);
+				if(rolesSortAsc || rolesSortDesc) {
 					dataPaging.Sorts = dataPaging.Sorts.Where(x => x.Field != nameof(UserModel.Roles));
 				}
+			}
+
+			var rolesFiltering = dataPaging.Filters?.Where(x => x.Field == UserModel.RolesNamesField).ToList();
+			if(rolesFiltering != null && rolesFiltering.Any()) {
+				dataPaging.Filters = dataPaging.Filters.Where(x => x.Field != UserModel.RolesNamesField);
+			}
+			var users = await ListInternal((q) => {
 				var pagedQuery = q.PerformLoadPagedData(dataPaging);
 				return pagedQuery;
+			});
+
+			users = users.ApplyFilter(rolesFiltering);
+
+			if(rolesSortAsc) {
+				users = users.OrderBy(x => UserRolesView.Concat(x));
+			} else if(rolesSortDesc) {
+				users = users.OrderByDescending(x => UserRolesView.Concat(x));
 			}
-			);
 			return users.ToList();
 		}
 
