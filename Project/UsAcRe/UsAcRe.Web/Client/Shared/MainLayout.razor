@@ -8,40 +8,40 @@
 <RadzenContextMenu />
 
 <RadzenHeader>
-    <ChildContent>
-        <div class="row justify-content-start align-items-center">
-            <div class="col-6 d-flex align-items-center">
-                <RadzenSidebarToggle Click="@(args => { sidebarExpanded = !sidebarExpanded; })" />
-                <RadzenLink Text="UsAcRe.Web" Path="/" />
-            </div>
-            <div class="col-6 d-flex align-items-center justify-content-end">
-                <div class="d-none d-md-inline-flex align-items-center">
-                    <LoginDisplay />
-                </div>
-            </div>
-        </div>
-    </ChildContent>
+	<ChildContent>
+		<div class="row justify-content-start align-items-center">
+			<div class="col-6 d-flex align-items-center">
+				<RadzenSidebarToggle Click="@(args => { sidebarExpanded = !sidebarExpanded; })" />
+				<RadzenLink Text="UsAcRe.Web" Path="/" />
+			</div>
+			<div class="col-6 d-flex align-items-center justify-content-end">
+				<div class="d-none d-md-inline-flex align-items-center">
+					<LoginDisplay />
+				</div>
+			</div>
+		</div>
+	</ChildContent>
 </RadzenHeader>
 <div style="width:100%">
-    <RadzenBody @ref="@body0">
-        <ChildContent>
-            <RadzenContentContainer Name="main">
-                @Body
-            </RadzenContentContainer>
-        </ChildContent>
-    </RadzenBody>
+	<RadzenBody @ref="@body0">
+		<ChildContent>
+			<RadzenContentContainer Name="main">
+				@Body
+			</RadzenContentContainer>
+		</ChildContent>
+	</RadzenBody>
 </div>
 
 <RadzenSidebar @ref="@sidebar0" @bind-Expanded="@sidebarExpanded">
-    <ChildContent>
-        <NavMenu />
-    </ChildContent>
+	<ChildContent>
+		<NavMenu />
+	</ChildContent>
 </RadzenSidebar>
 
 @code { RadzenSidebar sidebar0;
-    RadzenBody body0;
-    bool sidebarExpanded = true;
+	RadzenBody body0;
+	bool sidebarExpanded = true;
 
-    protected override void OnInitialized() {
-        System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
-    } }
+	protected override void OnInitialized() {
+		System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
+	} }

@@ -11,62 +11,62 @@
 
 <RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px" Text="Add" Click="@AddRecord" />
 <RadzenDataGrid @ref="usersGrid" Count="@count" Data="@users"
-                AllowSorting="true" AllowMultiColumnSorting="false" AllowFiltering="true" AllowPaging="true"
-                FilterMode="FilterMode.Advanced"
-                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                SelectionMode="DataGridSelectionMode.Single"
-                PageSize="10" TItem="UserModel"
-                LoadData="@LoadData"
-                RowDoubleClick="@OpenEditor"
-                @bind-Value=@selectedUsers>
-    <Columns>
-        <RadzenDataGridColumn TItem="UserModel" Property="@nameof(UserModel.Id)" Title="Id" Visible="false" />
-        <RadzenDataGridColumn TItem="UserModel" Property="@nameof(UserModel.UserName)" Title="UserName" SortOrder="Radzen.SortOrder.Ascending" />
-        <RadzenDataGridColumn TItem="UserModel" Property="@nameof(UserModel.Email)" Title="Email" />
-        <RadzenDataGridColumn TItem="UserModel" Property="@nameof(UserModel.Roles)" Title="Roles" Type=typeof(string) FilterProperty="@UserModel.RolesNamesField">
-            <Template Context="user">
-                @UserRolesView.Concat(user)
-            </Template>
-        </RadzenDataGridColumn>
-    </Columns>
+				AllowSorting="true" AllowMultiColumnSorting="false" AllowFiltering="true" AllowPaging="true"
+				FilterMode="FilterMode.Advanced"
+				FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+				SelectionMode="DataGridSelectionMode.Single"
+				PageSize="10" TItem="UserModel"
+				LoadData="@LoadData"
+				RowDoubleClick="@OpenEditor"
+				@bind-Value=@selectedUsers>
+	<Columns>
+		<RadzenDataGridColumn TItem="UserModel" Property="@nameof(UserModel.Id)" Title="Id" Visible="false" />
+		<RadzenDataGridColumn TItem="UserModel" Property="@nameof(UserModel.UserName)" Title="UserName" SortOrder="Radzen.SortOrder.Ascending" />
+		<RadzenDataGridColumn TItem="UserModel" Property="@nameof(UserModel.Email)" Title="Email" />
+		<RadzenDataGridColumn TItem="UserModel" Property="@nameof(UserModel.Roles)" Title="Roles" Type=typeof(string) FilterProperty="@UserModel.RolesNamesField">
+			<Template Context="user">
+				@UserRolesView.Concat(user)
+			</Template>
+		</RadzenDataGridColumn>
+	</Columns>
 </RadzenDataGrid>
 
 @code {
-    RadzenDataGrid<UserModel> usersGrid;
-    IEnumerable<UserModel> users;
-    IList<UserModel> selectedUsers;
-    int count;
+	RadzenDataGrid<UserModel> usersGrid;
+	IEnumerable<UserModel> users;
+	IList<UserModel> selectedUsers;
+	int count;
 
-    async Task LoadData(LoadDataArgs args) {
-        try {
-            var response = await Http.PostAsJsonAsync("/users/paged", new DataPaging() {
-                Top = args.Top,
-                Skip = args.Skip,
-                Sorts = args.Sorts.ToSortDescriptors(),
-                Filters = args.Filters.ToFilterDescriptors()
-            });
-            users = await response.Content.ReadFromJsonAsync<IEnumerable<UserModel>>();
-            count = users.Count();
-            selectedUsers = users.Take(1).ToList();
-            await InvokeAsync(StateHasChanged);
-        } catch(AccessTokenNotAvailableException exception) {
-            exception.Redirect();
-        }
-    }
+	async Task LoadData(LoadDataArgs args) {
+		try {
+			var response = await Http.PostAsJsonAsync("/users/paged", new DataPaging() {
+				Top = args.Top,
+				Skip = args.Skip,
+				Sorts = args.Sorts.ToSortDescriptors(),
+				Filters = args.Filters.ToFilterDescriptors()
+			});
+			users = await response.Content.ReadFromJsonAsync<IEnumerable<UserModel>>();
+			count = users.Count();
+			selectedUsers = users.Take(1).ToList();
+			await InvokeAsync(StateHasChanged);
+		} catch(AccessTokenNotAvailableException exception) {
+			exception.Redirect();
+		}
+	}
 
-    async Task OpenEditor(DataGridRowMouseEventArgs<UserModel> args) {
-        var result = await DialogService.OpenAsync<Pages.Users.EditUser>($"Edit user {args.Data}",
-            new Dictionary<string, object>() { { "UserId", args.Data.Id } });
-        if(result is UserModel) {
-            await usersGrid.Reload();
-        }
-    }
+	async Task OpenEditor(DataGridRowMouseEventArgs<UserModel> args) {
+		var result = await DialogService.OpenAsync<Pages.Users.EditUser>($"Edit user {args.Data}",
+			new Dictionary<string, object>() { { "UserId", args.Data.Id } });
+		if(result is UserModel) {
+			await usersGrid.Reload();
+		}
+	}
 
 
-    async Task AddRecord() {
-        var result = await DialogService.OpenAsync<Pages.Users.EditUser>($"Create new user");
-        if(result is UserModel) {
-            await usersGrid.Reload();
-        }
-    }
+	async Task AddRecord() {
+		var result = await DialogService.OpenAsync<Pages.Users.EditUser>($"Create new user");
+		if(result is UserModel) {
+			await usersGrid.Reload();
+		}
+	}
 }

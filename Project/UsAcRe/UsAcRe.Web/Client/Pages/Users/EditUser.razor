@@ -7,115 +7,115 @@
 @inject NotificationService NotificationService
 
 <RadzenContent Container="main">
-    <ChildContent>
-        <div class="row">
-            <div class="col-md-12">
-                <RadzenTemplateForm TItem="UserModel" Data="@user" Visible="@(user != null)" Submit="@FormSubmit">
-                    <ChildContent>
-                        <div style="margin-bottom: 1rem" class="row">
-                            <div class="col-md-3">
-                                <RadzenLabel Component="UserName" style="width: 100%" Text="User Name">
-                                </RadzenLabel>
-                            </div>
-                            <div class="col-md-9">
-                                <RadzenTextBox style="width: 100%" @bind-Value="@(user.UserName)" Name="UserName">
-                                </RadzenTextBox>
-                            </div>
-                        </div>
-                        <div style="margin-bottom: 1rem" class="row">
-                            <div class="col-md-3">
-                                <RadzenLabel Component="Email" style="width: 100%" Text="Email">
-                                </RadzenLabel>
-                            </div>
-                            <div class="col-md-9">
-                                <RadzenTextBox style="width: 100%" @bind-Value="@(user.Email)" Name="Email">
-                                </RadzenTextBox>
-                            </div>
-                        </div>
-                        <div style="margin-bottom: 1rem" class="row">
-                            <div class="col-md-3">
-                                <RadzenLabel Component="RoleNames" style="width: 100%" Text="Roles">
-                                </RadzenLabel>
-                            </div>
-                            <div class="col-md-9">
-                                <RadzenDropDown Multiple="true" style="width: 100%"
-                                                Data="@roles"
-                                                TextProperty="Name"
-                                                ValueProperty="Id"
-                                                Name="RoleNames"
-                                                @bind-Value="@userRoles" />
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col offset-sm-3">
-                                <RadzenButton ButtonStyle="ButtonStyle.Primary" ButtonType="ButtonType.Submit" Icon="save" Text="Save">
-                                </RadzenButton>
-                                <RadzenButton ButtonStyle="ButtonStyle.Light" Text="Cancel" Click="@CloseForm">
-                                </RadzenButton>
-                            </div>
-                        </div>
-                    </ChildContent>
-                </RadzenTemplateForm>
-            </div>
-        </div>
-    </ChildContent>
+	<ChildContent>
+		<div class="row">
+			<div class="col-md-12">
+				<RadzenTemplateForm TItem="UserModel" Data="@user" Visible="@(user != null)" Submit="@FormSubmit">
+					<ChildContent>
+						<div style="margin-bottom: 1rem" class="row">
+							<div class="col-md-3">
+								<RadzenLabel Component="UserName" style="width: 100%" Text="User Name">
+								</RadzenLabel>
+							</div>
+							<div class="col-md-9">
+								<RadzenTextBox style="width: 100%" @bind-Value="@(user.UserName)" Name="UserName">
+								</RadzenTextBox>
+							</div>
+						</div>
+						<div style="margin-bottom: 1rem" class="row">
+							<div class="col-md-3">
+								<RadzenLabel Component="Email" style="width: 100%" Text="Email">
+								</RadzenLabel>
+							</div>
+							<div class="col-md-9">
+								<RadzenTextBox style="width: 100%" @bind-Value="@(user.Email)" Name="Email">
+								</RadzenTextBox>
+							</div>
+						</div>
+						<div style="margin-bottom: 1rem" class="row">
+							<div class="col-md-3">
+								<RadzenLabel Component="RoleNames" style="width: 100%" Text="Roles">
+								</RadzenLabel>
+							</div>
+							<div class="col-md-9">
+								<RadzenDropDown Multiple="true" style="width: 100%"
+												Data="@roles"
+												TextProperty="Name"
+												ValueProperty="Id"
+												Name="RoleNames"
+												@bind-Value="@userRoles" />
+							</div>
+						</div>
+						<div class="row">
+							<div class="col offset-sm-3">
+								<RadzenButton ButtonStyle="ButtonStyle.Primary" ButtonType="ButtonType.Submit" Icon="save" Text="Save">
+								</RadzenButton>
+								<RadzenButton ButtonStyle="ButtonStyle.Light" Text="Cancel" Click="@CloseForm">
+								</RadzenButton>
+							</div>
+						</div>
+					</ChildContent>
+				</RadzenTemplateForm>
+			</div>
+		</div>
+	</ChildContent>
 </RadzenContent>
 
 
 
 @code {
-    [Parameter] public System.Guid UserId { get; set; }
-    bool isCreateNew => UserId == default;
-    UserModel user;
-    IEnumerable<RoleModel> roles;
-    IEnumerable<Guid> userRoles;
+	[Parameter] public System.Guid UserId { get; set; }
+	bool isCreateNew => UserId == default;
+	UserModel user;
+	IEnumerable<RoleModel> roles;
+	IEnumerable<Guid> userRoles;
 
-    protected override async Task OnInitializedAsync() {
-        try {
-            if(!isCreateNew) {
-                user = await Http.GetFromJsonAsync<UserModel>($"/users/{UserId}");
-            } else {
-                user = new UserModel();
-            }
-            roles = await Http.GetFromJsonAsync<IEnumerable<RoleModel>>($"/roles");
-            userRoles = user.Roles.Select(x => x.Id).ToList();
-        } catch(AccessTokenNotAvailableException exception) {
-            exception.Redirect();
-        }
-    }
+	protected override async Task OnInitializedAsync() {
+		try {
+			if(!isCreateNew) {
+				user = await Http.GetFromJsonAsync<UserModel>($"/users/{UserId}");
+			} else {
+				user = new UserModel();
+			}
+			roles = await Http.GetFromJsonAsync<IEnumerable<RoleModel>>($"/roles");
+			userRoles = user.Roles.Select(x => x.Id).ToList();
+		} catch(AccessTokenNotAvailableException exception) {
+			exception.Redirect();
+		}
+	}
 
-    protected async Task FormSubmit(UserModel args) {
-        try {
-            HttpResponseMessage result;
-            user.Roles = roles.Where(x => userRoles.Any(r => r == x.Id));
-            if(isCreateNew) {
-                result = await Http.PostAsJsonAsync($"/users", user);
-            } else {
-                result = await Http.PutAsJsonAsync($"/users/{UserId}", user);
-            }
-            if(!result.IsSuccessStatusCode) {
-                var message = await result.Content.ReadAsStringAsync();
-                NotificationService.Notify(new NotificationMessage {
-                    Severity = NotificationSeverity.Error,
-                    Summary = result.ReasonPhrase,
-                    Detail = message,
-                    Duration = 4000,
-                });
-                return;
-            }
-            DialogService.Close(user);
+	protected async Task FormSubmit(UserModel args) {
+		try {
+			HttpResponseMessage result;
+			user.Roles = roles.Where(x => userRoles.Any(r => r == x.Id));
+			if(isCreateNew) {
+				result = await Http.PostAsJsonAsync($"/users", user);
+			} else {
+				result = await Http.PutAsJsonAsync($"/users/{UserId}", user);
+			}
+			if(!result.IsSuccessStatusCode) {
+				var message = await result.Content.ReadAsStringAsync();
+				NotificationService.Notify(new NotificationMessage {
+					Severity = NotificationSeverity.Error,
+					Summary = result.ReasonPhrase,
+					Detail = message,
+					Duration = 4000,
+				});
+				return;
+			}
+			DialogService.Close(user);
 
-        } catch(AccessTokenNotAvailableException exception) {
-            exception.Redirect();
-        }
-    }
+		} catch(AccessTokenNotAvailableException exception) {
+			exception.Redirect();
+		}
+	}
 
-    protected void CloseForm(MouseEventArgs args) {
-        DialogService.Close(null);
-    }
+	protected void CloseForm(MouseEventArgs args) {
+		DialogService.Close(null);
+	}
 
 
-    void DropDownChanged(object args) {
+	void DropDownChanged(object args) {
 
-    }
+	}
 }
