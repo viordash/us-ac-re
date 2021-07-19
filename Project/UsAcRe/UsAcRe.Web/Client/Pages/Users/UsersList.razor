@@ -40,13 +40,14 @@
 	async Task LoadData(LoadDataArgs args) {
 		try {
 			var response = await Http.PostAsJsonAsync("/users/paged", new DataPaging() {
-				Top = args.Top,
+				Take = args.Top,
 				Skip = args.Skip,
 				Sorts = args.Sorts.ToSortDescriptors(),
 				Filters = args.Filters.ToFilterDescriptors()
 			});
-			users = await response.Content.ReadFromJsonAsync<IEnumerable<UserModel>>();
-			count = users.Count();
+			var pagedData = await response.Content.ReadFromJsonAsync<PagedDataResult<UserModel>>();
+			users = pagedData.Data;
+			count = pagedData.Total;
 			selectedUsers = users.Take(1).ToList();
 			await InvokeAsync(StateHasChanged);
 		} catch(AccessTokenNotAvailableException exception) {

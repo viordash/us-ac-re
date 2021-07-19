@@ -87,14 +87,14 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 		#region List
 		[Test]
 		public async ValueTask List_Test() {
-			var users = await testable.List(new DataPaging());
-			Assert.IsNotNull(users);
-			Assert.That(users.Count(), Is.EqualTo(3));
-			Assert.That(users.ElementAt(0).Id, Is.EqualTo(guids[1]));
-			Assert.That(users.ElementAt(0).UserName, Is.EqualTo("test1"));
-			Assert.That(users.ElementAt(0).Roles.Select(x => x.Name), Is.EquivalentTo(new[] { "SuperUser", "Administrator" }));
-			Assert.That(users.ElementAt(1).Roles.Select(x => x.Name), Is.Empty);
-			Assert.That(users.ElementAt(2).Roles.Select(x => x.Name), Is.Empty);
+			var usersResult = await testable.List(new DataPaging());
+			Assert.IsNotNull(usersResult);
+			Assert.That(usersResult.Data.Count(), Is.EqualTo(3));
+			Assert.That(usersResult.Data.ElementAt(0).Id, Is.EqualTo(guids[1]));
+			Assert.That(usersResult.Data.ElementAt(0).UserName, Is.EqualTo("test1"));
+			Assert.That(usersResult.Data.ElementAt(0).Roles.Select(x => x.Name), Is.EquivalentTo(new[] { "SuperUser", "Administrator" }));
+			Assert.That(usersResult.Data.ElementAt(1).Roles.Select(x => x.Name), Is.Empty);
+			Assert.That(usersResult.Data.ElementAt(2).Roles.Select(x => x.Name), Is.Empty);
 		}
 		#endregion
 
@@ -141,8 +141,8 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 			userStoreMock.Verify(x => x.RemoveFromRoleAsync(It.IsAny<ApplicationIdentityUser>(), It.IsAny<string>(), It.IsAny<CancellationToken>()));
 			userStoreMock.Verify(x => x.AddToRoleAsync(It.IsAny<ApplicationIdentityUser>(), It.IsAny<string>(), It.IsAny<CancellationToken>()));
 
-			var users = await testable.List(new DataPaging());
-			Assert.That(users.ElementAt(0).Roles.Select(x => x.Name), Is.EquivalentTo(new[] { "SuperUser" }));
+			var usersResult = await testable.List(new DataPaging());
+			Assert.That(usersResult.Data.ElementAt(0).Roles.Select(x => x.Name), Is.EquivalentTo(new[] { "SuperUser" }));
 		}
 
 		[Test]
@@ -153,8 +153,8 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 				UserName = "test1_edit",
 				ConcurrencyStamp = appUser.ConcurrencyStamp
 			});
-			var users = await testable.List(new DataPaging());
-			Assert.That(users.ElementAt(0).Roles, Is.Empty);
+			var usersResult = await testable.List(new DataPaging());
+			Assert.That(usersResult.Data.ElementAt(0).Roles, Is.Empty);
 		}
 
 		[Test]
@@ -183,9 +183,9 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 			});
 			userStoreMock.Verify(x => x.CreateAsync(It.IsAny<ApplicationIdentityUser>(), It.IsAny<CancellationToken>()));
 
-			var users = await testable.List(new DataPaging());
-			Assert.That(users.Last().UserName, Is.EqualTo("new_test"));
-			Assert.That(users.Last().Roles.Select(x => x.Name), Is.EquivalentTo(new[] { "SuperUser" }));
+			var usersResult = await testable.List(new DataPaging());
+			Assert.That(usersResult.Data.Last().UserName, Is.EqualTo("new_test"));
+			Assert.That(usersResult.Data.Last().Roles.Select(x => x.Name), Is.EquivalentTo(new[] { "SuperUser" }));
 		}
 
 		[Test]

@@ -29,7 +29,7 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 		[Test]
 		public async ValueTask PerformLoadPagedData_Offset_Test() {
 			var dataPaging = new DataPaging() {
-				Top = 4,
+				Take = 4,
 				Skip = 3
 			};
 
@@ -42,7 +42,7 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 		[Test]
 		public async ValueTask PerformLoadPagedData_OrderBy_Test() {
 			var dataPaging = new DataPaging() {
-				Top = 10,
+				Take = 10,
 				Skip = 0,
 				Sorts = new List<Shared.Models.SortDescriptor>() { new Shared.Models.SortDescriptor() { Field = "email", SortOrder = Shared.Models.SortOrder.Descending } }
 			};

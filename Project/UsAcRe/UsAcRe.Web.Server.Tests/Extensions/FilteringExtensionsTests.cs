@@ -59,7 +59,7 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 		public void Enumerable_ApplyFilter_Equals_Test() {
 			var filters = new List<Shared.Models.FilterDescriptor>() {
 					new Shared.Models.FilterDescriptor() {
-						Field = UserModel.RolesNamesField,
+						Field = nameof(UserModel.Roles),
 						FilterOperator = Shared.Models.FilterOperator.Equals,
 						FilterValue = "role_r0, role_r1, role_r2"
 					}
@@ -105,7 +105,7 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 		public void Enumerable_ApplyFilter_NotEquals_Test() {
 			var filters = new List<Shared.Models.FilterDescriptor>() {
 					new Shared.Models.FilterDescriptor() {
-						Field = UserModel.RolesNamesField,
+						Field = nameof(UserModel.Roles),
 						FilterOperator = Shared.Models.FilterOperator.NotEquals,
 						FilterValue = "role_r0, role_r1, role_r2"
 					}
@@ -234,7 +234,7 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 		public void Enumerable_ApplyFilter_Contains_Test() {
 			var filters = new List<Shared.Models.FilterDescriptor>() {
 					new Shared.Models.FilterDescriptor() {
-						Field = UserModel.RolesNamesField,
+						Field = nameof(UserModel.Roles),
 						FilterOperator = Shared.Models.FilterOperator.Contains,
 						FilterValue = "role_r1"
 					}
@@ -245,7 +245,7 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 
 			filters = new List<Shared.Models.FilterDescriptor>() {
 					new Shared.Models.FilterDescriptor() {
-						Field = UserModel.RolesNamesField,
+						Field = nameof(UserModel.Roles),
 						FilterOperator = Shared.Models.FilterOperator.Contains,
 						FilterValue = "role_r1",
 						LogicalFilterOperator = Shared.Models.LogicalFilterOperator.Or,
@@ -270,7 +270,7 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 		public void Enumerable_ApplyFilter_StartsWith_Test() {
 			var filters = new List<Shared.Models.FilterDescriptor>() {
 					new Shared.Models.FilterDescriptor() {
-						Field = UserModel.RolesNamesField,
+						Field = nameof(UserModel.Roles),
 						FilterOperator = Shared.Models.FilterOperator.StartsWith,
 						FilterValue = "role_u4_"
 					}
@@ -303,7 +303,7 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 						FilterValue = guids[2]
 					}
 				},
-				Top = 10,
+				Take = 10,
 				Skip = 0
 			};
 
@@ -342,7 +342,7 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 						FilterValue = "email6"
 					}
 				},
-				Top = 10,
+				Take = 10,
 				Skip = 0
 			};
 
@@ -358,7 +358,7 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 				Filters = new List<Shared.Models.FilterDescriptor>() {
 					new Shared.Models.FilterDescriptor() { Field = "UserName", FilterOperator = Shared.Models.FilterOperator.Equals, FilterValue = "test7" }
 				},
-				Top = 10,
+				Take = 10,
 				Skip = 0
 			};
 			var users = await DbContext.Users.PerformLoadPagedData(dataPaging);
@@ -371,7 +371,7 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 				Filters = new List<Shared.Models.FilterDescriptor>() {
 					new Shared.Models.FilterDescriptor() { Field = "UserName", FilterOperator = Shared.Models.FilterOperator.NotEquals, FilterValue = "test5" }
 				},
-				Top = 10,
+				Take = 10,
 				Skip = 0
 			};
 			var users = await DbContext.Users.PerformLoadPagedData(dataPaging);
@@ -384,7 +384,7 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 				Filters = new List<Shared.Models.FilterDescriptor>() {
 					new Shared.Models.FilterDescriptor() { Field = "UserName", FilterOperator = Shared.Models.FilterOperator.LessThan, FilterValue = "test4" }
 				},
-				Top = 10,
+				Take = 10,
 				Skip = 0
 			};
 			var users = await DbContext.Users.PerformLoadPagedData(dataPaging);
@@ -410,7 +410,7 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 				Filters = new List<Shared.Models.FilterDescriptor>() {
 					new Shared.Models.FilterDescriptor() { Field = "UserName", FilterOperator = Shared.Models.FilterOperator.GreaterThan, FilterValue = "test7" }
 				},
-				Top = 10,
+				Take = 10,
 				Skip = 0
 			};
 			var users = await DbContext.Users.PerformLoadPagedData(dataPaging);
@@ -436,7 +436,7 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 				Filters = new List<Shared.Models.FilterDescriptor>() {
 					new Shared.Models.FilterDescriptor() { Field = "UserName", FilterOperator = Shared.Models.FilterOperator.Contains, FilterValue = "t7" }
 				},
-				Top = 10,
+				Take = 10,
 				Skip = 0
 			};
 			var users = await DbContext.Users.PerformLoadPagedData(dataPaging);
@@ -449,7 +449,7 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 				Filters = new List<Shared.Models.FilterDescriptor>() {
 					new Shared.Models.FilterDescriptor() { Field = "UserName", FilterOperator = Shared.Models.FilterOperator.StartsWith, FilterValue = "tes" }
 				},
-				Top = 10,
+				Take = 10,
 				Skip = 0
 			};
 			var users = await DbContext.Users.PerformLoadPagedData(dataPaging);
@@ -462,7 +462,7 @@ namespace UsAcRe.Web.Server.Tests.ServicesTests {
 				Filters = new List<Shared.Models.FilterDescriptor>() {
 					new Shared.Models.FilterDescriptor() { Field = "UserName", FilterOperator = Shared.Models.FilterOperator.EndsWith, FilterValue = "st5" }
 				},
-				Top = 10,
+				Take = 10,
 				Skip = 0
 			};
 			var users = await DbContext.Users.PerformLoadPagedData(dataPaging);

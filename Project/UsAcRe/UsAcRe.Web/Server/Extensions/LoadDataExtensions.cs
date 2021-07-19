@@ -46,8 +46,8 @@ namespace UsAcRe.Web.Server.Extensions {
 			if(dataPaging.Skip.HasValue) {
 				query = query.Skip(dataPaging.Skip.Value);
 			}
-			if(dataPaging.Top.HasValue) {
-				query = query.Take(dataPaging.Top.Value);
+			if(dataPaging.Take.HasValue) {
+				query = query.Take(dataPaging.Take.Value);
 			}
 			return query.ToListAsync();
 		}

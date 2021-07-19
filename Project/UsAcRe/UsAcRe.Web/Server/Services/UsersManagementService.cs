@@ -16,7 +16,7 @@ using UsAcRe.Web.Shared.Models;
 
 namespace UsAcRe.Web.Server.Services {
 	public interface IUsersManagementService {
-		Task<IList<UserModel>> List(DataPaging dataPaging);
+		Task<PagedDataResult<UserModel>> List(DataPaging dataPaging);
 		Task<UserModel> Get(System.Guid id);
 		Task Edit(UserModel user);
 		Task Create(UserModel user);
@@ -29,6 +29,11 @@ namespace UsAcRe.Web.Server.Services {
 			public string UserName { get; set; }
 			public string Email { get; set; }
 			public Guid? RoleId { get; set; }
+		}
+
+		class DataResult<TSource> {
+			public IEnumerable<TSource> Data { get; set; }
+			public int Total { get; set; }
 		}
 		#endregion
 
@@ -47,11 +52,11 @@ namespace UsAcRe.Web.Server.Services {
 		}
 
 		public async Task<UserModel> Get(System.Guid id) {
-			var users = await ListInternal(q => q
+			var usersResult = await ListInternal(q => q
 					.Where(x => x.Id == id)
 					.ToListAsync()
 					);
-			var user = users.FirstOrDefault();
+			var user = usersResult.Data.FirstOrDefault();
 			if(user == null) {
 				throw new ObjectNotFoundException();
 			}
@@ -60,7 +65,7 @@ namespace UsAcRe.Web.Server.Services {
 
 
 
-		public async Task<IList<UserModel>> List(DataPaging dataPaging) {
+		public async Task<PagedDataResult<UserModel>> List(DataPaging dataPaging) {
 			bool rolesSortAsc = false;
 			bool rolesSortDesc = false;
 			if(dataPaging.Sorts != null) {
@@ -71,24 +76,28 @@ namespace UsAcRe.Web.Server.Services {
 					dataPaging.Sorts = dataPaging.Sorts.Where(x => x.Field != nameof(UserModel.Roles));
 				}
 			}
-
 			var rolesFiltering = dataPaging.Filters?.Where(x => x.Field == nameof(UserModel.Roles)).ToList();
 			if(rolesFiltering != null && rolesFiltering.Any()) {
 				dataPaging.Filters = dataPaging.Filters.Where(x => x.Field != nameof(UserModel.Roles));
 			}
-			var users = await ListInternal((q) => {
+			var usersResult = await ListInternal((q) => {
 				var pagedQuery = q.PerformLoadPagedData(dataPaging);
 				return pagedQuery;
 			});
 
-			users = users.ApplyFilter(rolesFiltering);
+			usersResult.Data = usersResult.Data.ApplyFilter(rolesFiltering);
 
 			if(rolesSortAsc) {
-				users = users.OrderBy(x => UserRolesView.Concat(x));
+				usersResult.Data = usersResult.Data.OrderBy(x => UserRolesView.Concat(x));
 			} else if(rolesSortDesc) {
-				users = users.OrderByDescending(x => UserRolesView.Concat(x));
+				usersResult.Data = usersResult.Data.OrderByDescending(x => UserRolesView.Concat(x));
 			}
-			return users.ToList();
+			return new PagedDataResult<UserModel>() {
+				Data = usersResult.Data.ToList(),
+				Total = usersResult.Total,
+				Skip = dataPaging.Skip,
+				Take = dataPaging.Take
+			};
 		}
 
 		public async Task Edit(UserModel user) {
@@ -143,7 +152,7 @@ namespace UsAcRe.Web.Server.Services {
 			}
 		}
 
-		async Task<IEnumerable<UserModel>> ListInternal(Func<IQueryable<UserRolesInternal>, Task<List<UserRolesInternal>>> funcRetrieveData) {
+		async Task<DataResult<UserModel>> ListInternal(Func<IQueryable<UserRolesInternal>, Task<List<UserRolesInternal>>> funcRetrieveData) {
 			var query = from u in dbContext.Users
 						join ur in dbContext.UserRoles on u.Id equals ur.UserId into gj
 						from x in gj.DefaultIfEmpty()
@@ -154,7 +163,7 @@ namespace UsAcRe.Web.Server.Services {
 							ConcurrencyStamp = u.ConcurrencyStamp,
 							RoleId = x.RoleId,
 						};
-
+			var total = await dbContext.Users.CountAsync();
 			var users = await funcRetrieveData(query);
 			var filteredRoles = roleManager.Roles
 				.Where(r => users.Any(u => u.RoleId == r.Id))
@@ -179,7 +188,10 @@ namespace UsAcRe.Web.Server.Services {
 					};
 				});
 
-			return groupedUsers;
+			return new DataResult<UserModel>() {
+				Data = groupedUsers,
+				Total = total
+			};
 		}
 	}
 }
