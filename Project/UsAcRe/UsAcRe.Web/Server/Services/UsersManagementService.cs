@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using GuardNet;
 using Microsoft.AspNetCore.Identity;
@@ -71,9 +72,9 @@ namespace UsAcRe.Web.Server.Services {
 				}
 			}
 
-			var rolesFiltering = dataPaging.Filters?.Where(x => x.Field == UserModel.RolesNamesField).ToList();
+			var rolesFiltering = dataPaging.Filters?.Where(x => x.Field == nameof(UserModel.Roles)).ToList();
 			if(rolesFiltering != null && rolesFiltering.Any()) {
-				dataPaging.Filters = dataPaging.Filters.Where(x => x.Field != UserModel.RolesNamesField);
+				dataPaging.Filters = dataPaging.Filters.Where(x => x.Field != nameof(UserModel.Roles));
 			}
 			var users = await ListInternal((q) => {
 				var pagedQuery = q.PerformLoadPagedData(dataPaging);

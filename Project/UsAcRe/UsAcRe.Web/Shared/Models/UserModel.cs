@@ -1,11 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json.Serialization;
 
 namespace UsAcRe.Web.Shared.Models {
 	public class UserModel : ConcurrencyModel {
-		[JsonIgnore]
-		public const string RolesNamesField = "RolesNames";
 
 		public System.Guid Id { get; set; }
 		public string UserName { get; set; }
@@ -21,8 +18,7 @@ namespace UsAcRe.Web.Shared.Models {
 				nameof(Id) => model.Id,
 				nameof(UserName) => model.UserName,
 				nameof(Email) => model.Email,
-				nameof(Roles) => model.Roles,
-				RolesNamesField => UserRolesView.Concat(model),
+				nameof(Roles) => UserRolesView.Concat(model),
 				_ => null,
 			};
 	}

@@ -23,7 +23,7 @@
 		<RadzenDataGridColumn TItem="UserModel" Property="@nameof(UserModel.Id)" Title="Id" Visible="false" />
 		<RadzenDataGridColumn TItem="UserModel" Property="@nameof(UserModel.UserName)" Title="UserName" SortOrder="Radzen.SortOrder.Ascending" />
 		<RadzenDataGridColumn TItem="UserModel" Property="@nameof(UserModel.Email)" Title="Email" />
-		<RadzenDataGridColumn TItem="UserModel" Property="@nameof(UserModel.Roles)" Title="Roles" Type=typeof(string) FilterProperty="@UserModel.RolesNamesField">
+		<RadzenDataGridColumn TItem="UserModel" Property="@nameof(UserModel.Roles)" Title="Roles" Type=typeof(string)>
 			<Template Context="user">
 				@UserRolesView.Concat(user)
 			</Template>
