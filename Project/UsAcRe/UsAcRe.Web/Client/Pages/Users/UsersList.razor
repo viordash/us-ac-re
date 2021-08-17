@@ -3,6 +3,7 @@
 @using UsAcRe.Web.Shared.Models
 @using System.Diagnostics;
 @using UsAcRe.Web.Client.Extensions;
+@using UsAcRe.Web.Client.RadzenCustom;
 
 @inject HttpClient Http
 @inject DialogService DialogService
@@ -10,18 +11,22 @@
 <h1>List of users</h1>
 
 <RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px" Text="Add" Click="@AddRecord" />
-<RadzenDataGrid @ref="usersGrid" Count="@count" Data="@users"
-				AllowSorting="true" AllowMultiColumnSorting="false" AllowFiltering="true" AllowPaging="true"
-				FilterMode="FilterMode.Advanced"
-				FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-				SelectionMode="DataGridSelectionMode.Single"
-				PageSize="10" TItem="UserModel"
-				LoadData="@LoadData"
-				RowDoubleClick="@OpenEditor"
-				@bind-Value=@selectedUsers>
+<XRadzenDataGrid @ref="usersGrid" Count="@total" Data="@users"
+				 AllowSorting="true" AllowMultiColumnSorting="false" AllowFiltering="true" AllowPaging="false"
+				 FilterMode="FilterMode.Advanced"
+				 FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+				 SelectionMode="DataGridSelectionMode.Single"
+				 TItem="UserModel"
+				 LoadData="@LoadData"
+				 RowDoubleClick="@OpenEditor"
+				 @bind-Value=@selectedUsers>
 	<Columns>
 		<RadzenDataGridColumn TItem="UserModel" Property="@nameof(UserModel.Id)" Title="Id" Visible="false" />
-		<RadzenDataGridColumn TItem="UserModel" Property="@nameof(UserModel.UserName)" Title="UserName" SortOrder="Radzen.SortOrder.Ascending" />
+		<RadzenDataGridColumn TItem="UserModel" Property="@nameof(UserModel.UserName)" Title="UserName" SortOrder="Radzen.SortOrder.Ascending">
+			<FooterTemplate>
+				Users: <b>@count</b> of <b>@total</b>
+			</FooterTemplate>
+		</RadzenDataGridColumn>
 		<RadzenDataGridColumn TItem="UserModel" Property="@nameof(UserModel.Email)" Title="Email" />
 		<RadzenDataGridColumn TItem="UserModel" Property="@nameof(UserModel.Roles)" Title="Roles" Type=typeof(string)>
 			<Template Context="user">
@@ -29,13 +34,20 @@
 			</Template>
 		</RadzenDataGridColumn>
 	</Columns>
-</RadzenDataGrid>
+
+</XRadzenDataGrid>
+<XRadzenPager @ref="customPager" Count="@total" PageSizeOptions="@pageSizeOptions"
+			  PageChanged="@((args) =>usersGrid?.OnPageChanged(args))"
+			  PageSizeChanged="@((args) =>usersGrid?.OnPageSizeChanged(args))" />
 
 @code {
-	RadzenDataGrid<UserModel> usersGrid;
+	XRadzenDataGrid<UserModel> usersGrid;
+	XRadzenPager customPager;
 	IEnumerable<UserModel> users;
 	IList<UserModel> selectedUsers;
+	IEnumerable<int> pageSizeOptions = new int[] { 10, 20, 30 };
 	int count;
+	int total;
 
 	async Task LoadData(LoadDataArgs args) {
 		try {
@@ -47,7 +59,8 @@
 			});
 			var pagedData = await response.Content.ReadFromJsonAsync<PagedDataResult<UserModel>>();
 			users = pagedData.Data;
-			count = pagedData.Total;
+			count = pagedData.Data.Count;
+			total = pagedData.Total;
 			selectedUsers = users.Take(1).ToList();
 			await InvokeAsync(StateHasChanged);
 		} catch(AccessTokenNotAvailableException exception) {
