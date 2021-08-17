@@ -150,6 +150,7 @@ namespace UsAcRe.Web.Server.Services {
 					throw new IdentityErrorException(editRolesResult);
 				}
 			}
+			dbContext.CommitChanges();
 		}
 
 		async Task<DataResult<UserModel>> ListInternal(Func<IQueryable<UserRolesInternal>, Task<List<UserRolesInternal>>> funcRetrieveData) {

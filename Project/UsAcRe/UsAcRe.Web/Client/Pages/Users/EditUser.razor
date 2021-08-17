@@ -78,7 +78,7 @@
 				user = new UserModel();
 			}
 			roles = await Http.GetFromJsonAsync<IEnumerable<RoleModel>>($"/roles");
-			userRoles = user.Roles.Select(x => x.Id).ToList();
+			userRoles = user.Roles?.Select(x => x.Id).ToList();
 		} catch(AccessTokenNotAvailableException exception) {
 			exception.Redirect();
 		}
@@ -87,7 +87,7 @@
 	protected async Task FormSubmit(UserModel args) {
 		try {
 			HttpResponseMessage result;
-			user.Roles = roles.Where(x => userRoles.Any(r => r == x.Id));
+			user.Roles = roles.Where(x => userRoles != null && userRoles.Any(r => r == x.Id));
 			if(isCreateNew) {
 				result = await Http.PostAsJsonAsync($"/users", user);
 			} else {
