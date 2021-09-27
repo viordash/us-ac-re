@@ -11,15 +11,15 @@
 <h1>List of users</h1>
 
 <RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px" Text="Add" Click="@AddRecord" />
-<XRadzenDataGrid @ref="usersGrid" Count="@total" Data="@users"
-				 AllowSorting="true" AllowMultiColumnSorting="false" AllowFiltering="true" AllowPaging="false"
-				 FilterMode="FilterMode.Advanced"
-				 FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-				 SelectionMode="DataGridSelectionMode.Single"
-				 TItem="UserModel"
-				 LoadData="@LoadData"
-				 RowDoubleClick="@OpenEditor"
-				 @bind-Value=@selectedUsers>
+<RadzenDataGrid @ref="usersGrid" Count="@total" Data="@users"
+				AllowSorting="true" AllowMultiColumnSorting="false" AllowFiltering="true" AllowPaging="true"
+				FilterMode="FilterMode.Advanced"
+				FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+				SelectionMode="DataGridSelectionMode.Single"
+				PageSize="10" TItem="UserModel"
+				LoadData="@LoadData"
+				RowDoubleClick="@OpenEditor"
+				@bind-Value=@selectedUsers>
 	<Columns>
 		<RadzenDataGridColumn TItem="UserModel" Property="@nameof(UserModel.Id)" Title="Id" Visible="false" />
 		<RadzenDataGridColumn TItem="UserModel" Property="@nameof(UserModel.UserName)" Title="UserName" SortOrder="Radzen.SortOrder.Ascending">
@@ -35,13 +35,13 @@
 		</RadzenDataGridColumn>
 	</Columns>
 
-</XRadzenDataGrid>
-<XRadzenPager @ref="customPager" Count="@total" PageSizeOptions="@pageSizeOptions"
+</RadzenDataGrid>
+@*<XRadzenPager @ref="customPager" Count="@total" PageSizeOptions="@pageSizeOptions"
 			  PageChanged="@((args) =>usersGrid?.OnPageChanged(args))"
-			  PageSizeChanged="@((args) =>usersGrid?.OnPageSizeChanged(args))" />
+			  PageSizeChanged="@((args) =>usersGrid?.OnPageSizeChanged(args))" />*@
 
 @code {
-	XRadzenDataGrid<UserModel> usersGrid;
+	RadzenDataGrid<UserModel> usersGrid;
 	XRadzenPager customPager;
 	IEnumerable<UserModel> users;
 	IList<UserModel> selectedUsers;

@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace UsAcRe.Web.Client.Extensions {
 	public static class SortDescriptorExtensions {
-		public static Web.Shared.Models.SortOrder ToSortOrder(this Radzen.SortOrder sortOrder) {
+		public static Web.Shared.Models.SortOrder ToSortOrder(this Radzen.SortOrder? sortOrder) {
 			switch(sortOrder) {
 				case Radzen.SortOrder.Descending:
 					return Web.Shared.Models.SortOrder.Descending;
