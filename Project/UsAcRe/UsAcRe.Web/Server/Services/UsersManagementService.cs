@@ -24,13 +24,6 @@ namespace UsAcRe.Web.Server.Services {
 
 	public class UsersManagementService : IUsersManagementService {
 		#region inner classes
-		class UserRolesInternal : ConcurrencyModel {
-			public Guid Id { get; set; }
-			public string UserName { get; set; }
-			public string Email { get; set; }
-			public Guid? RoleId { get; set; }
-		}
-
 		class DataResult<TSource> {
 			public IEnumerable<TSource> Data { get; set; }
 			public int Total { get; set; }
@@ -153,40 +146,32 @@ namespace UsAcRe.Web.Server.Services {
 			dbContext.CommitChanges();
 		}
 
-		async Task<DataResult<UserModel>> ListInternal(Func<IQueryable<UserRolesInternal>, Task<List<UserRolesInternal>>> funcRetrieveData) {
-			var query = from u in dbContext.Users
-						join ur in dbContext.UserRoles on u.Id equals ur.UserId into gj
-						from x in gj.DefaultIfEmpty()
-						select new UserRolesInternal {
-							Id = u.Id,
-							UserName = u.UserName,
-							Email = u.Email,
-							ConcurrencyStamp = u.ConcurrencyStamp,
-							RoleId = x.RoleId,
-						};
+		async Task<DataResult<UserModel>> ListInternal(Func<IQueryable<ApplicationIdentityUser>, Task<List<ApplicationIdentityUser>>> funcRetrieveData) {
 			var total = await dbContext.Users.CountAsync();
-			var users = await funcRetrieveData(query);
-			var filteredRoles = roleManager.Roles
-				.Where(r => users.Any(u => u.RoleId == r.Id))
+			var users = await funcRetrieveData(dbContext.Users);
+
+			var userRoles = await dbContext.UserRoles
+				.Where(x => users.Select(x => x.Id).Contains(x.UserId))
+				.ToListAsync();
+
+			var roles = roleManager.Roles
+				.Where(r => userRoles.Any(u => u.RoleId == r.Id))
 				.ToList();
 
 			var groupedUsers = users
-				.GroupBy(
-				u => u.Id,
-				u => u.RoleId,
-				(k, roles) => {
-					var user = users.First(x => x.Id == k);
-					var userRoles = filteredRoles.Where(x => roles.Any(r => r == x.Id));
+				.Select(u => {
+					var ur = userRoles.Where(x => x.UserId == u.Id);
 					return new UserModel() {
-						Id = user.Id,
-						UserName = user.UserName,
-						Email = user.Email,
-						ConcurrencyStamp = user.ConcurrencyStamp,
-						Roles = filteredRoles.Where(x => roles.Any(r => r == x.Id)).Select(x => new RoleModel() {
+						Id = u.Id,
+						UserName = u.UserName,
+						Email = u.Email,
+						ConcurrencyStamp = u.ConcurrencyStamp,
+						Roles = roles.Where(x => ur.Any(r => r.RoleId == x.Id)).Select(x => new RoleModel() {
 							Id = x.Id,
 							Name = x.Name
 						})
 					};
+
 				});
 
 			return new DataResult<UserModel>() {
